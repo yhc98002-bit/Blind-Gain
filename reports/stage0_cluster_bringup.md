@@ -8,8 +8,8 @@ Status:
 - Single-node CUDA, DDP/NCCL, cross-node DDP/NCCL, and FSDP toy sanity checks passed.
 - A 900-pair renderable FlipTrack set was generated and scored.
 - All 16 GPUs have been used for Qwen2.5-VL-3B and Qwen2.5-VL-7B FlipTrack real/gray/noise evaluation, caption generation, and caption-only QA.
-- EasyR1 Qwen2.5-VL-3B GRPO smoke is running on `an12` GPUs 0-1 with SDPA attention after bypassing a FlashAttention2 dependency mismatch.
-- Logged synthetic GPU profiles are occupying spare devices while long jobs run: `an12` GPUs 2-7 and `an29` GPUs 0-7.
+- EasyR1 Qwen2.5-VL-3B GRPO smoke completed on `an12` GPUs 0-1 with SDPA attention after bypassing a FlashAttention2 dependency mismatch.
+- Logged synthetic GPU profiles are occupying devices after the smoke run: `an12` GPUs 0-7 and `an29` GPUs 0-7.
 
 Evidence:
 - GPU inventory/topology: `reports/gpu_inventory.json`, `reports/nvidia_topo_an12.txt`, `reports/nvidia_topo_an29.txt`
@@ -33,5 +33,5 @@ Decision:
 - Keep renderable FlipTrack generation as the primary Stage 1 path because labels are exact by construction.
 
 Next actions:
-- Let the EasyR1 smoke complete or fail, then record wall-clock, checkpoint/eval artifacts, and the next stability fix.
+- Build a smaller EasyR1 validation slice and audit the reward/data path before any longer GRPO run.
 - Add harder FlipTrack renderable templates and artifact-gate attacker probes.
