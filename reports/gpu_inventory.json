@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-07-07T13:24:50-07:00",
+  "nodes": {
+    "an12": {
+      "gpu_count": 8,
+      "gpus": [
+        {
+          "driver_version": "535.104.12",
+          "index": 0,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-ba4e359e-d885-844d-122f-46f09159ede9"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 1,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-e9b030e5-49c1-3055-9703-1db3de538184"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 2,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-ae1cb12e-86d0-9693-7de2-ddd03f1ff643"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 3,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-872680b0-1f0d-2229-871a-1fa334751a49"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 4,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-cc0f8386-4dc3-6707-194d-b701c36f7a16"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 5,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-21c87527-600e-2469-8134-e4160e91fb23"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 6,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-cfa6584b-bd6d-85e7-d4a9-bec5c58779f6"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 7,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-f76f23aa-b266-8708-68c7-ed24a5f1c14c"
+        }
+      ],
+      "topology_path": "reports/nvidia_topo_an12.txt"
+    },
+    "an29": {
+      "gpu_count": 8,
+      "gpus": [
+        {
+          "driver_version": "535.104.12",
+          "index": 0,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-21a5881d-7339-d4e1-9d9d-f120355a4cdf"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 1,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-0be33c78-9cb8-bf7d-3dcd-6e702d14dbf0"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 2,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-76fa12d3-8eef-6972-676e-9f60b0d43e04"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 3,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-74ffe9e9-634a-34f9-22fa-03120b4764f7"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 4,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-ae615676-1931-fe21-2804-20c7e7532fbd"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 5,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-450e514f-32e9-81a9-3789-d4ef2be263af"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 6,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-8f41f0e8-3d91-e9c6-8981-4473da46ac40"
+        },
+        {
+          "driver_version": "535.104.12",
+          "index": 7,
+          "memory_total_mib": 81920,
+          "name": "NVIDIA A800 80GB PCIe",
+          "uuid": "GPU-67d2c2b4-c7e5-44d2-172c-66f2f6e6c542"
+        }
+      ],
+      "topology_path": "reports/nvidia_topo_an29.txt"
+    }
+  }
+}

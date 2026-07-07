@@ -1,0 +1,41 @@
+run:
+  name: qwen25vl3b_grpo_repro
+  stage: stage0_reproduction
+  seed: 13
+  output_root: checkpoints/stage0_repro
+
+model:
+  name: Qwen2.5-VL-3B-Instruct
+  preferred_source: modelscope
+  revision: null
+  freeze_vision_tower: true
+
+data:
+  train_manifest: artifacts/datasets/virl39k_subset/train.jsonl
+  eval_manifest: artifacts/datasets/virl39k_subset/val.jsonl
+  image_policy: real
+  max_prompt_count: 1024
+
+train:
+  algorithm: grpo
+  group_size: 8
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_steps: 200
+  learning_rate: 1.0e-6
+  kl_coef: 0.04
+  max_prompt_length: 2048
+  max_response_length: 512
+  bf16: true
+  checkpoint_steps: 50
+
+reward:
+  parser: src.rewards.answer_reward
+  field: answer
+
+eval:
+  decoding: greedy
+  temperature: 0.0
+  max_new_tokens: 64
+  eval_steps: 50
+

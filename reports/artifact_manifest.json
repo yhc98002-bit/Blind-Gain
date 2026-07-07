@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-07-07",
+  "artifacts": [
+    {
+      "name": "fliptrack_renderable_smoke_v0",
+      "type": "generated_dataset",
+      "path": "data/fliptrack_v0_manifest.jsonl",
+      "status": "generated",
+      "rows": 30,
+      "notes": "10 chart, 10 document/OCR, 10 geometry pairs; exact labels by construction."
+    },
+    {
+      "name": "qwen25vl3b",
+      "type": "model",
+      "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "status": "pending_download",
+      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct"
+    },
+    {
+      "name": "qwen25vl7b",
+      "type": "model",
+      "path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "status": "pending_download",
+      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct"
+    }
+  ]
+}
+

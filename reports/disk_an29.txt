@@ -1,0 +1,2 @@
+Filesystem                                     Size  Used Avail Use% Mounted on
+99.72.5.14@o2ib200:99.72.5.15@o2ib200:/XYFS02   11P  2.3P  8.1P  22% /XYFS02
