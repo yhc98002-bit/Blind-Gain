@@ -1,27 +1,30 @@
 # Model Downloads
 
 Status:
-- No model weights have been downloaded yet.
-- Preferred ModelScope targets are identified:
-  - `Qwen/Qwen2.5-VL-3B-Instruct`
-  - `Qwen/Qwen2.5-VL-7B-Instruct`
-  - `Qwen/Qwen3-VL-8B-Instruct`
-- Download tooling is pending shared `.venv` bootstrap.
+- Qwen2.5-VL-3B-Instruct downloaded from ModelScope and registered.
+- Qwen2.5-VL-7B-Instruct downloaded from ModelScope and registered.
+- Qwen3-VL-8B-Instruct remains a candidate but is not downloaded yet.
 
 Evidence:
-- ModelScope pages were found for all three target model IDs.
-- Local registry helper exists at `src/data/model_registry.py`.
-- Artifact registry path: `experiments/manifests/model_registry.jsonl`.
+- 3B local path: `artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct`
+- 3B source: `https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct`
+- 3B revision: `master`
+- 3B tree SHA256: `84c656fb6d6a5f4ef3ccbf47c3880c3a3d22c63eb8736a88fa7a0ddb542e3568`
+- Registry: `experiments/manifests/model_registry.jsonl`
+- 7B local path: `artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct`
+- 7B download log: `experiments/logs/downloads/qwen25vl7b_modelscope.log`
+- 7B source: `https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct`
+- 7B revision: `master`
+- 7B tree SHA256: `82ef08f2f46f6d47aa2d3d2c2ae9b015f373be19c0a43efe81cd6f9c522d1369`
 
 Problems:
-- Qwen2.5-VL-3B license needs verification before redistribution.
-- Compute nodes cannot download directly; downloads should run from login node into `artifacts/models/`.
+- License and redistribution are still recorded as `VERIFY`; do not redistribute model weights until the license text is reviewed.
+- Compute nodes cannot download directly, so all large model acquisition runs on the login node.
 
 Decision:
-- Start with Qwen2.5-VL-3B for pilot if license permits research use.
-- Keep Qwen2.5-VL-7B as main default; Qwen3-VL-8B remains candidate after stack compatibility check.
+- Use Qwen2.5-VL-3B for Stage 0/Stage 1 smoke, baseline eval, caption generation, and GRPO reproduction setup.
+- Use Qwen2.5-VL-7B as the main-scale candidate after the compatibility smoke pass.
 
 Next actions:
-- After `.venv` has ModelScope, run ModelScope snapshot downloads on login node.
-- Record URL, source, revision, license, local path, and checksum/tree hash in `experiments/manifests/model_registry.jsonl`.
-
+- Inspect downloaded `LICENSE`/README files and update `reports/license_log.csv`.
+- Use 7B as the main-scale candidate for the next reproduction/pilot run unless EasyR1 stability forces a 3B-only Stage 2 pilot.

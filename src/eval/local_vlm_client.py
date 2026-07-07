@@ -32,10 +32,10 @@ class LocalVLMClient:
         if self._model is not None:
             return
         import torch
-        from transformers import AutoModelForVision2Seq, AutoProcessor
+        from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
         self._processor = AutoProcessor.from_pretrained(self.model_path, trust_remote_code=True)
-        self._model = AutoModelForVision2Seq.from_pretrained(
+        self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             self.model_path,
             torch_dtype=torch.bfloat16,
             device_map="auto" if self.device == "cuda" else None,
@@ -45,23 +45,29 @@ class LocalVLMClient:
 
     def generate(self, request: VLMRequest) -> str:
         self.load()
-        from PIL import Image
         import torch
+        from qwen_vl_utils import process_vision_info
 
         assert self._model is not None
         assert self._processor is not None
-        image = Image.open(request.image_path).convert("RGB")
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": image},
+                    {"type": "image", "image": request.image_path},
                     {"type": "text", "text": request.prompt},
                 ],
             }
         ]
         text = self._processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self._processor(text=[text], images=[image], return_tensors="pt").to(self._model.device)
+        image_inputs, video_inputs = process_vision_info(messages)
+        inputs = self._processor(
+            text=[text],
+            images=image_inputs,
+            videos=video_inputs,
+            padding=True,
+            return_tensors="pt",
+        ).to(self._model.device)
         with torch.inference_mode():
             output_ids = self._model.generate(
                 **inputs,
@@ -100,4 +106,3 @@ def main(argv: Iterable[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
-

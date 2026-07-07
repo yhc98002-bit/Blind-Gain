@@ -1,0 +1,27 @@
+{
+  "cuda_available": true,
+  "cuda_device_count": 8,
+  "cuda_version": "12.1",
+  "executable": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.venv/bin/python",
+  "gpu_query": "0, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n1, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n2, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n3, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n4, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n5, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n6, NVIDIA A800 80GB PCIe, 81920, 535.104.12\n7, NVIDIA A800 80GB PCIe, 81920, 535.104.12",
+  "modules": {
+    "PIL": true,
+    "accelerate": true,
+    "cv2": true,
+    "datasets": true,
+    "deepspeed": true,
+    "matplotlib": true,
+    "modelscope": true,
+    "numpy": true,
+    "torch": true,
+    "torchvision": true,
+    "transformers": true,
+    "verl": true,
+    "vllm": true
+  },
+  "nvcc": null,
+  "nvcc_version": "missing",
+  "nvidia_smi": "/usr/bin/nvidia-smi",
+  "python": "3.10.12 (main, Jun 11 2023, 05:26:28) [GCC 11.4.0]",
+  "torch_version": "2.5.1+cu121"
+}

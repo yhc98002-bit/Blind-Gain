@@ -10,19 +10,34 @@
       "notes": "10 chart, 10 document/OCR, 10 geometry pairs; exact labels by construction."
     },
     {
+      "name": "fliptrack_renderable_900_v0",
+      "type": "generated_dataset",
+      "path": "data/fliptrack_renderable_900_manifest.jsonl",
+      "status": "generated",
+      "rows": 900,
+      "notes": "300 chart, 300 document/OCR, 300 geometry pairs; scored companion manifest at data/fliptrack_renderable_900_scored.jsonl."
+    },
+    {
       "name": "qwen25vl3b",
       "type": "model",
       "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
-      "status": "pending_download",
-      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct"
+      "status": "downloaded",
+      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "revision": "master",
+      "sha256_tree": "84c656fb6d6a5f4ef3ccbf47c3880c3a3d22c63eb8736a88fa7a0ddb542e3568",
+      "license": "VERIFY",
+      "redistribution": "VERIFY"
     },
     {
       "name": "qwen25vl7b",
       "type": "model",
       "path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
-      "status": "pending_download",
-      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct"
+      "status": "downloaded",
+      "source": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "revision": "master",
+      "sha256_tree": "82ef08f2f46f6d47aa2d3d2c2ae9b015f373be19c0a43efe81cd6f9c522d1369",
+      "license": "VERIFY",
+      "redistribution": "VERIFY"
     }
   ]
 }
-

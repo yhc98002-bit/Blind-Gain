@@ -1,0 +1,5 @@
+W0708 04:34:35.727000 436208 torch/distributed/run.py:793] 
+W0708 04:34:35.727000 436208 torch/distributed/run.py:793] *****************************************
+W0708 04:34:35.727000 436208 torch/distributed/run.py:793] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0708 04:34:35.727000 436208 torch/distributed/run.py:793] *****************************************
+{"world_size": 8, "steps": 5, "avg_last_loss": 1.0467326641082764, "ok": true}

@@ -1,0 +1,52 @@
+{
+  "cuda": "12.1",
+  "device_count": 8,
+  "devices": [
+    {
+      "index": 0,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 1,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 2,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 3,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 4,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 5,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 6,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    },
+    {
+      "index": 7,
+      "memory_total": 85174583296,
+      "name": "NVIDIA A800 80GB PCIe"
+    }
+  ],
+  "elapsed": 20.36565613746643,
+  "iterations": 30437,
+  "matrix_size": 4096,
+  "pid": 430266,
+  "seconds": 20.0,
+  "torch": "2.5.1+cu121"
+}

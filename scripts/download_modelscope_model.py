@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from modelscope import snapshot_download
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.data.model_registry import ModelArtifact, append_artifact, sha256_tree
 
@@ -43,4 +46,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

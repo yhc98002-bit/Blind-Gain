@@ -1,5 +1,4 @@
 name,source,source_url,revision,license,local_path,redistribution,sha256,notes
-Qwen2.5-VL-3B-Instruct,ModelScope,https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct,unresolved,VERIFY,artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct,VERIFY,,Public sources disagree; verify license before redistribution.
-Qwen2.5-VL-7B-Instruct,ModelScope,https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct,unresolved,VERIFY,artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct,VERIFY,,Verify from model card before download/release.
+Qwen2.5-VL-3B-Instruct,ModelScope,https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct,master,VERIFY,artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct,VERIFY,84c656fb6d6a5f4ef3ccbf47c3880c3a3d22c63eb8736a88fa7a0ddb542e3568,Downloaded; verify license from model card before redistribution.
+Qwen2.5-VL-7B-Instruct,ModelScope,https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct,master,VERIFY,artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct,VERIFY,82ef08f2f46f6d47aa2d3d2c2ae9b015f373be19c0a43efe81cd6f9c522d1369,Downloaded; verify from model card before release.
 Qwen3-VL-8B-Instruct,ModelScope,https://modelscope.cn/models/Qwen/Qwen3-VL-8B-Instruct,unresolved,VERIFY,artifacts/models/Qwen/Qwen3-VL-8B-Instruct,VERIFY,,Verify from model card before download/release.
-

@@ -1,4 +1,6 @@
 .venv/
+.pip_cache/
+.tmp/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -9,10 +11,10 @@ release/
 
 logs/
 experiments/logs/
+experiments/runs/
 
 data/fliptrack_v0/
 !data/fliptrack_v0_manifest.jsonl
 !data/fliptrack_v0_manifest_scored.jsonl
 
 *.egg-info/
-

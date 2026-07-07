@@ -20,6 +20,12 @@ def is_correct(prediction: Any, answer: Any) -> bool:
     gold = normalize_text(answer)
     if pred == gold:
         return True
+    if gold:
+        if re.search(r"\w", gold):
+            if re.search(rf"(?<!\w){re.escape(gold)}(?!\w)", pred):
+                return True
+        elif gold in pred:
+            return True
     return gold in pred.split("\n")[-1].split(" | ")
 
 
@@ -104,4 +110,3 @@ def mcnemar_exact(rows_a: Iterable[dict[str, Any]], rows_b: Iterable[dict[str, A
         k = min(b01, b10)
         p = min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / (2**n))
     return {"n_common": float(len(common)), "b01": float(b01), "b10": float(b10), "p_value": p}
-

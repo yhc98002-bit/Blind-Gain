@@ -1,0 +1,1 @@
+gold=86 image=data/fliptrack_v0/renderable/chart/images/chart_2c4caf3003b88e6a_a.png question=What is the value for Beta?
