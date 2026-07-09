@@ -1,0 +1,2 @@
+# Imported by vlmeval/dataset/utils/mmlongbench_metrics.py but absent upstream.
+rouge-score==0.1.2
