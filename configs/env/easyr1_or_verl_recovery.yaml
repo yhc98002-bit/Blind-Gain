@@ -1,0 +1,29 @@
+current_env:
+  python: "3.10"
+  torch: "2.5.1+cu121"
+  transformers: "4.56.2"
+  vllm: "0.7.3"
+  driver: "535.104.12"
+  qwen25vl_status: "working for local inference and EasyR1 SDPA recovery runs"
+easy_r1:
+  repo_path: artifacts/repos/EasyR1
+  commit: dd71bbd252694f5f850213eec15795b6b88d9fea
+  upstream_requires:
+    transformers: ">=4.54.0,<5.0.0"
+    vllm: ">=0.8.0"
+    flash_attn: ">=2.4.3"
+  current_deviation:
+    vllm: "0.7.3 because vllm>=0.8 would force a CUDA/Torch stack incompatible with current driver policy"
+    flash_attn: "not installed; SDPA fallback is used through tracked patch script"
+  patch_script: scripts/apply_easyr1_sdpa_patch.sh
+verl:
+  repo_path: artifacts/repos/verl
+  commit: 6a4a0784337828523126ddd3d668524bd4578d4d
+  qwen25vl_grpo_example: artifacts/repos/verl/examples/grpo_trainer/run_qwen2_5_vl_7b_fsdp.sh
+  status: "kept as fallback/reference; current working recovery run uses EasyR1"
+qwen3vl:
+  policy: "separate environment only; do not silently upgrade current Qwen2.5-VL env"
+decision:
+  primary_for_recovery: EasyR1
+  fallback: verl
+  reason: "EasyR1 has direct Qwen2.5-VL-3B Geometry3K recipe; current env can run it with explicit SDPA patch."

@@ -1,20 +1,41 @@
+# Python and local environments
 .venv/
+venv/
+/env/
 .pip_cache/
-.tmp/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
 __pycache__/
 *.py[cod]
-.pytest_cache/
+*.egg-info/
 
+# Local scratch and editor state
+.tmp/
+.DS_Store
+*.swp
+*.swo
+prompt.md
+
+# Downloaded models, caches, checkpoints, and release bundles
 artifacts/
 checkpoints/
 release/
+reports/review_packages/
+*.tar
+*.tar.gz
+*.tgz
+*.zip
 
+# Runtime logs and experiment outputs
 logs/
 experiments/logs/
 experiments/runs/
 
+# Generated image assets. Keep lightweight manifests tracked.
 data/fliptrack_v0/
+data/fliptrack_v01/
 !data/fliptrack_v0_manifest.jsonl
 !data/fliptrack_v0_manifest_scored.jsonl
-
-*.egg-info/
+!data/fliptrack_v01_manifest.jsonl
+!data/fliptrack_v01_scored.jsonl

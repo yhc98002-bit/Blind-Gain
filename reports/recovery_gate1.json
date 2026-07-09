@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "scientific_gpu_jobs_an12": 7,
+  "scientific_gpu_jobs_an29": 6,
+  "stage0_proposal_gate": "conditional",
+  "grpo_audit": "pass",
+  "grpo_repro_steps": 30,
+  "dataset_license_triage": "partial",
+  "fliptrack_v01_pairs": 300,
+  "fliptrack_v01_real_pair_acc": 0.8933333333333333,
+  "fliptrack_v01_caption_pair_acc": 0.1,
+  "artifact_gate_v01": "fail",
+  "literature_overlap": "pass",
+  "next_recommended_action": "Fix FlipTrack V0.1 packaging metadata leakage by randomizing/equalizing image filenames and paths in the released manifest, rerun artifact gate, then run base-vs-global_step_30 evaluation for the GRPO recovery checkpoint."
+}

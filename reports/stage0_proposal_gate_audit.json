@@ -1,0 +1,15 @@
+{
+  "cluster_bringup": "pass",
+  "model_downloads": "partial",
+  "dataset_acquisition": "partial",
+  "license_log": "partial",
+  "published_grpo_reproduction": "partial",
+  "reproduction_tolerance_defined": "fail",
+  "reward_parser_audit": "pass",
+  "config_diff_audit": "partial",
+  "image_preprocessing_audit": "partial",
+  "chat_template_audit": "partial",
+  "deterministic_eval_audit": "partial",
+  "checkpoint_discipline": "partial",
+  "overall_proposal_stage0": "conditional"
+}

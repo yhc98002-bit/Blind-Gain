@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "gpu_count_an12": 8,
+  "gpu_count_an29": 8,
+  "nccl_smoke_test": "pass",
+  "modelscope_probe": "pass",
+  "proxy_probe": "pass",
+  "repo_skeleton": "pass"
+}

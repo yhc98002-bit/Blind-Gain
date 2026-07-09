@@ -1,0 +1,14 @@
+base_config: configs/train/easyr1_qwen25vl3b_geo3k_recovery30.yaml
+arm: A1_real_images
+model: artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct
+image_condition: real
+seed: 101
+matched_compute:
+  global_steps: 30
+  rollout_batch_size: 4
+  n_generations: 2
+  learning_rate: 1.0e-6
+evaluation:
+  fliptrack_manifest: data/fliptrack_v01_scored.jsonl
+  modes: [real, gray, noise]
+status: prepared_not_launched

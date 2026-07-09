@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-07-08T04:40:00Z",
+  "status": "partial",
+  "items": [
+    {
+      "name": "Geometry3K",
+      "source": "Hugging Face",
+      "access_path": "hiyouga/geometry3k",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY",
+      "training_use_status": "engineering_fallback_in_use",
+      "evaluation_use_status": "engineering_validation_in_use",
+      "login_node_download_required": true,
+      "local_path": "artifacts/hf_home/datasets",
+      "checksum_or_manifest_hash": "HF cache; run manifest hash 3dab9c5486f047f53e5904c1e8ce4a6e0257a8cde98acf92d7eff2b1875fce51",
+      "blocker": null,
+      "fallback": null
+    },
+    {
+      "name": "ViRL39K",
+      "source": "Hugging Face",
+      "access_path": "TIGER-Lab/ViRL39K",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY",
+      "training_use_status": "blocked_pending_loader_fix",
+      "evaluation_use_status": "blocked_pending_loader_fix",
+      "login_node_download_required": true,
+      "local_path": "artifacts/hf_home/hub/datasets--TIGER-Lab--ViRL39K",
+      "checksum_or_manifest_hash": "snapshot 812ec617dea4bc8a4e751663b88e4ebb7de4d00e observed",
+      "blocker": "load_dataset('TIGER-Lab/ViRL39K') generated 38870 rows then failed reading images.zip as parquet: Parquet magic bytes not found",
+      "fallback": "Geometry3K for engineering GRPO anchor"
+    },
+    {
+      "name": "MMK12",
+      "source": "Hugging Face search",
+      "access_path": "candidates: FanqingM/MMK12, MMEureka123/MMK12-Dataset, MM-PRM/MM-K12",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY",
+      "training_use_status": "unverified",
+      "evaluation_use_status": "unverified",
+      "login_node_download_required": true,
+      "local_path": null,
+      "checksum_or_manifest_hash": null,
+      "blocker": "multiple candidate repos; authoritative source/license not selected yet",
+      "fallback": "do not use until source is resolved"
+    },
+    {
+      "name": "COCO",
+      "source": "COCO official / HF mirrors",
+      "access_path": "official COCO or HF mirror such as detection-datasets/coco",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY_IMAGES_DEPEND_ON_FLICKR_LICENSES",
+      "training_use_status": "likely_allowed_for_research_after_license_review",
+      "evaluation_use_status": "likely_allowed_for_research_after_license_review",
+      "login_node_download_required": true,
+      "local_path": null,
+      "checksum_or_manifest_hash": null,
+      "blocker": "not downloaded; image redistribution/licensing must be checked",
+      "fallback": "generated renderable FlipTrack for current recovery"
+    },
+    {
+      "name": "VisMin",
+      "source": "Hugging Face",
+      "access_path": "mair-lab/vismin or mair-lab/vismin-bench",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY",
+      "training_use_status": "unverified",
+      "evaluation_use_status": "candidate",
+      "login_node_download_required": true,
+      "local_path": "partial/interrupted HF cache only",
+      "checksum_or_manifest_hash": null,
+      "blocker": "small load attempt triggered 75-file bulk download; stopped to avoid uncontrolled acquisition",
+      "fallback": "FlipTrack renderable V0.1"
+    },
+    {
+      "name": "VQAv2",
+      "source": "Hugging Face / official VQA",
+      "access_path": "HuggingFaceM4/VQAv2 or official visualqa.org",
+      "license": "VERIFY",
+      "redistribution_status": "VERIFY",
+      "training_use_status": "unverified",
+      "evaluation_use_status": "candidate",
+      "login_node_download_required": true,
+      "local_path": null,
+      "checksum_or_manifest_hash": null,
+      "blocker": "not downloaded; official license and image dependency review needed",
+      "fallback": "FlipTrack renderable V0.1"
+    }
+  ]
+}
