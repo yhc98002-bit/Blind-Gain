@@ -37,4 +37,4 @@ experiments/logs/
 experiments/runs/
 
 # Generated datasets stay local. Track checksums under experiments/manifests/.
-data/
+/data/
