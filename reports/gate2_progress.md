@@ -7,7 +7,7 @@ P1.1 | blocked | SDPA padding-free failure diagnosed and fixed; immutable retry 
 P1.2 | blocked | not started; VLMEvalKit/local judge setup still pending
 P1.3 | blocked | not started; requires coordinated two-node NCCL/FSDP window
 P1.4 | pass | 600-pair opaque package passes all linter checks; see `reports/fliptrack_v02_packaging.md` and `reports/fliptrack_v02_lint.json`
-P1.5 | blocked | P1.4 dependency cleared; corrected grouped attackers on the actual V0.2 package not yet run
+P1.5 | blocked | corrected attackers ran and first candidate failed (DINO pooled 0.625; parallel 1.0); R2 balanced-side rerun pending
 P1.6 | blocked | 600 pairs and six contact sheets built; 3B real and 7B caption hardness scoring are running on `an29`
 P1.7 | blocked | waits for P1.6 retained V0.2 templates
 P1.8 | blocked | 7B V0.2 captions at 384 tokens are running; hash-keyed caption store and geometry3k/3B coverage remain
