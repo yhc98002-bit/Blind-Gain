@@ -16,12 +16,16 @@ __pycache__/
 *.swp
 *.swo
 prompt.md
+prompt2.md
+.private/
 
 # Downloaded models, caches, checkpoints, and release bundles
 artifacts/
 checkpoints/
+caption_stores/
 release/
 reports/review_packages/
+reports/contact_sheets/
 *.tar
 *.tar.gz
 *.tgz
@@ -32,10 +36,5 @@ logs/
 experiments/logs/
 experiments/runs/
 
-# Generated image assets. Keep lightweight manifests tracked.
-data/fliptrack_v0/
-data/fliptrack_v01/
-!data/fliptrack_v0_manifest.jsonl
-!data/fliptrack_v0_manifest_scored.jsonl
-!data/fliptrack_v01_manifest.jsonl
-!data/fliptrack_v01_scored.jsonl
+# Generated datasets stay local. Track checksums under experiments/manifests/.
+data/
