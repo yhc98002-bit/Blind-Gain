@@ -2,48 +2,19 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
 
-import numpy as np
 import torch
-from PIL import Image
 from qwen_vl_utils import process_vision_info
 from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.eval.fliptrack_metrics import aggregate_pair_metrics, pair_score
+from src.eval.image_conditions import IMAGE_MODES, materialize_image
 from src.eval.prompt_contract import format_question
-
-
-def materialize_image(image_path: str, mode: str, cache_dir: Path, noise_seed: int) -> str:
-    if mode == "real":
-        return image_path
-
-    source = Path(image_path)
-    digest = hashlib.sha256(f"{mode}:{noise_seed}:{source.as_posix()}".encode("utf-8")).hexdigest()[:16]
-    out_path = cache_dir / f"{digest}.png"
-    if out_path.exists():
-        return str(out_path)
-
-    with Image.open(source) as image:
-        width, height = image.convert("RGB").size
-
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    if mode == "gray":
-        rendered = Image.new("RGB", (width, height), (128, 128, 128))
-    elif mode == "noise":
-        seed = int(hashlib.sha256(f"{noise_seed}:{source.as_posix()}".encode("utf-8")).hexdigest()[:8], 16)
-        rng = np.random.default_rng(seed)
-        pixels = rng.integers(0, 256, size=(height, width, 3), dtype=np.uint8)
-        rendered = Image.fromarray(pixels, mode="RGB")
-    else:
-        raise ValueError(f"unsupported image mode: {mode}")
-    rendered.save(out_path)
-    return str(out_path)
 
 
 def generate(model, processor, image_path: str, question: str, max_new_tokens: int) -> str:
@@ -74,7 +45,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
-    parser.add_argument("--image-mode", choices=["real", "gray", "noise"], default="real")
+    parser.add_argument("--image-mode", choices=IMAGE_MODES, default="real")
     parser.add_argument("--image-cache-dir", default=None)
     parser.add_argument("--noise-seed", type=int, default=0)
     parser.add_argument("--max-new-tokens", type=int, default=32)
