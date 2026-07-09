@@ -1,4 +1,11 @@
-from src.eval.fliptrack_metrics import aggregate_pair_metrics, mcnemar_exact, pair_score, permutation_null_pair_accuracy
+from src.eval.fliptrack_metrics import (
+    aggregate_pair_metrics,
+    aggregate_pair_metrics_by_template,
+    mcnemar_exact,
+    pair_score,
+    permutation_null_pair_accuracy,
+    template_key_shuffle_null_pair_accuracy,
+)
 
 
 def _row(pair_id, pa, pb, aa="left", ab="right"):
@@ -22,9 +29,29 @@ def test_aggregate_pair_metrics():
     assert metrics["collapse_rate"] == 0.5
 
 
+def test_aggregate_pair_metrics_by_template_keeps_templates_separate():
+    rows = [
+        {"pair_id": "a", "template_id": "t1", "answer_a": "red", "answer_b": "blue", "prediction_a": "red", "prediction_b": "blue"},
+        {"pair_id": "b", "template_id": "t2", "answer_a": "up", "answer_b": "down", "prediction_a": "up", "prediction_b": "up"},
+    ]
+    metrics = aggregate_pair_metrics_by_template(rows)
+    assert metrics["t1"]["pair_accuracy"] == 1.0
+    assert metrics["t2"]["pair_accuracy"] == 0.0
+
+
 def test_permutation_null_runs():
     rows = [_row("p1", "left", "right"), _row("p2", "left", "right")]
     out = permutation_null_pair_accuracy(rows, n_perm=20, seed=1)
+    assert set(out) == {"observed", "null_mean", "p_ge"}
+    assert out["observed"] == 1.0
+
+
+def test_template_key_shuffle_null_runs():
+    rows = [
+        {"template_id": "t", **_row("p1", "left", "right")},
+        {"template_id": "t", **_row("p2", "up", "down", "up", "down")},
+    ]
+    out = template_key_shuffle_null_pair_accuracy(rows, n_perm=20, seed=1)
     assert set(out) == {"observed", "null_mean", "p_ge"}
     assert out["observed"] == 1.0
 
@@ -35,4 +62,3 @@ def test_mcnemar_exact_counts_discordant_pairs():
     out = mcnemar_exact(arm_a, arm_b)
     assert out["n_common"] == 2
     assert out["b10"] == 1
-
