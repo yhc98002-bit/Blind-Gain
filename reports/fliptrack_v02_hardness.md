@@ -2,7 +2,8 @@
 
 Status:
 - P1.6 remains open. The first 600-pair batch has complete 3B real/gray/noise and 7B real/caption-only results.
-- No first-batch template satisfies every pre-registered retention criterion; R2 redesign and rescoring are in progress.
+- R2 has complete 3B real and 7B caption-only results. Chart is the only provisional candidate in the target visual/caption bands; its blind controls remain to be run.
+- No template is frozen. R3 adds coordinate-point reading and header-cued document indexing and is being scored.
 
 Evidence:
 - First-batch source manifest: `data/fliptrack_v02_source_manifest.jsonl`, 100 pairs per template.
@@ -32,6 +33,27 @@ Aggregate diagnostics:
 | 7B real | 0.3767 | 0.3450 | 1.0000 |
 | 7B caption-only | 0.1767 | 0.4083 | 0.9983 |
 
+R2 calibration:
+- Source manifest: `data/fliptrack_v02r2_source_manifest.jsonl`, 600 pairs.
+- 3B real run: `experiments/runs/fliptrack_v02r2_qwen25vl3b_real_20260709T224957Z`.
+- 7B captions: `experiments/runs/fliptrack_v02r2_qwen25vl7b_captions384_20260709T225001Z`.
+- Caption QA: `experiments/runs/fliptrack_v02r2_qwen25vl7b_captionqa384_20260709T230830Z`.
+- The corrected R2 aggregate pair accuracies are 0.375 for 3B real and 0.180 for 7B caption-only.
+
+| R2 template | 3B real | 7B caption | R2 decision |
+| --- | ---: | ---: | --- |
+| `coordinate_slope_v02` | 0.01 | 0.25 | reject: visually unsolved and caption-compressible |
+| `dense_table_code_v01` | 0.91 | 0.11 | contrast only: visual score remains above the registered upper bound |
+| `indexed_symbol_grid_v02` | 0.08 | 0.00 | reject: visually unsolved |
+| `parallel_angle_marker_v02` | 0.01 | 0.02 | reject: visually unsolved after semantic-side randomization |
+| `starred_series_value_v02` | 0.40 | 0.00 | provisional retain: exactly meets the visual lower bound; blind controls pending |
+| `triangle_missing_angle_v02` | 0.84 | 0.70 | reject: strongly caption-compressible |
+
+R2 caption diagnostics:
+- Aggregate collapse rate: 0.415; format-valid rate: 1.000; ambiguous rate: 0.000.
+- Within-template key-shuffle null mean: 0.0027, one-sided Monte Carlo `p=0.00498` with 200 permutations.
+- The triangle family alone contributes 70 of the 108 caption-solved pairs, confirming that generic captions preserve its displayed labels.
+
 Problems:
 - Triangle labels are captured well enough by generic captions to solve 71% of pairs, so its apparent visual success is not certified.
 - Chart/grid/parallel/coordinate variants overshot hardness at 3B.
@@ -40,9 +62,10 @@ Problems:
 Decision:
 - Do not retain any first-batch template yet under the strict rule.
 - Keep dense table as the deliberate pop-out contrast while calibrating its difficulty.
-- R2 adds a plotted target marker to charts, enlarges the 12x12 grid with familiar glyphs, strengthens angle marking, and randomizes semantic A/B assignment across all families.
+- Carry R2 chart forward as a provisional candidate; run gray/noise before retention.
+- R3 tests two less caption-compressible operations: exact coordinate localization and row/column header intersection. Semantic A/B assignment is randomized by construction.
 
 Next actions:
-- Complete R2 3B real and 7B caption scoring.
-- Run gray/noise only on R2 templates whose real score reaches the target band.
+- Complete R3 3B/7B real and 7B caption scoring.
+- Run gray/noise on chart and any R3 template whose 3B real score reaches `[0.4, 0.9]` and whose caption score is at most 0.15.
 - Repackage and rerun attackers only after the retained template set is identified.
