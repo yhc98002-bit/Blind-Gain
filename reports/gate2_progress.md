@@ -13,7 +13,7 @@ P1.7 | blocked | waits for P1.6 retained V0.2 templates
 P1.8 | blocked | 7B V0.2 captions at 384 tokens are running; hash-keyed caption store and geometry3k/3B coverage remain
 P1.9 | blocked | dataset/license acquisition not started in this turn; must avoid failed `load_dataset()` path for ViRL39K
 P1.10 | blocked | not started; calibration datasets and Layer-1 manifests pending
-P1.11 | blocked | gate AND-logic and data ignores/checksums implemented with tests; logical commits and clean worktree remain
+P1.11 | pass | generated data untracked with checksums, gate AND-logic tested, logical commits created, and worktree clean
 P2.1 | blocked | waits for P0/P1.1 and EasyR1 image-condition data path
 P2.2 | blocked | waits for P0.1/P0.2 and blind-solvability harness implementation
 P3.1 | blocked | prepare-only; waits for V0.2 template freeze
