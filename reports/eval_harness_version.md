@@ -18,12 +18,13 @@ Evidence:
 Problems:
 - The full upstream requirement set would install NumPy 2 and OpenCV 5 into the shared training environment. The isolated recipe pins NumPy 1.26.4 and OpenCV below 5 to preserve the working numerical ABI.
 - Upstream imports `rouge_score` from its MMLongBench utility but omits `rouge-score` from `requirements.txt`; the local recipe pins `rouge-score==0.1.2` explicitly.
-- `Qwen/Qwen2.5-7B-Instruct`, required as the local judge, is not yet available locally; its first background launcher exited before initialization and produced no log.
+- `Qwen/Qwen2.5-7B-Instruct` is available at `artifacts/models/Qwen/Qwen2.5-7B-Instruct`; tree SHA256 is `1e8d53b21b997eb18436573d3f5cc961fbaf00cd583131f6a89a05617e24c72c`.
+- ModelScope acquisition required the `7890` fallback after direct DNS failed and `127.0.0.1:3138` refused connections.
 
 Decision:
 - Do not modify the working training `.venv` for benchmark-harness setup.
 - Use exact matching for applicable multiple-choice and yes/no datasets, and the pinned local OpenAI-compatible judge only where a judge is required.
 
 Next actions:
-- Finish the ModelScope-first local judge download and record its registry hash.
+- Start an OpenAI-compatible local judge smoke server and verify one deterministic request.
 - Materialize benchmark inputs and run deterministic 3B/7B base inference.
