@@ -1,0 +1,128 @@
+{
+  "KL.disable_kl": {
+    "anchor": false,
+    "match": true,
+    "path": "algorithm.disable_kl",
+    "reference": false
+  },
+  "KL.kl_coef": {
+    "anchor": 0.01,
+    "match": true,
+    "path": "algorithm.kl_coef",
+    "reference": 0.01
+  },
+  "KL.kl_penalty": {
+    "anchor": "low_var_kl",
+    "match": true,
+    "path": "algorithm.kl_penalty",
+    "reference": "low_var_kl"
+  },
+  "KL.use_kl_loss": {
+    "anchor": true,
+    "match": true,
+    "path": "algorithm.use_kl_loss",
+    "reference": true
+  },
+  "freeze_vision_tower": {
+    "anchor": false,
+    "match": true,
+    "path": "worker.actor.model.freeze_vision_tower",
+    "reference": false
+  },
+  "actor.padding_free": {
+    "anchor": false,
+    "match": false,
+    "path": "worker.actor.padding_free",
+    "reference": true
+  },
+  "ref.padding_free": {
+    "anchor": false,
+    "match": false,
+    "path": "worker.ref.padding_free",
+    "reference": true
+  },
+  "global_batch_size": {
+    "anchor": 128,
+    "match": true,
+    "path": "worker.actor.global_batch_size",
+    "reference": 128
+  },
+  "max_response_length": {
+    "anchor": 2048,
+    "match": true,
+    "path": "data.max_response_length",
+    "reference": 2048
+  },
+  "val_batch_size": {
+    "anchor": 32,
+    "match": false,
+    "path": "data.val_batch_size",
+    "reference": 1024
+  },
+  "max_steps": {
+    "anchor": 100,
+    "match": false,
+    "path": "trainer.max_steps",
+    "reference": null
+  },
+  "n_gpus_per_node": {
+    "anchor": 4,
+    "match": false,
+    "path": "trainer.n_gpus_per_node",
+    "reference": 2
+  },
+  "rollout.n": {
+    "anchor": 5,
+    "match": true,
+    "path": "worker.rollout.n",
+    "reference": 5
+  },
+  "rollout_batch_size": {
+    "anchor": 512,
+    "match": true,
+    "path": "data.rollout_batch_size",
+    "reference": 512
+  },
+  "save_freq": {
+    "anchor": 20,
+    "match": false,
+    "path": "trainer.save_freq",
+    "reference": 5
+  },
+  "save_limit": {
+    "anchor": -1,
+    "match": false,
+    "path": "trainer.save_limit",
+    "reference": 3
+  },
+  "val_before_train": {
+    "anchor": true,
+    "match": true,
+    "path": "trainer.val_before_train",
+    "reference": true
+  },
+  "val_freq": {
+    "anchor": 10,
+    "match": false,
+    "path": "trainer.val_freq",
+    "reference": 5
+  },
+  "validation.n": {
+    "anchor": 1,
+    "match": true,
+    "path": "worker.rollout.val_override_config.n",
+    "reference": 1
+  },
+  "validation.temperature": {
+    "anchor": 0.0,
+    "match": false,
+    "path": "worker.rollout.val_override_config.temperature",
+    "reference": 0.6
+  },
+  "validation.top_p": {
+    "anchor": 1.0,
+    "match": false,
+    "path": "worker.rollout.val_override_config.top_p",
+    "reference": 0.95
+  }
+}
