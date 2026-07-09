@@ -614,6 +614,110 @@ def generate_coordinate_point_pairs(out_dir: Path, n: int, seed: int) -> list[di
     return rows
 
 
+def _render_coordinate_register(points: dict[str, tuple[int, int]]) -> Image.Image:
+    width, height = 1080, 960
+    image = Image.new("RGB", (width, height), (250, 250, 248))
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 35), "Coordinate Survey Register", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    origin = (540, 500)
+    scale = 65
+
+    def pixel(point: tuple[int, int]) -> tuple[int, int]:
+        return origin[0] + point[0] * scale, origin[1] - point[1] * scale
+
+    plot_left = origin[0] - 6 * scale
+    plot_right = origin[0] + 6 * scale
+    plot_top = origin[1] - 6 * scale
+    plot_bottom = origin[1] + 6 * scale
+    draw.rectangle((plot_left, plot_top, plot_right, plot_bottom), fill="white", outline=(75, 75, 75), width=2)
+    for value in range(-6, 7):
+        x = origin[0] + value * scale
+        y = origin[1] - value * scale
+        draw.line((x, plot_top, x, plot_bottom), fill=(224, 228, 232), width=1)
+        draw.line((plot_left, y, plot_right, y), fill=(224, 228, 232), width=1)
+        if value:
+            draw.text((x, origin[1] + 17), str(value), anchor="mm", font=_font(12), fill=(70, 70, 70))
+            draw.text((origin[0] - 18, y), str(value), anchor="mm", font=_font(12), fill=(70, 70, 70))
+    draw.line((plot_left, origin[1], plot_right, origin[1]), fill=(40, 40, 40), width=3)
+    draw.line((origin[0], plot_top, origin[0], plot_bottom), fill=(40, 40, 40), width=3)
+
+    for index, (label, point) in enumerate(points.items()):
+        x, y = pixel(point)
+        color = COLORS[index % len(COLORS)]
+        draw.ellipse((x - 8, y - 8, x + 8, y + 8), fill=color, outline="white", width=2)
+        label_x = x + (19 if x <= origin[0] else -19)
+        label_y = y - 17
+        anchor = "lm" if x <= origin[0] else "rm"
+        draw.text((label_x, label_y), label, anchor=anchor, font=_font(16, True), fill=(18, 18, 18))
+    return image
+
+
+def _spaced_coordinate(rng: random.Random, occupied: set[tuple[int, int]]) -> tuple[int, int]:
+    candidates = [
+        (x, y)
+        for x in range(-5, 6)
+        for y in range(-5, 6)
+        if all(abs(x - ox) + abs(y - oy) >= 2 for ox, oy in occupied)
+    ]
+    if not candidates:
+        raise ValueError("unable to sample a spaced coordinate")
+    return rng.choice(candidates)
+
+
+def generate_coordinate_register_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    alphabet = "BCDFGHJKLMNPRSTVWXYZ"
+    label_pool = [left + right for left in alphabet for right in alphabet if left != right]
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        labels = rng.sample(label_pool, 12)
+        target_label = rng.choice(labels)
+        points_a: dict[str, tuple[int, int]] = {}
+        occupied: set[tuple[int, int]] = set()
+        for label in labels:
+            point = _spaced_coordinate(rng, occupied)
+            points_a[label] = point
+            occupied.add(point)
+        shared_occupied = {point for label, point in points_a.items() if label != target_label}
+        target_b = _spaced_coordinate(rng, shared_occupied | {points_a[target_label]})
+        points_b = dict(points_a)
+        points_b[target_label] = target_b
+        answer_a = f"({points_a[target_label][0]}, {points_a[target_label][1]})"
+        answer_b = f"({target_b[0]}, {target_b[1]})"
+        pair_id = "v02_register_" + stable_id(pair_seed, labels, target_label, answer_a, answer_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_coordinate_register(points_a),
+                image_b=_render_coordinate_register(points_b),
+                question=f"What are the coordinates of point {target_label}? Answer as (x, y).",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_coordinate_indexing",
+                template_id="coordinate_register_random_target_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "random_label_localization_then_coordinate_read",
+                    "training_domain_alignment": "high",
+                    "caption_failure_targeted": "fixed_target_label_and_sparse_point_register",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "point_count": len(labels),
+                    "target_label": target_label,
+                    "target_a": points_a[target_label],
+                    "target_b": target_b,
+                    "all_labels_randomized": True,
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
 def _render_header_cued_table(
     table: list[list[str]],
     row_labels: list[str],
@@ -708,6 +812,7 @@ GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] =
 
 EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
     ("coordinate_point", generate_coordinate_point_pairs),
+    ("coordinate_register", generate_coordinate_register_pairs),
     ("header_table", generate_header_table_pairs),
 ]
 
