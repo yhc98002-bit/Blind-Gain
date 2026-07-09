@@ -11,6 +11,12 @@ from pathlib import Path
 import requests
 
 
+def direct_session() -> requests.Session:
+    session = requests.Session()
+    session.trust_env = False
+    return session
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("run_dir")
@@ -22,9 +28,10 @@ def main() -> None:
     endpoint = manifest["endpoint"].rstrip("/")
     deadline = time.monotonic() + args.timeout_seconds
     last_error = "server did not become ready"
+    session = direct_session()
     while time.monotonic() < deadline:
         try:
-            response = requests.get(f"{endpoint}/models", timeout=10)
+            response = session.get(f"{endpoint}/models", timeout=10)
             response.raise_for_status()
             break
         except requests.RequestException as error:
@@ -45,7 +52,7 @@ def main() -> None:
         "top_p": 1.0,
         "max_tokens": 32,
     }
-    response = requests.post(f"{endpoint}/chat/completions", json=payload, timeout=120)
+    response = session.post(f"{endpoint}/chat/completions", json=payload, timeout=120)
     response.raise_for_status()
     result = response.json()
     content = result["choices"][0]["message"]["content"].strip()
