@@ -1,0 +1,639 @@
+from __future__ import annotations
+
+import argparse
+import math
+import random
+import string
+from fractions import Fraction
+from pathlib import Path
+from typing import Any, Callable
+
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+from src.eval.fliptrack_metrics import match_tier
+from src.fliptrack.build_v01 import generate_doc_pairs
+from src.fliptrack.schema import pair_record, stable_id, write_jsonl
+
+
+COLORS = [
+    (38, 94, 168),
+    (205, 75, 65),
+    (49, 139, 87),
+    (142, 84, 160),
+    (218, 145, 42),
+    (32, 145, 153),
+    (190, 91, 132),
+    (105, 114, 130),
+    (113, 92, 52),
+    (61, 61, 61),
+]
+
+
+def _font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    candidates = ["DejaVuSans-Bold.ttf", "Arial Bold.ttf"] if bold else ["DejaVuSans.ttf", "Arial.ttf"]
+    for candidate in candidates:
+        try:
+            return ImageFont.truetype(candidate, size)
+        except OSError:
+            continue
+    return ImageFont.load_default()
+
+
+def _answers_distinguishable(answer_a: str, answer_b: str) -> bool:
+    return match_tier(answer_a, answer_b) == 0 and match_tier(answer_b, answer_a) == 0
+
+
+def _exact_change_mask(image_a: Image.Image, image_b: Image.Image) -> Image.Image:
+    array_a = np.asarray(image_a.convert("RGB"))
+    array_b = np.asarray(image_b.convert("RGB"))
+    changed = np.any(array_a != array_b, axis=2).astype(np.uint8) * 255
+    return Image.fromarray(changed, mode="L")
+
+
+def _save_rendered_pair(
+    *,
+    out_dir: Path,
+    pair_id: str,
+    image_a: Image.Image,
+    image_b: Image.Image,
+    question: str,
+    answer_a: str,
+    answer_b: str,
+    category: str,
+    template_id: str,
+    provenance: dict[str, Any],
+    verifier_results: dict[str, Any],
+    swap_sides: bool = False,
+) -> dict[str, Any]:
+    if swap_sides:
+        image_a, image_b = image_b, image_a
+        answer_a, answer_b = answer_b, answer_a
+    provenance = dict(provenance)
+    provenance["semantic_side_assignment_swapped"] = swap_sides
+    verifier_results = dict(verifier_results)
+    verifier_results["semantic_side_assignment_swapped"] = swap_sides
+    if image_a.size != image_b.size:
+        raise ValueError(f"pair dimensions differ for {pair_id}")
+    if not _answers_distinguishable(answer_a, answer_b):
+        raise ValueError(f"degenerate answers for {pair_id}: {answer_a!r}, {answer_b!r}")
+    image_dir = out_dir / "images"
+    mask_dir = out_dir / "masks"
+    image_dir.mkdir(parents=True, exist_ok=True)
+    mask_dir.mkdir(parents=True, exist_ok=True)
+    image_a_path = image_dir / f"{pair_id}_a.png"
+    image_b_path = image_dir / f"{pair_id}_b.png"
+    mask_a_path = mask_dir / f"{pair_id}_a_mask.png"
+    mask_b_path = mask_dir / f"{pair_id}_b_mask.png"
+    mask = _exact_change_mask(image_a, image_b)
+    if not np.any(np.asarray(mask)):
+        raise ValueError(f"pair has no pixel change: {pair_id}")
+    image_a.save(image_a_path, format="PNG", optimize=False, compress_level=9)
+    image_b.save(image_b_path, format="PNG", optimize=False, compress_level=9)
+    mask.save(mask_a_path, format="PNG", optimize=False, compress_level=9)
+    mask.save(mask_b_path, format="PNG", optimize=False, compress_level=9)
+    return pair_record(
+        pair_id=pair_id,
+        image_a_path=str(image_a_path),
+        image_b_path=str(image_b_path),
+        changed_region_mask_a=str(mask_a_path),
+        changed_region_mask_b=str(mask_b_path),
+        question=question,
+        answer_a=answer_a,
+        answer_b=answer_b,
+        category=category,
+        template_id=template_id,
+        provenance=provenance,
+        verifier_results=verifier_results,
+    )
+
+
+def _procedural_labels(rng: random.Random, count: int) -> list[str]:
+    labels: set[str] = set()
+    consonants = "BCDFGHJKLMNPRSTVWXYZ"
+    vowels = "AEIOU"
+    while len(labels) < count:
+        label = f"{rng.choice(consonants)}{rng.choice(vowels)}{rng.choice(consonants)}-{rng.randint(10, 99)}{rng.choice(string.ascii_uppercase)}"
+        labels.add(label)
+    return list(labels)
+
+
+def _render_chart(labels: list[str], values: list[list[int]], target_series: int, target_x: int) -> Image.Image:
+    width, height = 1200, 760
+    image = Image.new("RGB", (width, height), (249, 250, 248))
+    draw = ImageDraw.Draw(image)
+    left, top, right, bottom = 90, 78, 820, 650
+    draw.text((width // 2, 30), "Multi-Series Calibration Trace", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    draw.rectangle((left, top, right, bottom), fill=(255, 255, 255), outline=(45, 45, 45), width=2)
+    for tick in range(0, 101, 10):
+        y = bottom - round(tick / 100 * (bottom - top))
+        draw.line((left, y, right, y), fill=(232, 232, 232), width=1)
+        if tick % 20 == 0:
+            draw.text((left - 12, y), str(tick), anchor="rm", font=_font(13), fill=(55, 55, 55))
+    x_positions = [left + 55 + index * 128 for index in range(6)]
+    for index, x in enumerate(x_positions, start=1):
+        draw.line((x, top, x, bottom), fill=(242, 242, 242), width=1)
+        draw.text((x, bottom + 24), str(index), anchor="mm", font=_font(14), fill=(55, 55, 55))
+    draw.text(((left + right) // 2, bottom + 54), "x", anchor="mm", font=_font(17, True), fill=(40, 40, 40))
+
+    for series_index, series_values in enumerate(values):
+        points = [
+            (x, bottom - round(value / 100 * (bottom - top)))
+            for x, value in zip(x_positions, series_values)
+        ]
+        color = COLORS[series_index]
+        draw.line(points, fill=color, width=3)
+        for x, y in points:
+            draw.ellipse((x - 4, y - 4, x + 4, y + 4), fill=color, outline=(255, 255, 255), width=1)
+        if series_index == target_series:
+            target_point = points[target_x]
+            draw.ellipse(
+                (target_point[0] - 15, target_point[1] - 15, target_point[0] + 15, target_point[1] + 15),
+                fill=(255, 255, 255),
+                outline=(0, 0, 0),
+                width=2,
+            )
+            draw.text(target_point, "*", anchor="mm", font=_font(26, True), fill=(0, 0, 0))
+
+    legend_left = 855
+    draw.rectangle((legend_left, 74, 1168, 650), fill=(255, 255, 255), outline=(175, 175, 175), width=2)
+    draw.text((1010, 100), "Series key", anchor="mm", font=_font(19, True), fill=(25, 25, 25))
+    for index, label in enumerate(labels):
+        y = 142 + index * 48
+        draw.line((legend_left + 28, y, legend_left + 65, y), fill=COLORS[index], width=5)
+        draw.ellipse((legend_left + 43, y - 4, legend_left + 51, y + 4), fill=COLORS[index])
+        draw.text((legend_left + 82, y), label, anchor="lm", font=_font(16), fill=(20, 20, 20))
+        if index == target_series:
+            draw.text((legend_left + 16, y), "*", anchor="mm", font=_font(25, True), fill=(0, 0, 0))
+    draw.text((90, 714), f"The black star marks the queried point at x = {target_x + 1}.", font=_font(14), fill=(75, 75, 75))
+    return image
+
+
+def generate_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        labels = _procedural_labels(rng, 10)
+        values_a = [[rng.randrange(10, 91, 10) for _ in range(6)] for _ in range(10)]
+        target_series = rng.randrange(10)
+        target_x = rng.randrange(1, 5)
+        values_b = [list(series) for series in values_a]
+        candidates = [value for value in range(10, 91, 10) if abs(value - values_a[target_series][target_x]) >= 20]
+        values_b[target_series][target_x] = rng.choice(candidates)
+        answer_a = str(values_a[target_series][target_x])
+        answer_b = str(values_b[target_series][target_x])
+        pair_id = "v02_chart_" + stable_id(pair_seed, labels, target_series, target_x, answer_a, answer_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_chart(labels, values_a, target_series, target_x),
+                image_b=_render_chart(labels, values_b, target_series, target_x),
+                question=f"What is the value of the starred series at x = {target_x + 1}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="chart_two_hop_read",
+                template_id="starred_series_value_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "legend_bind_then_coordinate_read",
+                    "training_domain_alignment": "medium",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "target_series_index": target_series,
+                    "target_x": target_x + 1,
+                    "shared_content_seed": pair_seed,
+                    "only_semantic_change": "one series value",
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+SYMBOLS = ("A", "H", "K", "M", "2", "4", "7", "9")
+
+
+def _draw_symbol(draw: ImageDraw.ImageDraw, symbol: str, center: tuple[int, int], size: int = 14) -> None:
+    x, y = center
+    ink = (27, 55, 82)
+    if symbol not in SYMBOLS:
+        raise ValueError(symbol)
+    draw.text((x, y), symbol, anchor="mm", font=_font(size * 2, True), fill=ink)
+
+
+def _render_grid(grid: list[list[str]], row_labels: list[str], col_labels: list[str]) -> Image.Image:
+    width, height = 1260, 1230
+    image = Image.new("RGB", (width, height), (252, 252, 250))
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 36), "Indexed Symbol Matrix", anchor="mm", font=_font(24, True), fill=(20, 20, 20))
+    left, top, cell = 130, 108, 86
+    for column, label in enumerate(col_labels):
+        draw.text((left + column * cell + cell // 2, top - 26), label, anchor="mm", font=_font(14, True), fill=(35, 35, 35))
+    for row, label in enumerate(row_labels):
+        draw.text((left - 32, top + row * cell + cell // 2), label, anchor="mm", font=_font(14, True), fill=(35, 35, 35))
+        for column, symbol in enumerate(grid[row]):
+            x0 = left + column * cell
+            y0 = top + row * cell
+            fill = (255, 255, 255) if (row + column) % 2 == 0 else (245, 247, 249)
+            draw.rectangle((x0, y0, x0 + cell, y0 + cell), fill=fill, outline=(165, 165, 165), width=1)
+            _draw_symbol(draw, symbol, (x0 + cell // 2, y0 + cell // 2), size=17)
+    draw.text((left, 1182), "Use the row and column headers; no cell is highlighted.", font=_font(16), fill=(78, 78, 78))
+    return image
+
+
+def generate_grid_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        row_labels = [f"{rng.choice('GHJKLMNPQRSTVWXYZ')}{rng.randint(2, 9)}" for _ in range(12)]
+        while len(set(row_labels)) < 12:
+            row_labels = [f"{rng.choice('GHJKLMNPQRSTVWXYZ')}{rng.randint(2, 9)}" for _ in range(12)]
+        col_labels = [f"{value:02d}" for value in rng.sample(range(11, 90), 12)]
+        grid_a = [[rng.choice(SYMBOLS) for _ in range(12)] for _ in range(12)]
+        target_row = rng.randrange(12)
+        target_col = rng.randrange(12)
+        grid_b = [list(row) for row in grid_a]
+        grid_b[target_row][target_col] = rng.choice([symbol for symbol in SYMBOLS if symbol != grid_a[target_row][target_col]])
+        answer_a = grid_a[target_row][target_col]
+        answer_b = grid_b[target_row][target_col]
+        pair_id = "v02_grid_" + stable_id(pair_seed, row_labels, col_labels, target_row, target_col, answer_a, answer_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_grid(grid_a, row_labels, col_labels),
+                image_b=_render_grid(grid_b, row_labels, col_labels),
+                question=f"Which symbol is at row {row_labels[target_row]} and column {col_labels[target_col]}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="spatial_indexing",
+                template_id="indexed_symbol_grid_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "row_column_indexing",
+                    "training_domain_alignment": "low",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "target_row": target_row,
+                    "target_column": target_col,
+                    "shared_content_seed": pair_seed,
+                    "highlight_present": False,
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+def _triangle_apex(left_angle: int, right_angle: int) -> tuple[float, float]:
+    base = 620.0
+    left_radians = math.radians(left_angle)
+    right_radians = math.radians(right_angle)
+    distance = base / (math.cos(left_radians) + math.sin(left_radians) * math.cos(right_radians) / math.sin(right_radians))
+    return 180 + distance * math.cos(left_radians), 590 - distance * math.sin(left_radians)
+
+
+def _render_triangle(left_angle: int, right_angle: int) -> Image.Image:
+    width, height = 980, 720
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    left = (180, 590)
+    right = (800, 590)
+    apex = _triangle_apex(left_angle, right_angle)
+    draw.text((width // 2, 38), "Triangle Angle Check", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    draw.line((left, apex, right, left), fill=(34, 62, 91), width=5, joint="curve")
+    draw.arc((left[0] - 5, left[1] - 90, left[0] + 105, left[1] + 20), 270, 360, fill=(175, 70, 65), width=3)
+    draw.arc((right[0] - 105, right[1] - 90, right[0] + 5, right[1] + 20), 180, 270, fill=(175, 70, 65), width=3)
+    draw.text((left[0] + 75, left[1] - 40), f"{left_angle}°", anchor="mm", font=_font(20, True), fill=(120, 35, 35))
+    draw.text((right[0] - 75, right[1] - 40), f"{right_angle}°", anchor="mm", font=_font(20, True), fill=(120, 35, 35))
+    draw.text((apex[0], apex[1] + 48), "x°", anchor="mm", font=_font(22, True), fill=(32, 95, 66))
+    draw.text((left[0] - 20, left[1] + 27), "Q", anchor="mm", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((right[0] + 20, right[1] + 27), "R", anchor="mm", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((apex[0], apex[1] - 25), "P", anchor="mm", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((180, 660), "Diagram rendered from the displayed base angles.", font=_font(14), fill=(80, 80, 80))
+    return image
+
+
+def generate_triangle_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        right_angle = rng.randint(42, 68)
+        left_a = rng.randint(42, 68)
+        valid = [value for value in range(38, 73) if value != left_a and 35 <= 180 - value - right_angle <= 95]
+        left_b = rng.choice(valid)
+        answer_a = str(180 - left_a - right_angle)
+        answer_b = str(180 - left_b - right_angle)
+        if not _answers_distinguishable(answer_a, answer_b):
+            raise AssertionError("triangle answer sampler emitted cross-matching answers")
+        pair_id = "v02_triangle_" + stable_id(pair_seed, left_a, left_b, right_angle)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_triangle(left_a, right_angle),
+                image_b=_render_triangle(left_b, right_angle),
+                question="What is the measure of angle P in degrees?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_angle",
+                template_id="triangle_missing_angle_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "angle_label_and_geometry_change",
+                    "training_domain_alignment": "high",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "right_angle": right_angle,
+                    "left_angle_a": left_a,
+                    "left_angle_b": left_b,
+                    "triangle_sum_a": left_a + right_angle + int(answer_a),
+                    "triangle_sum_b": left_b + right_angle + int(answer_b),
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+def _render_parallel_angles(theta: int, query_relation: str) -> Image.Image:
+    width, height = 980, 720
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    top_y, bottom_y = 220, 510
+    top_x = 380
+    delta_x = (bottom_y - top_y) / math.tan(math.radians(theta))
+    bottom_x = top_x + delta_x
+    draw.text((width // 2, 38), "Parallel-Line Angle Diagram", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    draw.line((90, top_y, 890, top_y), fill=(35, 68, 103), width=5)
+    draw.line((90, bottom_y, 890, bottom_y), fill=(35, 68, 103), width=5)
+    extension = 120
+    dx = delta_x / (bottom_y - top_y) * extension
+    draw.line((top_x - dx, top_y - extension, bottom_x + dx, bottom_y + extension), fill=(145, 65, 55), width=5)
+    for x, y in ((210, top_y), (210, bottom_y)):
+        draw.line((x - 10, y - 8, x, y), fill=(35, 68, 103), width=3)
+        draw.line((x, y, x + 10, y - 8), fill=(35, 68, 103), width=3)
+    draw.text((112, top_y - 24), "l", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((112, bottom_y - 24), "m", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((top_x + 70, top_y + 42), f"{theta}°", anchor="mm", font=_font(21, True), fill=(120, 35, 35))
+    draw.arc((top_x - 5, top_y - 5, top_x + 115, top_y + 115), 180, 270, fill=(120, 35, 35), width=3)
+    if query_relation == "alternate":
+        label_x, label_y = bottom_x - 66, bottom_y - 42
+        arc_box = (bottom_x - 115, bottom_y - 115, bottom_x + 5, bottom_y + 5)
+        arc_angles = (0, 90)
+    elif query_relation == "same_side":
+        label_x, label_y = bottom_x + 66, bottom_y - 42
+        arc_box = (bottom_x - 5, bottom_y - 115, bottom_x + 115, bottom_y + 5)
+        arc_angles = (90, 180)
+    else:
+        raise ValueError(query_relation)
+    draw.ellipse(
+        (label_x - 42, label_y - 30, label_x + 42, label_y + 30),
+        fill=(226, 246, 232),
+        outline=(35, 110, 72),
+        width=2,
+    )
+    draw.arc(arc_box, *arc_angles, fill=(35, 110, 72), width=4)
+    draw.text((label_x, label_y), "x°", anchor="mm", font=_font(22, True), fill=(35, 110, 72))
+    draw.text((150, 650), "Matching arrow marks indicate l ∥ m.", font=_font(15), fill=(75, 75, 75))
+    return image
+
+
+def generate_parallel_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        theta = rng.randint(32, 78)
+        answer_a = str(theta)
+        answer_b = str(180 - theta)
+        pair_id = "v02_parallel_" + stable_id(pair_seed, theta)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_parallel_angles(theta, "alternate"),
+                image_b=_render_parallel_angles(theta, "same_side"),
+                question="Lines l and m are parallel. What is x in degrees?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_parallel_lines",
+                template_id="parallel_angle_marker_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "queried_angle_marker_relocation",
+                    "training_domain_alignment": "high",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "given_angle": theta,
+                    "relation_a": "alternate_interior",
+                    "relation_b": "same_side_interior",
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+def _format_fraction(value: Fraction) -> str:
+    return str(value.numerator) if value.denominator == 1 else f"{value.numerator}/{value.denominator}"
+
+
+def _render_coordinate_line(point_p: tuple[int, int], point_q: tuple[int, int]) -> Image.Image:
+    width, height = 820, 820
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 34), "Coordinate Plane", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    origin = (410, 430)
+    scale = 52
+
+    def pixel(point: tuple[int, int]) -> tuple[int, int]:
+        return origin[0] + point[0] * scale, origin[1] - point[1] * scale
+
+    for value in range(-6, 7):
+        x = origin[0] + value * scale
+        y = origin[1] - value * scale
+        draw.line((x, origin[1] - 6 * scale, x, origin[1] + 6 * scale), fill=(230, 232, 235), width=1)
+        draw.line((origin[0] - 6 * scale, y, origin[0] + 6 * scale, y), fill=(230, 232, 235), width=1)
+        if value:
+            draw.text((x, origin[1] + 18), str(value), anchor="mm", font=_font(12), fill=(75, 75, 75))
+            draw.text((origin[0] - 18, y), str(value), anchor="mm", font=_font(12), fill=(75, 75, 75))
+    draw.line((origin[0] - 6 * scale, origin[1], origin[0] + 6 * scale, origin[1]), fill=(45, 45, 45), width=3)
+    draw.line((origin[0], origin[1] - 6 * scale, origin[0], origin[1] + 6 * scale), fill=(45, 45, 45), width=3)
+    p_pixel, q_pixel = pixel(point_p), pixel(point_q)
+    draw.line((p_pixel, q_pixel), fill=(38, 94, 168), width=5)
+    corner = (q_pixel[0], p_pixel[1])
+    draw.line((p_pixel, corner), fill=(72, 130, 82), width=3)
+    draw.line((corner, q_pixel), fill=(72, 130, 82), width=3)
+    for label, location, offset in (("P", p_pixel, (-16, -22)), ("Q", q_pixel, (16, -22))):
+        draw.ellipse((location[0] - 8, location[1] - 8, location[0] + 8, location[1] + 8), fill=(185, 55, 55), outline="white", width=2)
+        draw.text((location[0] + offset[0], location[1] + offset[1]), label, anchor="mm", font=_font(18, True), fill=(25, 25, 25))
+    draw.text((96, 770), "Read each point from the grid before computing rise over run.", font=_font(14), fill=(75, 75, 75))
+    return image
+
+
+def generate_coordinate_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        while True:
+            point_p = (rng.randint(-5, -1), rng.randint(-5, 4))
+            point_q_a = (rng.randint(1, 5), rng.randint(-4, 5))
+            point_q_b = (rng.randint(1, 5), rng.randint(-4, 5))
+            if point_q_a == point_q_b or point_p[0] in {point_q_a[0], point_q_b[0]}:
+                continue
+            slope_a = Fraction(point_q_a[1] - point_p[1], point_q_a[0] - point_p[0])
+            slope_b = Fraction(point_q_b[1] - point_p[1], point_q_b[0] - point_p[0])
+            answer_a = _format_fraction(slope_a)
+            answer_b = _format_fraction(slope_b)
+            if slope_a != slope_b and _answers_distinguishable(answer_a, answer_b):
+                break
+        pair_id = "v02_coordinate_" + stable_id(pair_seed, point_p, point_q_a, point_q_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_coordinate_line(point_p, point_q_a),
+                image_b=_render_coordinate_line(point_p, point_q_b),
+                question="What is the slope of line PQ? Give an integer or reduced fraction.",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_coordinate",
+                template_id="coordinate_slope_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "point_relocation_then_slope",
+                    "training_domain_alignment": "high",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "point_p": point_p,
+                    "point_q_a": point_q_a,
+                    "point_q_b": point_q_b,
+                    "slope_a": answer_a,
+                    "slope_b": answer_b,
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
+    ("chart", generate_chart_pairs),
+    ("grid", generate_grid_pairs),
+    ("triangle", generate_triangle_pairs),
+    ("parallel", generate_parallel_pairs),
+    ("coordinate", generate_coordinate_pairs),
+]
+
+
+def _add_dense_table_metadata(rows: list[dict[str, Any]]) -> None:
+    for row in rows:
+        row["provenance"].update(
+            {
+                "visual_operation": "highlighted_table_cell_read",
+                "training_domain_alignment": "low",
+                "contrast_role": "pop_out_reading",
+            }
+        )
+
+
+def _randomize_dense_table_sides(rows: list[dict[str, Any]], seed: int) -> None:
+    rng = random.Random(seed)
+    for row in rows:
+        swapped = rng.random() < 0.5
+        row["provenance"]["semantic_side_assignment_swapped"] = swapped
+        row["verifier_results"]["semantic_side_assignment_swapped"] = swapped
+        if not swapped:
+            continue
+        for stem in ("image", "changed_region_mask", "answer"):
+            key_a = f"{stem}_a" if stem == "answer" else f"{stem}_a_path" if stem == "image" else f"{stem}_a"
+            key_b = f"{stem}_b" if stem == "answer" else f"{stem}_b_path" if stem == "image" else f"{stem}_b"
+            row[key_a], row[key_b] = row[key_b], row[key_a]
+        row["image_a_sha256"], row["image_b_sha256"] = row["image_b_sha256"], row["image_a_sha256"]
+
+
+def build(out_dir: str | Path, n_per_template: int, seed: int) -> list[dict[str, Any]]:
+    out_dir = Path(out_dir)
+    rows: list[dict[str, Any]] = []
+    for offset, (name, generator) in enumerate(GENERATORS, start=1):
+        rows.extend(generator(out_dir / name, n_per_template, seed + offset * 1009))
+    dense_rows = generate_doc_pairs(out_dir / "dense_table", n_per_template, seed + 6007)
+    _add_dense_table_metadata(dense_rows)
+    _randomize_dense_table_sides(dense_rows, seed + 7001)
+    rows.extend(dense_rows)
+    return rows
+
+
+def write_contact_sheets(rows: list[dict[str, Any]], output_dir: str | Path, n_per_template: int = 20) -> list[Path]:
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    by_template: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        by_template.setdefault(str(row["template_id"]), []).append(row)
+    outputs = []
+    for template_id, template_rows in sorted(by_template.items()):
+        selected = template_rows[:n_per_template]
+        tile_w, tile_h = 470, 250
+        columns = 4
+        rows_count = math.ceil(len(selected) / columns)
+        sheet = Image.new("RGB", (tile_w * columns, tile_h * rows_count), (238, 238, 238))
+        draw = ImageDraw.Draw(sheet)
+        for index, row in enumerate(selected):
+            x0 = (index % columns) * tile_w
+            y0 = (index // columns) * tile_h
+            draw.rectangle((x0 + 2, y0 + 2, x0 + tile_w - 2, y0 + tile_h - 2), fill="white", outline=(160, 160, 160))
+            for side_index, side in enumerate(("a", "b")):
+                with Image.open(row[f"image_{side}_path"]) as source:
+                    thumb = source.convert("RGB")
+                    thumb.thumbnail((220, 178), Image.Resampling.LANCZOS)
+                x = x0 + 8 + side_index * 230 + (220 - thumb.width) // 2
+                y = y0 + 8 + (178 - thumb.height) // 2
+                sheet.paste(thumb, (x, y))
+                draw.text((x0 + 118 + side_index * 230, y0 + 191), f"{side.upper()}: {row[f'answer_{side}']}", anchor="mm", font=_font(13, True), fill=(20, 20, 20))
+            question = str(row["question"])
+            if len(question) > 70:
+                question = question[:67] + "..."
+            draw.text((x0 + 10, y0 + 214), question, font=_font(11), fill=(35, 35, 35))
+            draw.text((x0 + 10, y0 + 232), str(row["pair_id"]), font=_font(9), fill=(100, 100, 100))
+        output = output_dir / f"{template_id}.png"
+        sheet.save(output, format="PNG", optimize=False, compress_level=9)
+        outputs.append(output)
+    return outputs
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out-dir", default="data/fliptrack_v02_source/renderable")
+    parser.add_argument("--manifest", default="data/fliptrack_v02_source_manifest.jsonl")
+    parser.add_argument("--contact-sheet-dir", default="reports/contact_sheets/fliptrack_v02")
+    parser.add_argument("--n-per-template", type=int, default=100)
+    parser.add_argument("--seed", type=int, default=20260710)
+    args = parser.parse_args()
+    out_dir = Path(args.out_dir)
+    manifest = Path(args.manifest)
+    if manifest.exists() or (out_dir.exists() and any(out_dir.iterdir())):
+        raise FileExistsError(f"refusing to overwrite existing V0.2 build: {manifest} / {out_dir}")
+    rows = build(args.out_dir, args.n_per_template, args.seed)
+    write_jsonl(args.manifest, rows)
+    sheets = write_contact_sheets(rows, args.contact_sheet_dir)
+    print(f"manifest={args.manifest} pairs={len(rows)} contact_sheets={len(sheets)}")
+
+
+if __name__ == "__main__":
+    main()

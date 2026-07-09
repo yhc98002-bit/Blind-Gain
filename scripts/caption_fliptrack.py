@@ -46,7 +46,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
-    parser.add_argument("--max-new-tokens", type=int, default=160)
+    parser.add_argument("--max-new-tokens", type=int, default=384)
     args = parser.parse_args()
     if args.num_shards < 1:
         raise ValueError("--num-shards must be >= 1")

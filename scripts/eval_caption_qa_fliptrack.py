@@ -11,7 +11,8 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.eval.fliptrack_metrics import aggregate_pair_metrics
+from src.eval.fliptrack_metrics import aggregate_pair_metrics, pair_score
+from src.eval.prompt_contract import ANSWER_FORMAT_CONTRACT
 
 
 def answer_from_caption(model, processor, caption: str, question: str, max_new_tokens: int) -> str:
@@ -20,7 +21,7 @@ def answer_from_caption(model, processor, caption: str, question: str, max_new_t
         "If the caption does not contain enough information, make the best possible answer from the caption.\n"
         f"Caption: {caption}\n"
         f"Question: {question}\n"
-        "Answer with only the answer."
+        f"{ANSWER_FORMAT_CONTRACT}"
     )
     messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
     text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
@@ -60,6 +61,7 @@ def main() -> None:
             row = dict(row)
             row["prediction_a"] = answer_from_caption(model, processor, row["caption_a"], row["question"], args.max_new_tokens)
             row["prediction_b"] = answer_from_caption(model, processor, row["caption_b"], row["question"], args.max_new_tokens)
+            row.update(pair_score(row))
             scored.append(row)
             out.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             out.flush()

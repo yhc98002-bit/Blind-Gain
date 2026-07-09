@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 7 || $# -gt 8 ]]; then
+if [[ $# -lt 6 || $# -gt 8 ]]; then
   echo "Usage: $0 NODE SHARD_OFFSET NUM_SHARDS MODEL_PATH CAPTION_RUN_DIR QA_RUN_DIR [GPU_LIST] MAX_NEW_TOKENS" >&2
   exit 2
 fi
@@ -17,6 +17,28 @@ MAX_NEW_TOKENS="${8:-32}"
 ROOT="$(pwd)"
 
 mkdir -p "${QA_RUN_DIR}/logs" "${QA_RUN_DIR}/pids" "${QA_RUN_DIR}/shards" "${QA_RUN_DIR}/metrics"
+GIT_HASH="$(git rev-parse HEAD)"
+CAPTION_HASH="$(find "${CAPTION_RUN_DIR}/shards" -type f -name 'captions_shard_*.jsonl' -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
+CONFIG_HASH="$(printf 'model=%s\ncaption_hash=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${CAPTION_HASH}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
+cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
+{
+  "job_type": "fliptrack_v02_caption_only_qa",
+  "node": "${NODE}",
+  "gpu_allocation": "${GPU_LIST}",
+  "git_hash": "${GIT_HASH}",
+  "config_hash": "${CONFIG_HASH}",
+  "data_manifest": "${CAPTION_RUN_DIR}/shards",
+  "data_manifest_hash": "${CAPTION_HASH}",
+  "model_path": "${MODEL_PATH}",
+  "max_new_tokens": ${MAX_NEW_TOKENS},
+  "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
+  "command": "scripts/launch_caption_qa_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${CAPTION_RUN_DIR} ${QA_RUN_DIR}",
+  "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "end_time_utc": null,
+  "status": "running",
+  "expected_shards": ${NUM_SHARDS}
+}
+JSON
 
 for GPU in ${GPU_LIST}; do
   SHARD_INDEX=$((SHARD_OFFSET + GPU))
@@ -37,6 +59,6 @@ for GPU in ${GPU_LIST}; do
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=metrics_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${QA_RUN_DIR}/logs' '${QA_RUN_DIR}/pids' '${QA_RUN_DIR}/shards' '${QA_RUN_DIR}/metrics' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_caption_qa_fliptrack.py --model-path '${MODEL_PATH}' --input '${INPUT_PATH}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${QA_RUN_DIR}/logs' '${QA_RUN_DIR}/pids' '${QA_RUN_DIR}/shards' '${QA_RUN_DIR}/metrics' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_caption_qa_fliptrack.py --model-path '${MODEL_PATH}' --input '${INPUT_PATH}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
 done

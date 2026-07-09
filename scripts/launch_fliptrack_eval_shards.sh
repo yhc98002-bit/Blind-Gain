@@ -18,6 +18,29 @@ IMAGE_MODE="${9:-real}"
 ROOT="$(pwd)"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards" "${RUN_DIR}/metrics"
+GIT_HASH="$(git rev-parse HEAD)"
+CONFIG_HASH="$(printf 'model=%s\nmanifest=%s\nmode=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${MANIFEST}" "${IMAGE_MODE}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
+DATA_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
+cat > "${RUN_DIR}/run_manifest.json" <<JSON
+{
+  "job_type": "fliptrack_v02_image_evaluation",
+  "node": "${NODE}",
+  "gpu_allocation": "${GPU_LIST}",
+  "git_hash": "${GIT_HASH}",
+  "config_hash": "${CONFIG_HASH}",
+  "data_manifest": "${MANIFEST}",
+  "data_manifest_hash": "${DATA_HASH}",
+  "model_path": "${MODEL_PATH}",
+  "image_mode": "${IMAGE_MODE}",
+  "max_new_tokens": ${MAX_NEW_TOKENS},
+  "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
+  "command": "scripts/launch_fliptrack_eval_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR} ${MAX_NEW_TOKENS}",
+  "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "end_time_utc": null,
+  "status": "running",
+  "expected_shards": ${NUM_SHARDS}
+}
+JSON
 
 for GPU in ${GPU_LIST}; do
   SHARD_INDEX=$((SHARD_OFFSET + GPU))
@@ -33,6 +56,6 @@ for GPU in ${GPU_LIST}; do
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=metrics_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' '${RUN_DIR}/metrics' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_qwen_vl_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --image-mode '${IMAGE_MODE}' --image-cache-dir '${RUN_DIR}/${IMAGE_MODE}_image_cache' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' '${RUN_DIR}/metrics' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_qwen_vl_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --image-mode '${IMAGE_MODE}' --image-cache-dir '${RUN_DIR}/${IMAGE_MODE}_image_cache' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
 done

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 6 || $# -gt 7 ]]; then
-  echo "Usage: $0 NODE SHARD_OFFSET NUM_SHARDS MODEL_PATH MANIFEST RUN_DIR [GPU_LIST]" >&2
+if [[ $# -lt 6 || $# -gt 8 ]]; then
+  echo "Usage: $0 NODE SHARD_OFFSET NUM_SHARDS MODEL_PATH MANIFEST RUN_DIR [GPU_LIST] [MAX_NEW_TOKENS]" >&2
   exit 2
 fi
 
@@ -13,9 +13,32 @@ MODEL_PATH="$4"
 MANIFEST="$5"
 RUN_DIR="$6"
 GPU_LIST="${7:-0 1 2 3 4 5 6 7}"
+MAX_NEW_TOKENS="${8:-384}"
 ROOT="$(pwd)"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
+GIT_HASH="$(git rev-parse HEAD)"
+CONFIG_HASH="$(printf 'model=%s\nmanifest=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${MANIFEST}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
+DATA_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
+cat > "${RUN_DIR}/run_manifest.json" <<JSON
+{
+  "job_type": "fliptrack_question_blind_caption_generation",
+  "node": "${NODE}",
+  "gpu_allocation": "${GPU_LIST}",
+  "git_hash": "${GIT_HASH}",
+  "config_hash": "${CONFIG_HASH}",
+  "data_manifest": "${MANIFEST}",
+  "data_manifest_hash": "${DATA_HASH}",
+  "model_path": "${MODEL_PATH}",
+  "max_new_tokens": ${MAX_NEW_TOKENS},
+  "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
+  "command": "scripts/launch_fliptrack_caption_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR}",
+  "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "end_time_utc": null,
+  "status": "running",
+  "expected_shards": ${NUM_SHARDS}
+}
+JSON
 
 for GPU in ${GPU_LIST}; do
   SHARD_INDEX=$((SHARD_OFFSET + GPU))
@@ -30,6 +53,6 @@ for GPU in ${GPU_LIST}; do
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=output_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 CUDA_VISIBLE_DEVICES=${GPU} python scripts/caption_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/caption_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
 done

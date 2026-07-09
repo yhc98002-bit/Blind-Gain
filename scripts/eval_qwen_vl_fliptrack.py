@@ -15,7 +15,8 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.eval.fliptrack_metrics import aggregate_pair_metrics
+from src.eval.fliptrack_metrics import aggregate_pair_metrics, pair_score
+from src.eval.prompt_contract import format_question
 
 
 def materialize_image(image_path: str, mode: str, cache_dir: Path, noise_seed: int) -> str:
@@ -51,7 +52,7 @@ def generate(model, processor, image_path: str, question: str, max_new_tokens: i
             "role": "user",
             "content": [
                 {"type": "image", "image": image_path},
-                {"type": "text", "text": question},
+                {"type": "text", "text": format_question(question)},
             ],
         }
     ]
@@ -114,6 +115,7 @@ def main() -> None:
             row["eval_image_b_path"] = image_b
             row["prediction_a"] = generate(model, processor, image_a, row["question"], args.max_new_tokens)
             row["prediction_b"] = generate(model, processor, image_b, row["question"], args.max_new_tokens)
+            row.update(pair_score(row))
             scored.append(row)
             out.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             out.flush()
