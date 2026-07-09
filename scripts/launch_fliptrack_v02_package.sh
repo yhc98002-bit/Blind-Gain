@@ -41,8 +41,10 @@ cat > "${MANIFEST_PATH}" <<JSON
 }
 JSON
 
-nohup bash -lc "cd '${ROOT}'; source .venv/bin/activate; set +e; PYTHONPATH=. ${COMMAND}; code=\$?; PYTHONPATH=. python scripts/finalize_run_manifest.py '${MANIFEST_PATH}' \$code; exit \$code" > "${LOG_PATH}" 2>&1 < /dev/null &
-echo $! > "${PID_PATH}"
+tmux new-session -d -s "${RUN_ID}" \
+  "${ROOT}/.venv/bin/python '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST_PATH}' '${ROOT}/${LOG_PATH}'"
+tmux list-panes -t "${RUN_ID}" -F '#{pane_pid}' > "${PID_PATH}"
+printf '%s\n' "${RUN_ID}" > "${RUN_DIR}/tmux_session"
 printf '%s\n' "${RUN_DIR}" > experiments/runs/latest_fliptrack_v02_package_run.txt
 echo "${RUN_DIR}"
 echo "pid_file=${PID_PATH}"
