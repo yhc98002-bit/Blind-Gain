@@ -8,8 +8,8 @@ P1.2 | blocked | VLMEvalKit pinned at `6a02ab9`; isolated install and ModelScope
 P1.3 | blocked | not started; requires coordinated two-node NCCL/FSDP window
 P1.4 | pass | 600-pair opaque package passes all linter checks; see `reports/fliptrack_v02_packaging.md` and `reports/fliptrack_v02_lint.json`
 P1.5 | blocked | first candidate failed (DINO pooled 0.625; parallel 1.0); rerun waits for the final balanced retained-template package
-P1.6 | blocked | R2 scored: only chart is provisional; 300-pair R3 coordinate/document/chart candidate batch is under 3B/7B real and caption scoring
-P1.7 | blocked | waits for P1.6 retained V0.2 templates
+P1.6 | pass | 300-pair retained set has chart/document/geometry templates meeting final-answer real/caption/gray/pair-shared-noise criteria; format caveat reported
+P1.7 | blocked | degradation and real-model scale controls pass per retained template; 3B caption-only scale side remains
 P1.8 | blocked | R2 7B question-blind 384-token captions complete; hash-keyed store plus geometry3k/3B coverage remain
 P1.9 | blocked | dataset/license acquisition not started in this turn; must avoid failed `load_dataset()` path for ViRL39K
 P1.10 | blocked | not started; calibration datasets and Layer-1 manifests pending
