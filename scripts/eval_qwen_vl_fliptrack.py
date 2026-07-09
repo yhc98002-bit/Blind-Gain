@@ -80,10 +80,16 @@ def main() -> None:
         for row in rows:
             row = dict(row)
             row["eval_image_mode"] = args.image_mode
-            image_a = materialize_image(row["image_a_path"], args.image_mode, cache_dir, args.noise_seed)
-            image_b = materialize_image(row["image_b_path"], args.image_mode, cache_dir, args.noise_seed)
+            condition_key = str(row["pair_id"]) if args.image_mode == "noise" else None
+            image_a = materialize_image(
+                row["image_a_path"], args.image_mode, cache_dir, args.noise_seed, condition_key=condition_key
+            )
+            image_b = materialize_image(
+                row["image_b_path"], args.image_mode, cache_dir, args.noise_seed, condition_key=condition_key
+            )
             row["eval_image_a_path"] = image_a
             row["eval_image_b_path"] = image_b
+            row["noise_pair_shared"] = args.image_mode == "noise"
             row["prediction_a"] = generate(model, processor, image_a, row["question"], args.max_new_tokens)
             row["prediction_b"] = generate(model, processor, image_b, row["question"], args.max_new_tokens)
             row.update(pair_score(row))

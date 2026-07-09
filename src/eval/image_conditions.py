@@ -33,7 +33,13 @@ def _degrade(image: Image.Image, scale: float, blur_radius: float) -> Image.Imag
     return restored.filter(ImageFilter.GaussianBlur(radius=blur_radius))
 
 
-def materialize_image(image_path: str, mode: str, cache_dir: Path, noise_seed: int = 0) -> str:
+def materialize_image(
+    image_path: str,
+    mode: str,
+    cache_dir: Path,
+    noise_seed: int = 0,
+    condition_key: str | None = None,
+) -> str:
     if mode not in IMAGE_MODES:
         raise ValueError(f"unsupported image mode: {mode}")
     if mode == "real":
@@ -41,19 +47,19 @@ def materialize_image(image_path: str, mode: str, cache_dir: Path, noise_seed: i
 
     source = Path(image_path)
     source_hash = _sha256_file(source)
-    digest = hashlib.sha256(f"{mode}:{noise_seed}:{source_hash}".encode("utf-8")).hexdigest()[:16]
+    with Image.open(source) as opened:
+        image = opened.convert("RGB")
+    width, height = image.size
+    identity = condition_key if mode == "noise" and condition_key is not None else source_hash
+    digest = hashlib.sha256(f"{mode}:{noise_seed}:{identity}:{width}x{height}".encode("utf-8")).hexdigest()[:16]
     out_path = cache_dir / f"{digest}.png"
     if out_path.exists():
         return str(out_path)
 
-    with Image.open(source) as opened:
-        image = opened.convert("RGB")
-    width, height = image.size
-
     if mode == "gray":
         rendered = Image.new("RGB", (width, height), (128, 128, 128))
     elif mode == "noise":
-        seed = int(hashlib.sha256(f"{noise_seed}:{source_hash}".encode("utf-8")).hexdigest()[:16], 16)
+        seed = int(hashlib.sha256(f"{noise_seed}:{identity}".encode("utf-8")).hexdigest()[:16], 16)
         rng = np.random.default_rng(seed)
         pixels = rng.integers(0, 256, size=(height, width, 3), dtype=np.uint8)
         rendered = Image.fromarray(pixels, mode="RGB")
