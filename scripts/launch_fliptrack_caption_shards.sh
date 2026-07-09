@@ -56,3 +56,9 @@ for GPU in ${GPU_LIST}; do
   ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/caption_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
 done
+
+FINALIZER_LOG="${RUN_DIR}/logs/finalizer.log"
+FINALIZER_PID="${RUN_DIR}/pids/finalizer.pid"
+nohup "${ROOT}/.venv/bin/python" scripts/finalize_sharded_run.py "${RUN_DIR}/run_manifest.json" --wait \
+  > "${FINALIZER_LOG}" 2>&1 < /dev/null &
+echo $! > "${FINALIZER_PID}"
