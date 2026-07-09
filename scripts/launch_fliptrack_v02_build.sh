@@ -5,6 +5,7 @@ NODE="${1:-an29}"
 N_PER_TEMPLATE="${2:-100}"
 SEED="${3:-20260710}"
 VARIANT="${4:-v02}"
+FAMILIES="${5:-}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "${ROOT}"
@@ -18,6 +19,9 @@ OUTPUT_DIR="data/fliptrack_${VARIANT}_source/renderable"
 OUTPUT_MANIFEST="data/fliptrack_${VARIANT}_source_manifest.jsonl"
 CONTACT_DIR="reports/contact_sheets/fliptrack_${VARIANT}"
 COMMAND="python -m src.fliptrack.build_v02 --out-dir ${OUTPUT_DIR} --manifest ${OUTPUT_MANIFEST} --contact-sheet-dir ${CONTACT_DIR} --n-per-template ${N_PER_TEMPLATE} --seed ${SEED}"
+if [[ -n "${FAMILIES}" ]]; then
+  COMMAND="${COMMAND} --families ${FAMILIES}"
+fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 GIT_HASH="$(git rev-parse HEAD)"

@@ -533,12 +533,182 @@ def generate_coordinate_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str
     return rows
 
 
+def _render_coordinate_point(points: dict[str, tuple[int, int]]) -> Image.Image:
+    width, height = 900, 900
+    image = Image.new("RGB", (width, height), "white")
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 34), "Coordinate Point Register", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    origin = (450, 470)
+    scale = 57
+
+    def pixel(point: tuple[int, int]) -> tuple[int, int]:
+        return origin[0] + point[0] * scale, origin[1] - point[1] * scale
+
+    for value in range(-6, 7):
+        x = origin[0] + value * scale
+        y = origin[1] - value * scale
+        draw.line((x, origin[1] - 6 * scale, x, origin[1] + 6 * scale), fill=(224, 228, 232), width=1)
+        draw.line((origin[0] - 6 * scale, y, origin[0] + 6 * scale, y), fill=(224, 228, 232), width=1)
+        if value:
+            draw.text((x, origin[1] + 20), str(value), anchor="mm", font=_font(13), fill=(65, 65, 65))
+            draw.text((origin[0] - 22, y), str(value), anchor="mm", font=_font(13), fill=(65, 65, 65))
+    draw.line((origin[0] - 6 * scale, origin[1], origin[0] + 6 * scale, origin[1]), fill=(35, 35, 35), width=3)
+    draw.line((origin[0], origin[1] - 6 * scale, origin[0], origin[1] + 6 * scale), fill=(35, 35, 35), width=3)
+    styles = {
+        "P": ((45, 108, 176), "circle"),
+        "Q": ((190, 55, 55), "square"),
+        "R": ((45, 145, 87), "diamond"),
+        "S": ((135, 80, 160), "circle"),
+    }
+    for label, point in points.items():
+        x, y = pixel(point)
+        color, shape = styles[label]
+        if shape == "square":
+            draw.rectangle((x - 10, y - 10, x + 10, y + 10), fill=color, outline="white", width=2)
+        elif shape == "diamond":
+            draw.polygon(((x, y - 12), (x - 12, y), (x, y + 12), (x + 12, y)), fill=color)
+        else:
+            draw.ellipse((x - 10, y - 10, x + 10, y + 10), fill=color, outline="white", width=2)
+        draw.text((x + 20, y - 20), label, anchor="mm", font=_font(19, True), fill=(20, 20, 20))
+    draw.text((108, 850), "Read coordinates from the numbered axes; point labels do not contain coordinates.", font=_font(14), fill=(75, 75, 75))
+    return image
+
+
+def generate_coordinate_point_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        while True:
+            shared = {label: (rng.randint(-5, 5), rng.randint(-5, 5)) for label in ("P", "R", "S")}
+            q_a = (rng.randint(-5, 5), rng.randint(-5, 5))
+            q_b = (rng.randint(-5, 5), rng.randint(-5, 5))
+            if q_a != q_b and q_a not in shared.values() and q_b not in shared.values() and len(set(shared.values())) == 3:
+                break
+        points_a = {**shared, "Q": q_a}
+        points_b = {**shared, "Q": q_b}
+        answer_a = f"({q_a[0]}, {q_a[1]})"
+        answer_b = f"({q_b[0]}, {q_b[1]})"
+        pair_id = "v02_point_" + stable_id(pair_seed, shared, q_a, q_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_coordinate_point(points_a),
+                image_b=_render_coordinate_point(points_b),
+                question="What are the coordinates of point Q? Answer as (x, y).",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_coordinate_read",
+                template_id="coordinate_point_read_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "point_localization_then_coordinate_read",
+                    "training_domain_alignment": "high",
+                },
+                verifier_results={"exact_by_construction": True, "shared_points": shared, "q_a": q_a, "q_b": q_b},
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+def _render_header_cued_table(
+    table: list[list[str]],
+    row_labels: list[str],
+    col_labels: list[str],
+    target_row: int,
+    target_col: int,
+) -> Image.Image:
+    width, height = 1120, 800
+    image = Image.new("RGB", (width, height), (247, 248, 246))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((45, 42, width - 45, height - 42), fill="white", outline=(185, 185, 185), width=2)
+    draw.text((width // 2, 78), "Repeated Field Verification Form", anchor="mm", font=_font(24, True), fill=(25, 25, 25))
+    left, top = 102, 132
+    row_header_width, cell_width, cell_height = 160, 130, 62
+    draw.rectangle((left, top, left + row_header_width, top + cell_height), fill=(231, 235, 239), outline=(125, 125, 125))
+    for column, label in enumerate(col_labels):
+        x0 = left + row_header_width + column * cell_width
+        outline = (36, 102, 165) if column == target_col else (125, 125, 125)
+        width_line = 4 if column == target_col else 1
+        draw.rectangle((x0, top, x0 + cell_width, top + cell_height), fill=(231, 235, 239), outline=outline, width=width_line)
+        draw.text((x0 + cell_width // 2, top + cell_height // 2), label, anchor="mm", font=_font(17, True), fill=(32, 32, 32))
+    for row, label in enumerate(row_labels):
+        y0 = top + (row + 1) * cell_height
+        outline = (36, 102, 165) if row == target_row else (125, 125, 125)
+        width_line = 4 if row == target_row else 1
+        draw.rectangle((left, y0, left + row_header_width, y0 + cell_height), fill=(231, 235, 239), outline=outline, width=width_line)
+        draw.text((left + row_header_width // 2, y0 + cell_height // 2), label, anchor="mm", font=_font(15, True), fill=(32, 32, 32))
+        for column, value in enumerate(table[row]):
+            x0 = left + row_header_width + column * cell_width
+            fill = (255, 255, 255) if (row + column) % 2 == 0 else (248, 249, 250)
+            draw.rectangle((x0, y0, x0 + cell_width, y0 + cell_height), fill=fill, outline=(155, 155, 155), width=1)
+            draw.text((x0 + cell_width // 2, y0 + cell_height // 2), value, anchor="mm", font=_font(21), fill=(15, 15, 15))
+    draw.text((102, 724), "Blue outlines cue only the requested row header and column header; the cell is not highlighted.", font=_font(14), fill=(70, 70, 70))
+    return image
+
+
+def generate_header_table_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    col_labels = ["F2", "G4", "H7", "J9", "K3", "L8"]
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        row_labels = [f"Case-{value:03d}" for value in rng.sample(range(101, 999), 8)]
+        table_a = [["".join(rng.choice(chars) for _ in range(2)) for _ in col_labels] for _ in row_labels]
+        target_row = rng.randrange(len(row_labels))
+        target_col = rng.randrange(len(col_labels))
+        table_b = [list(row) for row in table_a]
+        replacement = table_a[target_row][target_col]
+        while replacement == table_a[target_row][target_col]:
+            replacement = "".join(rng.choice(chars) for _ in range(2))
+        table_b[target_row][target_col] = replacement
+        answer_a = table_a[target_row][target_col]
+        answer_b = table_b[target_row][target_col]
+        pair_id = "v02_headertable_" + stable_id(pair_seed, row_labels, target_row, target_col, answer_a, answer_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_header_cued_table(table_a, row_labels, col_labels, target_row, target_col),
+                image_b=_render_header_cued_table(table_b, row_labels, col_labels, target_row, target_col),
+                question=f"What is the 2-character code at row {row_labels[target_row]} and column {col_labels[target_col]}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="document_header_indexing",
+                template_id="header_cued_table_code_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "header_cued_row_column_indexing",
+                    "training_domain_alignment": "low",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "target_row": target_row,
+                    "target_column": target_col,
+                    "target_cell_highlighted": False,
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
 GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
     ("chart", generate_chart_pairs),
     ("grid", generate_grid_pairs),
     ("triangle", generate_triangle_pairs),
     ("parallel", generate_parallel_pairs),
     ("coordinate", generate_coordinate_pairs),
+]
+
+EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
+    ("coordinate_point", generate_coordinate_point_pairs),
+    ("header_table", generate_header_table_pairs),
 ]
 
 
@@ -568,15 +738,28 @@ def _randomize_dense_table_sides(rows: list[dict[str, Any]], seed: int) -> None:
         row["image_a_sha256"], row["image_b_sha256"] = row["image_b_sha256"], row["image_a_sha256"]
 
 
-def build(out_dir: str | Path, n_per_template: int, seed: int) -> list[dict[str, Any]]:
+def build(
+    out_dir: str | Path,
+    n_per_template: int,
+    seed: int,
+    families: set[str] | None = None,
+) -> list[dict[str, Any]]:
     out_dir = Path(out_dir)
     rows: list[dict[str, Any]] = []
-    for offset, (name, generator) in enumerate(GENERATORS, start=1):
+    available = GENERATORS + EXPERIMENTAL_GENERATORS
+    selected = ({name for name, _ in GENERATORS} | {"dense_table"}) if families is None else families
+    unknown = selected - ({name for name, _ in available} | {"dense_table"})
+    if unknown:
+        raise ValueError(f"unknown FlipTrack families: {sorted(unknown)}")
+    for offset, (name, generator) in enumerate(available, start=1):
+        if name not in selected:
+            continue
         rows.extend(generator(out_dir / name, n_per_template, seed + offset * 1009))
-    dense_rows = generate_doc_pairs(out_dir / "dense_table", n_per_template, seed + 6007)
-    _add_dense_table_metadata(dense_rows)
-    _randomize_dense_table_sides(dense_rows, seed + 7001)
-    rows.extend(dense_rows)
+    if "dense_table" in selected:
+        dense_rows = generate_doc_pairs(out_dir / "dense_table", n_per_template, seed + 6007)
+        _add_dense_table_metadata(dense_rows)
+        _randomize_dense_table_sides(dense_rows, seed + 7001)
+        rows.extend(dense_rows)
     return rows
 
 
@@ -624,12 +807,14 @@ def main() -> None:
     parser.add_argument("--contact-sheet-dir", default="reports/contact_sheets/fliptrack_v02")
     parser.add_argument("--n-per-template", type=int, default=100)
     parser.add_argument("--seed", type=int, default=20260710)
+    parser.add_argument("--families", help="Comma-separated family names; default is all base families")
     args = parser.parse_args()
     out_dir = Path(args.out_dir)
     manifest = Path(args.manifest)
     if manifest.exists() or (out_dir.exists() and any(out_dir.iterdir())):
         raise FileExistsError(f"refusing to overwrite existing V0.2 build: {manifest} / {out_dir}")
-    rows = build(args.out_dir, args.n_per_template, args.seed)
+    families = {item.strip() for item in args.families.split(",") if item.strip()} if args.families else None
+    rows = build(args.out_dir, args.n_per_template, args.seed, families=families)
     write_jsonl(args.manifest, rows)
     sheets = write_contact_sheets(rows, args.contact_sheet_dir)
     print(f"manifest={args.manifest} pairs={len(rows)} contact_sheets={len(sheets)}")

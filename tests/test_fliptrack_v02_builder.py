@@ -8,7 +8,13 @@ import numpy as np
 from PIL import Image
 
 from src.eval.fliptrack_metrics import match_tier
-from src.fliptrack.build_v02 import build, generate_parallel_pairs, write_contact_sheets
+from src.fliptrack.build_v02 import (
+    build,
+    generate_coordinate_point_pairs,
+    generate_header_table_pairs,
+    generate_parallel_pairs,
+    write_contact_sheets,
+)
 
 
 def test_v02_generators_emit_truthful_non_degenerate_pairs(tmp_path: Path) -> None:
@@ -47,6 +53,34 @@ def test_semantic_side_assignment_is_randomized(tmp_path: Path) -> None:
     rows = generate_parallel_pairs(tmp_path / "parallel", n=40, seed=53)
     swapped = sum(bool(row["provenance"]["semantic_side_assignment_swapped"]) for row in rows)
     assert 10 <= swapped <= 30
+
+
+def test_experimental_coordinate_and_document_pairs_are_truthful(tmp_path: Path) -> None:
+    rows = generate_coordinate_point_pairs(tmp_path / "points", n=2, seed=59)
+    rows += generate_header_table_pairs(tmp_path / "docs", n=2, seed=61)
+    assert {row["template_id"] for row in rows} == {"coordinate_point_read_v02", "header_cued_table_code_v02"}
+    for row in rows:
+        with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
+            changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
+        with Image.open(row["changed_region_mask_a"]) as mask:
+            allowed = np.asarray(mask.convert("L")) > 0
+        assert np.any(changed)
+        assert not np.any(changed & ~allowed)
+
+
+def test_build_can_select_experimental_families_without_changing_defaults(tmp_path: Path) -> None:
+    rows = build(
+        tmp_path / "selected",
+        n_per_template=2,
+        seed=67,
+        families={"coordinate_point", "header_table"},
+    )
+
+    assert len(rows) == 4
+    assert {row["template_id"] for row in rows} == {
+        "coordinate_point_read_v02",
+        "header_cued_table_code_v02",
+    }
 
 
 def test_contact_sheet_contains_twenty_pairs_when_available(tmp_path: Path) -> None:
