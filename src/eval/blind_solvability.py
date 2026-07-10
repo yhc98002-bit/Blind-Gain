@@ -15,6 +15,12 @@ from src.rewards.answer_reward import answer_reward, extract_answer_span
 CONDITIONS = ("real", "gray", "noise", "none", "caption")
 
 
+def vllm_multimodal_limits(condition: str) -> dict[str, int]:
+    if condition not in CONDITIONS:
+        raise ValueError(f"unsupported blind-solvability condition: {condition}")
+    return {"image": 1, "video": 0} if condition in {"real", "gray", "noise"} else {"image": 0, "video": 0}
+
+
 def load_geometry_rows(manifest: str | Path, splits: Iterable[str] = ("train", "test")) -> list[dict[str, Any]]:
     split_order = {name: index for index, name in enumerate(splits)}
     selected = set(split_order)

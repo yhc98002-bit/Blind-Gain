@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 from src.analysis.blind_solvability import real_blind_quadrants, summarize_condition
-from src.eval.blind_solvability import build_conditioned_messages, pass_at_k, score_item
+from src.eval.blind_solvability import build_conditioned_messages, pass_at_k, score_item, vllm_multimodal_limits
 from scripts.summarize_blind_solvability import render_markdown
 
 
@@ -62,6 +62,12 @@ def test_pass_at_k_and_item_scoring_use_all_sixteen_samples() -> None:
     assert result["p_sample"] == 0.25
     assert result["pass_at_k16"] == 1.0
     assert result["variance_proxy"] == 0.1875
+
+
+def test_vllm_reserves_no_visual_tokens_for_text_only_conditions() -> None:
+    assert vllm_multimodal_limits("real") == {"image": 1, "video": 0}
+    assert vllm_multimodal_limits("caption") == {"image": 0, "video": 0}
+    assert vllm_multimodal_limits("none") == {"image": 0, "video": 0}
 
 
 def test_summary_and_real_blind_quadrants() -> None:

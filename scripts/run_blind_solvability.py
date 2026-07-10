@@ -14,6 +14,7 @@ from src.eval.blind_solvability import (
     load_caption_map,
     load_geometry_rows,
     score_item,
+    vllm_multimodal_limits,
 )
 
 
@@ -70,7 +71,7 @@ def main() -> None:
         dtype="bfloat16",
         max_model_len=4096,
         gpu_memory_utilization=args.gpu_memory_utilization,
-        limit_mm_per_prompt={"image": 4},
+        limit_mm_per_prompt=vllm_multimodal_limits(args.condition),
     )
     greedy_params = SamplingParams(temperature=0.0, top_p=1.0, n=1, max_tokens=args.max_tokens, seed=args.seed)
     sample_params = SamplingParams(
