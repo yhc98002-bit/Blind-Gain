@@ -4,7 +4,16 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-from src.decon.core import compare_hash_and_text, dhash, enrich_records, hamming, normalize_text, phash, word_ngrams
+from src.decon.core import (
+    compare_hash_and_text,
+    dhash,
+    embedding_entities,
+    enrich_records,
+    hamming,
+    normalize_text,
+    phash,
+    word_ngrams,
+)
 
 
 def _image(path: Path, offset: int = 0) -> None:
@@ -63,3 +72,16 @@ def test_hash_text_comparison_flags_planted_duplicates_and_ignores_random_negati
     assert "image_sha256_exact" not in edge_by_eval["duplicate"]["signals"]
     assert "perceptual_hash" in edge_by_eval["duplicate"]["signals"]
     assert "negative" not in edge_by_eval
+
+
+def test_embedding_entities_deduplicate_images_but_not_questions(tmp_path: Path) -> None:
+    image = tmp_path / "shared.png"
+    _image(image)
+    rows = enrich_records(
+        [
+            _row("first", "geometry3k", image, "Question one", "1"),
+            _row("second", "geometry3k", image, "Question two", "2"),
+        ]
+    )
+    assert len(embedding_entities(rows, "image")) == 1
+    assert [identifier for identifier, _ in embedding_entities(rows, "text")] == ["first", "second"]

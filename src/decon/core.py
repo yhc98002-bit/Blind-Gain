@@ -236,6 +236,17 @@ def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
+def embedding_entities(records: Iterable[dict[str, Any]], kind: str) -> list[tuple[str, str]]:
+    if kind == "image":
+        by_hash: dict[str, str] = {}
+        for row in records:
+            by_hash.setdefault(row["image_sha256"], row["image_path"])
+        return sorted(by_hash.items())
+    if kind == "text":
+        return sorted((row["record_id"], str(row["question"])) for row in records)
+    raise ValueError(f"unsupported embedding kind: {kind}")
+
+
 def compare_hash_and_text(
     train_rows: list[dict[str, Any]],
     eval_rows: list[dict[str, Any]],
