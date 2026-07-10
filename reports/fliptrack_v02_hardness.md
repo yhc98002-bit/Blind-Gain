@@ -1,9 +1,9 @@
 # FlipTrack V0.2 Hardness Calibration
 
 Status:
-- P1.6 is blocked. The earlier 300-pair “retained” claim was provisional and is superseded.
-- The expanded document family and R10 high-entropy geometry pass. Existing chart expansion fails unchanged acceptance thresholds.
-- No FlipTrack V0.2 eval split is frozen and no PI audit is requested yet.
+- P1.6 implementation is complete with three 300-pair retained templates: expanded document, R10 high-entropy geometry, and R16 chart.
+- All three satisfy the unchanged hardness contract, and R10 supplies the required Track-b geometry family.
+- Packaging and artifact attack remain separate P1.4/P1.5 checks; no PI audit is requested until those checks finish.
 
 Acceptance contract:
 - 7B question-blind caption pair accuracy <= 0.15.
@@ -27,7 +27,8 @@ Current evidence:
 | R12 balanced chart | 300 | 0.2533 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 | R13 guided chart | 300 | 0.3767 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 | R14 inspection ledger | 300 | 0.9900 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
-| R15 five-series chart | 300 | 0.5733 | 0.3967 | pending | pending | 0.0000 | 0.0000 | reject: 7B real does not improve over 3B |
+| R15 five-series chart | 300 | 0.5733 | 0.3967 | 0.0033 | 0.0000 | 0.0000 | 0.0000 | reject: 7B real does not improve over 3B |
+| R16 nine-series chart | 300 | 0.4367 | 0.6733 | 0.0000 | 0.0067 | 0.0000 | 0.0000 | retain: all registered hardness cells pass |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -84,7 +85,16 @@ R15 diagnostics:
 - 7B real: `experiments/runs/fliptrack_v02r15_qwen25vl7b_real_20260710T075919Z`; final/strict pair accuracy 0.3967.
 - Control A is monotone: 0.5733 real, 0.3733 mild, 0.2167 medium, 0 severe, and 0 gray; pair-shared noise is also 0 with collapse 1.0.
 - R15 fails Control B. The 7B final score falls by 0.1766; strict accuracy is effectively flat (+0.0034), so there is no substantive scale gain under either score.
-- Caption jobs continue as diagnostics, but no caption outcome can repair the failed real-image scale control.
+- Caption-only pair accuracy is 0.0033 for 3B and 0 for 7B. This rules out caption leakage as the failure cause but cannot repair the failed real-image scale control.
+
+R16 diagnostics:
+- Source manifest: `data/fliptrack_v02r16_source_manifest.jsonl`, one fixed 300-pair batch, SHA256 `8a0ec164c68adb131860e9ca7da802492d9cec22f390ba6c5960cb8ec69225a4`.
+- 3B real: `experiments/runs/fliptrack_v02r16_qwen25vl3b_real_20260710T090950Z`; final pair accuracy 0.4367 and strict pair accuracy 0.4200.
+- 7B real: `experiments/runs/fliptrack_v02r16_qwen25vl7b_real_20260710T091837Z`; final and strict pair accuracy 0.6733.
+- Gray and pair-shared noise pair accuracy are 0 with collapse 1.0.
+- The degradation curve is monotone: 0.4367 real, 0.1733 mild, 0.1333 medium, 0 severe, and 0 gray.
+- Question-blind 384-token caption QA is `experiments/runs/fliptrack_v02r16_qwen25vl3b_captionqa384_retry_an12_20260710T120300Z` and `experiments/runs/fliptrack_v02r16_qwen25vl7b_captionqa384_retry_an12_20260710T120300Z`; pair accuracy is 0/0.0067.
+- Initial caption-QA attempts on `an29` are preserved as failed because an unrelated TP=4 service occupied their registered GPUs; see `reports/gpu_allocation_conflict_20260710.md`.
 
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
@@ -95,6 +105,8 @@ Contact sheets:
 - R5: `reports/contact_sheets/fliptrack_v02r5/`.
 - R7: `reports/contact_sheets/fliptrack_v02r7/coordinate_register_eight_point_v02.png`.
 - R9: `reports/contact_sheets/fliptrack_v02r9/starred_series_value_v02.png`.
+- R10: `reports/contact_sheets/fliptrack_v02r10/coordinate_register_twenty_point_x_v02.png`.
+- R16: `reports/contact_sheets/fliptrack_v02r16/starred_series_value_nine_v07.png`.
 
 Problems:
 - The R8 package passed its linter but is scientifically invalid as a freeze candidate because R7's 7B caption check was pending when packaged.
@@ -104,13 +116,13 @@ Problems:
 - R13's six-series intermediate design improves over R12 but remains below the visual floor; the chart family is not yet retained.
 - R14's unhighlighted 12-row ledger saturates the 3B visual ceiling and therefore cannot serve as the third retained template.
 - R15 passes the 3B hardness and degradation gates but fails the registered 3B-to-7B real-image scale control.
+- R16 is scientifically retained, but the re-encoded final package must independently pass leakage lint and grouped artifact attack.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
-- Keep the 300-pair document family.
-- Retain R10 high-entropy geometry and the expanded document family as the two current candidates.
-- Continue with independently declared template revisions; never pool failed batches to cross the visual floor.
+- Retain exactly 300 document, 300 R10 geometry, and 300 R16 chart pairs in the R17 package candidate.
+- Keep every rejected calibration batch out of the candidate; no failed batch is pooled to cross a threshold.
 
 Next actions:
-- Predeclare R16 from the R9 lineage: nine series instead of ten while retaining the direct point star. R9 already showed a positive 3B-to-7B scale trend and missed only the 3B floor.
-- Package and attack only after three families independently meet all acceptance checks.
+- Finish R17 packaging/lint, grouped artifact attacks, and post-reencoding caption stores.
+- Present the frozen contact sheets and failure ledger to the PI only after the artifact gate is computed.

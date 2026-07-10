@@ -1,8 +1,8 @@
 # FlipTrack V0.2 Packaging and Leakage Linter
 
 Status:
-- P1.4 implementation and actual-package lint are complete.
-- The 600-pair V0.2 package has `status=true` for every enumerated linter check. This is an engineering task result, not a PI Gate 2 decision.
+- P1.4 implementation and final-candidate lint are complete.
+- The 900-pair R17 package has `status=true` for every enumerated linter check. Earlier package sections remain as calibration history.
 
 Evidence:
 - Source manifest: `data/fliptrack_v02_source_manifest.jsonl` (600 pairs; SHA256 `720f755c3e6ba4feae9f1493fbb4ed42bf90fba52d1fccffa60babda04a86942`).
@@ -41,7 +41,7 @@ Problems:
 - Passing this linter does not establish learned-feature artifact robustness; P1.5 DINO/statistical attackers remain required.
 
 Decision:
-- Use `data/fliptrack_v02/` as the only candidate release package.
+- The original `data/fliptrack_v02/` decision is superseded by the R17 section below.
 - Keep answers and template/source-side metadata in the private key; do not distribute the salt.
 - Advance the actual package to P1.5 while P1.6 hardness scoring proceeds on the source manifest.
 
@@ -79,3 +79,39 @@ Evidence:
 Decision:
 - Preserve R8 as an immutable failed-gate candidate.
 - Expand chart with the independent R9 seed batch before constructing the next package.
+
+## R17 Three-Family Candidate
+
+Status:
+- Packaging and all 12 leakage-linter checks pass on the scientifically selected 900-pair candidate.
+- Artifact-attack robustness remains a separate P1.5 computation and is not implied by this result.
+
+Evidence:
+- Selection config: `configs/data/fliptrack_v02r17_retained.json`.
+- Selection record: `experiments/manifests/fliptrack_v02r17_selection.json`.
+- Source manifest: `data/fliptrack_v02r17_retained_source_manifest.jsonl`, SHA256 `c7c92384673ec5ef352e1590895172edcd485dbf361a99b6633110296ef81007`.
+- Composition: document 300, R10 geometry 300, R16 chart 300.
+- Package run: `experiments/runs/fliptrack_v02_package_20260710T121644Z`, exit code 0.
+- Release manifest: `data/fliptrack_v02r17_retained/manifest.jsonl`, SHA256 `bda74d29260a9ac5d9308d2ce6e387259de26b42840a6843e733af0d98e59991`.
+- Machine linter: `reports/fliptrack_v02r17_lint.json`, SHA256 `09d60384863d7121b0f5ca8c8ae36d4e8f23e5108494154a30c7ff1cb37b5ef0`.
+- Private key and salt: `.private/fliptrack_v02r17_key.jsonl` and `.private/fliptrack_v02r17_salt.bin`; both remain outside the release and Git.
+
+| Check | R17 result |
+| --- | ---: |
+| Pairs / members | 900 / 1,800 |
+| Asset files | 2,700 |
+| Opaque IDs and paths | pass |
+| One fixed mtime / clean PNG chunks | pass |
+| Truthful masks / distinguishable answers | pass |
+| Member order | 428 `ab`, 472 `ba` |
+| Geometry side-size KS | 0.0200 |
+| Document side-size KS | 0.0400 |
+| Chart side-size KS | 0.0267 |
+
+Decision:
+- Use R17 as the sole current freeze candidate and preserve prior packages as failed or superseded calibration artifacts.
+- Do not request final human audit until the R17 grouped artifact attacker finishes.
+
+Next actions:
+- Run frequency/statistical, metadata, and DINOv2 attackers on R17 without changing thresholds.
+- Generate final content-hash caption stores from the re-encoded R17 images.
