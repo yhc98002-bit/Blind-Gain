@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 4 ]]; then
-  echo "Usage: $0 NODE GPU_LIST CONFIG RUN_TAG" >&2
+if [[ $# -lt 4 || $# -gt 6 ]]; then
+  echo "Usage: $0 NODE GPU_LIST CONFIG RUN_TAG [JUDGE] [JUDGE_BASE_URL]" >&2
   exit 2
 fi
 
@@ -10,6 +10,8 @@ NODE="$1"
 GPUS="$2"
 CONFIG="$3"
 RUN_TAG="$4"
+JUDGE="${5:-exact_matching}"
+JUDGE_BASE_URL="${6:-}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${GPUS}" =~ ^[0-7](,[0-7])*$ ]]; then
@@ -18,6 +20,10 @@ if [[ ! "${GPUS}" =~ ^[0-7](,[0-7])*$ ]]; then
 fi
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG must contain only lowercase letters, numbers, underscores, and hyphens" >&2
+  exit 2
+fi
+if [[ ! "${JUDGE}" =~ ^[A-Za-z0-9_.:/-]+$ ]]; then
+  echo "JUDGE contains unsupported characters" >&2
   exit 2
 fi
 if [[ ! -f "${ROOT}/${CONFIG}" ]]; then
@@ -54,7 +60,11 @@ else
   DATA_HASH=""
 fi
 
-COMMAND="PYTHONPATH=artifacts/repos/VLMEvalKit LMUData=${ROOT}/data/vlmevalkit TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home VLLM_WORKER_MULTIPROC_METHOD=spawn CUDA_VISIBLE_DEVICES=${GPUS} artifacts/envs/vlmevalkit/bin/python artifacts/repos/VLMEvalKit/run.py --config ${CONFIG} --work-dir ${WORK_DIR} --mode all && .venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${VALIDATION}"
+JUDGE_ARGS="--judge ${JUDGE}"
+if [[ -n "${JUDGE_BASE_URL}" ]]; then
+  JUDGE_ARGS="${JUDGE_ARGS} --judge-base-url ${JUDGE_BASE_URL} --judge-key local-only"
+fi
+COMMAND="PYTHONPATH=artifacts/repos/VLMEvalKit LMUData=${ROOT}/data/vlmevalkit TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home VLLM_WORKER_MULTIPROC_METHOD=spawn CUDA_VISIBLE_DEVICES=${GPUS} artifacts/envs/vlmevalkit/bin/python artifacts/repos/VLMEvalKit/run.py --config ${CONFIG} --work-dir ${WORK_DIR} --mode all ${JUDGE_ARGS} && .venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${VALIDATION}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${WORK_DIR}"
@@ -72,6 +82,8 @@ jq -n \
   --arg data_manifest_hash "${DATA_HASH}" \
   --arg model_names "${MODEL_NAMES}" \
   --arg dataset_names "${DATASET_NAMES}" \
+  --arg judge "${JUDGE}" \
+  --arg judge_base_url "${JUDGE_BASE_URL}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg work_dir "${WORK_DIR}" \
@@ -89,6 +101,8 @@ jq -n \
     data_manifest_hash: (if $data_manifest_hash == "" then null else $data_manifest_hash end),
     model_revision: $model_names,
     datasets: ($dataset_names | split(",")),
+    judge: $judge,
+    judge_base_url: (if $judge_base_url == "" then null else $judge_base_url end),
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,

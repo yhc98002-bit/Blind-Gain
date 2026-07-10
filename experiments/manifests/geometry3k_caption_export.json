@@ -1,0 +1,18 @@
+{
+  "manifest_path": "data/geometry3k_caption_images_manifest.jsonl",
+  "manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+  "n_images": 2702,
+  "n_rows": 2702,
+  "n_unique_image_hashes": 1736,
+  "output_dir": "data/geometry3k_caption_images",
+  "schema_version": "blind-gains.geometry3k-caption-export.v1",
+  "source_arrow_sha256": {
+    "test": "3448111f279207ab254c28957bf5892bb47bbf1195120e3901934e5f961a9a59",
+    "train": "eac512c860bb675892114cac92276ebc6e6481771cd984cf92d91dd83920ac7f"
+  },
+  "source_revision": "hiyouga/geometry3k@fd21e533e1e50d0662a2bf7b223e60511bd5f8b7",
+  "split_counts": {
+    "test": 601,
+    "train": 2101
+  }
+}
