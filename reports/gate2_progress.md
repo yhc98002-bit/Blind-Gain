@@ -10,7 +10,7 @@ P1.4 | pass | 1,200-pair same-salt R19 package passes all 12 leakage-linter chec
 P1.5 | pass | all-inclusive same-salt R19 expansion passes grouped frequency, metadata, and DINOv2 point/CI rules
 P1.6 | pass | document, R10 geometry, and R16 chart provide three accepted 300-pair templates with contact sheets
 P1.7 | pass | all three R17 candidate templates pass degradation and model/caption scale controls
-P1.8 | blocked | final R19 3B store covers all 2,400 release hashes exactly; 7B R17/R18 generation and exact merge remain active
+P1.8 | pass | final R19 3B and 7B stores each cover all 2,400 release hashes exactly under one fixed prompt/token contract
 P1.9 | pass | ViRL39K/MMK12 loaders cover all rows and critical model/dataset licenses are resolved
 P1.10 | pass | calibrated full Geometry3K x 7,603-row Layer-1 hash/DINO/BGE/OCR manifest is complete with zero pending layers
 P1.11 | blocked | gate logic passes, but worktree contains external `CLAUDE.md` deletion and untracked `AGENTS.md`
