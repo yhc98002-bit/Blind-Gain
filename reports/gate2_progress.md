@@ -3,7 +3,7 @@ P0.2 | pass | 320 recovered-step-30 generations audited; agreement is 0.921875 w
 P0.3 | pass | within-template key-shuffle and auxiliary swap nulls are implemented and tested
 P0.4 | pass | cached V0.1 predictions are re-scored in `reports/fliptrack_v01_rescored.md`
 P0.5 | pass | resolved EasyR1 reference diff covers every required field
-P1.1 | blocked | recipe-scale anchor is healthy through step 21/100; step-20 validation and merged checkpoint are preserved
+P1.1 | blocked | recipe-scale anchor is healthy through step 30/100; validations 0/10/20/30 and merged step-20 checkpoint are preserved
 P1.2 | pass | MMStar/MathVista/BLINK plus HallusionBench/MMVP complete for 3B/7B; registered MMStar/MathVista blind cells complete
 P1.3 | blocked | coordinated two-node NCCL/FSDP window not yet run
 P1.4 | blocked | R8 candidate passes all 12 linter checks, but no scientifically valid final package is frozen

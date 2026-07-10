@@ -1,58 +1,61 @@
 # P1.1 Anchor Recipe Report
 
 Status:
-- P1.1 recipe-scale anchor is configured, but the first canonical attempt was stopped after a silent startup stall.
-- A bounded foreground diagnostic subsequently reached dataset loading, four-rank NCCL, FSDP construction, and vLLM CUDA-graph capture. This establishes that the EasyR1 stack and recipe config can initialize.
-- Completion remains pending; this report is not a pass report.
+- The canonical recipe-scale anchor is healthy at step 30/100 and remains active on `an12` GPUs 0-3.
+- P1.1 is incomplete until the run reaches step 100 or terminates with a diagnosed failure.
+- Step-0, step-10, step-20, and step-30 full-split greedy validation points are preserved.
 
 Evidence:
-- Config: `configs/train/anchor_a0_recipe_3b_geo3k.yaml`
-- Config diff: `reports/anchor_a0_recipe_config_diff.md`
-- Machine diff: `reports/anchor_a0_recipe_config_diff.json`
-- Canonical run directory: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T213030Z`
-- Canonical run manifest: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T213030Z/run_manifest.json`
-- Node/GPU allocation: `an12`, GPUs `0,1,2,3`
-- PID at first post-launch inspection: `2686511`
-- Config hash: `5bed99b9ec8204e05f77c237d217ef3b6c509c2263c9e225599bf217889fed39`
-- Data hash: `f86c700640e1f72dea6ac8acb3004e74e38e1ffb262f36a994d54114d6d6cc56`
-- Foreground diagnostic: exact EasyR1 entrypoint bounded by `timeout 180s` on `an12`, GPUs `0,1,2,3`, 2026-07-10 05:52-05:55 CST.
-- First hardened relaunch: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T215715Z`; failed before allocation with an explicit `AF_UNIX path length cannot exceed 107 bytes` error.
-- Second hardened relaunch: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T215854Z`; completed full step-0 validation and a 1,280-response rollout, then failed before optimizer step 1 with `NameError: unpad_input is not defined`.
-- Immutable SDPA retry: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T222659Z`; failed during step-0 validation when the 302-example multimodal batch stalled and aborted in `all_gather_data_proto`.
+- Active run: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T224852Z`.
+- Metrics: `checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/experiment_log.jsonl`.
+- Config: `configs/train/anchor_a0_recipe_3b_geo3k.yaml`.
+- Human-readable diff: `reports/anchor_a0_recipe_config_diff.md`; machine diff: `reports/anchor_a0_recipe_config_diff.json`.
+- Node/GPU allocation: `an12`, GPUs `0,1,2,3`.
+- Config hash: `5bed99b9ec8204e05f77c237d217ef3b6c509c2263c9e225599bf217889fed39`.
+- Data hash: `f86c700640e1f72dea6ac8acb3004e74e38e1ffb262f36a994d54114d6d6cc56`.
+- Step-20 merged checkpoint: `checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_20/actor/huggingface`.
+- Step-20 merge run: `experiments/runs/easyr1_checkpoint_merge_anchor_a0_step20_an12_20260710T073637Z`.
+- Raw step-20 FSDP/optimizer state was checksum-verified and relocated under login-node `/tmp/blindgain_checkpoint_archive`; the merged Hugging Face checkpoint remains on shared storage.
 
-Config highlights:
-- `rollout_batch_size: 512`
-- `worker.actor.global_batch_size: 128`
-- `worker.rollout.n: 5`
-- `data.max_response_length: 2048`
-- `worker.actor.model.freeze_vision_tower: false`
-- `trainer.val_before_train: true`
-- `trainer.val_freq: 10`
-- `worker.rollout.val_override_config: {temperature: 0.0, top_p: 1.0, n: 1}`
-- `trainer.save_freq: 20`
-- `trainer.save_limit: -1`
-- `trainer.max_steps: 100`
+Validation curve (full 601-item Geometry3K test split, greedy):
 
-Known deviation:
-- A duplicate debug launch was accidentally submitted at `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T213103Z` and then stopped intentionally. The canonical P1.1 attempt is the `20260709T213030Z` run.
-- The first canonical attempt was stopped at 2026-07-09T21:36:27Z after more than five minutes with zero log bytes and no GPU allocation. Its manifest honestly records `status: fail`.
-- The foreground diagnostic was intentionally terminated after 180 seconds during vLLM CUDA-graph capture; its SIGTERM/core-dump text reflects the external timeout, not an internal EasyR1 crash.
-- The first hardened relaunch used a descriptive `RAY_TMPDIR` whose generated plasma-store socket path exceeded Linux's 107-byte limit. Its manifest records `status: fail`; the launcher now uses a deterministic 12-hex hash under `/tmp/bg-ray-*`, covered by `tests/test_run_paths.py`.
-- The second relaunch exposed that EasyR1's `padding_free=true` path depends on `flash_attn.bert_padding`. The project environment intentionally uses SDPA and has no FlashAttention, so actor/reference padding-free execution is disabled and covered by `tests/test_easyr1_sdpa_patch.py`.
-- A subsequent pre-training retry exposed that EasyR1's file logger truncates logs in a shared checkpoint directory. The launcher now overrides `save_checkpoint_path` and `experiment_name` with the immutable run id and uses `flock --no-fork` so the recorded PID owns the full process group.
-- The first immutable retry showed that `val_batch_size=1024` creates one oversized multimodal object-gather for the full 302-example split. The full split remains unchanged, but validation now iterates in batches of 32.
+| Step | Overall reward | Format reward | Accuracy reward | Mean response length | Clip ratio |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 0.0774 | 0.1015 | 0.0532 | 378.64 | 0.0416 |
+| 10 | 0.6231 | 0.9750 | 0.2712 | 292.44 | 0.0256 |
+| 20 | 0.6398 | 0.9750 | 0.3045 | 312.08 | 0.0251 |
+| 30 | 0.6581 | 0.9684 | 0.3478 | 340.18 | 0.0312 |
+
+Training checkpoints:
+
+| Step | Overall reward | Format reward | Accuracy reward | KL loss | PPO KL | Seconds/step |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0.0311 | 0.0379 | 0.0242 | 0.00058 | 0.000122 | 1552.9 |
+| 10 | 0.5850 | 0.9938 | 0.1762 | 0.02812 | 0.000031 | 1782.0 |
+| 20 | 0.6301 | 0.9988 | 0.2613 | 0.03471 | 0.000098 | 1824.4 |
+| 30 | 0.6441 | 0.9980 | 0.2902 | 0.02773 | 0.000019 | 1817.4 |
+
+Locked recipe fields:
+- `rollout_batch_size: 512`; actor global batch size `128`; rollout group size `5`.
+- Maximum response length `2048`; vision tower unfrozen, matching the reference recipe.
+- Validation before training and every 10 steps with `{temperature: 0.0, top_p: 1.0, n: 1}`.
+- Checkpoints every 20 steps; all merged checkpoints are retained on shared storage.
+
+Known deviations and failed attempts:
+- Earlier immutable attempts are preserved under `experiments/runs/anchor_a0_recipe_3b_geo3k_*`; they exposed duplicate launch contention, an overlong Ray socket path, an SDPA padding-free dependency, and an oversized validation gather.
+- The active launcher uses a hashed short Ray path, SDPA-compatible padded actor/reference execution, immutable checkpoint paths, a node lock, and validation batches of 32.
+- Shared user quota cannot retain every raw FSDP and optimizer state. Each raw state is merged, checksum-verified, and relocated; the merged checkpoint and relocation manifest remain durable in the project tree.
 
 Problems:
-- The failed attempt and an accidental second launch overlapped in time, making Ray startup contention the leading explanation for the silent stall. The launcher previously had no duplicate-process guard or per-run Ray temporary directory.
-- P1.1 still lacks the required step-0 validation point, training curves, and completed checkpoints.
-- The raw log contains the step-0 validation generation and reward output, but the metric point still needs extraction into the report table.
+- At roughly 25-30 minutes per optimizer step, approximately 70 steps remain; completion requires another multi-day allocation window.
+- Validation format reward decreased from 0.9750 at step 20 to 0.9684 at step 30 while answer accuracy increased. Both components must continue to be reported separately.
+- The next raw checkpoint at step 40 will temporarily consume about 44 GB and must be merged and relocated promptly to avoid another quota failure.
 
 Decision:
-- Harden the launcher with duplicate-process detection, a node lock, a per-run `RAY_TMPDIR`, unbuffered output, and a five-second liveness check.
-- Use padded actor/reference tensors under SDPA; retain `padding_free=true` only in a FlashAttention environment.
-- Do not claim P1.1 completion until a canonical run completes with checkpoints/curves or produces a diagnosed failure log.
+- Keep the active run unchanged. Its reward, KL, memory, and response-length traces are stable through step 30.
+- Preserve the fixed validation contract and do not shorten the run after observing the favorable early curve.
 
 Next actions:
-- Launch exactly one replacement canonical run with the hardened launcher.
-- Allow the expected Ray/FSDP/vLLM initialization window and verify log growth plus GPU allocation before classifying startup.
-- Extract step-0 and per-checkpoint curves after completion.
+- At step 40, merge the checkpoint, verify hashes, and rotate raw state using the documented storage procedure.
+- Continue validation and checkpoint extraction at steps 40, 50, and 60 while other node GPUs run independent scientific jobs.
+- Finalize P1.1 only after step 100 and publish the complete curves.
