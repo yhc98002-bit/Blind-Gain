@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 from PIL import Image, ImageDraw
 
 from src.decon.core import (
@@ -14,6 +15,7 @@ from src.decon.core import (
     phash,
     word_ngrams,
 )
+from src.decon.embedding_compare import cosine_candidates, merge_embedding_signals
 
 
 def _image(path: Path, offset: int = 0) -> None:
@@ -85,3 +87,35 @@ def test_embedding_entities_deduplicate_images_but_not_questions(tmp_path: Path)
     )
     assert len(embedding_entities(rows, "image")) == 1
     assert [identifier for identifier, _ in embedding_entities(rows, "text")] == ["first", "second"]
+
+
+def test_embedding_comparison_flags_only_high_cosine_candidate(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    negative_image = tmp_path / "negative.png"
+    _image(train_image)
+    _image(eval_image, offset=4)
+    Image.new("RGB", (96, 72), "blue").save(negative_image)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "1")])
+    evaluation = enrich_records(
+        [
+            _row("eval", "mmstar", eval_image, "Find y", "2"),
+            _row("negative", "mmstar", negative_image, "Name this", "blue"),
+        ]
+    )
+    image_features = {
+        train[0]["image_sha256"]: np.asarray([1.0, 0.0], dtype=np.float32),
+        evaluation[0]["image_sha256"]: np.asarray([0.99, 0.01], dtype=np.float32),
+        evaluation[1]["image_sha256"]: np.asarray([0.0, 1.0], dtype=np.float32),
+    }
+    text_features = {
+        "train": np.asarray([1.0, 0.0], dtype=np.float32),
+        "eval": np.asarray([0.0, 1.0], dtype=np.float32),
+        "negative": np.asarray([-1.0, 0.0], dtype=np.float32),
+    }
+    result = merge_embedding_signals(
+        {"candidate_edges": []}, train, evaluation, image_features, text_features, device="cpu"
+    )
+    assert len(result["candidate_edges"]) == 1
+    assert result["candidate_edges"][0]["eval_record_id"] == "eval"
+    assert result["candidate_edges"][0]["action"] == "remove"
