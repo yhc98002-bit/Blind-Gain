@@ -3,7 +3,7 @@
 Status:
 - P1.6 implementation is complete with three retained templates: document 300, high-entropy geometry 600, and R16 chart 300.
 - All three satisfy the unchanged hardness contract, and R10 supplies the required Track-b geometry family.
-- Packaging and artifact attack remain separate P1.4/P1.5 checks; no PI audit is requested until those checks finish.
+- The 1,200-pair R19 package passes P1.4 leakage lint and P1.5 grouped artifact attacks; the required human contact-sheet audit is pending.
 
 Acceptance contract:
 - 7B question-blind caption pair accuracy <= 0.15.
@@ -103,6 +103,12 @@ R18 expansion diagnostics:
 - Fixed 3B real-image spot check: `experiments/runs/fliptrack_v02r18_qwen25vl3b_real_an12_20260710T123900Z`; pair accuracy 0.4933, strict pair accuracy 0.4767, format-valid rate 0.98.
 - Other mode/model cells are not rerun because this is an instance expansion of the already accepted template, not a template redesign.
 
+R19 exact-package caption diagnostic:
+- The exact 3B store covers all 2,400 packaged image hashes with no missing, extra, duplicate, mixed-contract, or empty-caption rows.
+- Full-package 3B caption-only pair accuracy is 0.0125 with 95% bootstrap CI [0.0067, 0.0192]. Per-template pair accuracy is 0.0100 document, 0.0200 geometry, and 0 chart.
+- The within-template key-shuffle null mean is 0.00681 (`p=0.01598`), so the small nonzero caption signal is reported rather than rounded away.
+- Runs: `experiments/runs/caption_store_merge_fliptrack_v02r19_qwen25vl3b_384_20260710T134825Z`, `experiments/runs/fliptrack_v02r19_qwen25vl3b_captionqa384_an29_20260710T140850Z`, and `experiments/runs/fliptrack_aggregate_v02r19_qwen25vl3b_caption384_20260710T142221Z`.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -123,7 +129,7 @@ Problems:
 - R13's six-series intermediate design improves over R12 but remains below the visual floor; the chart family is not yet retained.
 - R14's unhighlighted 12-row ledger saturates the 3B visual ceiling and therefore cannot serve as the third retained template.
 - R15 passes the 3B hardness and degradation gates but fails the registered 3B-to-7B real-image scale control.
-- R16 is scientifically retained, but the re-encoded final package must independently pass leakage lint and grouped artifact attack.
+- R19 passes the automated package and artifact gates, but automated checks cannot replace the pending human legibility/semantic audit.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
@@ -131,5 +137,5 @@ Decision:
 - Keep every rejected calibration batch out of the candidate; no failed batch is pooled to cross a threshold.
 
 Next actions:
-- Finish R17 packaging/lint, grouped artifact attacks, and post-reencoding caption stores.
-- Present the frozen contact sheets and failure ledger to the PI only after the artifact gate is computed.
+- Finish the exact-package 7B caption store and scale-control score.
+- Complete `reports/fliptrack_v02r19_human_audit.md` before declaring the candidate frozen for scientific use.
