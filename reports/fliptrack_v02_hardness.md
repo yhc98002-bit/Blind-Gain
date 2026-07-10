@@ -23,6 +23,7 @@ Current evidence:
 | R7 eight-point geometry | 300 | 0.4267 | 0.740 | 0.0167 | 0.170 | 0.000 | 0.000 | reject: 7B caption exceeds 0.15 |
 | R9 chart expansion | 300 | 0.370 | 0.6067 | 0.000 | 0.0033 | not run | not run | reject: 3B real below 0.40 |
 | R10 high-entropy geometry | 300 | 0.450 | 0.7467 | 0.0167 | 0.0067 | 0.000 | 0.000 | retain candidate: all registered hardness cells pass |
+| R11 legible chart | 300 | 0.980 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -48,6 +49,12 @@ R10 diagnostics:
 - Degradation is strongly downward: 0.450 original, 0.410 mild, 0.240 medium, 0.0067 severe, 0 gray.
 - R10 is a retained template candidate. It does not by itself satisfy the three-template P1.6 requirement.
 
+R11 diagnostics:
+- Source manifest: `data/fliptrack_v02r11_source_manifest.jsonl`, one fixed 300-pair batch.
+- 3B real: `experiments/runs/fliptrack_v02r11_qwen25vl3b_real_20260710T030100Z`.
+- Pair accuracy is 0.980 and strict pair accuracy is 0.830. The direct point ring and target-line emphasis made the template too easy.
+- R11 is excluded without running blind/caption cells; an upper-bound failure cannot be rescued by those cells.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -71,5 +78,5 @@ Decision:
 
 Next actions:
 - Build one predeclared high-entropy geometry batch and score 3B real before other modes.
-- Score the newly versioned R11 chart design as one fixed 300-pair batch.
+- Score the distinct R12 balanced chart design as one fixed 300-pair batch; it removes R11's point ring and target-line thickening.
 - Package and attack only after three families independently meet all acceptance checks.

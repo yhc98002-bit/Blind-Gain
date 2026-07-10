@@ -10,6 +10,7 @@ from PIL import Image
 from src.eval.fliptrack_metrics import match_tier
 from src.fliptrack.build_v02 import (
     build,
+    generate_balanced_chart_pairs,
     generate_coordinate_point_pairs,
     generate_coordinate_register_eight_point_pairs,
     generate_coordinate_register_high_entropy_pairs,
@@ -156,6 +157,17 @@ def test_r11_legible_chart_changes_only_declared_target_region(tmp_path: Path) -
             allowed = np.asarray(mask.convert("L")) > 0
         assert np.any(changed)
         assert not np.any(changed & ~allowed)
+
+
+def test_r12_balanced_chart_removes_direct_target_emphasis(tmp_path: Path) -> None:
+    rows = generate_balanced_chart_pairs(tmp_path / "chart-r12", n=3, seed=97)
+    assert {row["template_id"] for row in rows} == {"starred_series_value_balanced_v04"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["series_count"] == 8
+        assert verifier["target_point_circled"] is False
+        assert verifier["target_line_thickened"] is False
+        assert row["answer_a"] != row["answer_b"]
 
 
 def test_contact_sheet_contains_twenty_pairs_when_available(tmp_path: Path) -> None:

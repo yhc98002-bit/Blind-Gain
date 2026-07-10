@@ -215,7 +215,11 @@ def generate_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any
 
 
 def _render_legible_chart(
-    labels: list[str], values: list[list[int]], target_series: int, target_x: int
+    labels: list[str],
+    values: list[list[int]],
+    target_series: int,
+    target_x: int,
+    emphasize_target: bool = True,
 ) -> Image.Image:
     width, height = 1400, 900
     image = Image.new("RGB", (width, height), (249, 250, 248))
@@ -248,30 +252,35 @@ def _render_legible_chart(
             for x, value in zip(x_positions, series_values)
         ]
         color = COLORS[series_index]
-        draw.line(points, fill=color, width=5 if series_index == target_series else 3)
+        draw.line(
+            points,
+            fill=color,
+            width=5 if emphasize_target and series_index == target_series else 3,
+        )
         for x, y in points:
-            radius = 6 if series_index == target_series else 4
+            radius = 6 if emphasize_target and series_index == target_series else 4
             draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=color, outline="white", width=2)
-        if series_index == target_series:
+        if emphasize_target and series_index == target_series:
             x, y = points[target_x]
             draw.ellipse((x - 14, y - 14, x + 14, y + 14), outline=(15, 15, 15), width=3)
 
     legend_left = 1040
-    draw.rectangle((legend_left, 82, 1370, 500), fill="white", outline=(165, 165, 165), width=2)
+    legend_bottom = max(500, 160 + (len(labels) - 1) * 54 + 35)
+    draw.rectangle((legend_left, 82, 1370, legend_bottom), fill="white", outline=(165, 165, 165), width=2)
     draw.text((1205, 112), "Series key", anchor="mm", font=_font(20, True), fill=(25, 25, 25))
     for index, label in enumerate(labels):
         y = 160 + index * 54
         draw.line(
             (legend_left + 40, y, legend_left + 92, y),
             fill=COLORS[index],
-            width=6 if index == target_series else 4,
+            width=6 if emphasize_target and index == target_series else 4,
         )
         draw.ellipse((legend_left + 61, y - 5, legend_left + 71, y + 5), fill=COLORS[index])
         draw.text((legend_left + 110, y), label, anchor="lm", font=_font(18, True), fill=(20, 20, 20))
         if index == target_series:
             draw.text((legend_left + 20, y), "*", anchor="mm", font=_font(27, True), fill=(0, 0, 0))
     draw.multiline_text(
-        (1040, 548),
+        (1040, legend_bottom + 48),
         "The dashed guide marks x.\nThe star selects the series.",
         font=_font(16),
         fill=(70, 70, 70),
@@ -323,6 +332,64 @@ def generate_legible_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[
                     "x_count": 8,
                     "target_series_index": target_series,
                     "target_x": target_x + 1,
+                    "shared_content_seed": pair_seed,
+                    "only_semantic_change": "one series value",
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
+def generate_balanced_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        labels = _procedural_labels(rng, 8)
+        values_a = [[rng.randrange(10, 91, 10) for _ in range(8)] for _ in range(8)]
+        target_series = rng.randrange(8)
+        target_x = rng.randrange(1, 7)
+        values_b = [list(series) for series in values_a]
+        current = values_a[target_series][target_x]
+        candidates = [value for value in range(10, 91, 10) if abs(value - current) >= 20]
+        values_b[target_series][target_x] = rng.choice(candidates)
+        answer_a = str(current)
+        answer_b = str(values_b[target_series][target_x])
+        pair_id = "v02_chart8x8_" + stable_id(
+            pair_seed, labels, target_series, target_x, answer_a, answer_b
+        )
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_legible_chart(
+                    labels, values_a, target_series, target_x, emphasize_target=False
+                ),
+                image_b=_render_legible_chart(
+                    labels, values_b, target_series, target_x, emphasize_target=False
+                ),
+                question=f"What is the value of the starred series at x = {target_x + 1}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="chart_two_hop_read",
+                template_id="starred_series_value_balanced_v04",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "legend_bind_then_guided_coordinate_read",
+                    "training_domain_alignment": "medium",
+                    "caption_failure_targeted": "sixty_four_question_blind_series_value_bindings",
+                    "render_variant": "eight_series_eight_intervals_no_target_emphasis_r12",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "series_count": len(labels),
+                    "x_count": 8,
+                    "target_series_index": target_series,
+                    "target_x": target_x + 1,
+                    "target_point_circled": False,
+                    "target_line_thickened": False,
                     "shared_content_seed": pair_seed,
                     "only_semantic_change": "one series value",
                 },
@@ -1128,6 +1195,7 @@ GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] =
 ]
 
 EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
+    ("chart_balanced", generate_balanced_chart_pairs),
     ("chart_legible", generate_legible_chart_pairs),
     ("coordinate_point", generate_coordinate_point_pairs),
     ("coordinate_register", generate_coordinate_register_pairs),
