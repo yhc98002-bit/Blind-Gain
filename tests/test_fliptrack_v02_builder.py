@@ -21,6 +21,7 @@ from src.fliptrack.build_v02 import (
     generate_guided_chart_pairs,
     generate_inspection_ledger_pairs,
     generate_legible_chart_pairs,
+    generate_nine_series_chart_pairs,
     generate_parallel_pairs,
     write_contact_sheets,
 )
@@ -214,6 +215,23 @@ def test_r15_five_series_chart_changes_only_declared_target_region(tmp_path: Pat
         assert verifier["target_column_guided"] is True
         assert verifier["target_point_circled"] is False
         assert verifier["target_line_thickened"] is False
+        with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
+            changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
+        with Image.open(row["changed_region_mask_a"]) as mask:
+            allowed = np.asarray(mask.convert("L")) > 0
+        assert np.any(changed)
+        assert not np.any(changed & ~allowed)
+
+
+def test_r16_nine_series_chart_preserves_direct_star_and_pair_truth(tmp_path: Path) -> None:
+    rows = generate_nine_series_chart_pairs(tmp_path / "chart-r16", n=3, seed=113)
+    assert {row["template_id"] for row in rows} == {"starred_series_value_nine_v07"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["series_count"] == 9
+        assert verifier["x_count"] == 6
+        assert verifier["target_point_starred"] is True
+        assert verifier["target_legend_starred"] is True
         with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
             changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
         with Image.open(row["changed_region_mask_a"]) as mask:

@@ -214,6 +214,60 @@ def generate_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any
     return rows
 
 
+def generate_nine_series_chart_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        labels = _procedural_labels(rng, 9)
+        values_a = [[rng.randrange(10, 91, 10) for _ in range(6)] for _ in range(9)]
+        target_series = rng.randrange(9)
+        target_x = rng.randrange(1, 5)
+        values_b = [list(series) for series in values_a]
+        current = values_a[target_series][target_x]
+        candidates = [value for value in range(10, 91, 10) if abs(value - current) >= 20]
+        values_b[target_series][target_x] = rng.choice(candidates)
+        answer_a = str(current)
+        answer_b = str(values_b[target_series][target_x])
+        pair_id = "v02_chart9x6_starred_" + stable_id(
+            pair_seed, labels, target_series, target_x, answer_a, answer_b
+        )
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_chart(labels, values_a, target_series, target_x),
+                image_b=_render_chart(labels, values_b, target_series, target_x),
+                question=f"What is the value of the starred series at x = {target_x + 1}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="chart_two_hop_read",
+                template_id="starred_series_value_nine_v07",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "star_localize_then_legend_bind_then_coordinate_read",
+                    "training_domain_alignment": "medium",
+                    "caption_failure_targeted": "fifty_four_question_blind_series_value_bindings",
+                    "render_variant": "nine_series_six_intervals_direct_star_r16",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "series_count": len(labels),
+                    "x_count": 6,
+                    "target_series_index": target_series,
+                    "target_x": target_x + 1,
+                    "target_point_starred": True,
+                    "target_legend_starred": True,
+                    "shared_content_seed": pair_seed,
+                    "only_semantic_change": "one series value",
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
 def _render_legible_chart(
     labels: list[str],
     values: list[list[int]],
@@ -1445,6 +1499,7 @@ EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[st
     ("chart_five", generate_five_series_chart_pairs),
     ("chart_guided", generate_guided_chart_pairs),
     ("chart_legible", generate_legible_chart_pairs),
+    ("chart_nine", generate_nine_series_chart_pairs),
     ("coordinate_point", generate_coordinate_point_pairs),
     ("coordinate_register", generate_coordinate_register_pairs),
     ("coordinate_register_legible", generate_coordinate_register_legible_pairs),

@@ -27,6 +27,7 @@ Current evidence:
 | R12 balanced chart | 300 | 0.2533 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 | R13 guided chart | 300 | 0.3767 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 | R14 inspection ledger | 300 | 0.9900 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
+| R15 five-series chart | 300 | 0.5733 | 0.3967 | pending | pending | 0.0000 | 0.0000 | reject: 7B real does not improve over 3B |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -77,6 +78,14 @@ R14 diagnostics:
 - Pair accuracy is 0.9900, strict pair accuracy is 0.9833, and format-valid rate is 0.9950.
 - R14 is excluded without blind/caption cells. Removing row highlighting did not make exact record-ID lookup difficult enough for the 3B model.
 
+R15 diagnostics:
+- Source manifest: `data/fliptrack_v02r15_source_manifest.jsonl`, one fixed 300-pair batch.
+- 3B real: `experiments/runs/fliptrack_v02r15_qwen25vl3b_real_20260710T075114Z`; final pair accuracy 0.5733 and strict pair accuracy 0.3933.
+- 7B real: `experiments/runs/fliptrack_v02r15_qwen25vl7b_real_20260710T075919Z`; final/strict pair accuracy 0.3967.
+- Control A is monotone: 0.5733 real, 0.3733 mild, 0.2167 medium, 0 severe, and 0 gray; pair-shared noise is also 0 with collapse 1.0.
+- R15 fails Control B. The 7B final score falls by 0.1766; strict accuracy is effectively flat (+0.0034), so there is no substantive scale gain under either score.
+- Caption jobs continue as diagnostics, but no caption outcome can repair the failed real-image scale control.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -94,6 +103,7 @@ Problems:
 - Removing all direct target emphasis while increasing R12 to eight series overcorrects the R11 upper-bound failure.
 - R13's six-series intermediate design improves over R12 but remains below the visual floor; the chart family is not yet retained.
 - R14's unhighlighted 12-row ledger saturates the 3B visual ceiling and therefore cannot serve as the third retained template.
+- R15 passes the 3B hardness and degradation gates but fails the registered 3B-to-7B real-image scale control.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
@@ -102,5 +112,5 @@ Decision:
 - Continue with independently declared template revisions; never pool failed batches to cross the visual floor.
 
 Next actions:
-- Predeclare one five-series chart revision between R13's six-series lower-bound miss and R11's directly highlighted upper-bound failure; retain the no-ring/no-thick-line contract.
+- Predeclare R16 from the R9 lineage: nine series instead of ten while retaining the direct point star. R9 already showed a positive 3B-to-7B scale trend and missed only the 3B floor.
 - Package and attack only after three families independently meet all acceptance checks.

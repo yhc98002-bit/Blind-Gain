@@ -13,6 +13,7 @@ Control A, 3B degradation pair accuracy:
 | R7 eight-point geometry | 0.4267 | 0.4533 | 0.2633 | 0.000 | 0.000 | pass as strongly downward; mild +0.0266 is sampling variation |
 | R6 coordinate calibration | 0.350 | 0.420 | 0.150 | 0.000 | 0.000 | fail: original below floor and mild improves materially |
 | R10 high-entropy geometry | 0.450 | 0.410 | 0.240 | 0.0067 | 0.000 | pass: strongly downward |
+| R15 five-series chart | 0.5733 | 0.3733 | 0.2167 | 0.0000 | 0.0000 | pass: monotone downward |
 
 Control B, model/caption scale:
 | Template | 3B real | 7B real | 3B caption | 7B caption | Result |
@@ -22,6 +23,7 @@ Control B, model/caption scale:
 | R4 coordinate register | 0.420 | 0.750 | 0.000 | 0.060 | provisional pass; R5 expansion fails visual floor |
 | R7 eight-point geometry | 0.4267 | 0.740 | 0.0167 | 0.170 | fail: 7B caption exceeds 0.15 |
 | R10 high-entropy geometry | 0.450 | 0.7467 | 0.0167 | 0.0067 | pass: real rises while caption decreases |
+| R15 five-series chart | 0.5733 | 0.3967 | pending | pending | fail: 7B real does not improve |
 
 Evidence:
 - Transform implementation and fixtures: `src/eval/image_conditions.py`, `tests/test_eval_image_conditions.py`.
@@ -30,15 +32,18 @@ Evidence:
 - R3/R4/R5 caption aggregates are under their corresponding immutable run directories.
 - R7 160-token 7B caption QA: `experiments/runs/fliptrack_v02r7_qwen25vl7b_captionqa160_20260710T020500Z`; pair accuracy is 0.1633 versus 0.1700 at 384 tokens.
 - R10 real/blind/caption/degradation runs share `data/fliptrack_v02r10_source_manifest.jsonl` and are under `experiments/runs/fliptrack_v02r10_*`.
+- R15 real/blind/degradation runs share `data/fliptrack_v02r15_source_manifest.jsonl`; caption diagnostics are still completing.
 
 Problems:
 - A positive degradation curve does not rescue caption-compressibility.
+- A positive degradation curve also does not rescue a template whose visual score fails to improve with model scale, as R15 demonstrates.
 - Tightening the R7 caption budget from 384 to 160 tokens does not rescue it: both results exceed 0.15.
 - R8 was packaged before the R7 7B-caption cell completed; it is retained only as a failed candidate.
 
 Decision:
 - Reject R7 under Control B and retain its Control A curve as instrument-sensitivity evidence.
 - Retain R10 as the geometry candidate under both controls.
+- Reject R15 under Control B even though it passes Control A.
 - Do not mark P1.7 complete until every template in a final package passes both controls.
 
 Next actions:
