@@ -4,7 +4,7 @@ P0.3 | pass | within-template key-shuffle and auxiliary swap nulls are implement
 P0.4 | pass | cached V0.1 predictions are re-scored in `reports/fliptrack_v01_rescored.md`
 P0.5 | pass | resolved EasyR1 reference diff covers every required field
 P1.1 | blocked | recipe-scale anchor remains active at `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T224852Z`
-P1.2 | blocked | MMStar, MathVista, and BLINK 3B/7B complete; HallusionBench/MMVP and registered blind cells pending
+P1.2 | blocked | MMStar/MathVista/BLINK and registered MMStar/MathVista blind cells complete for 3B/7B; HallusionBench/MMVP pending
 P1.3 | blocked | coordinated two-node NCCL/FSDP window not yet run
 P1.4 | blocked | R8 candidate passes all 12 linter checks, but no scientifically valid final package is frozen
 P1.5 | blocked | R8 fails only chart metadata; required R9 expansion then fails the 3B visual floor

@@ -9,8 +9,12 @@ Evidence:
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Qwen2.5-VL-3B | MMStar | 1,500 | 0.5387 | 0.5540 | 0.0013 | 0.0013 | 0.0000 | 0 |
 | Qwen2.5-VL-7B | MMStar | 1,500 | 0.6080 | 0.6320 | 0.0293 | 0.0440 | 0.0000 | 0 |
+| Qwen2.5-VL-3B | MMStar image-removed | 1,500 | n/a | 0.2607 | 0.0153 | 0.0373 | 0.0007 | 0 |
+| Qwen2.5-VL-7B | MMStar image-removed | 1,500 | n/a | 0.2880 | 0.2140 | 0.7633 | 0.0007 | 0 |
 | Qwen2.5-VL-3B | MathVista-testmini | 999 | 0.6226 | 0.6236 | 0.1672 | 0.3183 | 0.0000 | 0 |
 | Qwen2.5-VL-7B | MathVista-testmini | 999 | 0.6607 | 0.6627 | 0.3233 | 0.5546 | 0.0000 | 0 |
+| Qwen2.5-VL-3B | MathVista-testmini image-removed | 999 | n/a | 0.3293 | 0.1391 | 0.6186 | 0.0000 | 0 |
+| Qwen2.5-VL-7B | MathVista-testmini image-removed | 999 | n/a | 0.3393 | 0.1331 | 0.5295 | 0.0000 | 0 |
 | Qwen2.5-VL-3B | BLINK | 1,901 | 0.4929 | 0.4929 | 0.0000 | 0.0000 | 0.0000 | 0 |
 | Qwen2.5-VL-7B | BLINK | 1,901 | 0.5565 | 0.5565 | 0.0000 | 0.0000 | 0.0000 | 0 |
 | Qwen2.5-VL-3B/7B | HallusionBench | pending | blocked | blocked | blocked | blocked | blocked | blocked |
@@ -30,15 +34,26 @@ Run evidence:
 - Validator recovery: `experiments/runs/vlmevalkit_validation_recovery_mathvista3b_20260710T021941Z` and `experiments/runs/vlmevalkit_validation_recovery_mathvista7b_20260710T021941Z`.
 - Unified MathVista postprocessing: `experiments/runs/vlmevalkit_postprocess_mathvista3b_20260710T022024Z` and `experiments/runs/vlmevalkit_postprocess_mathvista7b_20260710T022024Z`.
 - Local judge: `experiments/runs/local_judge_an29_gpu2_20260710T020845Z`; deterministic smoke response is `<answer>4</answer>`. It was stopped after both scoring jobs completed.
+- Image-removed runs: `experiments/runs/layer1_blind_{mmstar3b,mmstar7b,mathvista3b,mathvista7b}_an29_20260710T023019Z`.
+- Every blind run has a complete manifest, zero missing predictions, and the protocol marker `blind-gains.layer1-image-removed.v1`.
+
+Registered blind deltas:
+| Model | Benchmark | Real `Acc_final` | Image-removed `Acc_final` | Blind delta (blind - real) |
+| --- | --- | ---: | ---: | ---: |
+| Qwen2.5-VL-3B | MMStar | 0.5540 | 0.2607 | -0.2933 |
+| Qwen2.5-VL-7B | MMStar | 0.6320 | 0.2880 | -0.3440 |
+| Qwen2.5-VL-3B | MathVista-testmini | 0.6236 | 0.3293 | -0.2943 |
+| Qwen2.5-VL-7B | MathVista-testmini | 0.6627 | 0.3393 | -0.3233 |
 
 Problems:
 - `Acc_strict` is much lower than benchmark accuracy because the base checkpoints usually ignore the requested `<answer>` wrapper. BLINK predictions omit it on every row. This is the intended format decomposition, not a substitute benchmark score.
-- Blind deltas are not reported yet. A gray image is not equivalent to image removal, so no gray result will be mislabeled as the registered blind protocol.
+- The blind path uses the same Qwen checkpoints and vLLM version but a dedicated runner rather than VLMEvalKit's image dataset class. Prompt text, options, system prompt, maximum tokens, and greedy decoding are locked; only the image message/tokens/tensors are absent.
 - MathVista item 781 is excluded because two options have identical text and the authoritative annotation has no answer-option label.
 - The MathVista harness score uses its local-judge evaluator. `Acc_final` independently applies the unified answer-span matcher to raw predictions; the small difference is retained rather than reconciled away.
 
 Decision:
 - Preserve both scoring contracts and never mix them in one headline column.
+- Register true image removal, not gray pixels: retain question references to the image verbatim, but send no image message, image token, or image tensor.
 - Mark missing cells as pending/blocked rather than treating them as zero.
 - Label any later Geometry3K-trained checkpoint MathVista row `contamination: geo3k-source`.
 
