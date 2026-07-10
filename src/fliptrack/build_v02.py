@@ -1245,6 +1245,134 @@ def generate_header_table_pairs(out_dir: Path, n: int, seed: int) -> list[dict[s
     return rows
 
 
+def _render_inspection_ledger(rows: list[dict[str, str]]) -> Image.Image:
+    width, height = 1280, 1120
+    image = Image.new("RGB", (width, height), (246, 247, 245))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((42, 36, width - 42, height - 36), fill="white", outline=(175, 175, 175), width=2)
+    draw.text((width // 2, 74), "Shipment Inspection Ledger", anchor="mm", font=_font(27, True), fill=(24, 24, 24))
+    draw.text((72, 112), "Shift: C-17     Review batch: 08     Page: 1 of 1", font=_font(16), fill=(65, 65, 65))
+    left, top, row_height = 72, 148, 66
+    widths = [286, 190, 238, 220, 202]
+    headers = ["Record ID", "Bay", "Seal code", "Inspector", "Status"]
+    x_positions = [left]
+    for cell_width in widths:
+        x_positions.append(x_positions[-1] + cell_width)
+    for column, header in enumerate(headers):
+        draw.rectangle(
+            (x_positions[column], top, x_positions[column + 1], top + row_height),
+            fill=(224, 229, 233),
+            outline=(112, 112, 112),
+            width=2,
+        )
+        draw.text(
+            ((x_positions[column] + x_positions[column + 1]) // 2, top + row_height // 2),
+            header,
+            anchor="mm",
+            font=_font(18, True),
+            fill=(25, 25, 25),
+        )
+    keys = ["record_id", "bay", "seal_code", "inspector", "status"]
+    for row_index, row in enumerate(rows):
+        y0 = top + (row_index + 1) * row_height
+        fill = (255, 255, 255) if row_index % 2 == 0 else (244, 247, 249)
+        for column, key in enumerate(keys):
+            draw.rectangle(
+                (x_positions[column], y0, x_positions[column + 1], y0 + row_height),
+                fill=fill,
+                outline=(145, 145, 145),
+                width=1,
+            )
+            draw.text(
+                ((x_positions[column] + x_positions[column + 1]) // 2, y0 + row_height // 2),
+                row[key],
+                anchor="mm",
+                font=_font(19, key in {"record_id", "seal_code"}),
+                fill=(18, 18, 18),
+            )
+    draw.text(
+        (72, 1060),
+        "Verify entries by record ID. No row or field is preselected.",
+        font=_font(15),
+        fill=(72, 72, 72),
+    )
+    return image
+
+
+def generate_inspection_ledger_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    code_chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    inspectors = ["N. Cole", "P. Shah", "R. Ito", "S. Moss", "T. Vega", "W. Lin"]
+    statuses = ["CLEARED", "HOLD", "RECHECK"]
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        record_ids = []
+        while len(record_ids) < 12:
+            candidate = f"R-{rng.randint(1000, 9999)}-{rng.choice(string.ascii_uppercase)}"
+            if candidate not in record_ids:
+                record_ids.append(candidate)
+        table_a = [
+            {
+                "record_id": record_id,
+                "bay": f"BAY-{rng.randint(1, 24):02d}",
+                "seal_code": "".join(rng.sample(code_chars, 3)),
+                "inspector": rng.choice(inspectors),
+                "status": rng.choice(statuses),
+            }
+            for record_id in record_ids
+        ]
+        target_row = rng.randrange(len(table_a))
+        table_b = [dict(row) for row in table_a]
+        answer_a = table_a[target_row]["seal_code"]
+        candidates = [
+            "".join(rng.sample(code_chars, 3))
+            for _ in range(20)
+        ]
+        answer_b = next(
+            candidate
+            for candidate in candidates
+            if _answers_distinguishable(answer_a, candidate)
+            and candidate not in {row["seal_code"] for row in table_a}
+        )
+        table_b[target_row]["seal_code"] = answer_b
+        target_record = table_a[target_row]["record_id"]
+        pair_id = "v02_ledger12_" + stable_id(pair_seed, target_record, answer_a, answer_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_inspection_ledger(table_a),
+                image_b=_render_inspection_ledger(table_b),
+                question=f"What is the seal code for record {target_record}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="document_local_ocr_binding",
+                template_id="ledger_record_seal_code_v03",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "record_id_localization_then_seal_code_read",
+                    "training_domain_alignment": "low",
+                    "caption_failure_targeted": "twelve_question_blind_record_code_bindings",
+                    "render_variant": "twelve_row_unhighlighted_ledger_r14",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "row_count": len(table_a),
+                    "target_row": target_row,
+                    "target_record_id": target_record,
+                    "target_row_highlighted": False,
+                    "target_cell_highlighted": False,
+                    "shared_content_seed": pair_seed,
+                    "only_semantic_change": "one seal code",
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
 GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[str, Any]]]]] = [
     ("chart", generate_chart_pairs),
     ("grid", generate_grid_pairs),
@@ -1263,6 +1391,7 @@ EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[st
     ("coordinate_register_eight", generate_coordinate_register_eight_point_pairs),
     ("coordinate_register_high_entropy", generate_coordinate_register_high_entropy_pairs),
     ("header_table", generate_header_table_pairs),
+    ("inspection_ledger", generate_inspection_ledger_pairs),
 ]
 
 
