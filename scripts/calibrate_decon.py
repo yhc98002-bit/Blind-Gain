@@ -11,7 +11,7 @@ import numpy as np
 from PIL import Image
 
 from scripts.extract_decon_embeddings import image_embeddings, text_embeddings
-from src.decon.calibration import threshold_summary
+from src.decon.calibration import select_distinct_negatives, threshold_summary
 from src.decon.core import DEFAULT_THRESHOLDS, dhash, hamming, jaccard, phash, read_jsonl, word_ngrams
 
 
@@ -61,8 +61,7 @@ def main() -> None:
         transformed_copy(Path(row["image_path"]), path)
         transformed_paths.append(path)
 
-    shift = len(selected) // 2
-    negative_rows = selected[shift:] + selected[:shift]
+    negative_rows = select_distinct_negatives(selected, candidates, args.seed + 1)
     phash_positive = []
     phash_negative = []
     for row, transformed, negative in zip(selected, transformed_paths, negative_rows):
@@ -82,7 +81,10 @@ def main() -> None:
     image_features = image_embeddings(image_entities, args.dino_model, batch_size=32)
     count = len(selected)
     dino_positive = _cosine_pairs(image_features, list(range(count)), list(range(count, 2 * count)))
-    dino_negative = _cosine_pairs(image_features, list(range(count)), [(index + shift) % count for index in range(count)])
+    negative_image_entities = [(f"negative:{index}", row["image_path"]) for index, row in enumerate(negative_rows)]
+    negative_image_features = image_embeddings(negative_image_entities, args.dino_model, batch_size=32)
+    combined_image_features = np.concatenate([image_features[:count], negative_image_features], axis=0)
+    dino_negative = _cosine_pairs(combined_image_features, list(range(count)), list(range(count, 2 * count)))
 
     original_questions = [str(row["question"]) for row in selected]
     positive_questions = [f"{question.rstrip()} Please solve the same problem carefully." for question in original_questions]
@@ -92,7 +94,10 @@ def main() -> None:
     )
     text_features = text_embeddings(text_entities, args.text_model, batch_size=64)
     bge_positive = _cosine_pairs(text_features, list(range(count)), list(range(count, 2 * count)))
-    bge_negative = _cosine_pairs(text_features, list(range(count)), [(index + shift) % count for index in range(count)])
+    negative_text_entities = [(f"negative:{index}", str(row["question"])) for index, row in enumerate(negative_rows)]
+    negative_text_features = text_embeddings(negative_text_entities, args.text_model, batch_size=64)
+    combined_text_features = np.concatenate([text_features[:count], negative_text_features], axis=0)
+    bge_negative = _cosine_pairs(combined_text_features, list(range(count)), list(range(count, 2 * count)))
     jaccard_positive = [jaccard(word_ngrams(a), word_ngrams(b)) for a, b in zip(original_questions, positive_questions)]
     jaccard_negative = [
         jaccard(word_ngrams(question), word_ngrams(negative["question"]))
@@ -108,7 +113,10 @@ def main() -> None:
             "image": "75% downsample/upscale followed by JPEG quality 85 and PNG re-encode",
             "text": "same question with a semantically neutral solve-carefully suffix",
         },
-        "negative_definition": "deterministic half-sample rotation among unique Geometry3K images/questions",
+        "negative_definition": (
+            "seeded random Geometry3K pairs constrained to different image hashes, normalized questions, "
+            "word-5-gram Jaccard below 0.3, and minimum pHash/dHash Hamming above 10"
+        ),
         "phash_or_dhash_min_hamming": threshold_summary(
             phash_positive,
             phash_negative,
