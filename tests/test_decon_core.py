@@ -89,6 +89,17 @@ def test_embedding_entities_deduplicate_images_but_not_questions(tmp_path: Path)
     assert [identifier for identifier, _ in embedding_entities(rows, "text")] == ["first", "second"]
 
 
+def test_text_only_placeholder_is_excluded_from_image_signals_but_kept_for_text(tmp_path: Path) -> None:
+    image = tmp_path / "blank.png"
+    Image.new("RGB", (32, 32), "white").save(image)
+    row = _row("text-only", "hallusionbench", image, "Is this true?", "Yes")
+    row["image_applicable"] = False
+    enriched = enrich_records([row])
+    assert enriched[0]["phash64"] is None
+    assert embedding_entities(enriched, "image") == []
+    assert embedding_entities(enriched, "text") == [("text-only", "Is this true?")]
+
+
 def test_embedding_comparison_flags_only_high_cosine_candidate(tmp_path: Path) -> None:
     train_image = tmp_path / "train.png"
     eval_image = tmp_path / "eval.png"

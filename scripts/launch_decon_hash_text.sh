@@ -18,13 +18,15 @@ MMSTAR_TSV="data/vlmevalkit/MMStar_VLMEVAL.tsv"
 MMSTAR_IMAGES="data/vlmevalkit/images/MMStar_VLMEVAL"
 MATHVISTA_TSV="data/vlmevalkit/MathVista_LOCAL.tsv"
 BLINK_TSV="data/vlmevalkit/BLINK_LOCAL.tsv"
-BUILD_COMMAND=".venv/bin/python scripts/build_decon_records.py --geometry-manifest ${GEOMETRY_MANIFEST} --mmstar-tsv ${MMSTAR_TSV} --mmstar-image-root ${MMSTAR_IMAGES} --mathvista-tsv ${MATHVISTA_TSV} --blink-tsv ${BLINK_TSV} --train-output ${TRAIN_RECORDS} --eval-output ${EVAL_RECORDS} --summary-output ${SUMMARY}"
+MMVP_TSV="data/vlmevalkit/MMVP_LOCAL_V2.tsv"
+HALLUSION_TSV="data/vlmevalkit/HallusionBench_LOCAL_V2.tsv"
+BUILD_COMMAND=".venv/bin/python scripts/build_decon_records.py --geometry-manifest ${GEOMETRY_MANIFEST} --mmstar-tsv ${MMSTAR_TSV} --mmstar-image-root ${MMSTAR_IMAGES} --mathvista-tsv ${MATHVISTA_TSV} --blink-tsv ${BLINK_TSV} --mmvp-tsv ${MMVP_TSV} --hallusion-tsv ${HALLUSION_TSV} --train-output ${TRAIN_RECORDS} --eval-output ${EVAL_RECORDS} --summary-output ${SUMMARY}"
 COMPARE_COMMAND=".venv/bin/python scripts/compare_decon_hash_text.py --train-records ${TRAIN_RECORDS} --eval-records ${EVAL_RECORDS} --output ${COMPARISON}"
 COMMAND="${BUILD_COMMAND} && ${COMPARE_COMMAND}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
-DATA_HASH="$(sha256sum "${GEOMETRY_MANIFEST}" "${MMSTAR_TSV}" "${MATHVISTA_TSV}" "${BLINK_TSV}" | sort -k2 | sha256sum | awk '{print $1}')"
+DATA_HASH="$(sha256sum "${GEOMETRY_MANIFEST}" "${MMSTAR_TSV}" "${MATHVISTA_TSV}" "${BLINK_TSV}" "${MMVP_TSV}" "${HALLUSION_TSV}" | sort -k2 | sha256sum | awk '{print $1}')"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg git_hash "$(git rev-parse HEAD)" \
@@ -43,7 +45,7 @@ jq -n \
     gpu_allocation: [],
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "geometry3k train x MMStar/MathVista/BLINK",
+    data_manifest: "geometry3k train x MMStar/MathVista/BLINK/MMVP/HallusionBench",
     data_manifest_hash: $data_hash,
     command: $command,
     start_time_utc: $start_time_utc,

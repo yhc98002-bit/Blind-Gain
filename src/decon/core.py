@@ -93,6 +93,7 @@ def _record(
     answer: Any,
     provenance_id: Any = None,
     image_sha256: str | None = None,
+    image_applicable: bool = True,
 ) -> dict[str, Any]:
     path = Path(str(image_path))
     if not path.is_file():
@@ -107,6 +108,7 @@ def _record(
         "image_index": image_index,
         "image_path": str(path),
         "image_sha256": image_sha256 or sha256_file(path),
+        "image_applicable": image_applicable,
         "question": str(question),
         "answer": str(answer),
         "provenance_id": None if provenance_id is None else str(provenance_id),
@@ -151,6 +153,8 @@ def load_layer1_records(
     mmstar_image_root: str | Path,
     mathvista_tsv: str | Path,
     blink_tsv: str | Path,
+    mmvp_tsv: str | Path | None = None,
+    hallusion_tsv: str | Path | None = None,
 ) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     mmstar = pd.read_csv(mmstar_tsv, sep="\t")
@@ -199,6 +203,44 @@ def load_layer1_records(
                     provenance_id=f"BLINK:{row.get('source_id', row['index'])}:image{image_index}",
                 )
             )
+
+    if mmvp_tsv is not None:
+        mmvp = pd.read_csv(mmvp_tsv, sep="\t")
+        for row in mmvp.to_dict(orient="records"):
+            records.append(
+                _record(
+                    dataset="mmvp",
+                    split="test",
+                    item_id=row["index"],
+                    image_index=0,
+                    image_path=row["image_path"],
+                    question=row["question"],
+                    answer=row["answer"],
+                    provenance_id=f"MMVP:{row.get('source_index', row['index'])}",
+                )
+            )
+
+    if hallusion_tsv is not None:
+        hallusion = pd.read_csv(hallusion_tsv, sep="\t")
+        for row in hallusion.to_dict(orient="records"):
+            placeholder = str(row.get("image_is_placeholder", "false")).strip().casefold() == "true"
+            records.append(
+                _record(
+                    dataset="hallusionbench",
+                    split="test",
+                    item_id=row["index"],
+                    image_index=0,
+                    image_path=row["image_path"],
+                    question=row["question"],
+                    answer=row["answer"],
+                    provenance_id=(
+                        f"HallusionBench:{row.get('category', 'unknown')}:"
+                        f"{row.get('set_id', 'unknown')}:{row.get('figure_id', 'unknown')}:"
+                        f"{row.get('question_id', 'unknown')}"
+                    ),
+                    image_applicable=not placeholder,
+                )
+            )
     return records
 
 
@@ -208,13 +250,14 @@ def enrich_records(records: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     for raw in records:
         row = dict(raw)
         digest = row["image_sha256"]
-        if digest not in image_cache:
+        image_applicable = bool(row.get("image_applicable", True))
+        if image_applicable and digest not in image_cache:
             image_cache[digest] = (phash(row["image_path"]), dhash(row["image_path"]))
-        p_value, d_value = image_cache[digest]
+        p_value, d_value = image_cache[digest] if image_applicable else (None, None)
         row.update(
             {
-                "phash64": f"{p_value:016x}",
-                "dhash64": f"{d_value:016x}",
+                "phash64": f"{p_value:016x}" if p_value is not None else None,
+                "dhash64": f"{d_value:016x}" if d_value is not None else None,
                 "question_normalized": normalize_text(row["question"]),
                 "question_answer_normalized": normalize_text(f"{row['question']} {row['answer']}"),
             }
@@ -240,6 +283,8 @@ def embedding_entities(records: Iterable[dict[str, Any]], kind: str) -> list[tup
     if kind == "image":
         by_hash: dict[str, str] = {}
         for row in records:
+            if not row.get("image_applicable", True):
+                continue
             by_hash.setdefault(row["image_sha256"], row["image_path"])
         return sorted(by_hash.items())
     if kind == "text":
@@ -277,7 +322,8 @@ def compare_hash_and_text(
     eval_by_question: dict[str, list[dict[str, Any]]] = defaultdict(list)
     eval_by_question_answer: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in eval_rows:
-        eval_by_sha[row["image_sha256"]].append(row)
+        if row.get("image_applicable", True):
+            eval_by_sha[row["image_sha256"]].append(row)
         eval_by_question[row["question_normalized"]].append(row)
         eval_by_question_answer[row["question_answer_normalized"]].append(row)
 
@@ -292,6 +338,7 @@ def compare_hash_and_text(
     eval_hashes = [
         (row, int(row["phash64"], 16), int(row["dhash64"], 16))
         for row in eval_rows
+        if row.get("image_applicable", True)
     ]
     inspect_max = int(thresholds["phash_inspect_max"])
     remove_max = int(thresholds["phash_remove_max"])

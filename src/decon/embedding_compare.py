@@ -124,7 +124,7 @@ def merge_embedding_signals(
                 "question_5gram_jaccard",
                 "bge_text_embedding",
             ],
-            "pending_layers": ["ocr_text_overlap", "HallusionBench", "MMVP"],
+            "pending_layers": ["ocr_text_overlap"],
         }
     )
     return result

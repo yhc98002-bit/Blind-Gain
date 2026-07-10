@@ -23,6 +23,8 @@ def main() -> None:
     parser.add_argument("--mmstar-image-root", type=Path, required=True)
     parser.add_argument("--mathvista-tsv", type=Path, required=True)
     parser.add_argument("--blink-tsv", type=Path, required=True)
+    parser.add_argument("--mmvp-tsv", type=Path)
+    parser.add_argument("--hallusion-tsv", type=Path)
     parser.add_argument("--train-output", type=Path, required=True)
     parser.add_argument("--eval-output", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, required=True)
@@ -33,7 +35,14 @@ def main() -> None:
 
     train_rows = enrich_records(load_geometry3k_records(args.geometry_manifest, split="train"))
     eval_rows = enrich_records(
-        load_layer1_records(args.mmstar_tsv, args.mmstar_image_root, args.mathvista_tsv, args.blink_tsv)
+        load_layer1_records(
+            args.mmstar_tsv,
+            args.mmstar_image_root,
+            args.mathvista_tsv,
+            args.blink_tsv,
+            mmvp_tsv=args.mmvp_tsv,
+            hallusion_tsv=args.hallusion_tsv,
+        )
     )
     write_jsonl(train_rows, args.train_output)
     write_jsonl(eval_rows, args.eval_output)
@@ -49,7 +58,15 @@ def main() -> None:
         "eval_dataset_counts": dict(sorted(Counter(row["dataset"] for row in eval_rows).items())),
         "source_hashes": {
             str(path): sha256_file(path)
-            for path in (args.geometry_manifest, args.mmstar_tsv, args.mathvista_tsv, args.blink_tsv)
+            for path in (
+                args.geometry_manifest,
+                args.mmstar_tsv,
+                args.mathvista_tsv,
+                args.blink_tsv,
+                args.mmvp_tsv,
+                args.hallusion_tsv,
+            )
+            if path is not None
         },
     }
     args.summary_output.parent.mkdir(parents=True, exist_ok=True)
