@@ -12,6 +12,7 @@ from src.fliptrack.build_v02 import (
     build,
     generate_coordinate_point_pairs,
     generate_coordinate_register_eight_point_pairs,
+    generate_coordinate_register_high_entropy_pairs,
     generate_coordinate_register_legible_pairs,
     generate_coordinate_register_pairs,
     generate_header_table_pairs,
@@ -119,6 +120,25 @@ def test_r7_eight_point_register_is_a_distinct_geometry_template(tmp_path: Path)
         assert row["verifier_results"]["point_count"] == 8
         assert row["provenance"]["render_variant"] == "eight_point_r7_scale72_radius11_label19"
         assert row["verifier_results"]["target_label"] in row["question"]
+
+
+def test_r10_high_entropy_register_preserves_only_target_y(tmp_path: Path) -> None:
+    rows = generate_coordinate_register_high_entropy_pairs(tmp_path / "register-r10", n=3, seed=83)
+    assert {row["template_id"] for row in rows} == {"coordinate_register_twenty_point_x_v02"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["point_count"] == 20
+        assert verifier["target_label"] in row["question"]
+        assert verifier["target_y_preserved"] is True
+        assert str(verifier["target_a"][0]) in {row["answer_a"], row["answer_b"]}
+        assert str(verifier["target_b"][0]) in {row["answer_a"], row["answer_b"]}
+        assert row["answer_a"] != row["answer_b"]
+        with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
+            changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
+        with Image.open(row["changed_region_mask_a"]) as mask:
+            allowed = np.asarray(mask.convert("L")) > 0
+        assert np.any(changed)
+        assert not np.any(changed & ~allowed)
 
 
 def test_contact_sheet_contains_twenty_pairs_when_available(tmp_path: Path) -> None:

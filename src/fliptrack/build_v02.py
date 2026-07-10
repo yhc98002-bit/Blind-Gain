@@ -790,6 +790,133 @@ def generate_coordinate_register_eight_point_pairs(out_dir: Path, n: int, seed: 
     )
 
 
+def _render_high_entropy_coordinate_register(points: dict[str, tuple[int, int]]) -> Image.Image:
+    width, height = 1400, 1240
+    image = Image.new("RGB", (width, height), (250, 250, 248))
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 38), "Coordinate Survey Register", anchor="mm", font=_font(26, True), fill=(25, 25, 25))
+    origin = (700, 650)
+    scale = 68
+    plot_left = origin[0] - 7 * scale
+    plot_right = origin[0] + 7 * scale
+    plot_top = origin[1] - 7 * scale
+    plot_bottom = origin[1] + 7 * scale
+    draw.rectangle((plot_left, plot_top, plot_right, plot_bottom), fill="white", outline=(75, 75, 75), width=2)
+    for value in range(-7, 8):
+        x = origin[0] + value * scale
+        y = origin[1] - value * scale
+        draw.line((x, plot_top, x, plot_bottom), fill=(224, 228, 232), width=1)
+        draw.line((plot_left, y, plot_right, y), fill=(224, 228, 232), width=1)
+        if value:
+            draw.text((x, origin[1] + 19), str(value), anchor="mm", font=_font(13), fill=(65, 65, 65))
+            draw.text((origin[0] - 20, y), str(value), anchor="mm", font=_font(13), fill=(65, 65, 65))
+    draw.line((plot_left, origin[1], plot_right, origin[1]), fill=(40, 40, 40), width=3)
+    draw.line((origin[0], plot_top, origin[0], plot_bottom), fill=(40, 40, 40), width=3)
+
+    for index, (label, point) in enumerate(points.items()):
+        x = origin[0] + point[0] * scale
+        y = origin[1] - point[1] * scale
+        color = COLORS[index % len(COLORS)]
+        draw.ellipse((x - 10, y - 10, x + 10, y + 10), fill=color, outline="white", width=2)
+        label_x = x + (17 if point[0] <= 0 else -17)
+        label_y = y - 16
+        draw.text(
+            (label_x, label_y),
+            label,
+            anchor="lm" if point[0] <= 0 else "rm",
+            font=_font(19, True),
+            fill=(18, 18, 18),
+            stroke_width=2,
+            stroke_fill="white",
+        )
+    draw.text(
+        (plot_left, 1186),
+        "Locate the requested label, then read its coordinate from the numbered axes.",
+        font=_font(15),
+        fill=(70, 70, 70),
+    )
+    return image
+
+
+def _sample_high_entropy_points(rng: random.Random, count: int) -> list[tuple[int, int]]:
+    candidates = [(x, y) for x in range(-7, 8) for y in range(-7, 8) if x != 0 and y != 0]
+    rng.shuffle(candidates)
+    selected: list[tuple[int, int]] = []
+    for candidate in candidates:
+        if all(max(abs(candidate[0] - x), abs(candidate[1] - y)) >= 2 for x, y in selected):
+            selected.append(candidate)
+            if len(selected) == count:
+                return selected
+    raise ValueError(f"unable to place {count} high-entropy coordinate labels")
+
+
+def generate_coordinate_register_high_entropy_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    rows = []
+    label_pool = [f"{letter}{digit}" for letter in "BCDFGHJKLMNPRSTVWXYZ" for digit in "23456789"]
+    for index in range(n):
+        pair_seed = seed + index * 104729
+        rng = random.Random(pair_seed)
+        labels = rng.sample(label_pool, 20)
+        coordinates = _sample_high_entropy_points(rng, len(labels))
+        points_a = dict(zip(labels, coordinates))
+        candidates_by_label: dict[str, list[tuple[int, int]]] = {}
+        for label, point in points_a.items():
+            other_points = {value for key, value in points_a.items() if key != label}
+            candidates = [
+                (x, point[1])
+                for x in range(-7, 8)
+                if x != 0
+                and abs(x - point[0]) >= 3
+                and _answers_distinguishable(str(point[0]), str(x))
+                and all(max(abs(x - ox), abs(point[1] - oy)) >= 2 for ox, oy in other_points)
+            ]
+            if candidates:
+                candidates_by_label[label] = candidates
+        if not candidates_by_label:
+            raise ValueError(f"no horizontal counterfactual targets for seed {pair_seed}")
+        target_label = rng.choice(list(candidates_by_label))
+        target_a = points_a[target_label]
+        target_candidates = candidates_by_label[target_label]
+        target_b = rng.choice(target_candidates)
+        points_b = dict(points_a)
+        points_b[target_label] = target_b
+        answer_a = str(target_a[0])
+        answer_b = str(target_b[0])
+        pair_id = "v02_register20x_" + stable_id(pair_seed, labels, target_label, target_a, target_b)
+        rows.append(
+            _save_rendered_pair(
+                out_dir=out_dir,
+                pair_id=pair_id,
+                image_a=_render_high_entropy_coordinate_register(points_a),
+                image_b=_render_high_entropy_coordinate_register(points_b),
+                question=f"What is the x-coordinate of point {target_label}?",
+                answer_a=answer_a,
+                answer_b=answer_b,
+                category="geometry_coordinate_indexing",
+                template_id="coordinate_register_twenty_point_x_v02",
+                provenance={
+                    "generator": "src.fliptrack.build_v02",
+                    "pair_seed": pair_seed,
+                    "visual_operation": "random_label_localization_then_x_coordinate_read",
+                    "training_domain_alignment": "high",
+                    "caption_failure_targeted": "twenty_question_blind_label_coordinate_bindings",
+                    "render_variant": "twenty_point_x_r10_scale68_radius10_label19",
+                },
+                verifier_results={
+                    "exact_by_construction": True,
+                    "point_count": len(labels),
+                    "target_label": target_label,
+                    "target_a": target_a,
+                    "target_b": target_b,
+                    "target_y_preserved": target_a[1] == target_b[1],
+                    "all_labels_randomized": True,
+                },
+                swap_sides=rng.random() < 0.5,
+            )
+        )
+    return rows
+
+
 def _render_header_cued_table(
     table: list[list[str]],
     row_labels: list[str],
@@ -887,6 +1014,7 @@ EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[st
     ("coordinate_register", generate_coordinate_register_pairs),
     ("coordinate_register_legible", generate_coordinate_register_legible_pairs),
     ("coordinate_register_eight", generate_coordinate_register_eight_point_pairs),
+    ("coordinate_register_high_entropy", generate_coordinate_register_high_entropy_pairs),
     ("header_table", generate_header_table_pairs),
 ]
 
