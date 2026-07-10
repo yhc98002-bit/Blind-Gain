@@ -22,6 +22,9 @@ ARTIFACT_LAYOUTS = {
         "shards/caption_qa_shard_{index}.jsonl",
         "metrics/shard_{index}.json",
     ),
+    "caption_image_store_generation": (
+        "shards/store_shard_{index}.jsonl",
+    ),
 }
 
 

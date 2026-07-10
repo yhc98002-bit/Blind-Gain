@@ -12,11 +12,7 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-
-CAPTION_PROMPT = (
-    "Describe the image in one concise paragraph. Include visible text, labels, "
-    "numbers, colors, shapes, counts, and spatial relations that could matter for answering questions."
-)
+from src.captioning.store import CAPTION_PROMPT
 
 
 def generate_caption(model, processor, image_path: str, max_new_tokens: int) -> str:
