@@ -12,7 +12,7 @@ P1.6 | blocked | expanded document and R10 geometry pass all cells; R7/R9 fail; 
 P1.7 | blocked | R10 passes both controls and R7 diagnoses caption leakage; final three-template set absent
 P1.8 | blocked | Geometry3K and R8 stores complete for 3B/7B and budget comparison reported; final retained V0.2 package is absent
 P1.9 | pass | ViRL39K/MMK12 loaders cover all rows and critical model/dataset licenses are resolved
-P1.10 | blocked | decontamination implementation and calibrated Layer-1 comparison remain pending
+P1.10 | blocked | calibrated hash/DINO/BGE comparison flags 457/2101 Geometry3K train records; OCR and HallusionBench/MMVP coverage pending
 P1.11 | blocked | gate logic passes, but worktree contains external `CLAUDE.md` deletion and untracked `AGENTS.md`
 P2.1 | blocked | image-condition path and three matched configs pass tests; execution waits for P0.2/P1.1
 P2.2 | blocked | blind-solvability harness remains unimplemented and P0.2 is incomplete
