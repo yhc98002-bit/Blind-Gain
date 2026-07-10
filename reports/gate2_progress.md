@@ -8,8 +8,8 @@ P1.2 | pass | MMStar/MathVista/BLINK plus HallusionBench/MMVP complete for 3B/7B
 P1.3 | blocked | measured NCCL and actual-3B FSDP smokes are implemented; full 2x8 window is blocked by active project jobs plus an unrelated four-GPU service on an29
 P1.4 | pass | 1,200-pair same-salt R19 package passes all 12 leakage-linter checks
 P1.5 | pass | all-inclusive same-salt R19 expansion passes grouped frequency, metadata, and DINOv2 point/CI rules
-P1.6 | pass | document, R10 geometry, and R16 chart provide three accepted 300-pair templates with contact sheets
-P1.7 | pass | all three R17 candidate templates pass degradation and model/caption scale controls
+P1.6 | pass | exact R19 package has document 300, geometry 600, chart 300; all meet registered 3B real and 7B caption ceilings with contact sheets
+P1.7 | pass | exact-package real scale gain is +0.2475 versus +0.0083 caption overall; document has a disclosed significant 1% to 6% caption caveat
 P1.8 | pass | final R19 3B and 7B stores each cover all 2,400 release hashes exactly under one fixed prompt/token contract
 P1.9 | pass | ViRL39K/MMK12 loaders cover all rows and critical model/dataset licenses are resolved
 P1.10 | pass | calibrated full Geometry3K x 7,603-row Layer-1 hash/DINO/BGE/OCR manifest is complete with zero pending layers

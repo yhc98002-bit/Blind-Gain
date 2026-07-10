@@ -3,15 +3,15 @@
 Status:
 - Shared-project usage fell from approximately 166 GB to 76 GB.
 - Approximately 130 GB of raw FSDP/optimizer state is preserved under `/tmp/blindgain_checkpoint_archive` on the login host.
-- Another 16 GB of reproducible noise-image caches is temporarily stored under `/tmp/blind-gains/noise_image_cache_archive_20260710`.
+- Another 25 GB of reproducible noise-image caches is temporarily stored under `/tmp/blind-gains/noise_image_cache_archive_20260710`.
 - The active anchor is healthy past step 20; its merged step-20 Hugging Face checkpoint remains on shared storage.
 
 Evidence:
 - Shared filesystem capacity itself is healthy (`/XYFS02` was 23% used), but user writes returned `EDQUOT`; `lfs quota` details are permission-restricted.
 - The quota first appeared when pytest tried to update `.pytest_cache`, then terminated the first R14 evaluation after 207/300 rows.
 - A 16 MB write probe failed before relocation and passed after filesystem accounting synchronized.
-- Current top-level scan: `artifacts/` 42 GB, `checkpoints/` 16 GB, `data/` 8.1 GB, `.venv/` 7.6 GB, `experiments/` 2.6 GB, `.venv-ocr/` 428 MB; total 76 GB.
-- Login `/tmp` has 815 GB capacity and approximately 423 GB free after relocation.
+- Current top-level scan: `artifacts/` 42 GB, `checkpoints/` 16 GB, `data/` 8.1 GB, `.venv/` 7.6 GB, `experiments/` 2.9 GB, `.venv-ocr/` 428 MB; total 76 GB.
+- Login `/tmp` has 815 GB capacity and approximately 414 GB free after relocation.
 
 Relocated artifacts:
 | Artifact | Temporary path | Approx. size | Verification | Shared survivor |
@@ -19,7 +19,7 @@ Relocated artifacts:
 | obsolete 2-step smoke checkpoint | `/tmp/blindgain_checkpoint_archive/easyr1_geo3k_smoke` | 44 GB | all 22 files passed source SHA256 manifest | relocation marker only |
 | recovery step-30 raw model/optimizer shards | `/tmp/blindgain_checkpoint_archive/easyr1_geo3k_recovery30/global_step_30/actor` | 44 GB | source bytes streamed through SHA256 while copying; sizes checked before removal | merged Hugging Face checkpoint, 7.6 GB |
 | active anchor step-20 raw model/optimizer shards | `/tmp/blindgain_checkpoint_archive/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_20/actor` | 44 GB | source bytes streamed through SHA256 while copying; sizes checked before removal | merged Hugging Face checkpoint, 7.6 GB |
-| 12 inactive noise-evaluation caches | `/tmp/blind-gains/noise_image_cache_archive_20260710` | 16 GB | 8,300 files and 16,559,556,725 file bytes verified after copy; zero broken links | predictions, metrics, manifests, and original-path symlinks |
+| 14 inactive noise-evaluation caches | `/tmp/blind-gains/noise_image_cache_archive_20260710` | 25 GB | 10,700 files and 26,079,397,607 file bytes verified after copy; zero broken links | predictions, metrics, manifests, and original-path symlinks |
 
 Restore metadata:
 - Smoke checksum manifest: `/tmp/blindgain_checkpoint_archive/easyr1_geo3k_smoke/source.sha256`.

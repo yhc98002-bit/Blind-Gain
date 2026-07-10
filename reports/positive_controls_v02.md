@@ -3,6 +3,7 @@
 Status:
 - P1.7 implementation is complete for the three-template R17 candidate.
 - The retained document, R10 geometry, and R16 chart templates pass both registered controls; R7 and R15 remain explicit negative calibration outcomes.
+- Exact-package R19 scoring confirms strong real-image scale gains and near-floor captions overall; document captions have a disclosed 1% to 6% scale caveat.
 
 Control A, 3B degradation pair accuracy:
 | Template | Original | Mild | Medium | Severe | Gray | Result |
@@ -26,6 +27,10 @@ Control B, model/caption scale:
 | R10 high-entropy geometry | 0.450 | 0.7467 | 0.0167 | 0.0067 | pass: real rises while caption decreases |
 | R15 five-series chart | 0.5733 | 0.3967 | 0.0033 | 0.0000 | fail: 7B real does not improve |
 | R16 nine-series chart | 0.4367 | 0.6733 | 0.0000 | 0.0067 | pass: real rises strongly while caption remains near floor |
+| R19 document | 0.8667 | 0.9933 | 0.0100 | 0.0600 | pass numerical ceiling; caveat: significant caption rise |
+| R19 geometry | 0.4717 | 0.7850 | 0.0200 | 0.0083 | pass: real rises while caption decreases |
+| R19 chart | 0.4367 | 0.6733 | 0.0000 | 0.0067 | pass: real rises strongly while caption remains near floor |
+| R19 overall | 0.5617 | 0.8092 | 0.0125 | 0.0208 | pass: +0.2475 real versus +0.0083 caption |
 
 Evidence:
 - Transform implementation and fixtures: `src/eval/image_conditions.py`, `tests/test_eval_image_conditions.py`.
@@ -36,19 +41,23 @@ Evidence:
 - R10 real/blind/caption/degradation runs share `data/fliptrack_v02r10_source_manifest.jsonl` and are under `experiments/runs/fliptrack_v02r10_*`.
 - R15 real/blind/degradation and completed caption diagnostics share `data/fliptrack_v02r15_source_manifest.jsonl`.
 - R16 runs share `data/fliptrack_v02r16_source_manifest.jsonl`; caption-QA retries on `an12` are complete and immutable.
+- Exact R19 metrics and source runs: `reports/fliptrack_v02r19_exact_package.md` and `reports/fliptrack_v02r19_exact_package.json`.
+- Paired comparisons: `experiments/runs/fliptrack_compare_v02r19_real_3b_vs_7b_20260710T150312Z` and `experiments/runs/fliptrack_compare_v02r19_caption_3b_vs_7b_20260710T150313Z`.
 
 Problems:
 - A positive degradation curve does not rescue caption-compressibility.
 - A positive degradation curve also does not rescue a template whose visual score fails to improve with model scale, as R15 demonstrates.
 - Tightening the R7 caption budget from 384 to 160 tokens does not rescue it: both results exceed 0.15.
 - R8 was packaged before the R7 7B-caption cell completed; it is retained only as a failed candidate.
+- R19 document captions improve significantly with model scale (`p=0.000729`). The explicit 0.15 ceiling still passes, but this prevents a blanket claim that caption performance is scale-flat per template.
 
 Decision:
 - Reject R7 under Control B and retain its Control A curve as instrument-sensitivity evidence.
 - Retain R10 as the geometry candidate under both controls.
 - Reject R15 under Control B even though it passes Control A.
 - Retain R16 under both controls and use document/R10/R16 as the R17 candidate set.
+- Retain R19 as the automated candidate because all explicit ceilings pass and the overall caption-scale change is nonsignificant (`p=0.1433`); carry the document caveat forward.
 
 Next actions:
-- Confirm the same template identities in the opaque R17 answer key after packaging.
 - Keep P1.7 results separate from P1.5 artifact robustness; one does not substitute for the other.
+- Complete the frozen R19 human audit before final scientific acceptance.

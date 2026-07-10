@@ -3,6 +3,7 @@
 Status:
 - The 1,200-pair R19 candidate is ready for the required PI/team representative audit.
 - Automated hardness, leakage lint, positive controls, and grouped artifact attackers pass; human acceptance is intentionally still pending.
+- Exact-package 3B/7B real, caption, gray, and noise cells are complete; their results did not alter the frozen content.
 
 Evidence:
 - Release: `data/fliptrack_v02r19_artifact_expanded/manifest.jsonl`.
@@ -11,6 +12,7 @@ Evidence:
 - Linter: `reports/fliptrack_v02r19_lint.json`, machine `status=true`.
 - Artifact gate: `reports/artifact_gate_v02_r19.json`, machine `status=true`.
 - Hardness and controls: `reports/fliptrack_v02_hardness.md` and `reports/positive_controls_v02.md`.
+- Exact-package metrics and paired scale tests: `reports/fliptrack_v02r19_exact_package.md` and `reports/fliptrack_v02r19_exact_package.json`.
 
 Representative sheets (20 pairs per template):
 - Document: `reports/contact_sheets/fliptrack_v02r19/header_cued_table_code_v02.png`.
@@ -40,6 +42,7 @@ Human findings:
 
 Problems:
 - Automated gates cannot establish that wording is natural or that every visual operation is semantically unambiguous to a human reader.
+- Document caption-only accuracy rises from 1% at 3B to 6% at 7B; reviewers should specifically check whether document questions or layout cues are answerable without reading the target cell.
 - The audit is a scientific gate, not a request to redesign templates after viewing model scores.
 
 Decision:
