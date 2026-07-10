@@ -56,7 +56,7 @@ JSON
 LAUNCHED=0
 for GPU in ${GPU_LIST}; do
   SHARD_INDEX=$((SHARD_OFFSET + GPU))
-  if [[ "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
+  if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
     continue
   fi
   INPUT_PATH="${CAPTION_RUN_DIR}/shards/captions_shard_${SHARD_INDEX}.jsonl"
@@ -84,8 +84,4 @@ if [[ "${LAUNCHED}" -eq 0 ]]; then
   exit 2
 fi
 
-FINALIZER_LOG="${QA_RUN_DIR}/logs/finalizer.log"
-FINALIZER_PID="${QA_RUN_DIR}/pids/finalizer.pid"
-nohup "${ROOT}/.venv/bin/python" scripts/finalize_sharded_run.py "${QA_RUN_DIR}/run_manifest.json" --wait \
-  > "${FINALIZER_LOG}" 2>&1 < /dev/null &
-echo $! > "${FINALIZER_PID}"
+scripts/launch_remote_sharded_finalizer.sh "${NODE}" "${QA_RUN_DIR}"
