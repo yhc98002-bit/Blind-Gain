@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from scripts.build_caption_qa_pairs import partition_rows
 from src.captioning.qa_pairs import build_caption_qa_rows
 
 
@@ -70,3 +71,15 @@ def test_caption_qa_adapter_rejects_release_key_member_mismatch() -> None:
     key[0]["members"][0]["member_id"] = "wrong-member"
     with pytest.raises(ValueError, match="member mismatch"):
         build_caption_qa_rows(release, key, captions, "/release")
+
+
+def test_caption_qa_shards_are_deterministic_and_exhaustive() -> None:
+    rows = [{"pair_id": str(index)} for index in range(10)]
+    shards = partition_rows(rows, 3)
+    assert [[row["pair_id"] for row in shard] for shard in shards] == [
+        ["0", "3", "6", "9"],
+        ["1", "4", "7"],
+        ["2", "5", "8"],
+    ]
+    with pytest.raises(ValueError, match="positive"):
+        partition_rows(rows, 0)
