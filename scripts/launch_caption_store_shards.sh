@@ -31,6 +31,21 @@ if [[ ! "${MAX_NEW_TOKENS}" =~ ^[1-9][0-9]*$ ]]; then
 fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
+LAUNCH_LOCK="${RUN_DIR}/.launch_lock"
+if ! mkdir "${LAUNCH_LOCK}" 2>/dev/null; then
+  echo "Another launcher owns the caption-store run directory: ${RUN_DIR}" >&2
+  exit 2
+fi
+cleanup_launch_lock() {
+  rm -f "${LAUNCH_LOCK}/owner"
+  rmdir "${LAUNCH_LOCK}" 2>/dev/null || true
+}
+trap cleanup_launch_lock EXIT
+printf 'pid=%s\nstarted_utc=%s\n' "$$" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "${LAUNCH_LOCK}/owner"
+if [[ -e "${RUN_DIR}/run_manifest.json" ]]; then
+  echo "Caption-store run directory is already initialized: ${RUN_DIR}" >&2
+  exit 2
+fi
 GIT_HASH="$(git rev-parse HEAD)"
 if ! find -L "${IMAGE_DIR}" -type f -print -quit | grep -q .; then
   echo "IMAGE_DIR contains no readable image files" >&2
@@ -50,7 +65,7 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "model_path": "${MODEL_PATH}",
   "max_new_tokens": ${MAX_NEW_TOKENS},
   "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
-  "command": "scripts/launch_caption_store_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${IMAGE_DIR} ${RUN_DIR}",
+  "command": "scripts/launch_caption_store_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${IMAGE_DIR} ${RUN_DIR} '${GPU_LIST}' ${MAX_NEW_TOKENS}",
   "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "end_time_utc": null,
   "status": "running",
