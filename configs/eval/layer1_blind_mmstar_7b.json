@@ -1,0 +1,10 @@
+{
+  "dataset_type": "mmstar",
+  "input_tsv": "data/vlmevalkit/MMStar_VLMEVAL.tsv",
+  "model_path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+  "system_prompt": "Return only the final answer wrapped exactly in <answer>...</answer>.",
+  "max_new_tokens": 256,
+  "max_model_len": 32768,
+  "gpu_memory_utilization": 0.85,
+  "seed": 20260710
+}
