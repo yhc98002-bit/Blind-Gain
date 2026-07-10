@@ -4,7 +4,11 @@ import datetime as dt
 import json
 from pathlib import Path
 
-from scripts.finalize_sharded_run import finalize_if_complete
+from scripts.finalize_sharded_run import (
+    finalize_if_complete,
+    mark_workers_failed,
+    worker_process_state,
+)
 
 
 def _write_manifest(path: Path, job_type: str) -> None:
@@ -64,3 +68,28 @@ def test_eval_run_rejects_invalid_or_missing_metrics(tmp_path: Path) -> None:
 
     (tmp_path / "metrics" / "shard_1.json").write_text("{}\n", encoding="utf-8")
     assert finalize_if_complete(manifest)
+
+
+def test_finalizer_detects_registered_workers_have_exited(tmp_path: Path) -> None:
+    manifest = tmp_path / "run_manifest.json"
+    _write_manifest(manifest, "caption_image_store_generation")
+    pids = tmp_path / "pids"
+    pids.mkdir()
+    (pids / "node_gpu0.pid").write_text("999999999\n", encoding="ascii")
+
+    state, registered = worker_process_state(manifest)
+
+    assert state is False
+    assert registered == [999999999]
+    mark_workers_failed(manifest, registered)
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    assert payload["status"] == "fail"
+    assert payload["worker_pids"] == [999999999]
+    assert payload["artifact_problems"]
+
+
+def test_finalizer_preserves_timeout_mode_without_worker_pid_files(tmp_path: Path) -> None:
+    manifest = tmp_path / "run_manifest.json"
+    _write_manifest(manifest, "caption_image_store_generation")
+
+    assert worker_process_state(manifest) == (None, [])

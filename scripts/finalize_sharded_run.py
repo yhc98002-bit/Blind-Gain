@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -118,6 +119,47 @@ def mark_timeout(manifest_path: Path) -> None:
     manifest_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def worker_process_state(manifest_path: Path) -> tuple[bool | None, list[int]]:
+    pid_files = sorted((manifest_path.parent / "pids").glob("*_gpu*.pid"))
+    if not pid_files:
+        return None, []
+    pids = []
+    alive = False
+    for path in pid_files:
+        try:
+            pid = int(path.read_text(encoding="ascii").strip())
+            if pid <= 0:
+                raise ValueError
+        except (OSError, ValueError):
+            continue
+        pids.append(pid)
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            continue
+        except PermissionError:
+            alive = True
+        else:
+            alive = True
+    return alive, pids
+
+
+def mark_workers_failed(manifest_path: Path, worker_pids: list[int]) -> None:
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    _, problems = inspect_artifacts(manifest_path, payload)
+    payload.update(
+        {
+            "end_time_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "status": "fail",
+            "artifacts_exist": False,
+            "finalizer_error": "all registered workers exited before artifacts completed",
+            "worker_pids": worker_pids,
+            "artifact_problems": problems,
+        }
+    )
+    manifest_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("manifest")
@@ -133,6 +175,10 @@ def main() -> None:
             return
         if not args.wait:
             raise SystemExit("sharded artifacts are not complete")
+        workers_alive, worker_pids = worker_process_state(manifest_path)
+        if workers_alive is False:
+            mark_workers_failed(manifest_path, worker_pids)
+            raise SystemExit("all registered workers exited before artifacts completed")
         if time.monotonic() >= deadline:
             mark_timeout(manifest_path)
             raise SystemExit("timed out waiting for sharded artifacts")
