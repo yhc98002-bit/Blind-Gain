@@ -32,3 +32,16 @@ def test_validate_outputs_hashes_nonempty_inference_workbook(tmp_path: Path) -> 
     assert payload["artifacts"][0]["bytes"] == len(b"workbook fixture")
     assert len(payload["artifacts"][0]["sha256"]) == 64
     assert payload["score_artifacts"][0]["path"].endswith("_acc.csv")
+
+
+def test_validate_outputs_accepts_mathvista_score_artifact(tmp_path: Path) -> None:
+    config = tmp_path / "config.json"
+    _write_config(config)
+    workbook = tmp_path / "work" / "model-a" / "model-a_bench-a.xlsx"
+    workbook.parent.mkdir(parents=True)
+    workbook.write_bytes(b"mathvista workbook fixture")
+    score = workbook.with_name("model-a_bench-a_local-judge_score.csv")
+    score.write_text("Task&Skill,acc\nOverall,0.5\n", encoding="utf-8")
+    payload = validate_outputs(config, tmp_path / "work")
+    assert payload["status"] == "pass"
+    assert payload["score_artifacts"][0]["path"].endswith("_score.csv")

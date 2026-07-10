@@ -44,12 +44,20 @@ def validate_outputs(config_path: Path, work_dir: Path) -> dict[str, Any]:
                         "sha256": _sha256(path),
                     }
                 )
-            score_pattern = f"{model_name}_{dataset_name}*_acc.csv"
+            score_patterns = (
+                f"{model_name}_{dataset_name}*_acc.csv",
+                f"{model_name}_{dataset_name}*_score.csv",
+            )
             score_candidates = sorted(
-                path for path in model_dir.glob(score_pattern) if path.is_file() and path.stat().st_size > 0
+                {
+                    path
+                    for score_pattern in score_patterns
+                    for path in model_dir.glob(score_pattern)
+                    if path.is_file() and path.stat().st_size > 0
+                }
             )
             if not score_candidates:
-                missing.append(f"{model_name}/{score_pattern}")
+                missing.append(f"{model_name}/({'|'.join(score_patterns)})")
                 continue
             for path in score_candidates:
                 score_artifacts.append(

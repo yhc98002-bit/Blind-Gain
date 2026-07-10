@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import math
 import re
@@ -12,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -69,6 +71,62 @@ def score_mcq_prediction(
     }
 
 
+def score_open_prediction(prediction: Any, gold: Any) -> dict[str, Any]:
+    extracted = extract_answer_span(prediction)
+    tier = match_tier(extracted.span, gold)
+    acc_final = tier > 0
+    return {
+        "extracted_answer": extracted.span,
+        "extraction_level": extracted.extraction_level,
+        "extraction_fallback_used": extracted.extraction_fallback_used,
+        "format_valid": extracted.format_valid,
+        "ambiguous": False,
+        "winning_labels": ["gold"] if acc_final else [],
+        "match_tiers": {"gold": tier},
+        "acc_final": acc_final,
+        "acc_strict": extracted.format_valid and acc_final,
+    }
+
+
+def _not_missing(value: Any) -> bool:
+    if value is None:
+        return False
+    try:
+        missing = pd.isna(value)
+    except (TypeError, ValueError):
+        return True
+    return bool(not missing) if isinstance(missing, (bool, np.bool_)) else True
+
+
+def _choice_payload(raw: dict[str, Any]) -> tuple[list[str], dict[str, Any], str] | None:
+    labels = [label for label in string.ascii_uppercase if label in raw and _not_missing(raw[label])]
+    options = {label: raw[label] for label in labels}
+    if not labels:
+        serialized = raw.get("choices")
+        if isinstance(serialized, str) and serialized.strip():
+            try:
+                parsed = ast.literal_eval(serialized)
+            except (SyntaxError, ValueError):
+                parsed = []
+        elif isinstance(serialized, (list, tuple)):
+            parsed = list(serialized)
+        else:
+            parsed = []
+        labels = list(string.ascii_uppercase[: len(parsed)])
+        options = dict(zip(labels, parsed))
+    if not labels:
+        return None
+
+    answer_option = raw.get("answer_option")
+    if _not_missing(answer_option):
+        gold = str(answer_option).strip().upper()
+    else:
+        raw_gold = str(raw["answer"]).strip()
+        matching = [label for label, option in options.items() if str(option).strip() == raw_gold]
+        gold = matching[0] if len(matching) == 1 else raw_gold.upper()
+    return labels, options, gold
+
+
 def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
     if not rows:
         return {
@@ -99,17 +157,29 @@ def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> di
     scored_rows: list[dict[str, Any]] = []
     by_category: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for raw in frame.to_dict(orient="records"):
-        labels = [label for label in string.ascii_uppercase if label in raw and not pd.isna(raw[label])]
-        if not labels:
-            raise ValueError(f"row {raw['index']} has no option columns")
-        options = {label: raw[label] for label in labels}
-        scored = score_mcq_prediction(raw["prediction"], raw["answer"], labels, options)
+        choice_payload = _choice_payload(raw)
+        if choice_payload is None:
+            labels: list[str] = []
+            scored = score_open_prediction(raw["prediction"], raw["answer"])
+            scoring_contract = "open_final_span"
+            gold = str(raw["answer"])
+        else:
+            labels, options, gold = choice_payload
+            scored = score_mcq_prediction(raw["prediction"], gold, labels, options)
+            scoring_contract = "multiple_choice_final_span"
+        category = raw.get("category")
+        if not _not_missing(category):
+            category = raw.get("task", "unknown")
         record = {
             "index": str(raw["index"]),
-            "gold": str(raw["answer"]),
+            "gold": gold,
+            "gold_value": str(raw["answer"]),
             "prediction": str(raw["prediction"]),
-            "category": str(raw.get("category", "unknown")),
+            "category": str(category),
             "l2_category": str(raw.get("l2_category", "unknown")),
+            "question_type": str(raw.get("question_type", "unknown")),
+            "answer_type": str(raw.get("answer_type", "unknown")),
+            "scoring_contract": scoring_contract,
             "option_labels": labels,
             **scored,
         }
