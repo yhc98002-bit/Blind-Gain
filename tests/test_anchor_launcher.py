@@ -30,4 +30,5 @@ def test_checkpoint_merge_launcher_is_immutable_and_logged() -> None:
     assert "model_merger_no_deepspeed.py" in launcher
     assert "run_manifest_job.py" in launcher
     assert "data_manifest_hash" in launcher
-    assert "CUDA_HOME=/usr/local/cuda" in launcher
+    assert "artifacts/repos/EasyR1/scripts/model_merger.py" not in launcher
+    assert "CUDA_HOME=/usr/local/cuda" not in launcher
