@@ -15,7 +15,9 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG contains unsupported characters" >&2
   exit 2
 fi
-if [[ ! -f "${ROOT}/${ACTOR_DIR}/model_world_size_2_rank_0.pt" ]]; then
+shopt -s nullglob
+MODEL_SHARDS=("${ROOT}/${ACTOR_DIR}"/model_world_size_*_rank_*.pt)
+if [[ ${#MODEL_SHARDS[@]} -eq 0 ]]; then
   echo "Missing EasyR1 actor shards: ${ACTOR_DIR}" >&2
   exit 2
 fi
@@ -35,7 +37,7 @@ COMMAND="PYTHONPATH=artifacts/repos/EasyR1 TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
-SHARD_HASH="$(sha256sum "${ACTOR_DIR}"/model_world_size_*_rank_*.pt | sort -k2 | sha256sum | awk '{print $1}')"
+SHARD_HASH="$(sha256sum "${MODEL_SHARDS[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg node "${NODE}" \
