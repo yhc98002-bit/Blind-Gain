@@ -11,6 +11,29 @@ CAPTION_PROMPT = (
     "Describe the image in one concise paragraph. Include visible text, labels, "
     "numbers, colors, shapes, counts, and spatial relations that could matter for answering questions."
 )
+CAPTION_PROMPT_SHA256 = hashlib.sha256(CAPTION_PROMPT.encode("utf-8")).hexdigest()
+CAPTION_DECODING = {"temperature": 0.0, "top_p": 1.0, "n": 1}
+
+
+def validate_caption_row(row: dict[str, Any]) -> None:
+    digest = str(row.get("image_sha256", ""))
+    if row.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError(f"unsupported caption-store schema for image {digest}")
+    if not str(row.get("caption", "")).strip():
+        raise ValueError(f"empty caption for image {digest}")
+    if row.get("caption_prompt") != CAPTION_PROMPT:
+        raise ValueError(f"caption prompt is not the registered question-blind prompt for image {digest}")
+    if row.get("caption_prompt_sha256") != CAPTION_PROMPT_SHA256:
+        raise ValueError(f"caption prompt hash mismatch for image {digest}")
+    if row.get("decoding") != CAPTION_DECODING:
+        raise ValueError(f"caption decoding is not registered greedy decoding for image {digest}")
+    if int(row.get("max_new_tokens", 0)) < 384:
+        raise ValueError(f"caption token budget is below 384 for image {digest}")
+    if not str(row.get("caption_model_path", "")).strip():
+        raise ValueError(f"caption model path is missing for image {digest}")
+    forbidden = sorted({"question", "problem", "answer", "answer_a", "answer_b"} & row.keys())
+    if forbidden:
+        raise ValueError(f"caption row contains question/answer fields for image {digest}: {forbidden}")
 
 
 def sha256_file(path: Path) -> str:
@@ -62,6 +85,7 @@ def merge_caption_rows(
                 if not line.strip():
                     continue
                 row = json.loads(line)
+                validate_caption_row(row)
                 digest = str(row["image_sha256"])
                 caption = str(row["caption"]).strip()
                 if digest in by_hash and str(by_hash[digest]["caption"]).strip() != caption:
@@ -86,6 +110,7 @@ def merge_caption_rows(
         "caption_model_path": next(iter(model_paths)),
         "caption_prompt_sha256": next(iter(prompt_hashes)),
         "max_new_tokens": next(iter(token_budgets)),
+        "decoding": CAPTION_DECODING,
         "expected_hashes": len(expected_hashes) if expected_hashes is not None else None,
         "coverage_complete": expected_hashes is None or found == expected_hashes,
     }

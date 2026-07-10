@@ -90,6 +90,7 @@ Recovery details:
 - `scripts/run_blind_solvability.py` now proves a source JSONL is the current manifest's canonical, duplicate-free, batch-aligned prefix and checks condition, answers, image hashes, metadata, score fields, and the complete decoding contract before copying any row.
 - New run manifests hash the resume JSONL and source manifest, record `resume_from`, and use `/dev/shm/blind-gains` for deterministic condition caches.
 - Both real partials passed validation exactly before relaunch; current output files include the validated prefix plus new rows.
+- The fixed ViRL 3B caption source separately passes exact 4,297-image coverage plus schema, literal question-blind prompt, prompt hash, 384-token, greedy-decoding, and single-model checks in `reports/caption_store_contract_virl39k4096_3b.json`.
 
 Supplemental caption sensitivity:
 - A model-matched 7B question-blind caption store is being generated on `an29` GPU 7 under `experiments/runs/virl39k_sample4096_qwen25vl7b_captionstore384_retry_20260710T163500Z`.
@@ -116,6 +117,7 @@ Verification:
 - Resume/launcher/scoring target: 14 passed.
 - Checkpoint relocation target: 4 passed.
 - Caption launch-lock target: 3 passed.
+- Caption contract/audit targets: 20 passed with exact Geometry3K and ViRL manifest coverage.
 - Blind-summary integrity target: 11 passed; the new V3 aggregator also validated all 2,702 existing Geometry3K rows across five conditions.
 - GitHub branch: `agent/gate2-recovery`; draft PR: `https://github.com/yhc98002-bit/Blind-Gain/pull/1`.
 

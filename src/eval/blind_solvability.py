@@ -8,6 +8,7 @@ from typing import Any, Iterable
 
 from jinja2 import Template
 
+from src.captioning.store import merge_caption_rows
 from src.eval.image_conditions import materialize_image
 from src.rewards.answer_reward import answer_reward, extract_answer_span
 
@@ -40,17 +41,8 @@ def load_geometry_rows(manifest: str | Path, splits: Iterable[str] = ("train", "
 
 
 def load_caption_map(shards: Iterable[str | Path]) -> dict[str, str]:
-    captions: dict[str, str] = {}
-    for shard in shards:
-        with Path(shard).open(encoding="utf-8") as handle:
-            for line in handle:
-                row = json.loads(line)
-                digest = str(row["image_sha256"])
-                caption = str(row["caption"]).strip()
-                if digest in captions and captions[digest] != caption:
-                    raise ValueError(f"conflicting captions for image {digest}")
-                captions[digest] = caption
-    return captions
+    rows, _ = merge_caption_rows(shards)
+    return {str(row["image_sha256"]): str(row["caption"]).strip() for row in rows}
 
 
 def build_conditioned_messages(

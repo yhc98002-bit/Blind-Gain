@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 
@@ -8,7 +9,14 @@ from PIL import Image
 import pytest
 
 from scripts.merge_caption_stores import _publish_artifacts
-from src.captioning.store import CAPTION_PROMPT, discover_images, merge_caption_rows, select_shard
+from src.captioning.store import (
+    CAPTION_DECODING,
+    CAPTION_PROMPT,
+    SCHEMA_VERSION,
+    discover_images,
+    merge_caption_rows,
+    select_shard,
+)
 
 
 def test_caption_store_deduplicates_by_content_hash_and_shards_exactly(tmp_path: Path) -> None:
@@ -35,11 +43,14 @@ def test_caption_prompt_is_question_blind_and_has_no_template_slot() -> None:
 
 def _caption_row(digest: str, caption: str, model: str = "model") -> dict:
     return {
+        "schema_version": SCHEMA_VERSION,
         "image_sha256": digest,
         "caption": caption,
         "caption_model_path": model,
-        "caption_prompt_sha256": "prompt-hash",
+        "caption_prompt": CAPTION_PROMPT,
+        "caption_prompt_sha256": hashlib.sha256(CAPTION_PROMPT.encode("utf-8")).hexdigest(),
         "max_new_tokens": 384,
+        "decoding": CAPTION_DECODING,
     }
 
 
@@ -65,6 +76,20 @@ def test_caption_merge_rejects_conflicting_duplicate(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="conflicting captions"):
+        merge_caption_rows([shard])
+
+
+def test_caption_merge_rejects_question_conditioned_contract(tmp_path: Path) -> None:
+    row = _caption_row("image", "caption")
+    row["caption_prompt"] = "Question: what is shown? Describe only facts needed for the answer."
+    row["caption_prompt_sha256"] = hashlib.sha256(
+        row["caption_prompt"].encode("utf-8")
+    ).hexdigest()
+    row["question"] = "what is shown?"
+    shard = tmp_path / "question_conditioned.jsonl"
+    shard.write_text(json.dumps(row) + "\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="registered question-blind prompt"):
         merge_caption_rows([shard])
 
 

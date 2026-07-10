@@ -1,0 +1,43 @@
+{
+  "audited_at_utc": "2026-07-10T16:53:08Z",
+  "checks": {
+    "exact_manifest_image_coverage": true,
+    "schema_prompt_decoding_budget_valid": true,
+    "single_caption_contract": true
+  },
+  "contract": {
+    "caption_model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "caption_prompt_sha256": "9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0",
+    "coverage_complete": true,
+    "decoding": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "expected_hashes": 4297,
+    "max_new_tokens": 384,
+    "n_images": 4297,
+    "schema_version": "blind-gains.caption-store-merge.v1"
+  },
+  "manifest": "data/virl39k_blind_sample_4096.jsonl",
+  "manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5",
+  "schema_version": "blind-gains.caption-store-audit.v1",
+  "shards": [
+    {
+      "path": "experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z/shards/store_shard_0.jsonl",
+      "sha256": "33e47c0243fa6b2e9c91e75d53fe9062517444c52af2dd454b069d6cd3c5c573",
+      "size_bytes": 1728795
+    },
+    {
+      "path": "experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z/shards/store_shard_1.jsonl",
+      "sha256": "744e17e113c8904d6d64ad6b331e21bcc197bb9ced046ea8dbf9d909e77b2ff3",
+      "size_bytes": 1716748
+    },
+    {
+      "path": "experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z/shards/store_shard_2.jsonl",
+      "sha256": "7e0991ab9dfb02c48289dcf8f5074086477f6d0d90f76600d5603f4cab40b6f0",
+      "size_bytes": 1731903
+    }
+  ],
+  "status": "pass"
+}

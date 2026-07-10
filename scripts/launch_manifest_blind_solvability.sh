@@ -46,14 +46,23 @@ if [[ "${CONDITION}" == "caption" ]]; then
     echo "Caption condition requires a completed caption run directory" >&2
     exit 2
   fi
+  CAPTION_MANIFEST="${CAPTION_RUN}/run_manifest.json"
+  if [[ ! -s "${CAPTION_MANIFEST}" ]] || ! jq -e \
+    '(.status == "complete") and
+     (.job_type == "caption_image_store_generation") and
+     (.expected_shards | type == "number" and . > 0)' "${CAPTION_MANIFEST}" >/dev/null; then
+    echo "Caption condition requires a completed caption-store run manifest" >&2
+    exit 2
+  fi
   mapfile -t CAPTION_FILES < <(find "${CAPTION_RUN}/shards" -maxdepth 1 -type f -name 'store_shard_*.jsonl' -size +0c | sort)
-  if [[ "${#CAPTION_FILES[@]}" -eq 0 ]]; then
-    echo "Caption run has no completed store shards" >&2
+  EXPECTED_CAPTION_SHARDS="$(jq -r '.expected_shards' "${CAPTION_MANIFEST}")"
+  if [[ "${#CAPTION_FILES[@]}" -ne "${EXPECTED_CAPTION_SHARDS}" ]]; then
+    echo "Caption run does not contain every registered store shard" >&2
     exit 2
   fi
   printf -v CAPTION_ARGS ' %q' "${CAPTION_FILES[@]}"
   CAPTION_ARGS="--caption-shards${CAPTION_ARGS}"
-  DATA_FILES+=("${CAPTION_FILES[@]}")
+  DATA_FILES+=("${CAPTION_MANIFEST}" "${CAPTION_FILES[@]}")
 fi
 
 RESUME_ARGS=""
@@ -119,6 +128,7 @@ jq -n \
   --arg output "${OUTPUT}" \
   --arg cache_dir "${CACHE_DIR}" \
   --arg resume_from "${RESUME_FROM}" \
+  --arg caption_source_run "${CAPTION_RUN}" \
   --argjson batch_size "${BATCH_SIZE}" \
   --argjson max_model_len "${MAX_MODEL_LEN}" \
   '{
@@ -141,6 +151,7 @@ jq -n \
     max_model_len: $max_model_len,
     local_condition_cache: $cache_dir,
     resume_from: (if $resume_from == "-" then null else $resume_from end),
+    caption_source_run: (if $caption_source_run == "-" then null else $caption_source_run end),
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,
