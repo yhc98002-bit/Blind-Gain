@@ -2,7 +2,8 @@
 
 Status:
 - The corrected attacker implementation is complete and DINOv2 ran successfully.
-- The first V0.2 candidate fails the pre-registered gate. P1.5 remains open pending R2 repackaging and rerun.
+- The first broad V0.2 candidate failed as documented below.
+- The 300-pair retained package also fails the unchanged gate narrowly on frequency/metadata probes. P1.5 remains open and the required expansion is in progress.
 
 Evidence:
 - Run: `experiments/runs/artifact_gate_v02_an12_gpu4_20260709T225131Z`, exit code 0, `an12` GPU 4.
@@ -36,6 +37,24 @@ Decision:
 - R2 randomizes semantic side assignment independently for every pair and template before packaging; rerun all attackers on that actual package.
 
 Next actions:
-- Finish R2 hardness calibration and select candidate templates.
-- Package the retained R2 set with a new salt and rerun metadata, frequency, and DINOv2 attacks.
-- Expand any template whose CI upper bound remains above 0.62.
+- Add 200 fresh pairs each for coordinate register and header table, preserving template logic and balanced semantic-side randomization.
+- Re-score expanded pairs, repackage with a new salt, and rerun all three attackers without changing thresholds.
+
+Retained-package attempt:
+- Run: `experiments/runs/artifact_gate_v02_an29_gpu0_20260709T235532Z`.
+- Machine output: `reports/artifact_gate_v02_retained.json`.
+- Package: `data/fliptrack_v02_retained`, 300 pairs, 100 per retained template.
+
+| Scope / attacker | Gate statistic | 95% pair-bootstrap CI | Result |
+| --- | ---: | ---: | --- |
+| Pooled frequency/statistical | 0.5201 | [0.5026, 0.5369] | pass |
+| Pooled metadata | 0.5142 | [0.5009, 0.5589] | pass |
+| Pooled DINOv2 | 0.5078 | [0.5005, 0.5351] | pass |
+| Coordinate / frequency | 0.5728 | [0.5388, 0.6091] | point fail |
+| Coordinate / metadata | 0.5715 | [0.5084, 0.6470] | point fail; expansion required |
+| Header / metadata | 0.5654 | [0.5057, 0.6394] | point fail; expansion required |
+
+Diagnosis:
+- DINOv2 passes pooled and per template; the retained package no longer has the deterministic semantic-side leak seen in parallel geometry.
+- The failing coordinate frequency and header metadata OOF AUCs are below 0.5 before applying `max(AUC, 1-AUC)`, while every train fold selects the positive direction. This is unstable direction inversion, not evidence of a stable deployable classifier.
+- The pre-registered statistic intentionally treats either direction as leakage, so this diagnosis does not override the failure. The CI rule requires more pairs for coordinate and header.

@@ -7,7 +7,7 @@ P1.1 | blocked | immutable recipe-scale retry is in the optimizer path at `exper
 P1.2 | blocked | VLMEvalKit pinned at `6a02ab9`; isolated install and ModelScope-first local judge acquisition are in progress
 P1.3 | blocked | not started; requires coordinated two-node NCCL/FSDP window
 P1.4 | pass | 600-pair opaque package passes all linter checks; see `reports/fliptrack_v02_packaging.md` and `reports/fliptrack_v02_lint.json`
-P1.5 | blocked | first candidate failed (DINO pooled 0.625; parallel 1.0); rerun waits for the final balanced retained-template package
+P1.5 | blocked | retained package passes pooled/DINO attacks but coordinate frequency/metadata and header metadata fail; 200-pair template expansions required by CI rule
 P1.6 | pass | 300-pair retained set has chart/document/geometry templates meeting final-answer real/caption/gray/pair-shared-noise criteria; format caveat reported
 P1.7 | blocked | degradation and real-model scale controls pass per retained template; 3B caption-only scale side remains
 P1.8 | blocked | R2 7B question-blind 384-token captions complete; hash-keyed store plus geometry3k/3B coverage remain
