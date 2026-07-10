@@ -18,10 +18,14 @@ def expected_hashes_from_manifest(path: Path) -> set[str]:
                 continue
             row = json.loads(line)
             images = row.get("images")
+            hash_field = "sha256"
             if not isinstance(images, list):
-                raise ValueError(f"manifest line {line_number} has no images list")
+                images = row.get("members")
+                hash_field = "image_sha256"
+            if not isinstance(images, list):
+                raise ValueError(f"manifest line {line_number} has no images or members list")
             for image in images:
-                digest = str(image.get("sha256", ""))
+                digest = str(image.get(hash_field, ""))
                 if not digest:
                     raise ValueError(f"manifest line {line_number} has an image without SHA256")
                 expected.add(digest)

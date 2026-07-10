@@ -12,7 +12,7 @@ Evidence:
 - Decoding is fixed to greedy: temperature 0, top-p 1.0, one output, maximum 384 new tokens.
 - Prompt SHA256: `9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0`.
 - Contract enforcement: `merge_caption_rows` and the blind-evaluation loader reject the wrong schema, any prompt other than the registered literal prompt, prompt-hash drift, non-greedy decoding, token budgets below 384, mixed model/prompt/budget stores, and question/answer fields.
-- Machine audits: `reports/caption_store_contract_geo3k_3b.json`, `reports/caption_store_contract_geo3k_7b.json`, and `reports/caption_store_contract_virl39k4096_3b.json`; all checks pass.
+- Machine audits: `reports/caption_store_contract_geo3k_3b.json`, `reports/caption_store_contract_geo3k_7b.json`, `reports/caption_store_contract_fliptrack_v02r19_3b.json`, `reports/caption_store_contract_fliptrack_v02r19_7b.json`, and `reports/caption_store_contract_virl39k4096_3b.json`; all checks pass with exact manifest-image coverage.
 
 Fixed question-blind prompt:
 ```text

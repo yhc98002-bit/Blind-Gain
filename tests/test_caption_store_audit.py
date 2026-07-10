@@ -27,3 +27,21 @@ def test_caption_audit_rejects_manifest_without_image_hash(tmp_path: Path) -> No
 
     with pytest.raises(ValueError, match="without SHA256"):
         expected_hashes_from_manifest(manifest)
+
+
+def test_caption_audit_supports_packaged_pair_members(tmp_path: Path) -> None:
+    manifest = tmp_path / "release.jsonl"
+    manifest.write_text(
+        json.dumps(
+            {
+                "members": [
+                    {"image_sha256": "member-a"},
+                    {"image_sha256": "member-b"},
+                ]
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert expected_hashes_from_manifest(manifest) == {"member-a", "member-b"}
