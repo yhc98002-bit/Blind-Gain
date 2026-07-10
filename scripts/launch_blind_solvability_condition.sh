@@ -32,7 +32,8 @@ RUN_MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}_gpu${GPU}.log"
 PID_FILE="${RUN_DIR}/pids/${NODE}_gpu${GPU}.pid"
 OUTPUT="${RUN_DIR}/per_item.jsonl"
-CACHE_DIR="/tmp/blind-gains/${RUN_ID}/condition_cache"
+CACHE_ROOT="${BLIND_GAINS_CACHE_ROOT:-/dev/shm/blind-gains}"
+CACHE_DIR="${CACHE_ROOT}/${RUN_ID}/condition_cache"
 CAPTION_ARGS=""
 DATA_FILES=("${MANIFEST}" "${FORMAT_PROMPT}")
 if [[ "${CONDITION}" == "caption" ]]; then
