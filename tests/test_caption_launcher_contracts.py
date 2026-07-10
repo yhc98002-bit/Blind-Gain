@@ -49,3 +49,29 @@ def test_caption_qa_launcher_rejects_invalid_gpu_list(tmp_path: Path) -> None:
     )
     assert result.returncode == 2
     assert "GPU_LIST" in result.stderr
+
+
+def test_image_eval_launcher_rejects_mapping_that_launches_zero_workers(tmp_path: Path) -> None:
+    manifest = tmp_path / "input.jsonl"
+    manifest.write_text('{"pair_id":"p"}\n', encoding="utf-8")
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_fliptrack_eval_shards.sh",
+            "an29",
+            "0",
+            "1",
+            "model",
+            str(manifest),
+            str(tmp_path / "run"),
+            "64",
+            "1",
+            "real",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    assert "No evaluation workers launched" in result.stderr
