@@ -1,28 +1,43 @@
 # Parser Agreement Audit
 
 Status:
-- Blocked for the required recovery-run agreement rate.
+- Complete. The recovered step-30 checkpoint was re-evaluated on 320 deterministic Geometry3K test examples.
+- Canonical-vs-EasyR1 accuracy agreement is 92.1875%, below the 95% warning threshold; all 25 disagreements are preserved row by row.
 
 Evidence:
-- Searched `experiments/runs/easyr1_geo3k_recovery30_*`.
-- The recovery run directory contains only `run_manifest.json`, PID file, and `logs/an12.log`.
-- `configs/train/easyr1_qwen25vl3b_geo3k_recovery30.yaml` had `val_freq: -1` and `val_before_train: false`, so no validation generation table was emitted.
-- `rg` found no cached generation JSONL or logged sample table containing ≥300 `(response, ground_truth)` records.
-- EasyR1 reference scorer inspected at `artifacts/repos/EasyR1/examples/reward_function/r1v.py`; it uses `<answer>` extraction plus `mathruler.grader.grade_answer`.
+- Original recovery run: `experiments/runs/easyr1_geo3k_recovery30_20260708T043244Z`.
+- Original `generations.log` contained only two examples, so it could not satisfy the registered sample floor.
+- Recovered actor merge: `experiments/runs/easyr1_checkpoint_merge_recovery30_step30_retry_an12_20260710T063231Z`.
+- Generation run: `experiments/runs/parser_agreement_geo3k_step30_an12_20260710T063542Z`; four immutable shards of 80 rows each.
+- Audit run: `experiments/runs/parser_agreement_audit_geo3k_step30_320_20260710T065140Z`.
+- Machine metrics: `metrics.json`; every response, extracted span, score, and disagreement direction is in `rows.jsonl`.
 
 Agreement table:
 
-| Source | Candidate records | Usable `(response, ground_truth)` pairs | Our accuracy | EasyR1 accuracy | Agreement |
+| Source | n | Canonical accuracy | EasyR1 accuracy | Agreement | Disagreements |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| `experiments/runs/easyr1_geo3k_recovery30_20260708T043244Z` | 0 | 0 | n/a | n/a | n/a |
+| recovered `global_step_30`, Geometry3K test | 320 | 0.109375 | 0.075000 | 0.921875 | 25 |
 
-Problem:
-- P0.2 requires sampling at least 300 generations from the recovery run logs. Those generations were not logged by the 30-step recovery config.
+Disagreement breakdown:
+
+| Direction | Count | Primary cause |
+| --- | ---: | --- |
+| canonical correct, EasyR1 wrong | 18 | 14 multiline `<answer>` spans missed by EasyR1's non-DOTALL regex; 4 simple exact answers rejected by `mathruler` |
+| EasyR1 correct, canonical wrong | 7 | benign unit suffixes or LaTeX presentation wrappers rejected by canonical normalization |
+
+Problems:
+- This is a logged re-evaluation of the old recovery checkpoint, not a sample recovered from the original training log. That deviation is necessary because the original run preserved only two generations.
+- EasyR1 `r1v.py` uses `re.search(r"<answer>(.*?)</answer>")` without `re.DOTALL`; answers formatted on separate lines fall through to grading the full response.
+- The canonical matcher is intentionally conservative and currently rejects semantically benign forms such as `5 meters`, `163 degrees`, and `\(\sqrt{21}\)` when the gold omits units or wrappers.
+- A diagnostic DOTALL-only EasyR1 extraction raises agreement to 0.94375, still below 0.95 because the two matchers implement different mathematical normalization.
 
 Decision:
-- Parser implementation and nested-brace tests are complete.
-- The agreement audit cannot honestly pass until a run with logged validation generations exists or the old checkpoint is re-evaluated with generation logging.
+- Treat P0.2's audit deliverable as complete, but do not claim parser equivalence.
+- Keep current result tables versioned under the existing canonical scorer; do not silently rescore them after normalization changes.
+- Before P2.1 headline evaluation, add adversarial fixtures for safe unit stripping and LaTeX delimiter normalization, version the canonical matcher, and use its extractor in the EasyR1 custom reward path.
+- Preserve native EasyR1 reward accuracy and canonical evaluation accuracy as separate fields until a versioned re-audit exceeds 95%.
 
 Next actions:
-- P1.1 should use `val_before_train: true`, `val_freq: 10`, and logged validation outputs.
-- After generation JSONL exists, re-run this audit against at least 300 records.
+- Implement canonical v2 normalization for explicit units and math delimiters with false-positive fixtures.
+- Replace the future custom EasyR1 reward extractor with the canonical extraction function, including multiline answer tags.
+- Re-run this exact 320-row audit after that versioned change and publish both old and new agreement rates.

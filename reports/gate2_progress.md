@@ -1,5 +1,5 @@
 P0.1 | pass | final-answer-span scorer and all adversarial fixtures are complete
-P0.2 | blocked | canonical parser passes tests, but specified recovery logs contain 0 usable generations for the required >=300 agreement audit
+P0.2 | pass | 320 recovered-step-30 generations audited; agreement is 0.921875 with 25 categorized disagreements and versioned fixes required
 P0.3 | pass | within-template key-shuffle and auxiliary swap nulls are implemented and tested
 P0.4 | pass | cached V0.1 predictions are re-scored in `reports/fliptrack_v01_rescored.md`
 P0.5 | pass | resolved EasyR1 reference diff covers every required field
