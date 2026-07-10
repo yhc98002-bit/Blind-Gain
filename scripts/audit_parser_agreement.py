@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import runpy
 from pathlib import Path
 
 from src.eval.parser_agreement import agreement_rows
@@ -17,7 +18,10 @@ def main() -> None:
     if args.rows_output.exists() or args.metrics_output.exists():
         raise FileExistsError("refusing to overwrite parser agreement outputs")
 
-    from examples.reward_function.r1v import accuracy_reward
+    reward_namespace = runpy.run_path(
+        str(Path("artifacts/repos/EasyR1/examples/reward_function/r1v.py").resolve())
+    )
+    accuracy_reward = reward_namespace["accuracy_reward"]
 
     generations = []
     for path in args.inputs:
