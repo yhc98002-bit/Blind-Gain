@@ -14,6 +14,23 @@ from PIL import Image
 from scipy.stats import rankdata
 
 
+METADATA_FEATURE_NAMES = (
+    "file_size",
+    "mtime_ns",
+    "width",
+    "height",
+    "bands",
+    "png_chunk_count",
+    "idat_chunk_count",
+    "idat_bytes",
+    "ancillary_count",
+    "compression_ratio",
+    "path_length",
+    "filename_hex_mean",
+    "filename_hex_std",
+)
+
+
 def _read_jsonl(path: str | Path) -> list[dict[str, Any]]:
     with Path(path).open(encoding="utf-8") as handle:
         return [json.loads(line) for line in handle if line.strip()]
@@ -125,6 +142,29 @@ def auc(labels: np.ndarray, scores: np.ndarray) -> float:
         return float("nan")
     ranks = rankdata(scores, method="average")
     return float((ranks[positive].sum() - n_positive * (n_positive + 1) / 2) / (n_positive * n_negative))
+
+
+def univariate_feature_diagnosis(
+    features: np.ndarray,
+    labels: np.ndarray,
+    feature_names: tuple[str, ...],
+) -> dict[str, dict[str, float]]:
+    features = np.asarray(features)
+    labels = np.asarray(labels, dtype=np.int64)
+    if features.ndim != 2 or features.shape[0] != labels.shape[0]:
+        raise ValueError("features must be a 2D matrix aligned with labels")
+    if features.shape[1] != len(feature_names):
+        raise ValueError("feature_names must cover every feature column")
+    output = {}
+    for index, name in enumerate(feature_names):
+        value = auc(labels, features[:, index])
+        output[name] = {
+            "auc": value,
+            "gate_statistic": max(value, 1.0 - value),
+            "mean_side_a": float(features[labels == 0, index].mean()),
+            "mean_side_b": float(features[labels == 1, index].mean()),
+        }
+    return output
 
 
 def grouped_folds(pair_ids: list[str], n_splits: int = 5, seed: int = 0) -> list[tuple[np.ndarray, np.ndarray]]:

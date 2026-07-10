@@ -9,6 +9,7 @@ from src.fliptrack.artifact_attackers import (
     auc,
     compute_gate,
     grouped_folds,
+    univariate_feature_diagnosis,
 )
 
 
@@ -54,3 +55,22 @@ def test_gate_is_and_of_availability_point_and_ci_rules() -> None:
     ci_fail["per_template"]["t"]["pair_bootstrap_ci_95"][1] = 0.63
     assert compute_gate({"metadata": passing, "frequency": ci_fail, "dinov2": passing})["status"] is False
     assert compute_gate({"metadata": passing, "frequency": passing, "dinov2": None})["status"] is False
+
+
+def test_univariate_diagnosis_identifies_planted_feature() -> None:
+    labels = np.asarray([0, 0, 0, 0, 1, 1, 1, 1])
+    features = np.asarray(
+        [
+            [0.0, 1.0],
+            [0.0, 0.0],
+            [0.0, 1.0],
+            [0.0, 0.0],
+            [1.0, 0.0],
+            [1.0, 1.0],
+            [1.0, 0.0],
+            [1.0, 1.0],
+        ]
+    )
+    result = univariate_feature_diagnosis(features, labels, ("planted", "noise"))
+    assert result["planted"]["gate_statistic"] == 1.0
+    assert result["noise"]["gate_statistic"] < 0.6
