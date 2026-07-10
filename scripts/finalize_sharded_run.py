@@ -25,6 +25,9 @@ ARTIFACT_LAYOUTS = {
     "caption_image_store_generation": (
         "shards/store_shard_{index}.jsonl",
     ),
+    "parser_agreement_generation": (
+        "shards/shard_{index}.jsonl",
+    ),
 }
 
 
