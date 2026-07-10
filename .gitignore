@@ -26,6 +26,8 @@ caption_stores/
 release/
 reports/review_packages/
 reports/contact_sheets/
+reports/mmk12_stats.json
+reports/virl39k_stats.json
 *.tar
 *.tar.gz
 *.tgz
