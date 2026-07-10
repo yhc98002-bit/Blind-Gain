@@ -36,6 +36,47 @@ def validate_caption_row(row: dict[str, Any]) -> None:
         raise ValueError(f"caption row contains question/answer fields for image {digest}: {forbidden}")
 
 
+def load_validated_caption_prefix(
+    resume_from: Path,
+    items: list[dict[str, Any]],
+    *,
+    model_path: str,
+    max_new_tokens: int,
+) -> list[str]:
+    raw_lines = resume_from.read_text(encoding="utf-8").splitlines()
+    if not raw_lines:
+        raise ValueError(f"caption resume source is empty: {resume_from}")
+    if any(not line.strip() for line in raw_lines):
+        raise ValueError(f"caption resume source contains a blank row: {resume_from}")
+    if len(raw_lines) > len(items):
+        raise ValueError("caption resume source is longer than the selected shard")
+
+    seen: set[str] = set()
+    for line_number, (line, item) in enumerate(zip(raw_lines, items), start=1):
+        row = json.loads(line)
+        if not isinstance(row, dict):
+            raise ValueError(f"caption resume line {line_number} is not an object")
+        validate_caption_row(row)
+        digest = str(row["image_sha256"])
+        if digest in seen:
+            raise ValueError(f"duplicate image in caption resume source: {digest}")
+        seen.add(digest)
+        expected = {
+            "image_sha256": item["image_sha256"],
+            "image_path": item["image_path"],
+            "duplicate_paths": item["duplicate_paths"],
+            "caption_model_path": model_path,
+            "max_new_tokens": max_new_tokens,
+        }
+        for key, value in expected.items():
+            if row.get(key) != value:
+                raise ValueError(
+                    f"caption resume mismatch at line {line_number} for {key}: "
+                    f"expected {value!r}, found {row.get(key)!r}"
+                )
+    return raw_lines
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:

@@ -118,6 +118,7 @@ Verification:
 - Checkpoint relocation target: 4 passed.
 - Caption launch-lock target: 3 passed.
 - Caption contract/audit targets: 20 passed with exact Geometry3K and ViRL manifest coverage.
+- Caption resume/launcher target: 8 passed; retries are restricted to failed source runs and exact canonical shard prefixes.
 - Blind-summary integrity target: 11 passed; the new V3 aggregator also validated all 2,702 existing Geometry3K rows across five conditions.
 - GitHub branch: `agent/gate2-recovery`; draft PR: `https://github.com/yhc98002-bit/Blind-Gain/pull/1`.
 

@@ -13,7 +13,13 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.captioning.store import CAPTION_PROMPT, SCHEMA_VERSION, discover_images, select_shard
+from src.captioning.store import (
+    CAPTION_PROMPT,
+    SCHEMA_VERSION,
+    discover_images,
+    load_validated_caption_prefix,
+    select_shard,
+)
 
 
 def generate_caption(model, processor, image_path: str, max_new_tokens: int) -> str:
@@ -43,11 +49,42 @@ def main() -> None:
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--max-new-tokens", type=int, default=384)
+    parser.add_argument("--resume-from", type=Path)
     args = parser.parse_args()
     output = Path(args.output)
     if output.exists() and output.stat().st_size:
         raise FileExistsError(f"refusing to overwrite caption-store shard: {output}")
     items = select_shard(discover_images(args.input_dir), args.num_shards, args.shard_index)
+    if not items:
+        raise ValueError("selected caption-store shard is empty")
+    resume_lines = (
+        load_validated_caption_prefix(
+            args.resume_from,
+            items,
+            model_path=args.model_path,
+            max_new_tokens=args.max_new_tokens,
+        )
+        if args.resume_from
+        else []
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", encoding="utf-8") as handle:
+        for line in resume_lines:
+            handle.write(line + "\n")
+        handle.flush()
+    if len(resume_lines) == len(items):
+        print(
+            json.dumps(
+                {
+                    "n_images": len(items),
+                    "resumed": len(resume_lines),
+                    "num_shards": args.num_shards,
+                    "shard_index": args.shard_index,
+                }
+            )
+        )
+        return
+
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         args.model_path,
         torch_dtype=torch.bfloat16,
@@ -55,10 +92,9 @@ def main() -> None:
         trust_remote_code=True,
     )
     processor = AutoProcessor.from_pretrained(args.model_path, trust_remote_code=True)
-    output.parent.mkdir(parents=True, exist_ok=True)
     prompt_hash = hashlib.sha256(CAPTION_PROMPT.encode("utf-8")).hexdigest()
-    with output.open("w", encoding="utf-8") as handle:
-        for item in items:
+    with output.open("a", encoding="utf-8") as handle:
+        for item in items[len(resume_lines) :]:
             row = {
                 "schema_version": SCHEMA_VERSION,
                 **item,
@@ -71,7 +107,16 @@ def main() -> None:
             }
             handle.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             handle.flush()
-    print(json.dumps({"n_images": len(items), "num_shards": args.num_shards, "shard_index": args.shard_index}))
+    print(
+        json.dumps(
+            {
+                "n_images": len(items),
+                "resumed": len(resume_lines),
+                "num_shards": args.num_shards,
+                "shard_index": args.shard_index,
+            }
+        )
+    )
 
 
 if __name__ == "__main__":

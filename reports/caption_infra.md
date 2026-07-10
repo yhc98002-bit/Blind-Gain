@@ -7,11 +7,12 @@ Status:
 - The 4,096-item ViRL39K audit manifest has exact 3B caption coverage over all 4,297 unique image hashes; a supplemental 7B store is active.
 
 Evidence:
-- Implementation: `src/captioning/store.py`, `scripts/caption_image_store.py`, and `scripts/launch_caption_store_shards.sh`.
+- Implementation: `src/captioning/store.py`, `scripts/caption_image_store.py`, `scripts/audit_caption_store.py`, and `scripts/launch_caption_store_shards.sh`.
 - Schema: `blind-gains.caption-store.v1`; each row is keyed by SHA256 of image bytes and records duplicate paths, model path, prompt hash, token budget, and decoding settings.
 - Decoding is fixed to greedy: temperature 0, top-p 1.0, one output, maximum 384 new tokens.
 - Prompt SHA256: `9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0`.
 - Contract enforcement: `merge_caption_rows` and the blind-evaluation loader reject the wrong schema, any prompt other than the registered literal prompt, prompt-hash drift, non-greedy decoding, token budgets below 384, mixed model/prompt/budget stores, and question/answer fields.
+- Resume enforcement: a retry accepts only a canonical content-hash shard prefix with matching image path/duplicate metadata, caption model, prompt, decoding, and token budget; the new run records and hashes the failed source run.
 - Machine audits: `reports/caption_store_contract_geo3k_3b.json`, `reports/caption_store_contract_geo3k_7b.json`, `reports/caption_store_contract_fliptrack_v02r19_3b.json`, `reports/caption_store_contract_fliptrack_v02r19_7b.json`, and `reports/caption_store_contract_virl39k4096_3b.json`; all checks pass with exact manifest-image coverage.
 
 Fixed question-blind prompt:
