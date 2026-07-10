@@ -16,7 +16,7 @@ def ocr_char_ngrams(value: Any, n: int = 5) -> frozenset[str]:
     return frozenset(compact[index : index + n] for index in range(len(compact) - n + 1))
 
 
-def _eligible(entry: dict[str, Any], thresholds: dict[str, float]) -> bool:
+def ocr_entry_eligible(entry: dict[str, Any], thresholds: dict[str, float]) -> bool:
     normalized = normalize_ocr_text(entry.get("text", ""))
     compact = normalized.replace(" ", "")
     minimum_chars = int(thresholds["ocr_min_compact_chars"])
@@ -74,7 +74,7 @@ def merge_ocr_signals(
     inverted: dict[str, set[str]] = defaultdict(set)
     for digest in eval_by_hash:
         entry = entries.get(digest)
-        if entry is None or not _eligible(entry, thresholds):
+        if entry is None or not ocr_entry_eligible(entry, thresholds):
             continue
         grams = ocr_char_ngrams(entry.get("text", ""))
         if not grams:
@@ -121,7 +121,7 @@ def merge_ocr_signals(
 
     for train_digest, train_records in train_by_hash.items():
         entry = entries.get(train_digest)
-        if entry is None or not _eligible(entry, thresholds):
+        if entry is None or not ocr_entry_eligible(entry, thresholds):
             continue
         train_grams = ocr_char_ngrams(entry.get("text", ""))
         candidate_hashes: set[str] = set()
@@ -162,7 +162,7 @@ def merge_ocr_signals(
                 "missing_unique_images": len(missing_hashes),
                 "error_images": len(error_hashes),
                 "nonempty_text_images": sum(bool(normalize_ocr_text(entries[digest].get("text", ""))) for digest in expected_hashes & entries.keys()),
-                "eligible_text_images": sum(_eligible(entries[digest], thresholds) for digest in expected_hashes & entries.keys()),
+                "eligible_text_images": sum(ocr_entry_eligible(entries[digest], thresholds) for digest in expected_hashes & entries.keys()),
             },
         }
     )

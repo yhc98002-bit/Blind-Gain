@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 5 ]]; then
-  echo "Usage: $0 NODE TRAIN_RECORDS EVAL_RECORDS NUM_SHARDS RUN_TAG" >&2
+if [[ $# -lt 5 || $# -gt 6 ]]; then
+  echo "Usage: $0 NODE TRAIN_RECORDS EVAL_RECORDS NUM_SHARDS RUN_TAG [DATA_LABEL]" >&2
   exit 2
 fi
 
@@ -11,6 +11,7 @@ TRAIN_RECORDS="$2"
 EVAL_RECORDS="$3"
 NUM_SHARDS="$4"
 RUN_TAG="$5"
+DATA_LABEL="${6:-Geometry3K train and full Layer-1 records}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${NUM_SHARDS}" =~ ^[1-9][0-9]*$ || ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
@@ -42,6 +43,7 @@ jq -n \
   --arg git_hash "$(git -C "${ROOT}" rev-parse HEAD)" \
   --arg config_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg data_hash "${DATA_HASH}" \
+  --arg data_label "${DATA_LABEL}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --argjson expected "${EXPECTED}" \
@@ -53,7 +55,7 @@ jq -n \
     gpu_allocation: [],
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "Geometry3K train and full Layer-1 records",
+    data_manifest: $data_label,
     data_manifest_hash: $data_hash,
     model_revision: "rapidocr_onnxruntime==1.4.4 bundled PP-OCR models",
     num_shards: $num_shards,
