@@ -11,6 +11,7 @@ from src.eval.fliptrack_metrics import match_tier
 from src.fliptrack.build_v02 import (
     build,
     generate_coordinate_point_pairs,
+    generate_coordinate_register_legible_pairs,
     generate_coordinate_register_pairs,
     generate_header_table_pairs,
     generate_parallel_pairs,
@@ -97,6 +98,17 @@ def test_random_target_coordinate_register_is_truthful_and_varies_query_label(tm
             allowed = np.asarray(mask.convert("L")) > 0
         assert np.any(changed)
         assert not np.any(changed & ~allowed)
+
+
+def test_r6_coordinate_register_changes_only_declared_legibility(tmp_path: Path) -> None:
+    rows = generate_coordinate_register_legible_pairs(tmp_path / "register-r6", n=2, seed=73)
+    assert {row["template_id"] for row in rows} == {"coordinate_register_random_target_v02"}
+    for row in rows:
+        assert row["provenance"]["render_variant"] == "legibility_r6_scale70_radius10_label18"
+        assert row["verifier_results"]["point_count"] == 12
+        assert row["verifier_results"]["render_scale"] == 70
+        assert row["verifier_results"]["point_radius"] == 10
+        assert row["verifier_results"]["label_size"] == 18
 
 
 def test_contact_sheet_contains_twenty_pairs_when_available(tmp_path: Path) -> None:
