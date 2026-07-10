@@ -3,7 +3,7 @@
 Status:
 - The reusable content-hash caption store is implemented and tested.
 - Geometry3K train+test and the repacked R8 candidate images are complete at 384 tokens with both Qwen2.5-VL-3B and 7B.
-- P1.8 remains blocked only because R8 failed scientific retention; a final V0.2 package will be re-encoded and therefore must be captioned again under its new hashes.
+- The final R19 candidate has an exact-coverage 3B store for all 2,400 release images; 7B generation is active, so P1.8 remains partial.
 
 Evidence:
 - Implementation: `src/captioning/store.py`, `scripts/caption_image_store.py`, and `scripts/launch_caption_store_shards.sh`.
@@ -23,12 +23,16 @@ Completed stores:
 | Geometry3K train+test | Qwen2.5-VL-7B | 1,736 | 3 | 27m42s | 1.045 | 2,074,313 | `43316c1b688171ee3b39e16b1f8eed702d8373e7079da306eaf2581d644027fa` |
 | FlipTrack R8 repacked candidate | Qwen2.5-VL-3B | 1,400 | 3 | 35m18s | 0.661 | 1,609,913 | `14769cf10b667c5c9df025dfc07a52c0097206811522c51821b48fa8daa2efde` |
 | FlipTrack R8 repacked candidate | Qwen2.5-VL-7B | 1,400 | 2 | 52m50s | 0.442 | 1,835,903 | `d8004e642dafb5183c2353cc0e835d0f14dba843bea94a4cda74f7d97a332c52` |
+| FlipTrack R19 final candidate | Qwen2.5-VL-3B | 2,400 | 3 | 1h19m17s wall window | 0.505 | 2,840,433 | `85e657b2b06f3bec4fdbe49cb1e537e4ba995701042873b9f4105b33328c89fa` |
 
 Run directories:
 - `experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z`
 - `experiments/runs/geometry3k_qwen25vl7b_captionstore384_20260710T011700Z`
 - `experiments/runs/fliptrack_v02r8_qwen25vl3b_captionstore384_20260710T013000Z`
 - `experiments/runs/fliptrack_v02r8_qwen25vl7b_captionstore384_20260710T013000Z`
+- `experiments/runs/fliptrack_v02r17_qwen25vl3b_captionstore384_an12_20260710T122730Z`
+- `experiments/runs/fliptrack_v02r18_qwen25vl3b_captionstore384_an12_20260710T131300Z`
+- `experiments/runs/caption_store_merge_fliptrack_v02r19_qwen25vl3b_384_20260710T134825Z`
 
 Budget comparison:
 | Template/model | 160-token caption pair accuracy | 384-token caption pair accuracy | Difference |
@@ -43,6 +47,7 @@ Budget comparison:
 Problems:
 - R8 is a linter-valid but scientifically rejected candidate. Its stores are useful infrastructure evidence, not captions for a frozen evaluation release.
 - Single-image eager generation leaves throughput below a batched vLLM implementation; correctness and resumable deterministic shards were prioritized for this gate.
+- The R19 7B store is still running in separate R17 and R18 shards; it must pass the same 2,400-hash merge before P1.8 can pass.
 
 Decision:
 - Reuse the current schema and prompt for A3 and future caption-only evaluations.
@@ -50,5 +55,5 @@ Decision:
 - Keep the token budget at 384 for certification; the 160-token result is a sensitivity diagnostic only.
 
 Next actions:
-- Caption the final packaged V0.2 images with both models after P1.6 retention and P1.4 re-encoding.
-- Merge shards into a read-only hash index for A3 data loading without changing row content.
+- Complete and merge the R19 7B shards against the release manifest.
+- Treat both exact-coverage merged files as read-only hash indexes for A3 data loading without changing row content.
