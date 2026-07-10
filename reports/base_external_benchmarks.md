@@ -1,8 +1,8 @@
 # Base External Benchmarks
 
 Status:
-- MMStar, MathVista-testmini, and BLINK are complete for Qwen2.5-VL-3B and 7B.
-- Remaining Layer-1 cells are prepared or blocked as listed; P1.2 is not complete.
+- MMStar, MathVista-testmini, BLINK, HallusionBench, and MMVP are complete for Qwen2.5-VL-3B and 7B.
+- The full Layer-1 base table is complete; unified parser fields and native harness metrics are retained separately.
 
 Evidence:
 | Model | Benchmark | n | Harness metric | `Acc_final` | `Acc_strict` | Format valid | Ambiguous | Infer failures |
@@ -17,8 +17,10 @@ Evidence:
 | Qwen2.5-VL-7B | MathVista-testmini image-removed | 999 | n/a | 0.3393 | 0.1331 | 0.5295 | 0.0000 | 0 |
 | Qwen2.5-VL-3B | BLINK | 1,901 | 0.4929 | 0.4929 | 0.0000 | 0.0000 | 0.0000 | 0 |
 | Qwen2.5-VL-7B | BLINK | 1,901 | 0.5565 | 0.5565 | 0.0000 | 0.0000 | 0.0000 | 0 |
-| Qwen2.5-VL-3B/7B | HallusionBench | pending | blocked | blocked | blocked | blocked | blocked | blocked |
-| Qwen2.5-VL-3B/7B | MMVP | pending | blocked | blocked | blocked | blocked | blocked | blocked |
+| Qwen2.5-VL-3B | HallusionBench | 1,129 | 0.5979 | 0.5979 | 0.3880 | 0.6678 | 0.0000 | 0 |
+| Qwen2.5-VL-7B | HallusionBench | 1,129 | 0.6829 | 0.6829 | 0.3729 | 0.5686 | 0.0000 | 0 |
+| Qwen2.5-VL-3B | MMVP | 300 | 0.6600 | 0.6600 | 0.0000 | 0.0000 | 0.0000 | 0 |
+| Qwen2.5-VL-7B | MMVP | 300 | 0.7433 | 0.7433 | 0.0000 | 0.0033 | 0.0000 | 0 |
 
 Run evidence:
 - 3B: `experiments/runs/vlmevalkit_mmstar3b_adapted_an29_20260710T004416Z`; unified output `postprocessed_v2/metrics.json`.
@@ -29,6 +31,10 @@ Run evidence:
 - BLINK 3B: `experiments/runs/vlmevalkit_blink3b_an29_20260710T015012Z`; unified output `postprocessed_v2/metrics.json`.
 - BLINK 7B: `experiments/runs/vlmevalkit_blink7b_an29_20260710T015014Z`; unified output `postprocessed_v2/metrics.json`.
 - Both BLINK validation manifests report zero inference and judge failures across all 1,901 rows.
+- HallusionBench adapter: `experiments/runs/prepare_layer1_hallusion_local_v2_20260710T032525Z`; 1,129 rows, including 178 text-only controls represented by a deterministic blank placeholder.
+- HallusionBench 3B/7B: `experiments/runs/vlmevalkit_hallusion3b_v2_an29_20260710T033006Z` and `experiments/runs/vlmevalkit_hallusion7b_v2_an29_20260710T033007Z`; native `aAcc/fAcc/qAcc` are 59.79/27.66/24.94 and 68.29/36.97/34.03.
+- MMVP adapter: `experiments/runs/prepare_layer1_mmvp_local_v2_20260710T032520Z`; 300 rows preserving 150 adjacent official pairs.
+- MMVP 3B/7B: `experiments/runs/vlmevalkit_mmvp3b_v2_an29_20260710T033004Z` and `experiments/runs/vlmevalkit_mmvp7b_v2_an29_20260710T033005Z`; native row accuracy is 0.6600/0.7433, while unified paired accuracy is 0.3667/0.5133.
 - MathVista inference/evaluation: `experiments/runs/vlmevalkit_mathvista3b_an29_20260710T021019Z` and `experiments/runs/vlmevalkit_mathvista7b_an29_20260710T021019Z`.
 - Those parent manifests are preserved as `fail`: inference and local-judge evaluation completed, but the old validator incorrectly required `*_acc.csv`; MathVista emits `*_score.csv`.
 - Validator recovery: `experiments/runs/vlmevalkit_validation_recovery_mathvista3b_20260710T021941Z` and `experiments/runs/vlmevalkit_validation_recovery_mathvista7b_20260710T021941Z`.
@@ -58,5 +64,5 @@ Decision:
 - Label any later Geometry3K-trained checkpoint MathVista row `contamination: geo3k-source`.
 
 Next actions:
-- Acquire and adapt HallusionBench/MMVP.
-- Run image-removed MMStar and MathVista after the blind prompt path passes fixtures.
+- Add image-removed HallusionBench/MMVP only as a later extension; the proposal's registered blind cells remain MMStar and MathVista.
+- Complete parser-agreement recovery and the expanded decontamination comparison.

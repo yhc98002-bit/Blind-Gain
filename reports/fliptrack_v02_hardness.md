@@ -25,6 +25,7 @@ Current evidence:
 | R10 high-entropy geometry | 300 | 0.450 | 0.7467 | 0.0167 | 0.0067 | 0.000 | 0.000 | retain candidate: all registered hardness cells pass |
 | R11 legible chart | 300 | 0.980 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
 | R12 balanced chart | 300 | 0.2533 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
+| R13 guided chart | 300 | 0.3767 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -62,6 +63,12 @@ R12 diagnostics:
 - Pair accuracy is 0.2533, strict pair accuracy is 0.1933, and format-valid rate is 0.915.
 - R12 is excluded without running blind/caption cells; a lower-bound failure is not repaired by threshold changes or favorable follow-on modes.
 
+R13 diagnostics:
+- Source manifest: `data/fliptrack_v02r13_source_manifest.jsonl`, one fixed 300-pair batch.
+- 3B real: `experiments/runs/fliptrack_v02r13_qwen25vl3b_real_20260710T033515Z`.
+- Pair accuracy is 0.3767, strict pair accuracy is 0.3033, and format-valid rate is 0.9217.
+- R13 is excluded without running blind/caption cells because it misses the preregistered 0.40 visual floor.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -77,6 +84,7 @@ Problems:
 - Generic 7B captions can enumerate enough of an eight-point coordinate plot to recover 17% of R7 pairs; increasing R10 to twenty randomized bindings reduces this to 0.67%.
 - The independent R9 chart expansion misses the 3B visual floor.
 - Removing all direct target emphasis while increasing R12 to eight series overcorrects the R11 upper-bound failure.
+- R13's six-series intermediate design improves over R12 but remains below the visual floor; the chart family is not yet retained.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
@@ -85,5 +93,5 @@ Decision:
 - Replace chart or add a different third family instead of sampling rescue batches until the pooled score crosses 0.40.
 
 Next actions:
-- Score the predeclared R13 intermediate chart: six series with legend/star and x-column guide, but no target-point ring or target-line thickening.
+- Design and predeclare a new chart family only after reviewing the R11-R13 calibration curve; do not pool failed chart batches.
 - Package and attack only after three families independently meet all acceptance checks.
