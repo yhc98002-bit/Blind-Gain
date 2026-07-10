@@ -7,6 +7,7 @@ from PIL import Image
 
 from src.analysis.blind_solvability import real_blind_quadrants, summarize_condition
 from src.eval.blind_solvability import build_conditioned_messages, pass_at_k, score_item
+from scripts.summarize_blind_solvability import render_markdown
 
 
 FORMAT = "{{ content | trim }} Return <answer>value</answer>."
@@ -77,3 +78,33 @@ def test_summary_and_real_blind_quadrants() -> None:
         "blind_only": 1,
         "neither_correct": 0,
     }
+
+
+def test_markdown_renderer_exposes_registered_metrics() -> None:
+    metric = {"mean": 0.5, "ci_low": 0.4, "ci_high": 0.6}
+    condition_summary = {
+        "metrics": {
+            name: metric
+            for name in ("p_greedy", "p_sample", "pass_at_g", "pass_at_k16", "variance_proxy")
+        },
+        "p_sample_midband_0p2_0p8": metric,
+    }
+    summary = {
+        "n_items": 2,
+        "runs": {condition: {"run_dir": f"runs/{condition}"} for condition in ("real", "gray", "noise", "none", "caption")},
+        "aggregates": {
+            condition: {split: condition_summary for split in ("all", "train", "test")}
+            for condition in ("real", "gray", "noise", "none", "caption")
+        },
+        "real_blind_greedy_quadrants": {
+            condition: {
+                split: {"both_correct": 1, "real_only": 0, "blind_only": 0, "neither_correct": 1}
+                for split in ("all", "train", "test")
+            }
+            for condition in ("gray", "noise", "none", "caption")
+        },
+    }
+    rendered = render_markdown(summary)
+    assert "pass@G=5" in rendered
+    assert "p in [0.2, 0.8]" in rendered
+    assert "Greedy real-vs-blind quadrants" in rendered
