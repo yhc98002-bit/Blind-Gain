@@ -58,3 +58,25 @@ Diagnosis:
 - DINOv2 passes pooled and per template; the retained package no longer has the deterministic semantic-side leak seen in parallel geometry.
 - The failing coordinate frequency and header metadata OOF AUCs are below 0.5 before applying `max(AUC, 1-AUC)`, while every train fold selects the positive direction. This is unstable direction inversion, not evidence of a stable deployable classifier.
 - The pre-registered statistic intentionally treats either direction as leakage, so this diagnosis does not override the failure. The CI rule requires more pairs for coordinate and header.
+
+## R8 Expanded Candidate
+
+Status:
+- Run `experiments/runs/artifact_gate_v02_an29_gpu4_20260710T012945Z` completed with all three attackers available.
+- Machine output: `reports/artifact_gate_v02_r8.json`.
+- The unchanged gate fails only for chart metadata; P1.5 remains open.
+
+| Scope / attacker | Gate statistic | 95% pair-bootstrap CI | Result |
+| --- | ---: | ---: | --- |
+| Pooled DINOv2 | 0.5019 | [0.5003, 0.5187] | pass |
+| Pooled frequency | 0.5068 | [0.5003, 0.5205] | pass |
+| Pooled metadata | 0.5031 | [0.5007, 0.5347] | pass |
+| R7 geometry / metadata | 0.5144 | [0.5008, 0.5559] | pass |
+| Document / metadata | 0.5326 | [0.5015, 0.5814] | pass |
+| Chart / DINOv2 | 0.5365 | [0.5029, 0.5861] | pass |
+| Chart / frequency | 0.5221 | [0.5012, 0.5574] | pass |
+| Chart / metadata | 0.5840 | [0.5105, 0.6585] | point fail; expansion required |
+
+Decision:
+- Do not relax either threshold.
+- Preserve R8 and generate one independent 300-pair R9 chart batch. Re-score the new batch before repackaging chart 400 + document 300 + geometry 300.

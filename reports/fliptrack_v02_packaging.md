@@ -48,3 +48,34 @@ Decision:
 Next actions:
 - Run grouped k-fold metadata/statistical/DINO attackers on this package.
 - Finish real/gray/noise/caption model scoring and retain only templates meeting P1.6 acceptance.
+
+## R8 Retained Candidate
+
+Status:
+- A new 700-pair package was built from the expanded document slice and the preregistered R7 geometry batch.
+- All 12 linter checks pass. This candidate is not frozen because its artifact gate still fails on chart metadata.
+
+Evidence:
+- Selection config: `configs/data/fliptrack_v02r8_retained.json`.
+- Selection record: `experiments/manifests/fliptrack_v02r8_selection.json`.
+- Source manifest: `data/fliptrack_v02r8_retained_source_manifest.jsonl`, SHA256 `060ebef35a9527a7d8f8da67c59482ad06a95b417c723ee8a063c4d231a908b0`.
+- Composition: chart 100, document 300, R7 geometry 300 pairs.
+- Package run: `experiments/runs/fliptrack_v02_package_20260710T012454Z`, exit code 0.
+- Release manifest: `data/fliptrack_v02r8_retained/manifest.jsonl`, SHA256 `983ba2517314b68c1ea4e9a5e10e807857c70c6d65c57f0e72829d95a91ad4e1`.
+- Linter output: `reports/fliptrack_v02r8_lint.json`, SHA256 `8513b670ecdbac8f55decb5bc4a096cf89b5af98555f0a16becbea5e82c0160c`.
+
+| Check | R8 result |
+| --- | ---: |
+| Pairs | 700 |
+| Members | 1,400 |
+| Opaque IDs/paths | pass |
+| Equal mtimes / clean PNG chunks | pass |
+| Truthful masks / distinguishable answers | pass |
+| Member order | 364 `ab`, 336 `ba` |
+| Chart side-size KS | 0.0600 |
+| Document side-size KS | 0.0400 |
+| Geometry side-size KS | 0.0433 |
+
+Decision:
+- Preserve R8 as an immutable failed-gate candidate.
+- Expand chart with the independent R9 seed batch before constructing the next package.
