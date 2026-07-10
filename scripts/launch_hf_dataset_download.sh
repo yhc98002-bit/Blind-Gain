@@ -32,7 +32,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 SESSION="${RUN_ID//-/_}"
-COMMAND="env http_proxy=${PROXY_URL} https_proxy=${PROXY_URL} HF_HOME=${ROOT}/artifacts/hf_home .venv/bin/hf download ${REPO_ID} --repo-type dataset --revision ${REVISION} --local-dir ${LOCAL_DIR} --max-workers 4"
+COMMAND="env http_proxy=${PROXY_URL} https_proxy=${PROXY_URL} HF_HOME=${ROOT}/artifacts/hf_home HF_HUB_DISABLE_XET=1 .venv/bin/hf download ${REPO_ID} --repo-type dataset --revision ${REVISION} --local-dir ${LOCAL_DIR} --max-workers 2"
 
 cd "${ROOT}"
 if [[ -e "${LOCAL_DIR}" ]]; then
