@@ -1,4 +1,20 @@
+import subprocess
+import sys
+from pathlib import Path
+
 from scripts.postprocess_vlmeval_predictions import score_mcq_prediction
+
+
+def test_postprocessor_entrypoint_resolves_project_imports_outside_repo(tmp_path: Path) -> None:
+    script = Path(__file__).resolve().parents[1] / "scripts" / "postprocess_vlmeval_predictions.py"
+    completed = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
 
 
 def test_mcq_postprocessor_uses_final_span_and_format_decomposition() -> None:

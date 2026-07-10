@@ -6,11 +6,14 @@ import json
 import math
 import re
 import string
+import sys
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.eval.fliptrack_metrics import match_tier
 from src.rewards.answer_reward import extract_answer_span
