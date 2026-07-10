@@ -16,6 +16,7 @@ from src.fliptrack.build_v02 import (
     generate_coordinate_register_legible_pairs,
     generate_coordinate_register_pairs,
     generate_header_table_pairs,
+    generate_legible_chart_pairs,
     generate_parallel_pairs,
     write_contact_sheets,
 )
@@ -132,6 +133,22 @@ def test_r10_high_entropy_register_preserves_only_target_y(tmp_path: Path) -> No
         assert verifier["target_y_preserved"] is True
         assert str(verifier["target_a"][0]) in {row["answer_a"], row["answer_b"]}
         assert str(verifier["target_b"][0]) in {row["answer_a"], row["answer_b"]}
+        assert row["answer_a"] != row["answer_b"]
+        with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
+            changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
+        with Image.open(row["changed_region_mask_a"]) as mask:
+            allowed = np.asarray(mask.convert("L")) > 0
+        assert np.any(changed)
+        assert not np.any(changed & ~allowed)
+
+
+def test_r11_legible_chart_changes_only_declared_target_region(tmp_path: Path) -> None:
+    rows = generate_legible_chart_pairs(tmp_path / "chart-r11", n=3, seed=89)
+    assert {row["template_id"] for row in rows} == {"starred_series_value_legible_v03"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["series_count"] == 6
+        assert verifier["x_count"] == 8
         assert row["answer_a"] != row["answer_b"]
         with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
             changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)

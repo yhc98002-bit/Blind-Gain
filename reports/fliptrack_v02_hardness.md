@@ -2,7 +2,7 @@
 
 Status:
 - P1.6 is blocked. The earlier 300-pair “retained” claim was provisional and is superseded.
-- The expanded document family passes. Chart expansion and the latest geometry family fail unchanged acceptance thresholds.
+- The expanded document family and R10 high-entropy geometry pass. Existing chart expansion fails unchanged acceptance thresholds.
 - No FlipTrack V0.2 eval split is frozen and no PI audit is requested yet.
 
 Acceptance contract:
@@ -21,8 +21,8 @@ Current evidence:
 | R5 coordinate expansion | 200 | 0.375 | 0.795 | 0.000 | 0.045 | 0.000 | 0.000 | reject: 3B real below 0.40 |
 | R6 coordinate calibration | 100 | 0.350 | 0.650 | 0.000 | 0.080 | 0.000 | not run | reject: 3B real and degradation control fail |
 | R7 eight-point geometry | 300 | 0.4267 | 0.740 | 0.0167 | 0.170 | 0.000 | 0.000 | reject: 7B caption exceeds 0.15 |
-| R9 chart expansion | 300 | 0.370 | 0.6067 | pending | pending | not run | not run | reject: 3B real below 0.40 |
-| R10 high-entropy geometry | 300 | 0.450 | running | running | running | running | running | first gate passes; no retention claim yet |
+| R9 chart expansion | 300 | 0.370 | 0.6067 | 0.000 | 0.0033 | not run | not run | reject: 3B real below 0.40 |
+| R10 high-entropy geometry | 300 | 0.450 | 0.7467 | 0.0167 | 0.0067 | 0.000 | 0.000 | retain candidate: all registered hardness cells pass |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -43,7 +43,10 @@ R10 diagnostics:
 - Source manifest: `data/fliptrack_v02r10_source_manifest.jsonl`, 300 pairs generated in one declared batch.
 - 3B real: `experiments/runs/fliptrack_v02r10_qwen25vl3b_real_20260710T020600Z`.
 - Pair accuracy is 0.450; strict pair accuracy is 0.410; format-valid rate is 0.970.
-- The remaining real/blind/caption conditions are running on this exact manifest. Passing the first gate is not sufficient for retention.
+- 7B real pair accuracy is 0.7467; 3B/7B caption-only pair accuracy is 0.0167/0.0067.
+- Gray and pair-shared-noise pair accuracy are both 0 with collapse 1.0.
+- Degradation is strongly downward: 0.450 original, 0.410 mild, 0.240 medium, 0.0067 severe, 0 gray.
+- R10 is a retained template candidate. It does not by itself satisfy the three-template P1.6 requirement.
 
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
@@ -57,17 +60,16 @@ Contact sheets:
 
 Problems:
 - The R8 package passed its linter but is scientifically invalid as a freeze candidate because R7's 7B caption check was pending when packaged.
-- Generic 7B captions can enumerate enough of an eight-point coordinate plot to recover 17% of pairs.
+- Generic 7B captions can enumerate enough of an eight-point coordinate plot to recover 17% of R7 pairs; increasing R10 to twenty randomized bindings reduces this to 0.67%.
 - The independent R9 chart expansion misses the 3B visual floor.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
 - Keep the 300-pair document family.
-- Redesign geometry with substantially more question-blind target entropy; do not lower the caption threshold.
+- Retain R10 high-entropy geometry and the expanded document family as the two current candidates.
 - Replace chart or add a different third family instead of sampling rescue batches until the pooled score crosses 0.40.
 
 Next actions:
 - Build one predeclared high-entropy geometry batch and score 3B real before other modes.
-- Complete every registered R10 condition and reject it if any remaining gate fails.
-- Select a replacement third family or a newly versioned chart design.
+- Score the newly versioned R11 chart design as one fixed 300-pair batch.
 - Package and attack only after three families independently meet all acceptance checks.
