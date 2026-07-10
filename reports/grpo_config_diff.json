@@ -1,0 +1,116 @@
+{
+  "KL.disable_kl": {
+    "match": true,
+    "ours": false,
+    "path": "algorithm.disable_kl",
+    "reference": false
+  },
+  "KL.kl_coef": {
+    "match": true,
+    "ours": 0.01,
+    "path": "algorithm.kl_coef",
+    "reference": 0.01
+  },
+  "KL.kl_penalty": {
+    "match": true,
+    "ours": "low_var_kl",
+    "path": "algorithm.kl_penalty",
+    "reference": "low_var_kl"
+  },
+  "KL.use_kl_loss": {
+    "match": true,
+    "ours": true,
+    "path": "algorithm.use_kl_loss",
+    "reference": true
+  },
+  "freeze_vision_tower": {
+    "match": true,
+    "ours": false,
+    "path": "worker.actor.model.freeze_vision_tower",
+    "reference": false
+  },
+  "global_batch_size": {
+    "match": false,
+    "ours": 4,
+    "path": "worker.actor.global_batch_size",
+    "reference": 128
+  },
+  "max_response_length": {
+    "match": false,
+    "ours": 512,
+    "path": "data.max_response_length",
+    "reference": 2048
+  },
+  "max_steps": {
+    "match": false,
+    "ours": 30,
+    "path": "trainer.max_steps",
+    "reference": null
+  },
+  "n_gpus_per_node": {
+    "match": true,
+    "ours": 2,
+    "path": "trainer.n_gpus_per_node",
+    "reference": 2
+  },
+  "rollout.n": {
+    "match": false,
+    "ours": 2,
+    "path": "worker.rollout.n",
+    "reference": 5
+  },
+  "rollout_batch_size": {
+    "match": false,
+    "ours": 4,
+    "path": "data.rollout_batch_size",
+    "reference": 512
+  },
+  "save_freq": {
+    "match": false,
+    "ours": -1,
+    "path": "trainer.save_freq",
+    "reference": 5
+  },
+  "train_files": {
+    "match": true,
+    "ours": "hiyouga/geometry3k@train",
+    "path": "data.train_files",
+    "reference": "hiyouga/geometry3k@train"
+  },
+  "val_before_train": {
+    "match": false,
+    "ours": false,
+    "path": "trainer.val_before_train",
+    "reference": true
+  },
+  "val_files": {
+    "match": false,
+    "ours": "hiyouga/geometry3k@test[:32]",
+    "path": "data.val_files",
+    "reference": "hiyouga/geometry3k@test"
+  },
+  "val_freq": {
+    "match": false,
+    "ours": -1,
+    "path": "trainer.val_freq",
+    "reference": 5
+  },
+  "validation.n": {
+    "match": true,
+    "ours": 1,
+    "path": "worker.rollout.val_override_config.n",
+    "reference": 1
+  },
+  "validation.temperature": {
+    "match": true,
+    "ours": 0.6,
+    "path": "worker.rollout.val_override_config.temperature",
+    "reference": 0.6
+  },
+  "validation.top_p": {
+    "match": true,
+    "ours": 0.95,
+    "path": "worker.rollout.val_override_config.top_p",
+    "reference": 0.95
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "fliptrack.v02.retained-selection.v2",
+  "expected_total_pairs": 700,
+  "sources": [
+    {
+      "path": "data/fliptrack_v02r3_source_manifest.jsonl",
+      "sha256": "bae79e619527125c19717c2953c4909839dc43fd0644bf8b664f825debc8232a",
+      "templates": {
+        "header_cued_table_code_v02": 100,
+        "starred_series_value_v02": 100
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r5_source_manifest.jsonl",
+      "sha256": "6668b039dc4d95b6f00ef249e800aaec7517e7ef28b7b00ceceed0387937186c",
+      "templates": {
+        "header_cued_table_code_v02": 200
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r7_source_manifest.jsonl",
+      "sha256": "1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3",
+      "templates": {
+        "coordinate_register_eight_point_v02": 300
+      }
+    }
+  ]
+}

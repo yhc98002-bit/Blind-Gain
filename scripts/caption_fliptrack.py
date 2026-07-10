@@ -12,11 +12,7 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-
-CAPTION_PROMPT = (
-    "Describe the image in one concise paragraph. Include visible text, labels, "
-    "numbers, colors, shapes, counts, and spatial relations that could matter for answering questions."
-)
+from src.captioning.store import CAPTION_PROMPT
 
 
 def generate_caption(model, processor, image_path: str, max_new_tokens: int) -> str:
@@ -46,7 +42,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
-    parser.add_argument("--max-new-tokens", type=int, default=160)
+    parser.add_argument("--max-new-tokens", type=int, default=384)
     args = parser.parse_args()
     if args.num_shards < 1:
         raise ValueError("--num-shards must be >= 1")

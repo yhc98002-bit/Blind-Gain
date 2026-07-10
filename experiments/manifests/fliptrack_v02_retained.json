@@ -1,0 +1,30 @@
+{
+  "config_path": "configs/data/fliptrack_v02_retained.json",
+  "config_sha256": "ec6e4245c405129c35c788debc90ecb3a236bd78ca3c0a43bd89fc58fa77ec8a",
+  "n_pairs": 300,
+  "output_path": "data/fliptrack_v02_retained_source_manifest.jsonl",
+  "output_sha256": "a2cc793795ca0e806922e78a6dedf27e55028cb111cc8fd92656b072264d1353",
+  "schema_version": "fliptrack.v02.retained-selection.v1",
+  "sources": [
+    {
+      "path": "data/fliptrack_v02r3_source_manifest.jsonl",
+      "selected_templates": {
+        "header_cued_table_code_v02": 100,
+        "starred_series_value_v02": 100
+      },
+      "sha256": "bae79e619527125c19717c2953c4909839dc43fd0644bf8b664f825debc8232a"
+    },
+    {
+      "path": "data/fliptrack_v02r4_source_manifest.jsonl",
+      "selected_templates": {
+        "coordinate_register_random_target_v02": 100
+      },
+      "sha256": "47e9d5bb6deb52b0b5e3f01d93b290d442ad4a4b1d72043b53f52dd38b9c1850"
+    }
+  ],
+  "template_counts": {
+    "coordinate_register_random_target_v02": 100,
+    "header_cued_table_code_v02": 100,
+    "starred_series_value_v02": 100
+  }
+}

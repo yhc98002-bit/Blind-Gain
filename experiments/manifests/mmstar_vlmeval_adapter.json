@@ -1,0 +1,13 @@
+{
+  "n_rows": 1500,
+  "option_count_distribution": {
+    "3": 1,
+    "4": 1499
+  },
+  "output": "data/vlmevalkit/MMStar_VLMEVAL.tsv",
+  "output_sha256": "07fb57d8c07051623264df625534bf00ed8f5cab747efb136658ba4f52b36768",
+  "source": "data/vlmevalkit/MMStar_LOCAL.tsv",
+  "source_sha256": "38a99f4a33743665e6990961a9a0072b07f7ac6a74d1555b43c4f82145377cb4",
+  "status": "pass",
+  "transform": "split final question Options block into A-D columns; preserve image bytes and labels"
+}

@@ -1,0 +1,27 @@
+{
+  "machine_checks": {
+    "anchor_complete_with_step0_curve": false,
+    "datasets_and_required_licenses": true,
+    "decontamination_calibrated": true,
+    "geometry3k_blind_solvability": true,
+    "gpu_idle_audit_no_violation": false,
+    "layer1_base_table_complete": true,
+    "measurement_system_repaired": true,
+    "repository_and_gate_logic_clean": false,
+    "three_arm_mechanical_pilot": false,
+    "v02_artifact_gate_passes": true,
+    "v02_exact_caption_stores": true,
+    "v02_packaging_linter_passes": true,
+    "v02_positive_controls": true,
+    "v02_templates_and_contact_sheets": true
+  },
+  "machine_ready_for_pi_audit": false,
+  "note": "This script checks artifacts only; it does not declare Gate 2 passed.",
+  "pi_gate_decision": "not_evaluated",
+  "unsatisfied_checks": [
+    "anchor_complete_with_step0_curve",
+    "three_arm_mechanical_pilot",
+    "repository_and_gate_logic_clean",
+    "gpu_idle_audit_no_violation"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "dataset": "blink",
+  "output": "data/vlmevalkit/BLINK_LOCAL.tsv",
+  "output_sha256": "489094f32a1768c93a8cef50ef4afe1fa74a7c5a74c2ea02a7684f38abde6522",
+  "rows": 1901,
+  "schema_version": "blind-gains.layer1-vlmeval-adapter.v1",
+  "source_files": [
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Art_Style/val-00000-of-00001.parquet",
+      "sha256": "9400707b7d0e54809146f0f6e9eec058803bef7f50b58b7d21c75b95b90e37d4"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Counting/val-00000-of-00001.parquet",
+      "sha256": "7404d7b8e3c4a97a9ab5015739ad3b76a505bbe073286c8c3412f60f4d2b13e5"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Forensic_Detection/val-00000-of-00001.parquet",
+      "sha256": "48499d694cfffe81fa1eac3dcb1a84804d30cee8ffb501d7ff7020d8c20dd00c"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Functional_Correspondence/val-00000-of-00001.parquet",
+      "sha256": "fa3b85a94002be63939088627224d53bca84b20efcebb2cfa95fd246004514c1"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/IQ_Test/val-00000-of-00001.parquet",
+      "sha256": "5753ee46f95354f5d3207ff51df6cb0a70a3ffd63114e80718ab465a3997ca61"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Jigsaw/val-00000-of-00001.parquet",
+      "sha256": "cf6ae1c48389667e0c245e56c48479f86e9f0bc1f5d33f0559da5fc2f37b671f"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Multi-view_Reasoning/val-00000-of-00001.parquet",
+      "sha256": "f4e81718f844747bce372bcf046ffe207f82a1ea8b7ce308655c11f536114e19"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Object_Localization/val-00000-of-00001.parquet",
+      "sha256": "cce5f661cc5c6ddde12d37c2a70e4f7dc4f18e613a5e647d6f5ae35c05799532"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Relative_Depth/val-00000-of-00001.parquet",
+      "sha256": "4cd1d5840a2f9e3ad86b310865bd44a29555344b0c6b67b36f9ab1c1029a4d1a"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Relative_Reflectance/val-00000-of-00001.parquet",
+      "sha256": "f6d6a7605b50f7283b09b4a2f98f7552bacd6a256ad61e6ecafa12e49b38e3ca"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Semantic_Correspondence/val-00000-of-00001.parquet",
+      "sha256": "83b9882aca27f740e32d8973c2454e8b78203d3958d189cb5a5fe00a34b88e05"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Spatial_Relation/val-00000-of-00001.parquet",
+      "sha256": "7ce3f778ac870af32151eb8a71512c203314404bd0d903f3bff6c80ff89322c2"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Visual_Correspondence/val-00000-of-00001.parquet",
+      "sha256": "c7c54374f3016df3781d306890c8921ed04ef5b8abd3fa404c6560b2f503d827"
+    },
+    {
+      "path": "artifacts/datasets/modelscope_BLINK_metadata/Visual_Similarity/val-00000-of-00001.parquet",
+      "sha256": "15857cd004055977c2486e39523a913762e9e6551603bc57b5bc097a70d19aa0"
+    }
+  ],
+  "unique_images": 3664
+}

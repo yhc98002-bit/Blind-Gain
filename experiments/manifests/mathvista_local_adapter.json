@@ -1,0 +1,19 @@
+{
+  "dataset": "mathvista",
+  "deviations": {
+    "dropped_ambiguous_choice_ids": [
+      "781"
+    ]
+  },
+  "output": "data/vlmevalkit/MathVista_LOCAL.tsv",
+  "output_sha256": "0ba7ec2edf5cb674fd0f7136470b716e47c29ded86fcaee72c84d91c3a0c6d9a",
+  "rows": 999,
+  "schema_version": "blind-gains.layer1-vlmeval-adapter.v1",
+  "source_files": [
+    {
+      "path": "artifacts/datasets/modelscope_MathVista_metadata/data/testmini-00000-of-00001-725687bf7a18d64b.parquet",
+      "sha256": "373f6c0b412a9be2cec36711cee724e03f4c5db6908f3c13db903aa9694d4f2d"
+    }
+  ],
+  "unique_images": 971
+}

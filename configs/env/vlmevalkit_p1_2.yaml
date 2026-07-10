@@ -1,0 +1,22 @@
+repo_path: artifacts/repos/VLMEvalKit
+repo_commit: 6a02ab92471a8c544ff0769da5968a29fd75971f
+environment_path: artifacts/envs/vlmevalkit
+base_site_packages: .venv/lib/python3.10/site-packages
+constraints: configs/env/vlmevalkit_constraints.txt
+extra_requirements: configs/env/vlmevalkit_extra_requirements.txt
+package_index: https://pypi.tuna.tsinghua.edu.cn/simple
+models:
+  qwen25vl_3b: artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct
+  qwen25vl_7b: artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct
+  local_judge: artifacts/models/Qwen/Qwen2.5-7B-Instruct
+evaluation:
+  decoding:
+    temperature: 0.0
+    top_p: 1.0
+    n: 1
+  datasets:
+    - MathVista_MINI
+    - MMStar
+    - HallusionBench
+    - MMVP
+    - BLINK

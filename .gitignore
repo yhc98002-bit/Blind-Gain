@@ -1,5 +1,6 @@
 # Python and local environments
 .venv/
+.venv-ocr/
 venv/
 /env/
 .pip_cache/
@@ -16,12 +17,18 @@ __pycache__/
 *.swp
 *.swo
 prompt.md
+prompt2.md
+.private/
 
 # Downloaded models, caches, checkpoints, and release bundles
 artifacts/
 checkpoints/
+caption_stores/
 release/
 reports/review_packages/
+reports/contact_sheets/
+reports/mmk12_stats.json
+reports/virl39k_stats.json
 *.tar
 *.tar.gz
 *.tgz
@@ -32,10 +39,5 @@ logs/
 experiments/logs/
 experiments/runs/
 
-# Generated image assets. Keep lightweight manifests tracked.
-data/fliptrack_v0/
-data/fliptrack_v01/
-!data/fliptrack_v0_manifest.jsonl
-!data/fliptrack_v0_manifest_scored.jsonl
-!data/fliptrack_v01_manifest.jsonl
-!data/fliptrack_v01_scored.jsonl
+# Generated datasets stay local. Track checksums under experiments/manifests/.
+/data/

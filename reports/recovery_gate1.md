@@ -1,35 +1,30 @@
 # Recovery Gate 1
 
 Status:
-- Gate status: pass for the machine-checkable Recovery Gate 1 criteria.
-- Important caveat: the first artifact gate still fails on the packaged V0.1 manifest because path/member metadata predicts A/B side with AUC 1.0.
-- Stage 0 proposal gate remains conditional, not pass.
+- Corrected machine status: `fail`.
+- Stage 0 proposal status remains `conditional`, not pass.
+- Status is now the logical AND of enumerated sub-gates in `scripts/compute_recovery_gate1.py`.
 
 Evidence:
-- GRPO recovery anchor completed 30 global steps on `an12` GPUs 0,1.
-- Checkpoint tracker: `checkpoints/stage0_repro/easyr1_geo3k_recovery30/checkpoint_tracker.json`.
-- Final saved actor path: `checkpoints/stage0_repro/easyr1_geo3k_recovery30/global_step_30/actor`.
-- FlipTrack V0.1 has 300 generated/scored pairs: 100 chart, 100 document/OCR, 100 geometry.
-- Qwen2.5-VL-3B V0.1 real pair accuracy: 0.8933.
-- Qwen2.5-VL-3B V0.1 caption-only pair accuracy: 0.1000.
-- Qwen2.5-VL-7B V0.1 real pair accuracy: 0.9333.
-- Qwen2.5-VL-7B V0.1 caption-only pair accuracy: 0.5167.
-- Artifact gate on packaged paths: metadata AUC 1.0, DINOv2 AUC 0.4717, best AUC 1.0.
-- Artifact gate after sanitized symlink paths: metadata AUC 0.4217, DINOv2 AUC 0.4719, best AUC 0.4719.
+- The 30-step GRPO engineering anchor completed on `an12` GPUs 0,1; it is not a published reproduction.
+- FlipTrack V0.1 contains 300 pairs. P0.1 rescoring found Qwen2.5-VL-7B caption-only pair accuracy 0.5133 rather than the old 0.5167.
+- The V0.1 path-based metadata attacker reached AUC 1.0; therefore `artifact_gate_v01_complete=false`.
+- Dataset/license triage remains `partial`; therefore `dataset_license_triage_complete=false`.
+- `tests/test_gate_logic.py` proves a pass is impossible while any enumerated sub-gate is false.
+- Machine output: `reports/recovery_gate1.json`.
 
 Problems:
-- V0.1 is not release-ready until filenames/paths stop encoding pair side.
-- ViRL39K acquisition is still blocked by loader handling of `images.zip`.
-- The GRPO run is an engineering anchor, not a published reproduction, because published target/tolerance and pre/post checkpoint evaluation are not complete.
-- Qwen2.5-VL-7B caption-only is below the aggregate 0.60 ceiling but shows template-level leakage/compressibility on the starred legend template.
+- Required model/dataset license triage is incomplete.
+- V0.1 is not artifact-robust and is superseded by the in-progress opaque V0.2 package.
+- P0.2 parser agreement remains blocked because the recovery run did not preserve at least 300 usable generations.
+- The recipe-scale P1.1 anchor is still running and has not produced its required curve.
 
 Decision:
-- Treat Recovery Gate 1 as passed for the requested gate predicates, with artifact packaging cleanup required before any artifact-robustness claim.
-- Keep Blind Gains framed as a controlled decomposition and counterfactual measurement paper.
-- Treat CP-GRPO as constructive unless the overlap audit later establishes standalone novelty.
+- Do not treat Recovery Gate 1 as passed.
+- Keep the 30-step run labeled `engineering anchor`.
+- Use V0.2, not sanitized V0.1 symlinks, for the corrected artifact gate.
 
 Next actions:
-- Repackage FlipTrack V0.1 with randomized/equalized paths, rerun artifact gate, and regenerate release manifests.
-- Run base-model and `global_step_30` checkpoint evaluation on the same validation slice.
-- Continue ViRL39K loader/license triage; keep Geometry3K as engineering fallback only.
-- Harden V0.1 starred legend and symbol-grid templates against 7B caption compression.
+- Finish and lint the V0.2 package, then run grouped artifact attackers on the actual release manifest.
+- Complete the recipe anchor and V0.2 hardness scoring.
+- Resolve required licenses and the ViRL39K loader path.

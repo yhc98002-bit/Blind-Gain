@@ -10,10 +10,15 @@ def test_extract_boxed_answer():
     assert extract_final_answer("Therefore \\boxed{17}.") == "17"
 
 
+def test_extract_nested_boxed_answer():
+    assert extract_final_answer("Therefore \\boxed{\\frac{1}{2}}.") == "\\frac{1}{2}"
+
+
 def test_normalize_numeric_equivalence():
     assert answers_match("$1,200.00", "1200")
     assert answers_match("50%", "0.5")
     assert answers_match("1/2", "0.5")
+    assert answers_match("\\boxed{\\frac{1}{2}}", "0.5")
 
 
 def test_reward_is_binary():
@@ -28,4 +33,3 @@ def test_cp_pair_reward_requires_both_members():
 
 def test_normalize_strips_terminal_punctuation():
     assert normalize_answer(" Answer: Blue. ") == "blue"
-

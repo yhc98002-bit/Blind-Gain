@@ -1,0 +1,14 @@
+{
+  "artifact_gate_v01": "fail",
+  "dataset_license_triage": "partial",
+  "fliptrack_v01_caption_pair_acc": 0.1,
+  "fliptrack_v01_pairs": 300,
+  "fliptrack_v01_real_pair_acc": 0.8933333333333333,
+  "grpo_audit": "pass",
+  "grpo_repro_steps": 30,
+  "literature_overlap": "pass",
+  "next_recommended_action": "Complete the recipe anchor, package and score V0.2, resolve dataset licenses, then rerun the corrected artifact gate.",
+  "scientific_gpu_jobs_an12": 7,
+  "scientific_gpu_jobs_an29": 6,
+  "stage0_proposal_gate": "conditional"
+}

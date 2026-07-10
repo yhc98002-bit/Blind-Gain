@@ -1,0 +1,43 @@
+{
+  "audited_at_utc": "2026-07-10T16:53:06Z",
+  "checks": {
+    "exact_manifest_image_coverage": true,
+    "schema_prompt_decoding_budget_valid": true,
+    "single_caption_contract": true
+  },
+  "contract": {
+    "caption_model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "caption_prompt_sha256": "9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0",
+    "coverage_complete": true,
+    "decoding": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "expected_hashes": 1736,
+    "max_new_tokens": 384,
+    "n_images": 1736,
+    "schema_version": "blind-gains.caption-store-merge.v1"
+  },
+  "manifest": "data/geometry3k_caption_images_manifest.jsonl",
+  "manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+  "schema_version": "blind-gains.caption-store-audit.v1",
+  "shards": [
+    {
+      "path": "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_0.jsonl",
+      "sha256": "f8d9fd15ca524a6453e72cdadf0efc2aea23a5d5c4c95f76438fc148c2058c2a",
+      "size_bytes": 606551
+    },
+    {
+      "path": "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_1.jsonl",
+      "sha256": "acd70f2dc0ca723adb57543872333ebb60e986485fde4870f8e943f1f32828b5",
+      "size_bytes": 604966
+    },
+    {
+      "path": "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_2.jsonl",
+      "sha256": "3ad92922ca0bfa69ff1267f4cc51cde1cfc100da05bdd66dbcb681a7f6dc43e8",
+      "size_bytes": 595723
+    }
+  ],
+  "status": "pass"
+}
