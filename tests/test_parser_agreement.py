@@ -39,3 +39,8 @@ def test_parser_agreement_launcher_has_immutable_shards() -> None:
     assert "Refusing to overwrite parser-agreement run" in launcher
     assert "expected_shards" in launcher
     assert "TRANSFORMERS_OFFLINE=1" in launcher
+
+    audit_launcher = Path("scripts/launch_parser_agreement_audit.sh").read_text(encoding="utf-8")
+    assert "Parser generation source run is not complete" in audit_launcher
+    assert "data_manifest_hash" in audit_launcher
+    assert "run_manifest_job.py" in audit_launcher
