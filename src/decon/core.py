@@ -25,6 +25,10 @@ DEFAULT_THRESHOLDS = {
     "text_jaccard_inspect_min": 0.70,
     "text_embedding_remove_min": 0.95,
     "text_embedding_inspect_min": 0.90,
+    "ocr_char5_remove_min": 0.90,
+    "ocr_char5_inspect_min": 0.75,
+    "ocr_min_compact_chars": 8,
+    "ocr_min_tokens_or_lines": 2,
 }
 
 

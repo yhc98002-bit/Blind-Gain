@@ -1,0 +1,5 @@
+# Isolated OCR environment. Keep this separate from the Qwen/EasyR1 environment.
+numpy==1.26.4
+opencv-python==4.11.0.86
+onnxruntime==1.23.2
+rapidocr_onnxruntime==1.4.4

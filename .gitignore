@@ -1,5 +1,6 @@
 # Python and local environments
 .venv/
+.venv-ocr/
 venv/
 /env/
 .pip_cache/

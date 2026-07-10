@@ -16,6 +16,7 @@ from src.decon.core import (
     word_ngrams,
 )
 from src.decon.embedding_compare import cosine_candidates, merge_embedding_signals
+from src.decon.ocr import merge_ocr_signals, ocr_char_ngrams
 
 
 def _image(path: Path, offset: int = 0) -> None:
@@ -130,3 +131,90 @@ def test_embedding_comparison_flags_only_high_cosine_candidate(tmp_path: Path) -
     assert len(result["candidate_edges"]) == 1
     assert result["candidate_edges"][0]["eval_record_id"] == "eval"
     assert result["candidate_edges"][0]["action"] == "remove"
+
+
+def test_ocr_overlap_is_inspection_only_without_image_corroboration(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    _image(eval_image, offset=4)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "1")])
+    evaluation = enrich_records([_row("eval", "mmstar", eval_image, "Find y", "2")])
+    entries = [
+        {"image_sha256": train[0]["image_sha256"], "text": "Triangle ABC angle 42", "line_count": 2},
+        {"image_sha256": evaluation[0]["image_sha256"], "text": "Triangle ABC angle 42", "line_count": 2},
+    ]
+    result = merge_ocr_signals(
+        {"candidate_edges": [], "completed_layers": [], "pending_layers": ["ocr_text_overlap"]},
+        train,
+        evaluation,
+        entries,
+    )
+    assert result["pending_layers"] == []
+    assert result["candidate_edges"][0]["action"] == "inspect"
+    assert result["candidate_edges"][0]["signals"]["ocr_char5_jaccard"]["exact"] is True
+
+
+def test_ocr_overlap_upgrades_corroborated_image_match(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    _image(eval_image, offset=4)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "1")])
+    evaluation = enrich_records([_row("eval", "mmstar", eval_image, "Find y", "2")])
+    baseline = {
+        "candidate_edges": [
+            {
+                "train_record_id": "train",
+                "eval_record_id": "eval",
+                "train_dataset": "geometry3k",
+                "eval_dataset": "mmstar",
+                "action": "inspect",
+                "signals": {"dinov2_cosine": 0.93},
+            }
+        ],
+        "completed_layers": ["dinov2_image_embedding"],
+        "pending_layers": ["ocr_text_overlap"],
+    }
+    entries = [
+        {"image_sha256": train[0]["image_sha256"], "text": "Triangle ABC angle 42", "line_count": 2},
+        {"image_sha256": evaluation[0]["image_sha256"], "text": "Triangle ABC angle 42", "line_count": 2},
+    ]
+    result = merge_ocr_signals(baseline, train, evaluation, entries)
+    assert result["candidate_edges"][0]["action"] == "remove"
+    assert "ocr_text_overlap" in result["completed_layers"]
+
+
+def test_ocr_short_generic_labels_do_not_create_edges(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    _image(eval_image, offset=4)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "1")])
+    evaluation = enrich_records([_row("eval", "mmstar", eval_image, "Find y", "2")])
+    entries = [
+        {"image_sha256": train[0]["image_sha256"], "text": "A B C", "line_count": 1},
+        {"image_sha256": evaluation[0]["image_sha256"], "text": "A B C", "line_count": 1},
+    ]
+    result = merge_ocr_signals(
+        {"candidate_edges": [], "completed_layers": [], "pending_layers": ["ocr_text_overlap"]},
+        train,
+        evaluation,
+        entries,
+    )
+    assert result["candidate_edges"] == []
+    assert not ocr_char_ngrams("A B C")
+
+
+def test_ocr_extraction_error_keeps_layer_pending(tmp_path: Path) -> None:
+    image = tmp_path / "image.png"
+    _image(image)
+    train = enrich_records([_row("train", "geometry3k", image, "Find x", "1")])
+    result = merge_ocr_signals(
+        {"candidate_edges": [], "completed_layers": [], "pending_layers": ["ocr_text_overlap"]},
+        train,
+        [],
+        [{"image_sha256": train[0]["image_sha256"], "text": "", "line_count": 0, "error": "decode"}],
+    )
+    assert result["pending_layers"] == ["ocr_text_overlap"]
+    assert result["ocr_coverage"]["error_images"] == 1
