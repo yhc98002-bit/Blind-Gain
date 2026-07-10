@@ -20,3 +20,12 @@ def test_anchor_validation_batch_bounds_multimodal_object_gather() -> None:
     assert config["data"]["val_batch_size"] <= 64
     assert "for batch_dict in self.val_dataloader" in trainer_source
     assert "all_gather_data_proto" in sharding_source
+
+
+def test_checkpoint_merge_launcher_is_immutable_and_logged() -> None:
+    launcher = Path("scripts/launch_easyr1_checkpoint_merge.sh").read_text(encoding="utf-8")
+
+    assert "Refusing to overwrite an already merged checkpoint" in launcher
+    assert "model.safetensors.index.json" in launcher
+    assert "run_manifest_job.py" in launcher
+    assert "data_manifest_hash" in launcher
