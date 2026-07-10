@@ -1,0 +1,63 @@
+from __future__ import annotations
+
+from collections import Counter
+from typing import Any, Iterable
+
+import numpy as np
+
+
+def bootstrap_mean_ci(
+    values: Iterable[float],
+    seed: int = 20260710,
+    draws: int = 2000,
+) -> dict[str, float]:
+    array = np.asarray(list(values), dtype=np.float64)
+    if array.size == 0:
+        raise ValueError("cannot bootstrap an empty sample")
+    rng = np.random.default_rng(seed)
+    means = np.empty(draws, dtype=np.float64)
+    for start in range(0, draws, 200):
+        count = min(200, draws - start)
+        indices = rng.integers(0, array.size, size=(count, array.size))
+        means[start : start + count] = array[indices].mean(axis=1)
+    return {
+        "mean": float(array.mean()),
+        "ci_low": float(np.quantile(means, 0.025)),
+        "ci_high": float(np.quantile(means, 0.975)),
+    }
+
+
+def summarize_condition(rows: list[dict[str, Any]], seed: int = 20260710) -> dict[str, Any]:
+    if not rows:
+        raise ValueError("condition summary requires rows")
+    fields = ("p_greedy", "p_sample", "pass_at_g", "pass_at_k16", "variance_proxy")
+    return {
+        "n": len(rows),
+        "metrics": {
+            field: bootstrap_mean_ci((float(row[field]) for row in rows), seed=seed + offset)
+            for offset, field in enumerate(fields)
+        },
+        "p_sample_midband_0p2_0p8": bootstrap_mean_ci(
+            (float(0.2 <= float(row["p_sample"]) <= 0.8) for row in rows), seed=seed + 10
+        ),
+    }
+
+
+def real_blind_quadrants(real_rows: list[dict[str, Any]], blind_rows: list[dict[str, Any]]) -> dict[str, int]:
+    real = {(row["split"], int(row["row_index"])): bool(row["greedy_correct"]) for row in real_rows}
+    blind = {(row["split"], int(row["row_index"])): bool(row["greedy_correct"]) for row in blind_rows}
+    if real.keys() != blind.keys():
+        raise ValueError("real and blind conditions do not cover identical items")
+    counts: Counter[str] = Counter()
+    for key in real:
+        label = (
+            "both_correct"
+            if real[key] and blind[key]
+            else "real_only"
+            if real[key]
+            else "blind_only"
+            if blind[key]
+            else "neither_correct"
+        )
+        counts[label] += 1
+    return {key: counts.get(key, 0) for key in ("both_correct", "real_only", "blind_only", "neither_correct")}
