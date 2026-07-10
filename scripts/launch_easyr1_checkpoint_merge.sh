@@ -31,7 +31,7 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 PID_FILE="${RUN_DIR}/pids/${NODE}.pid"
 OUTPUT_INDEX="${ACTOR_DIR}/huggingface/model.safetensors.index.json"
-COMMAND="PYTHONPATH=artifacts/repos/EasyR1 TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home .venv/bin/python artifacts/repos/EasyR1/scripts/model_merger.py --local_dir ${ACTOR_DIR}"
+COMMAND="CUDA_HOME=/usr/local/cuda PYTHONPATH=artifacts/repos/EasyR1 TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home .venv/bin/python artifacts/repos/EasyR1/scripts/model_merger.py --local_dir ${ACTOR_DIR}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
