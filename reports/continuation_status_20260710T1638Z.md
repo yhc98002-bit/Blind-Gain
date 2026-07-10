@@ -19,7 +19,7 @@ Status:
 | Dataset/license/decon P1.9-P1.10 | complete | `reports/gate2_progress.md` |
 | Git hygiene P1.11 | blocked by external `CLAUDE.md` deletion and untracked `AGENTS.md` | `git status --short` |
 | Mechanical pilot P2.1 | code/config ready; waits only for P1.1 | `reports/stage2_pilot_readiness.md` |
-| Geometry3K blind audit P2.2 | complete | `reports/blind_solvability_geo3k.md` |
+| Geometry3K blind audit P2.2 | complete and V3 integrity-audited | `reports/blind_solvability_geo3k_v3_audited.md` |
 
 Machine checklist: `reports/gate2_machine_check.json`. Human audit form: `reports/fliptrack_v02r19_human_audit.md`.
 
@@ -112,10 +112,11 @@ New recovery commits:
 - `4412cf7`: caption-store launch lock and duplicate-launch regression tests.
 
 Verification:
-- Full suite: 176 passed in 390.63 seconds.
+- Full suite after relocation and launch-lock changes: 183 passed in 316.41 seconds.
 - Resume/launcher/scoring target: 14 passed.
 - Checkpoint relocation target: 4 passed.
 - Caption launch-lock target: 3 passed.
+- Blind-summary integrity target: 11 passed; the new V3 aggregator also validated all 2,702 existing Geometry3K rows across five conditions.
 - GitHub branch: `agent/gate2-recovery`; draft PR: `https://github.com/yhc98002-bit/Blind-Gain/pull/1`.
 
 ## Storage
@@ -136,6 +137,7 @@ Problems:
 Decision:
 - Keep the anchor and all active audits unchanged.
 - Use strict resumable outputs and `/dev/shm` for future conditioned-image caches.
+- Require exact item, decoding, manifest, and recomputed-score agreement across all five conditions before publishing a blind-solvability aggregate.
 - Preserve the failed duplicate caption run as explicit negative provenance; never score or merge it.
 - Do not launch P2.1 early and do not declare Gate 2.
 

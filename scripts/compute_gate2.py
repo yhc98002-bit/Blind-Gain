@@ -84,7 +84,8 @@ def compute_checks(root: Path, ledger: dict[str, str]) -> dict[str, bool]:
         "v02_exact_caption_stores": ledger["P1.8"] == "pass"
         and _exact_package_ready(reports / "fliptrack_v02r19_exact_package.json"),
         "three_arm_mechanical_pilot": ledger["P2.1"] == "pass" and (reports / "mech_pilot_3arm_geo3k.md").is_file(),
-        "geometry3k_blind_solvability": ledger["P2.2"] == "pass" and (reports / "blind_solvability_geo3k.md").is_file(),
+        "geometry3k_blind_solvability": ledger["P2.2"] == "pass"
+        and (reports / "blind_solvability_geo3k_v3_audited.md").is_file(),
         "datasets_and_required_licenses": ledger["P1.9"] == "pass" and (reports / "license_log_v2.csv").is_file(),
         "decontamination_calibrated": ledger["P1.10"] == "pass" and (reports / "decon_geo3k_vs_layer1.md").is_file(),
         "repository_and_gate_logic_clean": ledger["P1.11"] == "pass" and (root / "tests" / "test_gate_logic.py").is_file(),

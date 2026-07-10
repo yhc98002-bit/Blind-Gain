@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import json
 
-from scripts.compute_gate2 import _exact_package_ready, _json_status, machine_ready
+from scripts.compute_gate2 import TASK_IDS, _exact_package_ready, _json_status, compute_checks, machine_ready
 from scripts.compute_recovery_gate1 import compute_recovery_gate
 
 
@@ -93,3 +93,17 @@ def test_exact_package_requires_both_caption_cells(tmp_path) -> None:
     payload["cells"]["qwen25vl7b"]["caption"]["metrics"]["n_pairs"] = 1199
     summary.write_text(json.dumps(payload), encoding="utf-8")
     assert _exact_package_ready(summary) is False
+
+
+def test_gate2_requires_integrity_audited_blind_summary(tmp_path) -> None:
+    reports = tmp_path / "reports"
+    reports.mkdir()
+    (reports / "blind_solvability_geo3k.md").write_text("legacy\n", encoding="utf-8")
+    ledger = {task_id: "pass" for task_id in TASK_IDS}
+
+    assert compute_checks(tmp_path, ledger)["geometry3k_blind_solvability"] is False
+
+    (reports / "blind_solvability_geo3k_v3_audited.md").write_text(
+        "integrity audited\n", encoding="utf-8"
+    )
+    assert compute_checks(tmp_path, ledger)["geometry3k_blind_solvability"] is True

@@ -3,11 +3,27 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Any
 
 from src.analysis.blind_solvability import real_blind_quadrants, summarize_condition
-from src.eval.blind_solvability import CONDITIONS
+from src.eval.blind_solvability import CONDITIONS, score_item
+
+
+_SCORE_FIELDS = (
+    "p_greedy",
+    "greedy_correct",
+    "greedy_extracted_answer",
+    "greedy_format_valid",
+    "sample_count",
+    "sample_correct_count",
+    "sample_correct",
+    "p_sample",
+    "pass_at_g",
+    "pass_at_k16",
+    "variance_proxy",
+)
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -27,6 +43,81 @@ def _parse_runs(values: list[str]) -> dict[str, Path]:
     return runs
 
 
+def _item_contract(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "qid": row.get("qid"),
+        "problem": row.get("problem"),
+        "ground_truth": row.get("ground_truth"),
+        "image_sha256": row.get("image_sha256"),
+        "source_metadata": row.get("source_metadata"),
+    }
+
+
+def _values_match(actual: Any, expected: Any) -> bool:
+    if isinstance(expected, float):
+        return isinstance(actual, (int, float)) and math.isclose(
+            float(actual), expected, rel_tol=1e-12, abs_tol=1e-12
+        )
+    return actual == expected
+
+
+def _validate_scored_row(
+    row: dict[str, Any],
+    *,
+    condition: str,
+    group_size: int,
+    sample_count: int,
+) -> None:
+    key = (row.get("split"), row.get("row_index"))
+    if row.get("schema_version") != "blind-gains.blind-solvability.v1":
+        raise ValueError(f"unsupported row schema for {condition} at {key}")
+    if row.get("condition") != condition:
+        raise ValueError(f"condition mismatch for {condition} at {key}")
+    sampled = row.get("sampled_responses")
+    if not isinstance(sampled, list) or len(sampled) != sample_count:
+        raise ValueError(f"sample count mismatch for {condition} at {key}")
+    expected = score_item(
+        str(row["ground_truth"]),
+        str(row.get("greedy_response", "")),
+        [str(response) for response in sampled],
+        group_size,
+    )
+    for field in _SCORE_FIELDS:
+        if field not in row or not _values_match(row[field], expected[field]):
+            raise ValueError(
+                f"stored score mismatch for {condition} at {key}: field={field}, "
+                f"stored={row.get(field)!r}, recomputed={expected[field]!r}"
+            )
+
+
+def _validate_decoding_contract(
+    decoding: Any,
+    *,
+    condition: str,
+    row_index: Any,
+    sample_count: int,
+    sample_temperature: float,
+) -> None:
+    expected_greedy = {"temperature": 0.0, "top_p": 1.0, "n": 1}
+    expected_sampled = {
+        "temperature": sample_temperature,
+        "top_p": 1.0,
+        "n": sample_count,
+    }
+    valid = bool(
+        isinstance(decoding, dict)
+        and decoding.get("greedy") == expected_greedy
+        and decoding.get("sampled") == expected_sampled
+        and isinstance(decoding.get("max_tokens"), int)
+        and decoding["max_tokens"] > 0
+        and isinstance(decoding.get("seed"), int)
+    )
+    if not valid:
+        raise ValueError(
+            f"unregistered decoding contract for {condition} at row {row_index}: {decoding!r}"
+        )
+
+
 def build_summary(
     run_dirs: dict[str, Path],
     seed: int = 20260710,
@@ -37,14 +128,58 @@ def build_summary(
         raise ValueError("splits must be a non-empty unique sequence")
     rows_by_condition: dict[str, list[dict[str, Any]]] = {}
     manifests = {}
+    shared_manifest_contract: dict[str, Any] | None = None
+    shared_decoding_contract: dict[str, Any] | None = None
     for condition in CONDITIONS:
         run_dir = run_dirs[condition]
         manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
         if manifest.get("status") != "complete":
             raise ValueError(f"condition {condition} is not complete: {manifest.get('status')}")
+        manifest_contract = {
+            "model_revision": manifest.get("model_revision"),
+            "data_manifest": manifest.get("data_manifest"),
+            "group_size": manifest.get("group_size"),
+            "sample_count": manifest.get("sample_count"),
+            "sample_temperature": manifest.get("sample_temperature"),
+        }
+        if manifest.get("condition") != condition:
+            raise ValueError(f"run manifest condition mismatch for {condition}")
+        if shared_manifest_contract is None:
+            shared_manifest_contract = manifest_contract
+        elif manifest_contract != shared_manifest_contract:
+            raise ValueError(
+                f"run manifest contract mismatch for {condition}: "
+                f"expected {shared_manifest_contract!r}, found {manifest_contract!r}"
+            )
+        try:
+            group_size = int(manifest_contract["group_size"])
+            sample_count = int(manifest_contract["sample_count"])
+        except (TypeError, ValueError) as error:
+            raise ValueError(f"missing sampling contract for {condition}") from error
+        if group_size != 5 or sample_count != 16 or manifest_contract["sample_temperature"] != 1.0:
+            raise ValueError(f"unregistered sampling contract for {condition}: {manifest_contract!r}")
         rows = _read_jsonl(run_dir / "per_item.jsonl")
-        if any(row["condition"] != condition for row in rows):
-            raise ValueError(f"condition mismatch in {run_dir}")
+        for row in rows:
+            _validate_scored_row(
+                row,
+                condition=condition,
+                group_size=group_size,
+                sample_count=sample_count,
+            )
+            decoding = row.get("decoding")
+            _validate_decoding_contract(
+                decoding,
+                condition=condition,
+                row_index=row.get("row_index"),
+                sample_count=sample_count,
+                sample_temperature=float(manifest_contract["sample_temperature"]),
+            )
+            if shared_decoding_contract is None:
+                shared_decoding_contract = decoding
+            elif decoding != shared_decoding_contract:
+                raise ValueError(
+                    f"decoding contract mismatch for {condition} at row {row.get('row_index')}"
+                )
         rows_by_condition[condition] = rows
         manifests[condition] = {
             "run_dir": str(run_dir),
@@ -57,10 +192,18 @@ def build_summary(
     expected_keys = {
         (str(row["split"]), int(row["row_index"])) for row in rows_by_condition["real"]
     }
+    expected_items = {
+        (str(row["split"]), int(row["row_index"])): _item_contract(row)
+        for row in rows_by_condition["real"]
+    }
     for condition, rows in rows_by_condition.items():
         keys = {(str(row["split"]), int(row["row_index"])) for row in rows}
         if keys != expected_keys or len(rows) != len(keys):
             raise ValueError(f"condition {condition} does not have one row per registered item")
+        for row in rows:
+            key = (str(row["split"]), int(row["row_index"]))
+            if _item_contract(row) != expected_items[key]:
+                raise ValueError(f"item contract mismatch for {condition} at {key}")
 
     aggregates = {}
     for condition, rows in rows_by_condition.items():
@@ -86,13 +229,17 @@ def build_summary(
             },
         }
     return {
-        "schema_version": "blind-gains.blind-solvability-summary.v2",
+        "schema_version": "blind-gains.blind-solvability-summary.v3",
         "dataset_name": dataset_name,
         "splits": list(splits),
         "n_items": len(expected_keys),
         "split_counts": {
             split: sum(row["split"] == split for row in rows_by_condition["real"])
             for split in splits
+        },
+        "evaluation_contract": {
+            **(shared_manifest_contract or {}),
+            "decoding": shared_decoding_contract,
         },
         "registered_sampling": {"group_size": 5, "sample_count": 16, "temperature": 1.0},
         "runs": manifests,
