@@ -148,6 +148,26 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
     }
 
 
+def _aggregate_pairs(rows: list[dict[str, Any]]) -> dict[str, float] | None:
+    if not rows or not all(row.get("pair_id") is not None for row in rows):
+        return None
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[str(row["pair_id"])].append(row)
+    malformed = sorted(pair_id for pair_id, members in grouped.items() if len(members) != 2)
+    if malformed:
+        raise ValueError(f"paired benchmark contains non-binary groups: {malformed[:5]}")
+    return {
+        "n_pairs": float(len(grouped)),
+        "Pair_accuracy": sum(all(member["acc_final"] for member in members) for members in grouped.values())
+        / len(grouped),
+        "Strict_pair_accuracy": sum(
+            all(member["acc_strict"] for member in members) for members in grouped.values()
+        )
+        / len(grouped),
+    }
+
+
 def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> dict[str, Any]:
     frame = pd.read_excel(input_path)
     required = {"index", "answer", "prediction"}
@@ -181,6 +201,12 @@ def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> di
             "answer_type": str(raw.get("answer_type", "unknown")),
             "scoring_contract": scoring_contract,
             "option_labels": labels,
+            "pair_id": str(raw["pair_id"]) if _not_missing(raw.get("pair_id")) else None,
+            "pair_member": str(raw["pair_member"]) if _not_missing(raw.get("pair_member")) else None,
+            "visual_input": str(raw["visual_input"]) if _not_missing(raw.get("visual_input")) else None,
+            "set_id": str(raw["set_id"]) if _not_missing(raw.get("set_id")) else None,
+            "figure_id": str(raw["figure_id"]) if _not_missing(raw.get("figure_id")) else None,
+            "question_id": str(raw["question_id"]) if _not_missing(raw.get("question_id")) else None,
             **scored,
         }
         scored_rows.append(record)
@@ -189,6 +215,7 @@ def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> di
         "schema_version": "blind-gains.vlmeval-unified-scores.v2",
         "source_workbook": str(input_path),
         "overall": _aggregate(scored_rows),
+        "paired": _aggregate_pairs(scored_rows),
         "per_category": {key: _aggregate(value) for key, value in sorted(by_category.items())},
     }
     rows_output.parent.mkdir(parents=True, exist_ok=True)

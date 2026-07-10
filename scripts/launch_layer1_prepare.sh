@@ -14,8 +14,8 @@ METADATA_OUTPUT="$5"
 RUN_TAG="$6"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "blink" ]]; then
-  echo "DATASET must be mathvista or blink" >&2
+if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "blink" && "${DATASET}" != "mmvp" && "${DATASET}" != "hallusion" ]]; then
+  echo "DATASET must be mathvista, blink, mmvp, or hallusion" >&2
   exit 2
 fi
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
@@ -47,7 +47,7 @@ fi
 if [[ -f "${SOURCE}" ]]; then
   SOURCE_HASH="$(sha256sum "${SOURCE}" | awk '{print $1}')"
 else
-  SOURCE_HASH="$(find "${SOURCE}" -type f -name 'val-*.parquet' -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
+  SOURCE_HASH="$(find "${SOURCE}" -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 fi
 mkdir -p "${RUN_DIR}/logs"
 jq -n \

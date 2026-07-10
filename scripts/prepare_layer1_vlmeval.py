@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import csv
 import hashlib
 import io
 import json
@@ -166,6 +167,149 @@ def prepare_blink_frames(frames: Iterable[pd.DataFrame], image_dir: Path) -> lis
     return rows
 
 
+_MMVP_OPTION = re.compile(r"\(([a-zA-Z])\)\s*(.*?)(?=\s*\([a-zA-Z]\)\s*|$)")
+
+
+def prepare_mmvp_csv(source: Path, image_root: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    with source.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {"Index", "Question", "Options", "Correct Answer"}
+        missing = required - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f"MMVP CSV missing columns: {sorted(missing)}")
+        for expected_index, raw in enumerate(reader, start=1):
+            source_index = int(raw["Index"])
+            if source_index != expected_index:
+                raise ValueError(f"MMVP row order is not contiguous at {source_index}")
+            options = [(label.upper(), text.strip()) for label, text in _MMVP_OPTION.findall(raw["Options"])]
+            if len(options) < 2 or len({label for label, _ in options}) != len(options):
+                raise ValueError(f"MMVP row {source_index} has malformed options: {raw['Options']!r}")
+            answer_match = re.fullmatch(r"\s*\(([a-zA-Z])\)\s*", raw["Correct Answer"])
+            if not answer_match:
+                raise ValueError(f"MMVP row {source_index} has malformed answer: {raw['Correct Answer']!r}")
+            answer = answer_match.group(1).upper()
+            labels = {label for label, _ in options}
+            if answer not in labels:
+                raise ValueError(f"MMVP row {source_index} answer {answer} is not an option")
+            image_path = (image_root / f"{source_index}.jpg").resolve()
+            if not image_path.is_file():
+                raise FileNotFoundError(f"MMVP row {source_index} image is missing: {image_path}")
+            record: dict[str, Any] = {
+                "index": source_index,
+                "image_path": str(image_path),
+                "question": raw["Question"].strip(),
+                "answer": answer,
+                "pair_id": (source_index - 1) // 2,
+                "pair_member": "A" if source_index % 2 else "B",
+                "source_index": source_index,
+            }
+            record.update(dict(options))
+            rows.append(record)
+    if len(rows) % 2:
+        raise ValueError("MMVP must contain an even number of rows")
+    for offset in range(0, len(rows), 2):
+        if rows[offset]["question"] != rows[offset + 1]["question"]:
+            raise ValueError(f"MMVP pair {offset // 2} does not share one question")
+    return rows
+
+
+def write_external_image_reference(image_dir: Path, source_root: Path) -> None:
+    image_dir.mkdir(parents=True, exist_ok=True)
+    marker = image_dir / "SOURCE_IMAGES.txt"
+    marker.write_text(
+        "Images are referenced in place from:\n" + str(source_root.resolve()) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _resolve_case_insensitive(path: Path) -> Path:
+    if path.is_file():
+        return path.resolve()
+    if not path.parent.is_dir():
+        raise FileNotFoundError(path)
+    matches = [candidate for candidate in path.parent.iterdir() if candidate.name.casefold() == path.name.casefold()]
+    if len(matches) != 1 or not matches[0].is_file():
+        raise FileNotFoundError(path)
+    return matches[0].resolve()
+
+
+def _hallusion_text_only_image(image_dir: Path) -> Path:
+    output = image_dir / "hallusion_text_only_blank.png"
+    image_dir.mkdir(parents=True, exist_ok=True)
+    if not output.exists():
+        Image.new("RGB", (28, 28), "white").save(output, format="PNG", optimize=False, compress_level=6)
+    return output.resolve()
+
+
+def prepare_hallusion_json(source: Path, image_dir: Path) -> list[dict[str, Any]]:
+    raw_rows = json.loads((source / "HallusionBench.json").read_text(encoding="utf-8"))
+    if not isinstance(raw_rows, list):
+        raise ValueError("HallusionBench annotation root must be a list")
+    blank_path = _hallusion_text_only_image(image_dir)
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw in raw_rows:
+        required = {
+            "category",
+            "subcategory",
+            "visual_input",
+            "set_id",
+            "figure_id",
+            "question_id",
+            "question",
+            "gt_answer",
+        }
+        missing = required - set(raw)
+        if missing:
+            raise ValueError(f"HallusionBench row missing columns: {sorted(missing)}")
+        visual_input = str(raw["visual_input"])
+        if visual_input == "0":
+            image_path = blank_path
+            image_is_placeholder = True
+        else:
+            filename = raw.get("filename")
+            if not filename:
+                raise ValueError("visual HallusionBench row has no filename")
+            relative = Path(str(filename).removeprefix("./"))
+            image_path = _resolve_case_insensitive(source / "data" / relative)
+            image_is_placeholder = False
+        index = "_".join(
+            [
+                "hallusion",
+                str(raw["category"]),
+                str(raw["subcategory"]),
+                str(raw["set_id"]),
+                str(raw["figure_id"]),
+                str(raw["question_id"]),
+            ]
+        )
+        if index in seen:
+            raise ValueError(f"duplicate HallusionBench index: {index}")
+        seen.add(index)
+        answer = {"0": "No", "1": "Yes"}.get(str(raw["gt_answer"]))
+        if answer is None:
+            raise ValueError(f"unsupported HallusionBench answer: {raw['gt_answer']!r}")
+        rows.append(
+            {
+                "index": index,
+                "image_path": str(image_path),
+                "question": str(raw["question"]).strip(),
+                "answer": answer,
+                "category": str(raw["category"]),
+                "l2-category": str(raw["subcategory"]),
+                "visual_input": visual_input,
+                "set_id": str(raw["set_id"]),
+                "figure_id": str(raw["figure_id"]),
+                "question_id": str(raw["question_id"]),
+                "sample_note": str(raw.get("sample_note", "")),
+                "answer_details": str(raw.get("gt_answer_details", "")),
+                "image_is_placeholder": image_is_placeholder,
+            }
+        )
+    return rows
+
+
 def _write_outputs(
     rows: list[dict[str, Any]],
     source_paths: list[Path],
@@ -202,7 +346,7 @@ def _write_outputs(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=("mathvista", "blink"), required=True)
+    parser.add_argument("--dataset", choices=("mathvista", "blink", "mmvp", "hallusion"), required=True)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--image-dir", type=Path, required=True)
@@ -220,12 +364,27 @@ def main() -> None:
             dropped_ids=dropped_ids,
         )
         deviations = {"dropped_ambiguous_choice_ids": dropped_ids}
-    else:
+    elif args.dataset == "blink":
         sources = sorted(args.source.glob("*/val-*.parquet"))
         if not sources:
             raise FileNotFoundError(f"no BLINK validation parquet files under {args.source}")
         rows = prepare_blink_frames((pd.read_parquet(path) for path in sources), args.image_dir)
         deviations = {}
+    elif args.dataset == "mmvp":
+        csv_path = args.source / "Questions.csv" if args.source.is_dir() else args.source
+        image_root = args.source / "MMVP Images" if args.source.is_dir() else args.source.parent / "MMVP Images"
+        sources = [csv_path]
+        rows = prepare_mmvp_csv(csv_path, image_root)
+        write_external_image_reference(args.image_dir, image_root)
+        deviations = {"official_pair_order_preserved": True}
+    else:
+        annotation_path = args.source / "HallusionBench.json"
+        sources = [annotation_path]
+        rows = prepare_hallusion_json(args.source, args.image_dir)
+        deviations = {
+            "text_only_rows_use_deterministic_blank_image": sum(row["image_is_placeholder"] for row in rows),
+            "case_insensitive_image_suffix_resolution": True,
+        }
     payload = _write_outputs(rows, sources, args.output, args.metadata_output, args.dataset, deviations)
     print(json.dumps(payload, sort_keys=True))
 

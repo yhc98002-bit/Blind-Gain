@@ -2,7 +2,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scripts.postprocess_vlmeval_predictions import _choice_payload, score_mcq_prediction, score_open_prediction
+from scripts.postprocess_vlmeval_predictions import (
+    _aggregate_pairs,
+    _choice_payload,
+    score_mcq_prediction,
+    score_open_prediction,
+)
 
 
 def test_postprocessor_entrypoint_resolves_project_imports_outside_repo(tmp_path: Path) -> None:
@@ -79,3 +84,17 @@ def test_mathvista_choice_payload_uses_serialized_choices_and_answer_option() ->
         {"A": "135 degrees", "B": "140 degrees", "C": "145 degrees", "D": "150 degrees"},
         "C",
     )
+
+
+def test_pair_aggregation_requires_both_members_correct() -> None:
+    rows = [
+        {"pair_id": "0", "acc_final": True, "acc_strict": True},
+        {"pair_id": "0", "acc_final": True, "acc_strict": False},
+        {"pair_id": "1", "acc_final": True, "acc_strict": True},
+        {"pair_id": "1", "acc_final": False, "acc_strict": False},
+    ]
+    assert _aggregate_pairs(rows) == {
+        "n_pairs": 2.0,
+        "Pair_accuracy": 0.5,
+        "Strict_pair_accuracy": 0.0,
+    }
