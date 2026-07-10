@@ -15,6 +15,6 @@ P1.9 | pass | ViRL39K/MMK12 loaders cover all rows and critical model/dataset li
 P1.10 | pass | calibrated full Geometry3K x 7,603-row Layer-1 hash/DINO/BGE/OCR manifest is complete with zero pending layers
 P1.11 | blocked | gate logic passes, but worktree contains external `CLAUDE.md` deletion and untracked `AGENTS.md`
 P2.1 | blocked | image-condition path and three matched configs pass tests; execution waits for P0.2/P1.1
-P2.2 | blocked | vLLM harness and report generator pass tests; real/gray/noise/no-image full Geometry3K runs are active and caption is queued
+P2.2 | pass | all five 2,702-item Geometry3K conditions and bootstrapped blind-solvability report are complete
 P3.1 | blocked | prepare-only sensitivity control waits for a valid V0.2 freeze
 P3.2 | blocked | informational CP-GRPO note requires no execution in this phase
