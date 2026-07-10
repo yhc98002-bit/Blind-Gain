@@ -1,7 +1,7 @@
 # FlipTrack V0.2 Hardness Calibration
 
 Status:
-- P1.6 implementation is complete with three 300-pair retained templates: expanded document, R10 high-entropy geometry, and R16 chart.
+- P1.6 implementation is complete with three retained templates: document 300, high-entropy geometry 600, and R16 chart 300.
 - All three satisfy the unchanged hardness contract, and R10 supplies the required Track-b geometry family.
 - Packaging and artifact attack remain separate P1.4/P1.5 checks; no PI audit is requested until those checks finish.
 
@@ -29,6 +29,7 @@ Current evidence:
 | R14 inspection ledger | 300 | 0.9900 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
 | R15 five-series chart | 300 | 0.5733 | 0.3967 | 0.0033 | 0.0000 | 0.0000 | 0.0000 | reject: 7B real does not improve over 3B |
 | R16 nine-series chart | 300 | 0.4367 | 0.6733 | 0.0000 | 0.0067 | 0.0000 | 0.0000 | retain: all registered hardness cells pass |
+| R18 geometry expansion | 300 | 0.4933 | not rerun | same template | same template | same template | same template | retain for artifact expansion after fixed 3B spot check |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -96,6 +97,12 @@ R16 diagnostics:
 - Question-blind 384-token caption QA is `experiments/runs/fliptrack_v02r16_qwen25vl3b_captionqa384_retry_an12_20260710T120300Z` and `experiments/runs/fliptrack_v02r16_qwen25vl7b_captionqa384_retry_an12_20260710T120300Z`; pair accuracy is 0/0.0067.
 - Initial caption-QA attempts on `an29` are preserved as failed because an unrelated TP=4 service occupied their registered GPUs; see `reports/gpu_allocation_conflict_20260710.md`.
 
+R18 expansion diagnostics:
+- Source manifest: `data/fliptrack_v02r18_source_manifest.jsonl`, SHA256 `932632a8720601ad2c87a78dcb29c8e167b9a718c09aa934801e7d1643e5fe33`.
+- R18 uses the unchanged R10 generator with independent seed `20260919`; all 300 pairs are retained in addition to the original R10 batch.
+- Fixed 3B real-image spot check: `experiments/runs/fliptrack_v02r18_qwen25vl3b_real_an12_20260710T123900Z`; pair accuracy 0.4933, strict pair accuracy 0.4767, format-valid rate 0.98.
+- Other mode/model cells are not rerun because this is an instance expansion of the already accepted template, not a template redesign.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -120,7 +127,7 @@ Problems:
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
-- Retain exactly 300 document, 300 R10 geometry, and 300 R16 chart pairs in the R17 package candidate.
+- Retain 300 document, all 600 R10/R18 geometry, and 300 R16 chart pairs in the R19 freeze candidate.
 - Keep every rejected calibration batch out of the candidate; no failed batch is pooled to cross a threshold.
 
 Next actions:

@@ -3,7 +3,7 @@
 Status:
 - The corrected attacker implementation is complete and DINOv2 ran successfully.
 - The first broad V0.2 candidate failed as documented below.
-- The 300-pair retained package also fails the unchanged gate narrowly on frequency/metadata probes. P1.5 remains open and the required expansion is in progress.
+- The R17 900-pair candidate failed narrowly on geometry metadata; the all-inclusive R19 expansion passes every unchanged point and CI rule.
 
 Evidence:
 - Run: `experiments/runs/artifact_gate_v02_an12_gpu4_20260709T225131Z`, exit code 0, `an12` GPU 4.
@@ -80,3 +80,74 @@ Status:
 Decision:
 - Do not relax either threshold.
 - Preserve R8 and generate one independent 300-pair R9 chart batch. Re-score the new batch before repackaging chart 400 + document 300 + geometry 300.
+
+## R17 Three-Family Candidate
+
+Status:
+- Run `experiments/runs/artifact_gate_v02_an12_gpu4_20260710T122716Z` completed with all three attackers available.
+- Machine output: `reports/artifact_gate_v02_r17.json`.
+- The fixed gate fails only `metadata:coordinate_register_twenty_point_x_v02`.
+
+| Scope / attacker | Gate statistic | 95% pair-bootstrap CI | Result |
+| --- | ---: | ---: | --- |
+| Pooled frequency/statistical | 0.5096 | [0.5010, 0.5202] | pass |
+| Pooled metadata | 0.5188 | [0.5020, 0.5466] | pass |
+| Pooled DINOv2 | 0.5088 | [0.5004, 0.5225] | pass |
+| Geometry frequency/statistical | 0.5123 | [0.5007, 0.5370] | pass |
+| Geometry metadata | 0.5526 | [0.5065, 0.5957] | point fail |
+| Geometry DINOv2 | 0.5067 | [0.5003, 0.5220] | pass |
+| Document metadata | 0.5129 | [0.5012, 0.5587] | pass |
+| Chart metadata | 0.5290 | [0.5016, 0.5747] | pass |
+
+Evidence:
+- Every geometry metadata train fold selects the positive direction; fold train AUC ranges from 0.5442 to 0.5692.
+- No CI upper bound exceeds 0.62, so the mandatory CI expansion rule is not triggered.
+- The package linter reports geometry side-size KS 0.0200, so gross file-size separation is not the source of the failure.
+- Logged univariate diagnosis: `experiments/runs/artifact_metadata_diagnosis_r17_login_20260710T124326Z/metrics.json`.
+- Physical and encoder metadata are at chance: file size, IDAT bytes, and compression ratio each have gate statistic 0.5004; dimensions, chunks, mtime, and path length are exactly 0.5.
+- Salted filename hex mean is 0.5174, while salted filename hex standard deviation alone reaches 0.5557. The observed threshold failure is therefore localized to finite-sample correlation in opaque names, not image encoding or dimensions.
+
+Problems:
+- The joint probe still controls the registered decision; univariate attribution does not override its 0.5526 failure.
+- Repackaging repeatedly with different salts would tune against random filename features and is prohibited.
+
+Decision:
+- Reject R17 as an artifact-robust freeze candidate under the unchanged point rule.
+- Generate one independent 300-pair batch of the same R10 geometry template with seed `20260919`, retain all original and new geometry pairs, and rerun the gate on document 300 + chart 300 + geometry 600.
+- Run a 3B real-image hardness spot check on the independent batch before repackaging. Do not replace unfavorable original pairs.
+
+Next actions:
+- Build R18 geometry expansion and run its fixed 3B visual-floor check.
+- Package all 1,200 pairs while reusing the R17 salt and encoder settings, then rerun all three attackers once. Only the added pairs may change the gate statistic.
+
+## R19 Controlled Expansion
+
+Status:
+- Run `experiments/runs/artifact_gate_v02_an12_gpu4_20260710T125746Z` completed with all attackers available and machine gate `status=true`.
+- Machine output: `reports/artifact_gate_v02_r19.json`.
+- No point failures, CI expansions, or missing attackers remain.
+
+| Scope / attacker | Gate statistic | 95% pair-bootstrap CI | Result |
+| --- | ---: | ---: | --- |
+| Pooled frequency/statistical | 0.5037 | [0.5002, 0.5127] | pass |
+| Pooled metadata | 0.5225 | [0.5020, 0.5469] | pass |
+| Pooled DINOv2 | 0.5021 | [0.5001, 0.5151] | pass |
+| Geometry frequency/statistical | 0.5000 | [0.5003, 0.5153] | pass |
+| Geometry metadata | 0.5373 | [0.5055, 0.5703] | pass |
+| Geometry DINOv2 | 0.5036 | [0.5002, 0.5144] | pass |
+| Document metadata | 0.5129 | [0.5012, 0.5587] | pass |
+| Chart metadata | 0.5290 | [0.5016, 0.5747] | pass |
+
+Evidence:
+- R18 independent geometry seed: `20260919`; source SHA256 `932632a8720601ad2c87a78dcb29c8e167b9a718c09aa934801e7d1643e5fe33`.
+- R18 3B real-image spot check: `experiments/runs/fliptrack_v02r18_qwen25vl3b_real_an12_20260710T123900Z`, pair accuracy 0.4933 and strict pair accuracy 0.4767.
+- R19 retains all R17 pairs, reuses `.private/fliptrack_v02r17_salt.bin`, and adds all 300 R18 geometry pairs.
+- R19 release manifest: `data/fliptrack_v02r19_artifact_expanded/manifest.jsonl`.
+
+Decision:
+- Treat R19 as the sole artifact-passing freeze candidate. R17 remains immutable failed evidence.
+- Keep the grouped-CV protocol, feature set, seed, and thresholds unchanged for publication.
+
+Next actions:
+- Freeze R19 pending the required representative human audit.
+- Complete content-hash caption stores and retain all raw attacker outputs.

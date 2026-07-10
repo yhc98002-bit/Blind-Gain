@@ -1,0 +1,41 @@
+{
+  "schema_version": "fliptrack.v02.retained-selection.v4",
+  "expected_total_pairs": 1200,
+  "sources": [
+    {
+      "path": "data/fliptrack_v02r3_source_manifest.jsonl",
+      "sha256": "bae79e619527125c19717c2953c4909839dc43fd0644bf8b664f825debc8232a",
+      "templates": {
+        "header_cued_table_code_v02": 100
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r5_source_manifest.jsonl",
+      "sha256": "6668b039dc4d95b6f00ef249e800aaec7517e7ef28b7b00ceceed0387937186c",
+      "templates": {
+        "header_cued_table_code_v02": 200
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r10_source_manifest.jsonl",
+      "sha256": "b0460a4f713146e322121d96292c02f62b28caf25bde2367b7b8472020a0eec1",
+      "templates": {
+        "coordinate_register_twenty_point_x_v02": 300
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r18_source_manifest.jsonl",
+      "sha256": "932632a8720601ad2c87a78dcb29c8e167b9a718c09aa934801e7d1643e5fe33",
+      "templates": {
+        "coordinate_register_twenty_point_x_v02": 300
+      }
+    },
+    {
+      "path": "data/fliptrack_v02r16_source_manifest.jsonl",
+      "sha256": "8a0ec164c68adb131860e9ca7da802492d9cec22f390ba6c5960cb8ec69225a4",
+      "templates": {
+        "starred_series_value_nine_v07": 300
+      }
+    }
+  ]
+}

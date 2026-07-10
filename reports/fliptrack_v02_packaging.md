@@ -2,7 +2,7 @@
 
 Status:
 - P1.4 implementation and final-candidate lint are complete.
-- The 900-pair R17 package has `status=true` for every enumerated linter check. Earlier package sections remain as calibration history.
+- The 1,200-pair R19 package has `status=true` for every enumerated linter check. Earlier package sections remain as calibration history.
 
 Evidence:
 - Source manifest: `data/fliptrack_v02_source_manifest.jsonl` (600 pairs; SHA256 `720f755c3e6ba4feae9f1493fbb4ed42bf90fba52d1fccffa60babda04a86942`).
@@ -115,3 +115,38 @@ Decision:
 Next actions:
 - Run frequency/statistical, metadata, and DINOv2 attackers on R17 without changing thresholds.
 - Generate final content-hash caption stores from the re-encoded R17 images.
+
+## R19 Artifact Expansion
+
+Status:
+- The all-inclusive 1,200-pair package passes all 12 linter checks and the separate grouped artifact gate.
+- It reuses the R17 salt and encoder settings; the only added content is the fixed 300-pair R18 geometry expansion.
+
+Evidence:
+- Selection config: `configs/data/fliptrack_v02r19_artifact_expanded.json`.
+- Selection record: `experiments/manifests/fliptrack_v02r19_selection.json`.
+- Source manifest: `data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl`, SHA256 `23dd24452670392d6355c06b6b167a1c868660c11d21b20e0bae393dc82126f0`.
+- Package run: `experiments/runs/fliptrack_v02_package_20260710T124547Z`, exit code 0.
+- Release manifest: `data/fliptrack_v02r19_artifact_expanded/manifest.jsonl`, SHA256 `62553d701eb3e949910110057b65ab4e1146c602d21936268818fd1725b1b427`.
+- Linter: `reports/fliptrack_v02r19_lint.json`, SHA256 `3956aa3fb25ce6ce0f642bcf865c623001e93e7380194cb5b8c4f69b9879eacd`.
+- Private key: `.private/fliptrack_v02r19_key.jsonl`; salt: the unchanged `.private/fliptrack_v02r17_salt.bin`.
+
+| Check | R19 result |
+| --- | ---: |
+| Pairs / members | 1,200 / 2,400 |
+| Asset files after content deduplication | 3,599 |
+| Opaque IDs and paths | pass |
+| One fixed mtime / clean PNG chunks | pass |
+| Truthful masks / distinguishable answers | pass |
+| Member order | 574 `ab`, 626 `ba` |
+| Geometry side-size KS | 0.0133 |
+| Document side-size KS | 0.0400 |
+| Chart side-size KS | 0.0267 |
+
+Decision:
+- R19 supersedes R17 as the sole freeze candidate.
+- Preserve R17 as failed-gate evidence; do not delete or relabel it.
+
+Next actions:
+- Submit R19 representative contact sheets and the failure ledger for the required human audit.
+- Complete final caption-store coverage keyed by image-content hash.
