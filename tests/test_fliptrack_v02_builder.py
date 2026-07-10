@@ -11,6 +11,7 @@ from src.eval.fliptrack_metrics import match_tier
 from src.fliptrack.build_v02 import (
     build,
     generate_balanced_chart_pairs,
+    generate_guided_chart_pairs,
     generate_coordinate_point_pairs,
     generate_coordinate_register_eight_point_pairs,
     generate_coordinate_register_high_entropy_pairs,
@@ -165,6 +166,19 @@ def test_r12_balanced_chart_removes_direct_target_emphasis(tmp_path: Path) -> No
     for row in rows:
         verifier = row["verifier_results"]
         assert verifier["series_count"] == 8
+        assert verifier["target_point_circled"] is False
+        assert verifier["target_line_thickened"] is False
+        assert row["answer_a"] != row["answer_b"]
+
+
+def test_r13_guided_chart_keeps_only_column_and_legend_cues(tmp_path: Path) -> None:
+    rows = generate_guided_chart_pairs(tmp_path / "chart-r13", n=3, seed=101)
+    assert {row["template_id"] for row in rows} == {"starred_series_value_guided_v05"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["series_count"] == 6
+        assert verifier["x_count"] == 8
+        assert verifier["target_column_guided"] is True
         assert verifier["target_point_circled"] is False
         assert verifier["target_line_thickened"] is False
         assert row["answer_a"] != row["answer_b"]
