@@ -5,7 +5,7 @@ P0.4 | pass | cached V0.1 predictions are re-scored in `reports/fliptrack_v01_re
 P0.5 | pass | resolved EasyR1 reference diff covers every required field
 P1.1 | blocked | recipe-scale anchor is healthy through step 30/100; validations 0/10/20/30 and merged step-20 checkpoint are preserved
 P1.2 | pass | MMStar/MathVista/BLINK plus HallusionBench/MMVP complete for 3B/7B; registered MMStar/MathVista blind cells complete
-P1.3 | blocked | coordinated two-node NCCL/FSDP window not yet run
+P1.3 | blocked | measured NCCL and actual-3B FSDP smokes are implemented; full 2x8 window is blocked by active project jobs plus an unrelated four-GPU service on an29
 P1.4 | pass | 1,200-pair same-salt R19 package passes all 12 leakage-linter checks
 P1.5 | pass | all-inclusive same-salt R19 expansion passes grouped frequency, metadata, and DINOv2 point/CI rules
 P1.6 | pass | document, R10 geometry, and R16 chart provide three accepted 300-pair templates with contact sheets
