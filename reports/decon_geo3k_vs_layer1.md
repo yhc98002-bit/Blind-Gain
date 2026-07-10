@@ -1,66 +1,72 @@
 # Geometry3K vs Layer-1 Decontamination
 
 Status:
-- Geometry3K train has been compared against the available Layer-1 images from MMStar, MathVista-testmini, and BLINK.
-- The machine filter manifest is intentionally incomplete because OCR, HallusionBench, and MMVP are pending.
-- P1.10 remains blocked; the available comparison already shows substantial Geometry3K overlap with MathVista.
+- P1.10 is complete for Geometry3K train against the full registered Layer-1 suite.
+- SHA/provenance, pHash/dHash, DINOv2, exact/5-gram text, BGE, and OCR layers have no pending coverage.
+- The filter marks 463/2,101 Geometry3K train records for automatic removal and 1,285 additional records for inspection only.
 
 Evidence:
-- Record build: `experiments/runs/decon_geo3k_layer1_hash_text_20260710T023646Z`.
-- DINO features: `experiments/runs/decon_dinov2_an29_20260710T024927Z`, 7,516 unique images, 384 dimensions.
-- BGE features: `experiments/runs/decon_bge_an29_20260710T024927Z`, 8,275 questions, 384 dimensions.
-- Merged comparison: `experiments/runs/decon_embedding_compare_geo3k_layer1_an29_20260710T025840Z`.
-- Machine filter manifest: `experiments/manifests/decon_geo3k_vs_layer1.json`.
-- Calibration: `reports/decon_calibration.md`.
+- Full record build: `experiments/runs/decon_geo3k_layer1_hash_text_20260710T033444Z`.
+- DINOv2 extraction: `experiments/runs/decon_dinov2_full_layer1_an29_20260710T072713Z`, 8,154 unique applicable images, 384 dimensions.
+- BGE extraction: `experiments/runs/decon_bge_full_layer1_retry_an29_20260710T073821Z`, 9,704 questions, 384 dimensions.
+- Embedding merge: `experiments/runs/decon_embedding_compare_full_layer1_an29_20260710T074847Z`.
+- RapidOCR extraction: `experiments/runs/decon_ocr_full_layer1_retry_an29_20260710T080747Z`, 8,154/8,154 images and zero errors.
+- Final merge: `experiments/runs/decon_ocr_merge_full_layer1_login_20260710T085608Z`.
+- Complete machine filter: `experiments/manifests/decon_geo3k_vs_layer1_v2.json`.
+- Threshold calibration: `reports/decon_calibration.md`.
 
 Coverage:
-| Side | Dataset | Records/images |
+| Side | Dataset | Records |
 | --- | --- | ---: |
 | train | Geometry3K train | 2,101 |
 | eval | MMStar | 1,500 |
 | eval | MathVista-testmini | 999 |
 | eval | BLINK validation | 3,675 |
-| eval | total | 6,174 |
+| eval | MMVP | 300 |
+| eval | HallusionBench | 1,129 |
+| eval | total | 7,603 |
 
 Candidate results:
-| Result | Edges | Unique Geometry3K train records | Unique eval records |
-| --- | ---: | ---: | ---: |
-| automatic remove | 670 | 457 | 76 |
-| inspect | 11,471 | 1,285 inspect-only | 250 |
+| Result | Edges | Unique Geometry3K train records |
+| --- | ---: | ---: |
+| automatic remove | 697 | 463 |
+| inspect | 11,932 | 1,285 inspect-only |
 
 Automatic-removal overlap:
 | Eval dataset | Remove edges | Unique train records | Unique eval records |
 | --- | ---: | ---: | ---: |
 | MathVista-testmini | 594 | 455 | 56 |
 | MMStar | 76 | 74 | 20 |
+| HallusionBench | 27 | 7 | 21 |
 | BLINK | 0 | 0 | 0 |
+| MMVP | 0 | 0 | 0 |
 
 Signal counts:
 | Signal | Candidate edges |
 | --- | ---: |
-| DINOv2 cosine >= 0.90 | 11,962 |
-| min pHash/dHash Hamming <= 10 | 339 |
+| DINOv2 cosine >= 0.90 | 12,146 |
+| min pHash/dHash Hamming <= 10 | 632 |
+| RapidOCR char-5 Jaccard >= 0.75 | 42 |
 | BGE question cosine >= 0.90 | 18 |
 | exact normalized question/question-answer or word-5-gram >= 0.70 | 0 |
 
-- Of 670 removal edges, 120 are corroborated by at least two signal families.
-- Removal composition: 547 DINO-only, 103 DINO+hash, 17 DINO+hash+BGE, and 3 hash-only.
-- Multiple pairs have DINO cosine approximately 1.0 and pHash/dHash distance 0 despite different file SHA256 values, consistent with re-encoded copies rather than merely similar diagram style.
-- The 457 automatic-removal records are 21.75% of Geometry3K train. Some records overlap both MathVista and MMStar, so per-dataset unique counts do not sum to 457.
+- Of 697 removal edges, 121 have at least two signal families.
+- Removal composition is 569 DINO-only, 69 DINO+hash, 33 DINO+OCR+hash, 10 DINO+hash+BGE, 7 DINO+OCR+hash+BGE, 7 hash-only, and 2 DINO+OCR.
+- All 42 OCR edges were already removal edges under independent image evidence; OCR did not create a new automatic-removal decision.
+- OCR coverage: 5,452 images produced nonempty text and 2,735 passed the minimum eight-character/two-token-or-line eligibility rule.
 
 Problems:
 - DINO's inspect band is broad on diagrams; calibration measured a 10.9% negative inspect rate. Inspect candidates are not automatic removals.
-- OCR text overlap is absent because no local OCR model is installed.
-- HallusionBench and MMVP acquisition remains blocked by upstream HTTP 429 responses, so this is not the full Layer-1 suite.
-- Geometry3K and MathVista share source material. Any Geometry3K-trained checkpoint row on MathVista must retain the label `contamination: geo3k-source` even after filtering.
+- OCR planted calibration has only 30 eligible positives and 18 eligible negatives. It observed zero negative FPR but is too small to establish population-level specificity.
+- Geometry3K and MathVista share source material. Every Geometry3K-trained MathVista result remains labeled `contamination: geo3k-source` even after filtering.
+- HallusionBench's 178 true text-only rows were included for text overlap and excluded from image/OCR signals by construction.
 
 Decision:
-- Drop every Geometry3K train record listed in `remove_train_record_ids` before any result intended to claim external-benchmark transfer.
-- Keep `inspect_only_train_record_ids` out of automatic filtering until review because the inspect threshold is calibrated for recall, not precision.
-- Engineering anchor and mechanical-pilot results on unfiltered Geometry3K remain usable for stack validation only, not clean MathVista transfer claims.
-- Future CP training template IDs must be disjoint from all FlipTrack evaluation template IDs; the rule is recorded in the machine manifest.
+- Drop every Geometry3K train record in `remove_train_record_ids` before any run claiming clean external-benchmark transfer.
+- Keep `inspect_only_train_record_ids` out of automatic filtering until review; inspect thresholds are calibrated for recall rather than precision.
+- Engineering anchor and mechanical-pilot results on unfiltered Geometry3K remain stack-validation evidence only.
+- Future CP training template IDs must remain disjoint from every FlipTrack evaluation template ID, as recorded in the machine manifest.
 
 Next actions:
-- Add OCR overlap and rerun the merged comparison.
-- Resume HallusionBench/MMVP acquisition and append their records without changing existing thresholds.
-- Queue ViRL39K/MMK12 against the same Layer-1 records after this Geometry3K audit closes.
+- Queue ViRL39K and MMK12 against the same complete Layer-1 records.
+- Expand OCR calibration with an OCR-rich document/chart stratum before treating OCR as an independent removal signal.

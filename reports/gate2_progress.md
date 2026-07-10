@@ -12,7 +12,7 @@ P1.6 | blocked | R15 five-series chart passes the 3B real gate at 0.5733; requir
 P1.7 | blocked | R10 passes both controls and R7 diagnoses caption leakage; final three-template set absent
 P1.8 | blocked | Geometry3K and R8 stores complete for 3B/7B and budget comparison reported; final retained V0.2 package is absent
 P1.9 | pass | ViRL39K/MMK12 loaders cover all rows and critical model/dataset licenses are resolved
-P1.10 | blocked | full 7,603-row Layer-1 hash/DINO/BGE comparison is complete; 16-shard OCR extraction is active
+P1.10 | pass | calibrated full Geometry3K x 7,603-row Layer-1 hash/DINO/BGE/OCR manifest is complete with zero pending layers
 P1.11 | blocked | gate logic passes, but worktree contains external `CLAUDE.md` deletion and untracked `AGENTS.md`
 P2.1 | blocked | image-condition path and three matched configs pass tests; execution waits for P0.2/P1.1
 P2.2 | blocked | vLLM harness and report generator pass tests; real/gray/noise/no-image full Geometry3K runs are active and caption is queued
