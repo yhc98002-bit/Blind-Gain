@@ -32,7 +32,11 @@ fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
 GIT_HASH="$(git rev-parse HEAD)"
-IMAGE_HASH="$(find "${IMAGE_DIR}" -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
+if ! find -L "${IMAGE_DIR}" -type f -print -quit | grep -q .; then
+  echo "IMAGE_DIR contains no readable image files" >&2
+  exit 2
+fi
+IMAGE_HASH="$(find -L "${IMAGE_DIR}" -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 CONFIG_HASH="$(printf 'model=%s\nimage_hash=%s\nmax_new_tokens=%s\nprompt=question_blind_v1\n' "${MODEL_PATH}" "${IMAGE_HASH}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {

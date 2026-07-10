@@ -15,10 +15,16 @@ from src.rewards.answer_reward import answer_reward, extract_answer_span
 CONDITIONS = ("real", "gray", "noise", "none", "caption")
 
 
-def vllm_multimodal_limits(condition: str) -> dict[str, int]:
+def vllm_multimodal_limits(condition: str, max_images: int = 1) -> dict[str, int]:
     if condition not in CONDITIONS:
         raise ValueError(f"unsupported blind-solvability condition: {condition}")
-    return {"image": 1, "video": 0} if condition in {"real", "gray", "noise"} else {"image": 0, "video": 0}
+    if max_images < 0:
+        raise ValueError("max_images cannot be negative")
+    return (
+        {"image": max_images, "video": 0}
+        if condition in {"real", "gray", "noise"}
+        else {"image": 0, "video": 0}
+    )
 
 
 def load_geometry_rows(manifest: str | Path, splits: Iterable[str] = ("train", "test")) -> list[dict[str, Any]]:

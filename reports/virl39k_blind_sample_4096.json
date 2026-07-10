@@ -1,0 +1,62 @@
+{
+  "answer_type_counts": {
+    "multiple_choice": 1307,
+    "numeric": 1982,
+    "text_or_expression": 807
+  },
+  "category_counts": {
+    "(GradeSchool) Geometric": 1123,
+    "(GradeSchool) Non-Geo Math": 1574,
+    "(GradeSchool) Science": 365,
+    "Broader STEM Topics": 99,
+    "Commonsense": 12,
+    "Social Science": 68,
+    "Spatial Reasoning": 205,
+    "Tables/Diagrams/Charts": 650
+  },
+  "image_count_counts": {
+    "1": 3856,
+    "2": 137,
+    "3": 43,
+    "4": 39,
+    "5": 19,
+    "6": 1,
+    "8": 1
+  },
+  "image_references": 4524,
+  "marker_repaired_rows": 101,
+  "max_images_per_item": 8,
+  "pass_rate_bin_counts": {
+    "00_20": 328,
+    "20_40": 251,
+    "40_60": 156,
+    "60_80": 331,
+    "80_100": 1041,
+    "missing": 1989
+  },
+  "population_size": 38870,
+  "sample_seed": 20260710,
+  "sample_size": 4096,
+  "sampling_method": "Hamilton proportional allocation over source, category, answer type, 7B-base pass-rate bin, and image-count bucket; deterministic within-stratum shuffle",
+  "schema_version": "blind-gains.virl39k-blind-sample.v1",
+  "source_counts": {
+    "DeepScaleR": 146,
+    "K12": 117,
+    "M3CoT": 146,
+    "M3CoTConverted": 11,
+    "MMK12": 1357,
+    "MMK12Converted": 20,
+    "MMMath": 372,
+    "Processed": 1369,
+    "R1OneVision": 71,
+    "R1OneVisionConverted": 10,
+    "ScienceQA": 98,
+    "ScienceQAConverted": 2,
+    "ai2d": 77,
+    "chartqa": 14,
+    "dvqa": 115,
+    "geoqa_plus": 127,
+    "geoqa_plusConverted": 44
+  },
+  "unique_images": 4297
+}

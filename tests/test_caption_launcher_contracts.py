@@ -125,3 +125,8 @@ def test_remote_finalizer_is_started_on_compute_node() -> None:
     source = (ROOT / "scripts/launch_remote_sharded_finalizer.sh").read_text(encoding="utf-8")
     assert 'ssh "${NODE}"' in source
     assert "scripts/finalize_sharded_run.py" in source
+
+
+def test_caption_store_launcher_hashes_symlink_targets() -> None:
+    source = (ROOT / "scripts/launch_caption_store_shards.sh").read_text(encoding="utf-8")
+    assert 'find -L "${IMAGE_DIR}" -type f' in source

@@ -47,6 +47,7 @@ def main() -> None:
     parser.add_argument("--sample-temperature", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=20260710)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.72)
+    parser.add_argument("--max-model-len", type=int, default=4096)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite blind-solvability output: {args.output}")
@@ -59,6 +60,7 @@ def main() -> None:
     format_prompt = args.format_prompt.read_text(encoding="utf-8")
     captions = load_caption_map(args.caption_shards or []) if args.condition == "caption" else None
     rows = load_geometry_rows(args.manifest, args.splits)
+    max_images = max((len(row.get("images", [])) for row in rows), default=0)
     processor = AutoProcessor.from_pretrained(
         args.model_path,
         trust_remote_code=True,
@@ -69,9 +71,9 @@ def main() -> None:
         trust_remote_code=True,
         tensor_parallel_size=1,
         dtype="bfloat16",
-        max_model_len=4096,
+        max_model_len=args.max_model_len,
         gpu_memory_utilization=args.gpu_memory_utilization,
-        limit_mm_per_prompt=vllm_multimodal_limits(args.condition),
+        limit_mm_per_prompt=vllm_multimodal_limits(args.condition, max_images=max_images),
     )
     greedy_params = SamplingParams(temperature=0.0, top_p=1.0, n=1, max_tokens=args.max_tokens, seed=args.seed)
     sample_params = SamplingParams(
@@ -114,10 +116,12 @@ def main() -> None:
                     "schema_version": "blind-gains.blind-solvability.v1",
                     "split": row["split"],
                     "row_index": row["row_index"],
+                    "qid": row.get("qid"),
                     "problem": row["problem"],
                     "ground_truth": row["answer"],
                     "image_sha256": [image["sha256"] for image in row.get("images", [])],
                     "condition": args.condition,
+                    "source_metadata": row.get("metadata"),
                     "greedy_response": greedy_response,
                     "sampled_responses": sampled_responses,
                     **scored,

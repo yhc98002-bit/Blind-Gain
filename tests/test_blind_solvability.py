@@ -66,6 +66,7 @@ def test_pass_at_k_and_item_scoring_use_all_sixteen_samples() -> None:
 
 def test_vllm_reserves_no_visual_tokens_for_text_only_conditions() -> None:
     assert vllm_multimodal_limits("real") == {"image": 1, "video": 0}
+    assert vllm_multimodal_limits("real", max_images=8) == {"image": 8, "video": 0}
     assert vllm_multimodal_limits("caption") == {"image": 0, "video": 0}
     assert vllm_multimodal_limits("none") == {"image": 0, "video": 0}
 
