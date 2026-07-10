@@ -31,6 +31,20 @@ def summarize_condition(rows: list[dict[str, Any]], seed: int = 20260710) -> dic
     if not rows:
         raise ValueError("condition summary requires rows")
     fields = ("p_greedy", "p_sample", "pass_at_g", "pass_at_k16", "variance_proxy")
+    distribution_tests = {
+        "zero": lambda value: value == 0.0,
+        "low_0_0p2": lambda value: 0.0 < value < 0.2,
+        "mid_0p2_0p8": lambda value: 0.2 <= value <= 0.8,
+        "high_0p8_1": lambda value: 0.8 < value < 1.0,
+        "one": lambda value: value == 1.0,
+    }
+    distribution = {
+        name: bootstrap_mean_ci(
+            (float(predicate(float(row["p_sample"]))) for row in rows),
+            seed=seed + 20 + offset,
+        )
+        for offset, (name, predicate) in enumerate(distribution_tests.items())
+    }
     return {
         "n": len(rows),
         "metrics": {
@@ -40,6 +54,7 @@ def summarize_condition(rows: list[dict[str, Any]], seed: int = 20260710) -> dic
         "p_sample_midband_0p2_0p8": bootstrap_mean_ci(
             (float(0.2 <= float(row["p_sample"]) <= 0.8) for row in rows), seed=seed + 10
         ),
+        "p_sample_distribution": distribution,
     }
 
 

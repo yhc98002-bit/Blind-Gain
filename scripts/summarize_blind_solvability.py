@@ -27,7 +27,14 @@ def _parse_runs(values: list[str]) -> dict[str, Path]:
     return runs
 
 
-def build_summary(run_dirs: dict[str, Path], seed: int = 20260710) -> dict[str, Any]:
+def build_summary(
+    run_dirs: dict[str, Path],
+    seed: int = 20260710,
+    dataset_name: str = "Geometry3K",
+    splits: tuple[str, ...] = ("train", "test"),
+) -> dict[str, Any]:
+    if not splits or len(set(splits)) != len(splits):
+        raise ValueError("splits must be a non-empty unique sequence")
     rows_by_condition: dict[str, list[dict[str, Any]]] = {}
     manifests = {}
     for condition in CONDITIONS:
@@ -61,7 +68,7 @@ def build_summary(run_dirs: dict[str, Path], seed: int = 20260710) -> dict[str, 
             "all": summarize_condition(rows, seed=seed),
             **{
                 split: summarize_condition([row for row in rows if row["split"] == split], seed=seed + offset)
-                for offset, split in enumerate(("train", "test"), start=100)
+                for offset, split in enumerate(splits, start=100)
             },
         }
     quadrants = {}
@@ -75,15 +82,17 @@ def build_summary(run_dirs: dict[str, Path], seed: int = 20260710) -> dict[str, 
                     [row for row in rows_by_condition["real"] if row["split"] == split],
                     [row for row in rows_by_condition[condition] if row["split"] == split],
                 )
-                for split in ("train", "test")
+                for split in splits
             },
         }
     return {
-        "schema_version": "blind-gains.blind-solvability-summary.v1",
+        "schema_version": "blind-gains.blind-solvability-summary.v2",
+        "dataset_name": dataset_name,
+        "splits": list(splits),
         "n_items": len(expected_keys),
         "split_counts": {
             split: sum(row["split"] == split for row in rows_by_condition["real"])
-            for split in ("train", "test")
+            for split in splits
         },
         "registered_sampling": {"group_size": 5, "sample_count": 16, "temperature": 1.0},
         "runs": manifests,
@@ -98,11 +107,13 @@ def _metric_cell(summary: dict[str, Any], condition: str, split: str, field: str
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
+    dataset_name = str(summary.get("dataset_name", "Geometry3K"))
+    splits = tuple(summary.get("splits", ("train", "test")))
     lines = [
-        "# Geometry3K Blind-Solvability Audit",
+        f"# {dataset_name} Blind-Solvability Audit",
         "",
         "Status:",
-        f"- Complete over {summary['n_items']} Geometry3K train+test items under all five registered conditions.",
+        f"- Complete over {summary['n_items']} {dataset_name} items under all five registered conditions.",
         "- Metrics use the canonical answer parser; intervals are 2,000-draw item-bootstrap 95% confidence intervals.",
         "",
         "Evidence:",
@@ -118,7 +129,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
         ]
     )
     for condition in CONDITIONS:
-        for split in ("all", "train", "test"):
+        for split in ("all", *splits):
             mid = summary["aggregates"][condition][split]["p_sample_midband_0p2_0p8"]
             lines.append(
                 "| "
@@ -135,6 +146,23 @@ def render_markdown(summary: dict[str, Any]) -> str:
                 )
                 + " |"
             )
+    lines.extend(
+        [
+            "",
+            "Sample-p distribution over all items:",
+            "| Condition | p=0 | 0<p<0.2 | 0.2<=p<=0.8 | 0.8<p<1 | p=1 |",
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    distribution_fields = ("zero", "low_0_0p2", "mid_0p2_0p8", "high_0p8_1", "one")
+    for condition in CONDITIONS:
+        distribution = summary["aggregates"][condition]["all"]["p_sample_distribution"]
+        cells = [
+            f"{distribution[field]['mean']:.4f} [{distribution[field]['ci_low']:.4f}, "
+            f"{distribution[field]['ci_high']:.4f}]"
+            for field in distribution_fields
+        ]
+        lines.append(f"| {condition} | " + " | ".join(cells) + " |")
     lines.extend(["", "Greedy real-vs-blind quadrants:", "| Blind condition | Split | Both | Real only | Blind only | Neither |", "| --- | --- | ---: | ---: | ---: | ---: |"])
     for condition, splits in summary["real_blind_greedy_quadrants"].items():
         for split, counts in splits.items():
@@ -154,7 +182,11 @@ def render_markdown(summary: dict[str, Any]) -> str:
             "- Keep real, gray, noise, no-image, and caption results separate; do not collapse them into one generic blind score.",
             "",
             "Next actions:",
-            "- Run the same registered harness on the stratified ViRL39K sample before the future scientific pilot.",
+            (
+                "- Run the same registered harness on the stratified ViRL39K sample before the future scientific pilot."
+                if dataset_name == "Geometry3K"
+                else "- Use the registered ViRL39K sample results as a prerequisite input to the future scientific pilot."
+            ),
         ]
     )
     return "\n".join(lines) + "\n"
@@ -165,12 +197,18 @@ def main() -> None:
     parser.add_argument("--run", action="append", required=True, help="condition=run_directory")
     parser.add_argument("--json-output", type=Path, required=True)
     parser.add_argument("--markdown-output", type=Path, required=True)
+    parser.add_argument("--dataset-name", default="Geometry3K")
+    parser.add_argument("--splits", nargs="+", default=["train", "test"])
     args = parser.parse_args()
     for output in (args.json_output, args.markdown_output):
         if output.exists():
             raise FileExistsError(f"refusing to overwrite blind-solvability summary: {output}")
         output.parent.mkdir(parents=True, exist_ok=True)
-    summary = build_summary(_parse_runs(args.run))
+    summary = build_summary(
+        _parse_runs(args.run),
+        dataset_name=args.dataset_name,
+        splits=tuple(args.splits),
+    )
     args.json_output.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     args.markdown_output.write_text(render_markdown(summary), encoding="utf-8")
     print(json.dumps({"n_items": summary["n_items"], "conditions": list(CONDITIONS)}, sort_keys=True))

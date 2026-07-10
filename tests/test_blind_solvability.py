@@ -78,6 +78,8 @@ def test_summary_and_real_blind_quadrants() -> None:
     ]
     summary = summarize_condition(rows, seed=20260710)
     assert summary["n"] == 2
+    assert summary["p_sample_distribution"]["zero"]["mean"] == 0.5
+    assert summary["p_sample_distribution"]["mid_0p2_0p8"]["mean"] == 0.5
     blind = [dict(rows[0], greedy_correct=False), dict(rows[1], greedy_correct=True)]
     assert real_blind_quadrants(rows, blind) == {
         "both_correct": 0,
@@ -95,6 +97,9 @@ def test_markdown_renderer_exposes_registered_metrics() -> None:
             for name in ("p_greedy", "p_sample", "pass_at_g", "pass_at_k16", "variance_proxy")
         },
         "p_sample_midband_0p2_0p8": metric,
+        "p_sample_distribution": {
+            name: metric for name in ("zero", "low_0_0p2", "mid_0p2_0p8", "high_0p8_1", "one")
+        },
     }
     summary = {
         "n_items": 2,
@@ -115,3 +120,38 @@ def test_markdown_renderer_exposes_registered_metrics() -> None:
     assert "pass@G=5" in rendered
     assert "p in [0.2, 0.8]" in rendered
     assert "Greedy real-vs-blind quadrants" in rendered
+    assert "Sample-p distribution" in rendered
+
+
+def test_markdown_renderer_supports_single_audit_split() -> None:
+    metric = {"mean": 0.5, "ci_low": 0.4, "ci_high": 0.6}
+    condition_summary = {
+        "metrics": {
+            name: metric
+            for name in ("p_greedy", "p_sample", "pass_at_g", "pass_at_k16", "variance_proxy")
+        },
+        "p_sample_midband_0p2_0p8": metric,
+        "p_sample_distribution": {
+            name: metric for name in ("zero", "low_0_0p2", "mid_0p2_0p8", "high_0p8_1", "one")
+        },
+    }
+    summary = {
+        "dataset_name": "ViRL39K-4096",
+        "splits": ["audit"],
+        "n_items": 1,
+        "runs": {condition: {"run_dir": f"runs/{condition}"} for condition in ("real", "gray", "noise", "none", "caption")},
+        "aggregates": {
+            condition: {split: condition_summary for split in ("all", "audit")}
+            for condition in ("real", "gray", "noise", "none", "caption")
+        },
+        "real_blind_greedy_quadrants": {
+            condition: {
+                split: {"both_correct": 0, "real_only": 0, "blind_only": 0, "neither_correct": 1}
+                for split in ("all", "audit")
+            }
+            for condition in ("gray", "noise", "none", "caption")
+        },
+    }
+    rendered = render_markdown(summary)
+    assert "# ViRL39K-4096 Blind-Solvability Audit" in rendered
+    assert "| real | audit |" in rendered
