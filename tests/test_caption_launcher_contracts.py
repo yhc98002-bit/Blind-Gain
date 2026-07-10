@@ -130,3 +130,17 @@ def test_remote_finalizer_is_started_on_compute_node() -> None:
 def test_caption_store_launcher_hashes_symlink_targets() -> None:
     source = (ROOT / "scripts/launch_caption_store_shards.sh").read_text(encoding="utf-8")
     assert 'find -L "${IMAGE_DIR}" -type f' in source
+
+
+@pytest.mark.parametrize(
+    "launcher",
+    [
+        "launch_fliptrack_caption_shards.sh",
+        "launch_caption_store_shards.sh",
+        "launch_parser_agreement_generation.sh",
+    ],
+)
+def test_single_artifact_workers_publish_only_by_atomic_rename(launcher: str) -> None:
+    source = (ROOT / "scripts" / launcher).read_text(encoding="utf-8")
+    assert '.partial"' in source
+    assert "&& mv '" in source

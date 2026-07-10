@@ -62,12 +62,13 @@ for GPU in ${GPU_LIST}; do
   LOG_PATH="${RUN_DIR}/logs/${NODE}_gpu${GPU}_caption_shard${SHARD_INDEX}.log"
   PID_PATH="${RUN_DIR}/pids/${NODE}_gpu${GPU}_caption_shard${SHARD_INDEX}.pid"
   OUT_PATH="${RUN_DIR}/shards/captions_shard_${SHARD_INDEX}.jsonl"
+  PARTIAL_PATH="${OUT_PATH}.partial"
 
   if [[ -s "${OUT_PATH}" ]]; then
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=output_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/caption_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RUN_DIR}/shards' && (nohup /bin/bash -lc \"env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} '${ROOT}/.venv/bin/python' scripts/caption_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${PARTIAL_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} && mv '${PARTIAL_PATH}' '${OUT_PATH}'\" > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
   LAUNCHED=$((LAUNCHED + 1))
 done

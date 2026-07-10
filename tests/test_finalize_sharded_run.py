@@ -39,6 +39,18 @@ def test_caption_run_finalizes_only_after_all_valid_shards_exist(tmp_path: Path)
     assert len(payload["artifact_sha256"]) == 64
 
 
+def test_caption_run_ignores_in_progress_partial_file(tmp_path: Path) -> None:
+    manifest = tmp_path / "run_manifest.json"
+    _write_manifest(manifest, "fliptrack_question_blind_caption_generation")
+    shards = tmp_path / "shards"
+    shards.mkdir()
+    (shards / "captions_shard_0.jsonl.partial").write_text(
+        '{"caption":"first row"}\n', encoding="utf-8"
+    )
+    assert not finalize_if_complete(manifest)
+    assert json.loads(manifest.read_text(encoding="utf-8"))["status"] == "running"
+
+
 def test_eval_run_rejects_invalid_or_missing_metrics(tmp_path: Path) -> None:
     manifest = tmp_path / "run_manifest.json"
     _write_manifest(manifest, "fliptrack_v02_image_evaluation")

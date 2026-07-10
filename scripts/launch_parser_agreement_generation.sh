@@ -69,10 +69,9 @@ for index in "${!GPUS[@]}"; do
   log="${RUN_DIR}/logs/${NODE}_gpu${gpu}_shard${index}.log"
   pid="${RUN_DIR}/pids/${NODE}_gpu${gpu}_shard${index}.pid"
   output="${RUN_DIR}/shards/shard_${index}.jsonl"
-  ssh "${NODE}" "cd '${ROOT}' && (nohup env TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES='${gpu}' .venv/bin/python scripts/generate_parser_agreement.py --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --format-prompt '${FORMAT_PROMPT}' --output '${output}' --split test --limit '${LIMIT}' --num-shards '${NUM_SHARDS}' --shard-index '${index}' --max-new-tokens '${MAX_NEW_TOKENS}' > '${log}' 2>&1 < /dev/null & echo \$! > '${pid}')"
+  partial="${output}.partial"
+  ssh "${NODE}" "cd '${ROOT}' && (nohup /bin/bash -lc \"env TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES='${gpu}' .venv/bin/python scripts/generate_parser_agreement.py --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --format-prompt '${FORMAT_PROMPT}' --output '${partial}' --split test --limit '${LIMIT}' --num-shards '${NUM_SHARDS}' --shard-index '${index}' --max-new-tokens '${MAX_NEW_TOKENS}' && mv '${partial}' '${output}'\" > '${log}' 2>&1 < /dev/null & echo \$! > '${pid}')"
 done
 
-nohup .venv/bin/python scripts/finalize_sharded_run.py "${RUN_DIR}/run_manifest.json" --wait \
-  > "${RUN_DIR}/logs/finalizer.log" 2>&1 < /dev/null &
-echo $! > "${RUN_DIR}/pids/finalizer.pid"
+scripts/launch_remote_sharded_finalizer.sh "${NODE}" "${RUN_DIR}"
 printf '%s\n' "${RUN_DIR}"
