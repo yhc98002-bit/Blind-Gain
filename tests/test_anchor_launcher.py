@@ -27,6 +27,7 @@ def test_checkpoint_merge_launcher_is_immutable_and_logged() -> None:
 
     assert "Refusing to overwrite an already merged checkpoint" in launcher
     assert "model.safetensors.index.json" in launcher
+    assert "model_merger_no_deepspeed.py" in launcher
     assert "run_manifest_job.py" in launcher
     assert "data_manifest_hash" in launcher
     assert "CUDA_HOME=/usr/local/cuda" in launcher
