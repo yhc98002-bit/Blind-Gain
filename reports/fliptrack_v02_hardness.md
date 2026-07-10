@@ -26,6 +26,7 @@ Current evidence:
 | R11 legible chart | 300 | 0.980 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
 | R12 balanced chart | 300 | 0.2533 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
 | R13 guided chart | 300 | 0.3767 | not run | not run | not run | not run | not run | reject: 3B real below 0.40 lower bound |
+| R14 inspection ledger | 300 | 0.9900 | not run | not run | not run | not run | not run | reject: 3B real exceeds 0.90 upper bound |
 
 R7 diagnostics:
 - Source manifest: `data/fliptrack_v02r7_source_manifest.jsonl`, SHA256 `1640e682a765257d220dab83e66b248f79cebd2b0382d5c55d0bf9867bbb1dc3`.
@@ -69,6 +70,13 @@ R13 diagnostics:
 - Pair accuracy is 0.3767, strict pair accuracy is 0.3033, and format-valid rate is 0.9217.
 - R13 is excluded without running blind/caption cells because it misses the preregistered 0.40 visual floor.
 
+R14 diagnostics:
+- Source manifest: `data/fliptrack_v02r14_source_manifest.jsonl`, one fixed 300-pair batch, SHA256 `60bc4b2a40b189d402eb6eb379dac86a16c6404ad4072d8ee75b305afacf5abf`.
+- The first evaluation, `experiments/runs/fliptrack_v02r14_qwen25vl3b_real_20260710T065652Z`, was terminated by shared-storage quota after 207 rows and is preserved as a failed run.
+- The clean retry is `experiments/runs/fliptrack_v02r14_qwen25vl3b_real_retry_20260710T072648Z`.
+- Pair accuracy is 0.9900, strict pair accuracy is 0.9833, and format-valid rate is 0.9950.
+- R14 is excluded without blind/caption cells. Removing row highlighting did not make exact record-ID lookup difficult enough for the 3B model.
+
 Format caveat:
 - R3 document 3B final pair accuracy is 0.85 but strict pair accuracy is 0.19 because format-valid rate is 0.425.
 - The shared prompt contract is unchanged; final and strict metrics remain separate.
@@ -85,13 +93,14 @@ Problems:
 - The independent R9 chart expansion misses the 3B visual floor.
 - Removing all direct target emphasis while increasing R12 to eight series overcorrects the R11 upper-bound failure.
 - R13's six-series intermediate design improves over R12 but remains below the visual floor; the chart family is not yet retained.
+- R14's unhighlighted 12-row ledger saturates the 3B visual ceiling and therefore cannot serve as the third retained template.
 
 Decision:
 - Preserve R8/R9 as failed calibration evidence.
 - Keep the 300-pair document family.
 - Retain R10 high-entropy geometry and the expanded document family as the two current candidates.
-- Replace chart or add a different third family instead of sampling rescue batches until the pooled score crosses 0.40.
+- Continue with independently declared template revisions; never pool failed batches to cross the visual floor.
 
 Next actions:
-- Design and predeclare a new chart family only after reviewing the R11-R13 calibration curve; do not pool failed chart batches.
+- Predeclare one five-series chart revision between R13's six-series lower-bound miss and R11's directly highlighted upper-bound failure; retain the no-ring/no-thick-line contract.
 - Package and attack only after three families independently meet all acceptance checks.

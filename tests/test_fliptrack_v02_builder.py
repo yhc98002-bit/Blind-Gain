@@ -11,13 +11,14 @@ from src.eval.fliptrack_metrics import match_tier
 from src.fliptrack.build_v02 import (
     build,
     generate_balanced_chart_pairs,
-    generate_guided_chart_pairs,
     generate_coordinate_point_pairs,
     generate_coordinate_register_eight_point_pairs,
     generate_coordinate_register_high_entropy_pairs,
     generate_coordinate_register_legible_pairs,
     generate_coordinate_register_pairs,
     generate_header_table_pairs,
+    generate_five_series_chart_pairs,
+    generate_guided_chart_pairs,
     generate_inspection_ledger_pairs,
     generate_legible_chart_pairs,
     generate_parallel_pairs,
@@ -201,6 +202,24 @@ def test_r13_guided_chart_keeps_only_column_and_legend_cues(tmp_path: Path) -> N
         assert verifier["target_point_circled"] is False
         assert verifier["target_line_thickened"] is False
         assert row["answer_a"] != row["answer_b"]
+
+
+def test_r15_five_series_chart_changes_only_declared_target_region(tmp_path: Path) -> None:
+    rows = generate_five_series_chart_pairs(tmp_path / "chart-r15", n=3, seed=109)
+    assert {row["template_id"] for row in rows} == {"starred_series_value_five_v06"}
+    for row in rows:
+        verifier = row["verifier_results"]
+        assert verifier["series_count"] == 5
+        assert verifier["x_count"] == 8
+        assert verifier["target_column_guided"] is True
+        assert verifier["target_point_circled"] is False
+        assert verifier["target_line_thickened"] is False
+        with Image.open(row["image_a_path"]) as image_a, Image.open(row["image_b_path"]) as image_b:
+            changed = np.any(np.asarray(image_a.convert("RGB")) != np.asarray(image_b.convert("RGB")), axis=2)
+        with Image.open(row["changed_region_mask_a"]) as mask:
+            allowed = np.asarray(mask.convert("L")) > 0
+        assert np.any(changed)
+        assert not np.any(changed & ~allowed)
 
 
 def test_contact_sheet_contains_twenty_pairs_when_available(tmp_path: Path) -> None:
