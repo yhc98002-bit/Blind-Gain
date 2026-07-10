@@ -17,6 +17,7 @@ from src.decon.core import (
 )
 from src.decon.embedding_compare import cosine_candidates, merge_embedding_signals
 from src.decon.ocr import merge_ocr_signals, ocr_char_ngrams
+from src.decon.ocr_text import normalize_ocr_text
 
 
 def _image(path: Path, offset: int = 0) -> None:
@@ -43,6 +44,7 @@ def _row(record_id: str, dataset: str, path: Path, question: str, answer: str) -
 
 def test_text_normalization_and_word_fivegrams_are_deterministic() -> None:
     assert normalize_text("<image>  Find X! ") == "find x"
+    assert normalize_ocr_text("<image>  Find X! ") == "find x"
     assert word_ngrams("one two three four five six") == {"one two three four five", "two three four five six"}
 
 

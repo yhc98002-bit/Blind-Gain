@@ -5,11 +5,8 @@ import re
 from collections import Counter, defaultdict
 from typing import Any, Iterable
 
-from src.decon.core import DEFAULT_THRESHOLDS, jaccard, normalize_text
-
-
-def normalize_ocr_text(value: Any) -> str:
-    return normalize_text(value)
+from src.decon.core import DEFAULT_THRESHOLDS, jaccard
+from src.decon.ocr_text import normalize_ocr_text
 
 
 def ocr_char_ngrams(value: Any, n: int = 5) -> frozenset[str]:

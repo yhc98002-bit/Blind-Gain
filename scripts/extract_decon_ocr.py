@@ -9,8 +9,7 @@ from typing import Any
 
 from rapidocr_onnxruntime import RapidOCR
 
-from src.decon.core import read_jsonl
-from src.decon.ocr import normalize_ocr_text
+from src.decon.ocr_text import normalize_ocr_text
 
 
 def _reading_key(line: list[Any]) -> tuple[float, float]:
@@ -21,9 +20,13 @@ def _reading_key(line: list[Any]) -> tuple[float, float]:
 def _entities(paths: list[Path]) -> list[tuple[str, str]]:
     by_hash: dict[str, str] = {}
     for path in paths:
-        for row in read_jsonl(path):
-            if row.get("image_applicable", True):
-                by_hash.setdefault(str(row["image_sha256"]), str(row["image_path"]))
+        with path.open(encoding="utf-8") as handle:
+            for line in handle:
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if row.get("image_applicable", True):
+                    by_hash.setdefault(str(row["image_sha256"]), str(row["image_path"]))
     return sorted(by_hash.items())
 
 
