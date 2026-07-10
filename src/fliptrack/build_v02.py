@@ -680,6 +680,8 @@ def _generate_coordinate_register_pairs(
     scale: int,
     point_radius: int,
     label_size: int,
+    point_count: int,
+    template_id: str,
 ) -> list[dict[str, Any]]:
     rows = []
     alphabet = "BCDFGHJKLMNPRSTVWXYZ"
@@ -687,7 +689,7 @@ def _generate_coordinate_register_pairs(
     for index in range(n):
         pair_seed = seed + index * 104729
         rng = random.Random(pair_seed)
-        labels = rng.sample(label_pool, 12)
+        labels = rng.sample(label_pool, point_count)
         target_label = rng.choice(labels)
         points_a: dict[str, tuple[int, int]] = {}
         occupied: set[tuple[int, int]] = set()
@@ -704,7 +706,8 @@ def _generate_coordinate_register_pairs(
         id_parts = (pair_seed, labels, target_label, answer_a, answer_b)
         if render_variant != "base_r4_r5":
             id_parts += (render_variant,)
-        pair_id = "v02_register_" + stable_id(*id_parts)
+        pair_prefix = "v02_register8_" if point_count == 8 else "v02_register_"
+        pair_id = pair_prefix + stable_id(*id_parts)
         rows.append(
             _save_rendered_pair(
                 out_dir=out_dir,
@@ -719,7 +722,7 @@ def _generate_coordinate_register_pairs(
                 answer_a=answer_a,
                 answer_b=answer_b,
                 category="geometry_coordinate_indexing",
-                template_id="coordinate_register_random_target_v02",
+                template_id=template_id,
                 provenance={
                     "generator": "src.fliptrack.build_v02",
                     "pair_seed": pair_seed,
@@ -754,6 +757,8 @@ def generate_coordinate_register_pairs(out_dir: Path, n: int, seed: int) -> list
         scale=65,
         point_radius=8,
         label_size=16,
+        point_count=12,
+        template_id="coordinate_register_random_target_v02",
     )
 
 
@@ -766,6 +771,22 @@ def generate_coordinate_register_legible_pairs(out_dir: Path, n: int, seed: int)
         scale=70,
         point_radius=10,
         label_size=18,
+        point_count=12,
+        template_id="coordinate_register_random_target_v02",
+    )
+
+
+def generate_coordinate_register_eight_point_pairs(out_dir: Path, n: int, seed: int) -> list[dict[str, Any]]:
+    return _generate_coordinate_register_pairs(
+        out_dir,
+        n,
+        seed,
+        render_variant="eight_point_r7_scale72_radius11_label19",
+        scale=72,
+        point_radius=11,
+        label_size=19,
+        point_count=8,
+        template_id="coordinate_register_eight_point_v02",
     )
 
 
@@ -865,6 +886,7 @@ EXPERIMENTAL_GENERATORS: list[tuple[str, Callable[[Path, int, int], list[dict[st
     ("coordinate_point", generate_coordinate_point_pairs),
     ("coordinate_register", generate_coordinate_register_pairs),
     ("coordinate_register_legible", generate_coordinate_register_legible_pairs),
+    ("coordinate_register_eight", generate_coordinate_register_eight_point_pairs),
     ("header_table", generate_header_table_pairs),
 ]
 
