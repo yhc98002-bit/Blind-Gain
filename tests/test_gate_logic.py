@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 import json
 
-from scripts.compute_gate2 import _json_status, machine_ready
+from scripts.compute_gate2 import _exact_package_ready, _json_status, machine_ready
 from scripts.compute_recovery_gate1 import compute_recovery_gate
 
 
@@ -69,3 +69,27 @@ def test_gate_json_status_does_not_treat_fail_string_as_truthy(tmp_path) -> None
     assert _json_status(status_file) is True
     status_file.write_text(json.dumps({"status": True}), encoding="utf-8")
     assert _json_status(status_file) is True
+
+
+def test_gate_json_status_supports_nested_gate_status(tmp_path) -> None:
+    status_file = tmp_path / "artifact.json"
+    status_file.write_text(json.dumps({"gate": {"status": True}}), encoding="utf-8")
+    assert _json_status(status_file, "gate", "status") is True
+    assert _json_status(status_file) is False
+
+
+def test_exact_package_requires_both_caption_cells(tmp_path) -> None:
+    summary = tmp_path / "summary.json"
+    payload = {
+        "status": "automated_pass_human_audit_pending",
+        "n_pairs": 1200,
+        "cells": {
+            "qwen25vl3b": {"caption": {"metrics": {"n_pairs": 1200}}},
+            "qwen25vl7b": {"caption": {"metrics": {"n_pairs": 1200}}},
+        },
+    }
+    summary.write_text(json.dumps(payload), encoding="utf-8")
+    assert _exact_package_ready(summary) is True
+    payload["cells"]["qwen25vl7b"]["caption"]["metrics"]["n_pairs"] = 1199
+    summary.write_text(json.dumps(payload), encoding="utf-8")
+    assert _exact_package_ready(summary) is False

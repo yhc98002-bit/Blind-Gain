@@ -33,19 +33,39 @@ def read_ledger(path: Path) -> dict[str, str]:
     return statuses
 
 
-def _json_status(path: Path) -> bool:
+def _json_status(path: Path, *keys: str) -> bool:
     if not path.is_file():
         return False
     try:
-        value = json.loads(path.read_text(encoding="utf-8")).get("status")
+        value: Any = json.loads(path.read_text(encoding="utf-8"))
+        for key in keys or ("status",):
+            if not isinstance(value, dict):
+                return False
+            value = value.get(key)
         return value is True or value == "pass"
     except (json.JSONDecodeError, OSError):
         return False
 
 
+def _exact_package_ready(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        cells = payload["cells"]
+        return bool(
+            payload.get("status") == "automated_pass_human_audit_pending"
+            and payload.get("n_pairs") == 1200
+            and cells["qwen25vl3b"]["caption"]["metrics"]["n_pairs"] == 1200
+            and cells["qwen25vl7b"]["caption"]["metrics"]["n_pairs"] == 1200
+        )
+    except (KeyError, TypeError, json.JSONDecodeError, OSError):
+        return False
+
+
 def compute_checks(root: Path, ledger: dict[str, str]) -> dict[str, bool]:
     reports = root / "reports"
-    contact_dir = reports / "contact_sheets" / "fliptrack_v02"
+    contact_dir = reports / "contact_sheets" / "fliptrack_v02r19"
     idle_audit = reports / "gpu_idle_audit_gate2.json"
     idle_ok = False
     if idle_audit.is_file():
@@ -55,10 +75,14 @@ def compute_checks(root: Path, ledger: dict[str, str]) -> dict[str, bool]:
         "measurement_system_repaired": all(ledger[task] == "pass" for task in ("P0.1", "P0.2", "P0.3", "P0.4", "P0.5")),
         "anchor_complete_with_step0_curve": ledger["P1.1"] == "pass" and (reports / "anchor_recipe_report.md").is_file(),
         "layer1_base_table_complete": ledger["P1.2"] == "pass" and (reports / "base_external_benchmarks.md").is_file(),
-        "v02_packaging_linter_passes": ledger["P1.4"] == "pass" and _json_status(reports / "fliptrack_v02_lint.json"),
-        "v02_artifact_gate_passes": ledger["P1.5"] == "pass" and _json_status(reports / "artifact_gate_v02.json"),
+        "v02_packaging_linter_passes": ledger["P1.4"] == "pass"
+        and _json_status(reports / "fliptrack_v02r19_lint.json"),
+        "v02_artifact_gate_passes": ledger["P1.5"] == "pass"
+        and _json_status(reports / "artifact_gate_v02_r19.json", "gate", "status"),
         "v02_templates_and_contact_sheets": ledger["P1.6"] == "pass" and contact_dir.is_dir() and len(list(contact_dir.glob("*.png"))) >= 3,
         "v02_positive_controls": ledger["P1.7"] == "pass" and (reports / "positive_controls_v02.md").is_file(),
+        "v02_exact_caption_stores": ledger["P1.8"] == "pass"
+        and _exact_package_ready(reports / "fliptrack_v02r19_exact_package.json"),
         "three_arm_mechanical_pilot": ledger["P2.1"] == "pass" and (reports / "mech_pilot_3arm_geo3k.md").is_file(),
         "geometry3k_blind_solvability": ledger["P2.2"] == "pass" and (reports / "blind_solvability_geo3k.md").is_file(),
         "datasets_and_required_licenses": ledger["P1.9"] == "pass" and (reports / "license_log_v2.csv").is_file(),
