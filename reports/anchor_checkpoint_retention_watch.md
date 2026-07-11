@@ -13,7 +13,8 @@ Evidence:
 - Step 80: merge, archive latest raw state, preserve merged checkpoint in Tier T.
 - Step 100: merge, archive latest raw state, retain final merged checkpoint on Tier S.
 - The watcher reads no metric or generation log. Pilot metrics remain inaccessible before preregistration.
-- Main run: `experiments/runs/anchor_checkpoint_retention_watch_login_20260711T052047Z/`; git `b15e6da6ebee3ac2b68ca985ebc4cfc9979f8db1`; tmux session `anchor_checkpoint_retention_watch`; start `2026-07-11T05:20:47Z`.
+- Active run: `experiments/runs/anchor_checkpoint_retention_watch_login_20260711T052335Z/`; git `4c31687280e039e47922ce886d83fa86fdcf3cb1`; code bundle `855e48f6d552357573782586205b9420be6ec1223d568deb4236e05e9e58b3a7`; tmux session `anchor_checkpoint_retention_watch`; start `2026-07-11T05:23:36Z`.
+- The earlier waiting-only run `anchor_checkpoint_retention_watch_login_20260711T052047Z` was preserved as `fail/superseded` at 05:23:35Z before step 80 arrived; no checkpoint subjob had started.
 
 Problems:
 
