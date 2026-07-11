@@ -37,6 +37,7 @@ You are the implementing engineer-researcher for the Blind Gains project, contin
 - Keep synchronous EasyR1/GRPO rollout and training colocated on one node; do not disaggregate them across nodes at this scale.
 - Record `node`, normalized `gpu_ids`, `tensor_parallel_width`, `replica_count`, and `placement_justification` in every run manifest under policy version `pi-2026-07-11`.
 - Colocating unrelated jobs on disjoint GPUs is normal. Treat the researcher's processes as normal neighbors and never as anomalies.
+- For host-RAM-heavy synchronous training, admit normal disjoint-GPU neighbors only after checking aggregate host-memory headroom; GPU disjointness does not imply host-memory isolation.
 
 ## Execution Order
 
