@@ -27,6 +27,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 STATE="${RUN_DIR}/finalizer_state.json"
 LOG="${RUN_DIR}/logs/login.log"
+LAUNCHER_LOG="${RUN_DIR}/logs/launcher.log"
 PID_FILE="${RUN_DIR}/pids/login.pid"
 CONFIG_PATH="$(jq -r .config "${ROOT}/${QUEUE_STATE}")"
 CONFIG_HASH="$(jq -r .config_sha256 "${ROOT}/${QUEUE_STATE}")"
@@ -67,7 +68,16 @@ jq -n \
     ]
   }' > "${MANIFEST}"
 
-nohup "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \
-  "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" >/dev/null 2>&1 </dev/null &
-echo "$!" > "${PID_FILE}"
+nohup setsid --wait "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py \
+  "${MANIFEST}" "${LOG}" >"${LAUNCHER_LOG}" 2>&1 </dev/null &
+LAUNCH_PID="$!"
+echo "${LAUNCH_PID}" > "${PID_FILE}"
+sleep 1
+if ! kill -0 "${LAUNCH_PID}" 2>/dev/null; then
+  if [[ "$(jq -r .status "${MANIFEST}")" == "running" ]]; then
+    "${ROOT}/.venv/bin/python" scripts/finalize_run_manifest.py "${MANIFEST}" 1
+  fi
+  echo "R20 finalizer failed its startup liveness check; inspect ${LAUNCHER_LOG}" >&2
+  exit 1
+fi
 printf '%s\n' "${RUN_DIR}"

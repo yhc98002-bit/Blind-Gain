@@ -8,6 +8,9 @@ import pytest
 from scripts.finalize_fliptrack_r20_queue import EXPECTED_CELLS, validate_queue_runs
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def _write_json(path: Path, payload: dict[str, object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload), encoding="utf-8")
@@ -55,3 +58,12 @@ def test_finalizer_rejects_aggregate_from_different_source(tmp_path: Path) -> No
 
     with pytest.raises(ValueError, match="aggregate/source mismatch"):
         validate_queue_runs(tmp_path, queue)
+
+
+def test_finalizer_launcher_detaches_and_checks_startup_liveness() -> None:
+    source = (ROOT / "scripts" / "launch_fliptrack_r20_finalize.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "nohup setsid --wait" in source
+    assert 'kill -0 "${LAUNCH_PID}"' in source
+    assert "logs/launcher.log" in source
