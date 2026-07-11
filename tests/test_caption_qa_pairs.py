@@ -124,3 +124,19 @@ def test_private_caption_adapter_preserves_constructed_sides_and_is_strict() -> 
             private,
             [*captions, {"image_sha256": "extra", "caption": "extra"}],
         )
+
+
+def test_private_caption_launcher_is_cpu_only_and_calibration_scoped() -> None:
+    from pathlib import Path
+
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_private_caption_qa_pair_build.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'job_type: "l11_private_caption_qa_pair_adapter"' in launcher
+    assert "gpu_ids: []" in launcher
+    assert "tensor_parallel_width: 0" in launcher
+    assert 'scope: "internal-calibration-only"' in launcher
+    assert "build_private_caption_qa_pairs.py" in launcher
