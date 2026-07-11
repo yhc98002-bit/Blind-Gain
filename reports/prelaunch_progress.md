@@ -1,14 +1,14 @@
 L0 | pass | reports/storage_preflight.md: PI-approved shared save to login-archive sweep passed all nine dry-cycle checks with exact read-back hashes
 L1 | pass | reports/parser_agreement_audit_v2.md: canonical-v2 fixtures pass; repeated agreement is 0.915625, below 0.95 and explicitly retained for PI review
 L2 | pass | reports/scorer_v2_spec.md: per-run extractor_valid/contract_valid split and exact StrictGain identity fixtures pass
-L3 | blocked | reports/pilot_reward_smoke_failure_20260711.md: first full-path smoke failed before optimizer step 1 on double-resized image-grid drift; reproducible payload fix is tested and relaunch is queued
+L3 | blocked | repaired five-step smoke pilot_reward_smoke_an29_20260711T114247Z is active past the old grid failure with 5,120/12,800 shadow rows; audit waits for step 5
 L4 | pass | reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload
 L5 | pass | required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1
 L6 | pass | named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests
 L7 | blocked | blind-solvability v2 depends on L1, L2, L3, and L5
-L8 | blocked | one-shot 1,200-pair generation, leakage lint, grouped attacker, and fixed 3B caption store are complete; 7B captioning plus eight hardness and three degradation cells remain
+L8 | blocked | one-shot 1,200-pair package, lint, attacker, and 3B/7B fixed caption stores are complete; 7B real scoring is active and the remaining seven hardness plus three degradation cells remain
 L9 | blocked | 72B captioner is selected for compute-node dev-shm; stress run still depends on R20 generation
-L10 | blocked | Layer-1 completion and ViRL39K audit wait for L0 and Wave-1 contracts
+L10 | blocked | MathVerse 3,940-row and MMMU 1,050-row adapters are complete; 3B/7B base scoring and the five-condition ViRL39K audit remain
 L11 | blocked | document calibration remains lowest priority and may run only on genuinely free GPUs
 L12 | blocked | preregistration depends on L7 plus PI sign-off and the human R19 audit
 L13 | blocked | pilot launch depends on L3, L4, L5, and merged L12 preregistration
