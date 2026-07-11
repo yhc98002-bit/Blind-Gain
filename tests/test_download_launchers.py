@@ -46,6 +46,7 @@ def test_ephemeral_model_launcher_is_node_local_guarded_and_cpu_only() -> None:
     assert "tensor_parallel_width: 0" in launcher
     assert "replica_count: 0" in launcher
     assert "run_reverse_proxy_manifest_job.py" in launcher
+    assert 'nohup setsid "${ROOT}/.venv/bin/python"' in launcher
     assert 'BOOTSTRAP_LOG="${RUN_DIR}/logs/login_bootstrap.log"' in launcher
     assert '> "${BOOTSTRAP_LOG}" 2>&1' in launcher
     assert '"ExitOnForwardFailure=yes"' in wrapper

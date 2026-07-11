@@ -114,7 +114,7 @@ jq -n \
     deviations: ["Direct ModelScope route failed during the 2026-07-11 probe; this run uses the logged international-proxy fallback through an SSH reverse tunnel."]
   }' > "${MANIFEST}"
 
-nohup "${ROOT}/.venv/bin/python" scripts/run_reverse_proxy_manifest_job.py \
+nohup setsid "${ROOT}/.venv/bin/python" scripts/run_reverse_proxy_manifest_job.py \
   --node "${NODE}" \
   --remote-proxy-port "${REMOTE_PROXY_PORT}" \
   --manifest "${ROOT}/${MANIFEST}" \
