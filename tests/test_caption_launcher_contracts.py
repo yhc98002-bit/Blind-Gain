@@ -132,6 +132,15 @@ def test_caption_store_launcher_hashes_symlink_targets() -> None:
     assert 'find -L "${IMAGE_DIR}" -type f' in source
 
 
+def test_eval_manifests_record_all_behavior_changing_launcher_arguments() -> None:
+    image_source = (ROOT / "scripts" / "launch_fliptrack_eval_shards.sh").read_text(encoding="utf-8")
+    caption_source = (ROOT / "scripts" / "launch_caption_qa_shards.sh").read_text(encoding="utf-8")
+    assert "'${GPU_LIST}' ${IMAGE_MODE}" in image_source
+    assert "'${GPU_LIST}' ${MAX_NEW_TOKENS}" in caption_source
+    assert '"run_id": "$(basename' in image_source
+    assert '"run_id": "$(basename' in caption_source
+
+
 @pytest.mark.parametrize(
     "launcher",
     [

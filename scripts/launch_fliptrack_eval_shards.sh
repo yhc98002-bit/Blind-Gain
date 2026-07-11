@@ -36,6 +36,7 @@ CONFIG_HASH="$(printf 'model=%s\nmanifest=%s\nmode=%s\nmax_new_tokens=%s\n' "${M
 DATA_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {
+  "run_id": "$(basename "${RUN_DIR}")",
   "job_type": "fliptrack_v02_image_evaluation",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
@@ -47,11 +48,12 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "image_mode": "${IMAGE_MODE}",
   "max_new_tokens": ${MAX_NEW_TOKENS},
   "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
-  "command": "scripts/launch_fliptrack_eval_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR} ${MAX_NEW_TOKENS}",
+  "command": "scripts/launch_fliptrack_eval_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR} ${MAX_NEW_TOKENS} '${GPU_LIST}' ${IMAGE_MODE}",
   "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "end_time_utc": null,
   "status": "running",
-  "expected_shards": ${NUM_SHARDS}
+  "expected_shards": ${NUM_SHARDS},
+  "expected_artifacts": ["${RUN_DIR}/shards", "${RUN_DIR}/metrics"]
 }
 JSON
 

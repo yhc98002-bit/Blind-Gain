@@ -35,6 +35,7 @@ CAPTION_HASH="$(find "${CAPTION_RUN_DIR}/shards" -type f -name 'captions_shard_*
 CONFIG_HASH="$(printf 'model=%s\ncaption_hash=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${CAPTION_HASH}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
 cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
 {
+  "run_id": "$(basename "${QA_RUN_DIR}")",
   "job_type": "fliptrack_v02_caption_only_qa",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
@@ -45,11 +46,12 @@ cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
   "model_path": "${MODEL_PATH}",
   "max_new_tokens": ${MAX_NEW_TOKENS},
   "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
-  "command": "scripts/launch_caption_qa_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${CAPTION_RUN_DIR} ${QA_RUN_DIR}",
+  "command": "scripts/launch_caption_qa_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${CAPTION_RUN_DIR} ${QA_RUN_DIR} '${GPU_LIST}' ${MAX_NEW_TOKENS}",
   "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "end_time_utc": null,
   "status": "running",
-  "expected_shards": ${NUM_SHARDS}
+  "expected_shards": ${NUM_SHARDS},
+  "expected_artifacts": ["${QA_RUN_DIR}/shards", "${QA_RUN_DIR}/metrics"]
 }
 JSON
 
