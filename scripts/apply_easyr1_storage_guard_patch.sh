@@ -23,4 +23,3 @@ git -C "${TARGET}" apply --check "${PATCH}"
 git -C "${TARGET}" apply "${PATCH}"
 python3 -m py_compile "${TARGET}/verl/trainer/ray_trainer.py"
 echo "Applied EasyR1 pilot storage-guard patch"
-

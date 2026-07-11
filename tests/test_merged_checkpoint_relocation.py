@@ -58,4 +58,3 @@ def test_merged_relocation_rejects_index_path_traversal(tmp_path: Path) -> None:
         relocate_merged_checkpoint(source, tmp_path / "archive")
 
     assert source.is_dir()
-

@@ -1,8 +1,7 @@
 diff --git a/verl/trainer/ray_trainer.py b/verl/trainer/ray_trainer.py
 --- a/verl/trainer/ray_trainer.py
 +++ b/verl/trainer/ray_trainer.py
-@@ -307,6 +307,13 @@ class RayPPOTrainer:
- 
+@@ -308,5 +308,12 @@ class RayPPOTrainer:
      def _save_checkpoint(self) -> None:
          # path: {save_checkpoint_path}/global_step_{global_step}/{actor,critic}
 +        if os.getenv("BLIND_GAINS_STORAGE_GUARD_ENABLED") == "1":

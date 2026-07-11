@@ -67,4 +67,3 @@ def guard_easyr1_checkpoint_save(
     if not result.allowed:
         raise StorageGuardRefusal(result)
     return result
-
