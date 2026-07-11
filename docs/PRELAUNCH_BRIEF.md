@@ -22,13 +22,21 @@ You are the implementing engineer-researcher for the Blind Gains project, contin
 ## Operating Rules
 
 1. Any `status` field is the logical AND of enumerated sub-checks; never asserted.
-2. Every GPU run writes `run_manifest.json` with git/config/data hashes, seed, node, GPUs, and times in an immutable run directory.
+2. Every run writes `run_manifest.json` with git/config/data hashes, seed where applicable, node, GPU IDs, TP width, replica count, placement justification, and times in an immutable run directory.
 3. Decoding lock for evaluations: greedy, temperature 0, top_p 1.0, n 1, fixed max tokens, one fixed prompt contract for every checkpoint including base.
 4. Every fix ships with an adversarial fixture the old code fails.
 5. Version, never overwrite: new tables are published alongside their predecessors with version tags. Superseded numbers remain in the repo.
 6. Contamination language: flagged records are "conservative contamination candidates," never "confirmed duplicates." Apply this wording in all new and edited reports.
 7. Ledger: `reports/prelaunch_progress.md`, one line per task `<task_id> | <pass|fail|blocked> | <one-line note>`. Named report files are required for every `pass`.
 8. Hard ordering: no pilot arm takes its first optimizer step until L12 preregistration is merged. No one, including the implementing agent, inspects pilot training or validation metrics before that merge.
+
+### PI GPU Placement Addendum (2026-07-11)
+
+- Place every job on one node unless it genuinely requires more than eight GPUs. Never split one training or serving job across `an12` and `an29`.
+- Use TP1 for models at or below 7B. For throughput, run independent TP1 replicas and shard requests across them. Use TP2 or TP4 only when a 32B or 72B model cannot fit on one GPU.
+- Keep synchronous EasyR1/GRPO rollout and training colocated on one node; do not disaggregate them across nodes at this scale.
+- Record `node`, normalized `gpu_ids`, `tensor_parallel_width`, `replica_count`, and `placement_justification` in every run manifest under policy version `pi-2026-07-11`.
+- Colocating unrelated jobs on disjoint GPUs is normal. Treat the researcher's processes as normal neighbors and never as anomalies.
 
 ## Execution Order
 

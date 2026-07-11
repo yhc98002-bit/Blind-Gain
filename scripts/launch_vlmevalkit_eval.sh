@@ -134,11 +134,17 @@ jq -n \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg work_dir "${WORK_DIR}" \
   --arg validation "${VALIDATION}" \
+  --argjson gpu_ids "[$(printf '%s' "${GPUS}" | sed 's/,/, /g')]" \
   '{
     run_id: $run_id,
     job_type: "p1_2_vlmevalkit_evaluation",
     node: $node,
     gpu_allocation: $gpu_allocation,
+    gpu_ids: $gpu_ids,
+    tensor_parallel_width: 1,
+    replica_count: 1,
+    placement_justification: "Single-node VLMEvalKit job using TP1 for a model at or below 7B.",
+    placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_path: $config_path,
     config_hash: $config_hash,
