@@ -300,3 +300,87 @@ def test_ocr_extraction_error_keeps_layer_pending(tmp_path: Path) -> None:
     )
     assert result["pending_layers"] == ["ocr_text_overlap"]
     assert result["ocr_coverage"]["error_images"] == 1
+
+
+def test_same_dataset_text_similarity_is_inspection_only_after_final_policy(
+    tmp_path: Path,
+) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    Image.new("RGB", (96, 72), "purple").save(eval_image)
+    train = enrich_records(
+        [_row("train", "geometry3k", train_image, "Find the area rounded to nearest tenth", "12")]
+    )
+    evaluation = enrich_records(
+        [_row("eval", "geometry3k", eval_image, "Find the area rounded to nearest tenth", "42")]
+    )
+    baseline = {
+        "candidate_edges": [
+            {
+                "train_record_id": "train",
+                "eval_record_id": "eval",
+                "train_dataset": "geometry3k",
+                "eval_dataset": "geometry3k",
+                "action": "remove",
+                "signals": {"bge_question_cosine": 0.99, "question_5gram_jaccard": 1.0},
+            }
+        ],
+        "completed_layers": ["bge_text_embedding"],
+        "pending_layers": ["ocr_text_overlap"],
+    }
+    entries = [
+        {"image_sha256": train[0]["image_sha256"], "text": "", "line_count": 0},
+        {"image_sha256": evaluation[0]["image_sha256"], "text": "", "line_count": 0},
+    ]
+
+    result = merge_ocr_signals(baseline, train, evaluation, entries)
+
+    assert result["schema_version"] == "blind-gains.decon-comparison.v4"
+    assert result["candidate_edges"][0]["action"] == "inspect"
+    assert result["candidate_edges"][0]["same_dataset_policy"] == "remove_downgraded_to_inspect"
+
+
+def test_same_dataset_distinctive_exact_question_answer_preserves_removal(
+    tmp_path: Path,
+) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    Image.new("RGB", (96, 72), "orange").save(eval_image)
+    train = enrich_records(
+        [_row("train", "geometry3k", train_image, "Find the exact missing exterior angle", "72")]
+    )
+    evaluation = enrich_records(
+        [_row("eval", "geometry3k", eval_image, "Find the exact missing exterior angle", "72")]
+    )
+    baseline = {
+        "candidate_edges": [
+            {
+                "train_record_id": "train",
+                "eval_record_id": "eval",
+                "train_dataset": "geometry3k",
+                "eval_dataset": "geometry3k",
+                "action": "remove",
+                "signals": {
+                    "question_answer_exact": {
+                        "exact": True,
+                        "distinctive_question": True,
+                    }
+                },
+            }
+        ],
+        "completed_layers": [],
+        "pending_layers": ["ocr_text_overlap"],
+    }
+    entries = [
+        {"image_sha256": train[0]["image_sha256"], "text": "", "line_count": 0},
+        {"image_sha256": evaluation[0]["image_sha256"], "text": "", "line_count": 0},
+    ]
+
+    result = merge_ocr_signals(baseline, train, evaluation, entries)
+
+    assert result["candidate_edges"][0]["action"] == "remove"
+    assert result["candidate_edges"][0]["same_dataset_policy"] == (
+        "distinctive_exact_question_answer"
+    )

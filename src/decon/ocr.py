@@ -30,6 +30,44 @@ def _text_digest(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def apply_same_dataset_removal_policy(
+    edges: list[dict[str, Any]], thresholds: dict[str, float]
+) -> dict[str, int]:
+    """Require precision-oriented corroboration for train/test matches in one corpus."""
+
+    counts: Counter[str] = Counter()
+    for edge in edges:
+        if edge["train_dataset"] != edge["eval_dataset"] or edge["action"] != "remove":
+            continue
+        signals = edge["signals"]
+        basis: str | None = None
+        if signals.get("image_sha256_exact") is True:
+            basis = "exact_image_sha256"
+        question_answer = signals.get("question_answer_exact")
+        if isinstance(question_answer, dict) and question_answer.get("distinctive_question") is True:
+            basis = basis or "distinctive_exact_question_answer"
+        perceptual = signals.get("perceptual_hash")
+        ocr = signals.get("ocr_char5_jaccard")
+        if (
+            isinstance(perceptual, dict)
+            and int(perceptual.get("minimum", 10**9)) <= int(thresholds["phash_remove_max"])
+            and float(signals.get("dinov2_cosine", -1.0))
+            >= float(thresholds["image_embedding_remove_min"])
+            and isinstance(ocr, dict)
+            and float(ocr.get("score", -1.0)) >= float(thresholds["ocr_char5_remove_min"])
+        ):
+            basis = basis or "phash_dinov2_ocr_corroboration"
+
+        if basis is None:
+            edge["action"] = "inspect"
+            edge["same_dataset_policy"] = "remove_downgraded_to_inspect"
+            counts["remove_downgraded_to_inspect"] += 1
+        else:
+            edge["same_dataset_policy"] = basis
+            counts[f"remove_preserved:{basis}"] += 1
+    return dict(sorted(counts.items()))
+
+
 def merge_ocr_signals(
     baseline: dict[str, Any],
     train_rows: list[dict[str, Any]],
@@ -145,15 +183,23 @@ def merge_ocr_signals(
     completed = list(baseline.get("completed_layers", []))
     if not missing_hashes and not error_hashes and "ocr_text_overlap" not in completed:
         completed.append("ocr_text_overlap")
+    same_dataset_policy_counts = apply_same_dataset_removal_policy(edges, thresholds)
     result = {key: value for key, value in baseline.items() if key not in {"candidate_edges", "pending_layers", "completed_layers"}}
     result.update(
         {
-            "schema_version": "blind-gains.decon-comparison.v3",
+            "schema_version": "blind-gains.decon-comparison.v4",
             "thresholds": thresholds,
             "n_candidate_edges": len(edges),
             "action_counts": dict(sorted(Counter(edge["action"] for edge in edges).items())),
             "signal_counts": dict(sorted(Counter(signal for edge in edges for signal in edge["signals"]).items())),
             "candidate_edges": edges,
+            "same_dataset_removal_policy": {
+                "rule": (
+                    "same-dataset automatic removal requires exact image SHA256, a distinctive "
+                    "exact question+answer, or joint pHash+DINOv2+OCR corroboration"
+                ),
+                "counts": same_dataset_policy_counts,
+            },
             "completed_layers": completed,
             "pending_layers": pending,
             "ocr_coverage": {
