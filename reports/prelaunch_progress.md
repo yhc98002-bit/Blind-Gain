@@ -9,6 +9,6 @@ L7 | blocked | real/gray/noise are active on an29; guarded none resumed from row
 L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | blocked | R20 is complete; guarded 72B ModelScope download is active in an29 /dev/shm, while TP4 captioning and standard caption-only QA still await a four-GPU single-node window
 L10 | blocked | MathVerse and repaired-V2 MMMU 3B/7B rows are complete and published; the five-condition ViRL39K sample audit remains
-L11 | blocked | one declared 100-pair dense-document batch is generated and validated; 3B/7B real plus 7B caption scoring remains for free GPUs
+L11 | blocked | one declared 100-pair dense-document batch is frozen; 7B real TP1 scoring is active on an29 GPU5, with 3B real and 7B caption still queued
 L12 | blocked | preregistration depends on L7 plus PI sign-off and the human R19 audit
 L13 | blocked | pilot launch depends on L3, L4, L5, and merged L12 preregistration
