@@ -44,3 +44,10 @@ def test_dataset_inventory_rejects_unresolved_lfs_pointer(tmp_path: Path) -> Non
 
     assert result["status"] == "fail"
     assert result["unresolved_lfs_pointers"] == ["large.bin"]
+
+
+def test_modelscope_clone_launcher_detaches_from_login_shell() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (root / "scripts/launch_modelscope_dataset_clone.sh").read_text(encoding="utf-8")
+
+    assert "nohup setsid --wait" in launcher

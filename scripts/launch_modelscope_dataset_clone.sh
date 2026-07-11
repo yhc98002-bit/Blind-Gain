@@ -78,6 +78,6 @@ jq -n \
     deviations: []
   }' > "${MANIFEST}"
 
-nohup "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py "${MANIFEST}" "${LOG}" > /dev/null 2>&1 < /dev/null &
+nohup setsid --wait "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py "${MANIFEST}" "${LOG}" > /dev/null 2>&1 < /dev/null &
 echo $! > "${PID_FILE}"
 printf '%s\n' "${RUN_DIR}"
