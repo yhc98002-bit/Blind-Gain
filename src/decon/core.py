@@ -29,6 +29,7 @@ DEFAULT_THRESHOLDS = {
     "ocr_char5_inspect_min": 0.75,
     "ocr_min_compact_chars": 8,
     "ocr_min_tokens_or_lines": 2,
+    "exact_text_remove_min_tokens": 5,
 }
 
 
@@ -51,7 +52,7 @@ def word_ngrams(value: Any, n: int = 5) -> frozenset[str]:
     if not tokens:
         return frozenset()
     if len(tokens) < n:
-        return frozenset({" ".join(tokens)})
+        return frozenset()
     return frozenset(" ".join(tokens[index : index + n]) for index in range(len(tokens) - n + 1))
 
 
@@ -335,7 +336,16 @@ def compare_hash_and_text(
         for evaluation in eval_by_sha[train["image_sha256"]]:
             add_signal(train, evaluation, "image_sha256_exact", True, "remove")
         for evaluation in eval_by_question_answer[train["question_answer_normalized"]]:
-            add_signal(train, evaluation, "question_answer_exact", True, "remove")
+            distinctive = len(train["question_normalized"].split()) >= int(
+                thresholds["exact_text_remove_min_tokens"]
+            )
+            add_signal(
+                train,
+                evaluation,
+                "question_answer_exact",
+                {"exact": True, "distinctive_question": distinctive},
+                "remove" if distinctive else "inspect",
+            )
         for evaluation in eval_by_question[train["question_normalized"]]:
             add_signal(train, evaluation, "question_exact", True, "inspect")
 
@@ -383,7 +393,7 @@ def compare_hash_and_text(
 
     output_edges = sorted(edges.values(), key=lambda row: (row["train_record_id"], row["eval_record_id"]))
     return {
-        "schema_version": "blind-gains.decon-comparison.v1",
+        "schema_version": "blind-gains.decon-comparison.v2",
         "thresholds": thresholds,
         "n_train_records": len(train_rows),
         "n_eval_records": len(eval_rows),

@@ -46,6 +46,7 @@ def test_text_normalization_and_word_fivegrams_are_deterministic() -> None:
     assert normalize_text("<image>  Find X! ") == "find x"
     assert normalize_ocr_text("<image>  Find X! ") == "find x"
     assert word_ngrams("one two three four five six") == {"one two three four five", "two three four five six"}
+    assert word_ngrams("Find x") == set()
 
 
 def test_perceptual_hashes_retain_near_identical_render(tmp_path: Path) -> None:
@@ -77,6 +78,33 @@ def test_hash_text_comparison_flags_planted_duplicates_and_ignores_random_negati
     assert "image_sha256_exact" not in edge_by_eval["duplicate"]["signals"]
     assert "perceptual_hash" in edge_by_eval["duplicate"]["signals"]
     assert "negative" not in edge_by_eval
+
+
+def test_generic_exact_question_answer_is_inspection_only_without_visual_corroboration(
+    tmp_path: Path,
+) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    Image.effect_noise((96, 72), 80).convert("RGB").save(eval_image)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "5")])
+    evaluation = enrich_records([_row("eval", "geometry3k", eval_image, "Find x", "5")])
+    evaluation[0]["phash64"] = "ffffffffffffffff"
+    evaluation[0]["dhash64"] = "ffffffffffffffff"
+    train[0]["phash64"] = "0000000000000000"
+    train[0]["dhash64"] = "0000000000000000"
+
+    result = compare_hash_and_text(train, evaluation)
+
+    assert result["schema_version"] == "blind-gains.decon-comparison.v2"
+    assert len(result["candidate_edges"]) == 1
+    edge = result["candidate_edges"][0]
+    assert edge["action"] == "inspect"
+    assert edge["signals"]["question_answer_exact"] == {
+        "exact": True,
+        "distinctive_question": False,
+    }
+    assert "question_5gram_jaccard" not in edge["signals"]
 
 
 def test_embedding_entities_deduplicate_images_but_not_questions(tmp_path: Path) -> None:
