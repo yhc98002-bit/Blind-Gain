@@ -47,7 +47,16 @@ It runs `du -sx --block-size=1` concurrently over every direct child of the quot
 | remaining | 90,357,669,888 | 84.152 |
 | guard floor | 21,474,836,480 | 20.000 |
 
-The pre-brief baseline was 92.7 GiB free. The live allocated-byte measurement is 8.55 GiB lower and is the value used by the guard. The snapshot fails closed after six hours or if its quota root/status is invalid.
+The pre-brief baseline was 92.7 GiB free. This first live allocated-byte measurement was 8.55 GiB lower and guarded the step-60 merge. A snapshot fails closed after six hours or if its quota root/status is invalid.
+
+After verified step-60 raw and merged relocation, the same command completed at 2026-07-11T05:12:41Z in 201.073 seconds:
+
+| Post-relocation quantity | Bytes | GiB |
+| --- | ---: | ---: |
+| allocated | 400,215,797,760 | 372.730 |
+| remaining | 136,655,114,240 | 127.270 |
+
+The exact snapshots are retained as `reports/storage_usage_snapshot_20260711T044850Z.json` and `reports/storage_usage_snapshot_20260711T051241Z.json`; `reports/storage_usage_snapshot.json` contains the newest measured values for guard consumption.
 
 ## Project footprint
 
@@ -94,7 +103,7 @@ Decision:
 
 Next actions:
 
-- Finish the running post-relocation quota refresh under `experiments/runs/storage_usage_measure_login_20260711T050920Z/`.
+- Refresh the shared usage snapshot before its six-hour freshness window expires or before the next large shared write, whichever comes first.
 - Obtain the two approved writable persistent local paths.
 - Configure pilot save roots, apply the explicit pilot-only EasyR1 hook, and run the required 1-step save/read/merge dry test.
 - Only after those checks pass may L0 be reconsidered and Wave 1 begin.
