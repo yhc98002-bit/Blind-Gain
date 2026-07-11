@@ -69,3 +69,17 @@ def test_document_report_rejects_selection_or_missing_pairs(tmp_path: Path) -> N
     metrics["qwen25vl3b_real"]["n_pairs"] = 99
     with pytest.raises(ValueError, match="100 pairs"):
         build_payload(metadata, metrics, paths)
+
+
+def test_document_report_launcher_is_cpu_only_and_immutable() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_document_vnext_report.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'job_type: "l11_document_vnext_report"' in launcher
+    assert "gpu_ids: []" in launcher
+    assert "tensor_parallel_width: 0" in launcher
+    assert "Refusing to overwrite L11 reports" in launcher
+    assert "qwen25vl7b_caption=" in launcher
