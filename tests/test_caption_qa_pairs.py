@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from scripts.build_caption_qa_pairs import partition_rows
@@ -127,8 +129,6 @@ def test_private_caption_adapter_preserves_constructed_sides_and_is_strict() -> 
 
 
 def test_private_caption_launcher_is_cpu_only_and_calibration_scoped() -> None:
-    from pathlib import Path
-
     launcher = (
         Path(__file__).resolve().parents[1]
         / "scripts"
@@ -140,3 +140,17 @@ def test_private_caption_launcher_is_cpu_only_and_calibration_scoped() -> None:
     assert "tensor_parallel_width: 0" in launcher
     assert 'scope: "internal-calibration-only"' in launcher
     assert "build_private_caption_qa_pairs.py" in launcher
+
+
+def test_release_caption_launcher_supports_combined_store_without_losing_placement() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_caption_qa_pair_build.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "ALLOW_EXTRA_CAPTIONS" in launcher
+    assert "--allow-extra-captions" in launcher
+    assert "gpu_ids: []" in launcher
+    assert "tensor_parallel_width: 0" in launcher
+    assert "replica_count: 0" in launcher

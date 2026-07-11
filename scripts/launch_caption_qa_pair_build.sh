@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 4 || $# -gt 5 ]]; then
-  echo "Usage: $0 RUN_TAG RELEASE_MANIFEST KEY_FILE CAPTION_STORE [NUM_SHARDS]" >&2
+if [[ $# -lt 4 || $# -gt 6 ]]; then
+  echo "Usage: $0 RUN_TAG RELEASE_MANIFEST KEY_FILE CAPTION_STORE [NUM_SHARDS] [ALLOW_EXTRA_CAPTIONS]" >&2
   exit 2
 fi
 
@@ -11,6 +11,7 @@ RELEASE_MANIFEST="$2"
 KEY_FILE="$3"
 CAPTION_STORE="$4"
 NUM_SHARDS="${5:-1}"
+ALLOW_EXTRA_CAPTIONS="${6:-false}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
@@ -19,6 +20,10 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
 fi
 if [[ ! "${NUM_SHARDS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "NUM_SHARDS must be positive" >&2
+  exit 2
+fi
+if [[ ! "${ALLOW_EXTRA_CAPTIONS}" =~ ^(true|false)$ ]]; then
+  echo "ALLOW_EXTRA_CAPTIONS must be true or false" >&2
   exit 2
 fi
 for REQUIRED in "${RELEASE_MANIFEST}" "${KEY_FILE}" "${CAPTION_STORE}"; do
@@ -39,7 +44,11 @@ if [[ "${NUM_SHARDS}" == "1" ]]; then
 else
   OUTPUT_ARGS="--output-pattern ${RUN_DIR}/shards/captions_shard_{index}.jsonl --num-shards ${NUM_SHARDS}"
 fi
-COMMAND=".venv/bin/python scripts/build_caption_qa_pairs.py --release-manifest ${RELEASE_MANIFEST} --key-file ${KEY_FILE} --caption-store ${CAPTION_STORE} ${OUTPUT_ARGS} --summary ${SUMMARY}"
+EXTRA_ARG=""
+if [[ "${ALLOW_EXTRA_CAPTIONS}" == "true" ]]; then
+  EXTRA_ARG="--allow-extra-captions"
+fi
+COMMAND=".venv/bin/python scripts/build_caption_qa_pairs.py --release-manifest ${RELEASE_MANIFEST} --key-file ${KEY_FILE} --caption-store ${CAPTION_STORE} ${OUTPUT_ARGS} --summary ${SUMMARY} ${EXTRA_ARG}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/shards"
@@ -55,18 +64,25 @@ jq -n \
   --arg caption_store "${CAPTION_STORE}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --argjson allow_extra_captions "${ALLOW_EXTRA_CAPTIONS}" \
   --argjson expected "${EXPECTED_JSON}" \
   '{
     run_id: $run_id,
     job_type: "p1_8_caption_qa_pair_adapter",
     node: "login",
     gpu_allocation: [],
+    gpu_ids: [],
+    tensor_parallel_width: 0,
+    replica_count: 0,
+    placement_justification: "CPU-only strict caption hash join for released FlipTrack packages; no model serving or GPU allocation.",
+    placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_hash: $config_hash,
     data_manifest: $release_manifest,
     data_manifest_hash: $data_hash,
     private_key_file: $key_file,
     caption_store: $caption_store,
+    allow_extra_captions: $allow_extra_captions,
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,
