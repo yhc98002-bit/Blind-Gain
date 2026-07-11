@@ -26,3 +26,26 @@ def test_modelscope_lfs_pull_requires_budget_and_storage_guard() -> None:
     launcher = (root / "scripts" / "launch_modelscope_lfs_pull.sh").read_text(encoding="utf-8")
     assert "BLIND_GAINS_DOWNLOAD_EXPECTED_BYTES:?" in launcher
     assert "--operation modelscope_lfs_pull" in launcher
+
+
+def test_ephemeral_model_launcher_is_node_local_guarded_and_cpu_only() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (
+        root / "scripts" / "launch_modelscope_ephemeral_download.sh"
+    ).read_text(encoding="utf-8")
+    wrapper = (
+        root / "scripts" / "run_reverse_proxy_manifest_job.py"
+    ).read_text(encoding="utf-8")
+    downloader = (root / "scripts" / "download_modelscope_model.py").read_text(
+        encoding="utf-8"
+    )
+
+    assert "^/dev/shm/blind-gains/" in launcher
+    assert "--storage-tier T" in launcher
+    assert "--allow-memory-filesystem" in launcher
+    assert "tensor_parallel_width: 0" in launcher
+    assert "replica_count: 0" in launcher
+    assert "run_reverse_proxy_manifest_job.py" in launcher
+    assert '"ExitOnForwardFailure=yes"' in wrapper
+    assert 'f"{remote_proxy_port}:127.0.0.1:7890"' in wrapper
+    assert "reject_memory_filesystem=not args.allow_memory_filesystem" in downloader
