@@ -16,6 +16,7 @@ Evidence:
 - License: Qwen License Agreement, release date 2024-09-19. Research use is allowed; redistribution is allowed with the agreement, modification notices, and required Qwen attribution. The greater-than-100-million-MAU commercial restriction is not relevant to this research run.
 - First mass-download launch attempt: `experiments/runs/modelscope_ephemeral_qwen25vl72b_l9_an29_20260711T160104Z`. The login wrapper exited before a remote worker or local checkout appeared; the attempt is preserved `fail` with exit 70.
 - Second launch attempt: `experiments/runs/modelscope_ephemeral_qwen25vl72b_l9_retry_an29_20260711T160334Z`. It reproduced the pre-worker exit with empty bootstrap and SSH logs. A foreground harmless-manifest fixture then proved the wrapper and reverse tunnel themselves work. The defect was process-session detachment: unlike established long-running login jobs, the wrapper had not started a new session. The launcher now uses `nohup setsid` and retains bootstrap stderr.
+- Active download: `experiments/runs/modelscope_ephemeral_qwen25vl72b_l9_session_an29_20260711T160604Z`, git `4e10a90`, CPU/network only on `an29`. The supervisor has its own session, the remote guard passed, and ModelScope began transferring the 38 BF16 weight shards into `/dev/shm`.
 
 Problems:
 - Compute nodes cannot resolve external hosts directly.
