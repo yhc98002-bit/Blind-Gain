@@ -185,3 +185,8 @@ def test_pilot_reward_smoke_uses_dev_shm_for_ray_runtime() -> None:
     assert "awk 'NR==2 {print \\$4}'" in launcher
     assert "awk 'NR==2 {print \\\\$4}'" not in launcher
     assert "short_ray_tmp_dir" not in launcher
+    assert "gpu_ids: $gpu_ids" in launcher
+    assert "tensor_parallel_width: 1" in launcher
+    assert "replica_count: 1" in launcher
+    assert "synchronous EasyR1/GRPO smoke" in launcher
+    assert "rollout is not disaggregated across nodes" in launcher

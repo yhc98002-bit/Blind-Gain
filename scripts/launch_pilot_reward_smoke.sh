@@ -55,10 +55,12 @@ mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 BASE_CONFIG_HASH="$(sha256sum "${CONFIG_PATH}" | awk '{print $1}')"
 CONFIG_HASH="$({ cat "${CONFIG_PATH}"; printf '\n%s\n' "trainer.max_steps=5" "trainer.val_before_train=false" "trainer.val_freq=-1" "trainer.save_freq=-1" "trainer.experiment_name=${RUN_ID}" "trainer.find_last_checkpoint=false"; } | sha256sum | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${DATA_PATH}" | awk '{print $1}')"
+GPU_IDS_JSON="$(printf '%s\n' "${GPUS[@]}" | jq -sc 'map(tonumber)')"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg node "${NODE}" \
   --arg gpu_allocation "${GPU_LIST}" \
+  --argjson gpu_ids "${GPU_IDS_JSON}" \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_path "${CONFIG_PATH}" \
   --arg config_hash "${CONFIG_HASH}" \
@@ -74,6 +76,11 @@ jq -n \
     job_type: "l3_pilot_reward_plumbing_smoke",
     node: $node,
     gpu_allocation: $gpu_allocation,
+    gpu_ids: $gpu_ids,
+    tensor_parallel_width: 1,
+    replica_count: 1,
+    placement_justification: "One synchronous EasyR1/GRPO smoke is colocated on four GPUs of one node; model workers use TP1 and rollout is not disaggregated across nodes.",
+    placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_path: $config_path,
     config_hash: $config_hash,
