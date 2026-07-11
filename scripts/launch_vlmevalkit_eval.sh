@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 4 || $# -gt 6 ]]; then
-  echo "Usage: $0 NODE GPU_LIST CONFIG RUN_TAG [JUDGE] [JUDGE_BASE_URL]" >&2
+if [[ $# -lt 4 || $# -gt 7 ]]; then
+  echo "Usage: $0 NODE GPU_LIST CONFIG RUN_TAG [JUDGE] [JUDGE_BASE_URL] [MODE]" >&2
   exit 2
 fi
 
@@ -12,6 +12,7 @@ CONFIG="$3"
 RUN_TAG="$4"
 JUDGE="${5:-exact_matching}"
 JUDGE_BASE_URL="${6:-}"
+MODE="${7:-all}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${GPUS}" =~ ^[0-7](,[0-7])*$ ]]; then
@@ -24,6 +25,10 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
 fi
 if [[ ! "${JUDGE}" =~ ^[A-Za-z0-9_.:/-]+$ ]]; then
   echo "JUDGE contains unsupported characters" >&2
+  exit 2
+fi
+if [[ "${MODE}" != "all" && "${MODE}" != "infer" ]]; then
+  echo "MODE must be all or infer" >&2
   exit 2
 fi
 if [[ ! -f "${ROOT}/${CONFIG}" ]]; then
@@ -45,6 +50,37 @@ if [[ -z "${MODEL_NAMES}" || -z "${DATASET_NAMES}" ]]; then
   echo "Config must define at least one model and dataset" >&2
   exit 2
 fi
+if [[ "$(jq '[.model[].system_prompt // empty] | unique | length' "${ROOT}/${CONFIG}")" -ne 1 ]]; then
+  echo "Config models must share one nonempty system_prompt" >&2
+  exit 2
+fi
+SYSTEM_PROMPT="$(jq -r '[.model[].system_prompt] | unique | .[0]' "${ROOT}/${CONFIG}")"
+PROMPT_CONTRACT_JSON="$(
+  cd "${ROOT}"
+  PROMPT_INSTRUCTION="${SYSTEM_PROMPT}" PYTHONPATH=. .venv/bin/python - <<'PY'
+import json
+import os
+from src.eval.prompt_contract import PromptContract
+
+contract = PromptContract(
+    contract_id="answer-tags-v1",
+    instruction=os.environ["PROMPT_INSTRUCTION"],
+    response_format="single_final_answer_tag",
+)
+print(json.dumps(contract.to_dict(), sort_keys=True))
+PY
+)"
+PROMPT_CONTRACT_HASH="$(printf '%s' "${PROMPT_CONTRACT_JSON}" | jq -r . >/dev/null; PROMPT_INSTRUCTION="${SYSTEM_PROMPT}" PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" - <<'PY'
+import os
+from src.eval.prompt_contract import PromptContract
+
+print(PromptContract(
+    contract_id="answer-tags-v1",
+    instruction=os.environ["PROMPT_INSTRUCTION"],
+    response_format="single_final_answer_tag",
+).sha256)
+PY
+)"
 
 DATASET_FILES=()
 IFS=',' read -ra DATASETS <<< "${DATASET_NAMES}"
@@ -60,11 +96,18 @@ else
   DATA_HASH=""
 fi
 
-JUDGE_ARGS="--judge ${JUDGE}"
-if [[ -n "${JUDGE_BASE_URL}" ]]; then
+JUDGE_ARGS=""
+if [[ "${MODE}" == "all" ]]; then
+  JUDGE_ARGS="--judge ${JUDGE}"
+fi
+if [[ "${MODE}" == "all" && -n "${JUDGE_BASE_URL}" ]]; then
   JUDGE_ARGS="${JUDGE_ARGS} --judge-base-url ${JUDGE_BASE_URL} --judge-key local-only"
 fi
-COMMAND="PYTHONPATH=artifacts/repos/VLMEvalKit LMUData=${ROOT}/data/vlmevalkit TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home VLLM_WORKER_MULTIPROC_METHOD=spawn CUDA_VISIBLE_DEVICES=${GPUS} artifacts/envs/vlmevalkit/bin/python artifacts/repos/VLMEvalKit/run.py --config ${CONFIG} --work-dir ${WORK_DIR} --mode all ${JUDGE_ARGS} && .venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${VALIDATION}"
+VALIDATION_ARGS=""
+if [[ "${MODE}" == "infer" ]]; then
+  VALIDATION_ARGS="--allow-missing-scores"
+fi
+COMMAND="PYTHONPATH=artifacts/repos/VLMEvalKit LMUData=${ROOT}/data/vlmevalkit TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home VLLM_WORKER_MULTIPROC_METHOD=spawn CUDA_VISIBLE_DEVICES=${GPUS} artifacts/envs/vlmevalkit/bin/python artifacts/repos/VLMEvalKit/run.py --config ${CONFIG} --work-dir ${WORK_DIR} --mode ${MODE} ${JUDGE_ARGS} && .venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${VALIDATION} ${VALIDATION_ARGS}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${WORK_DIR}"
@@ -84,6 +127,9 @@ jq -n \
   --arg dataset_names "${DATASET_NAMES}" \
   --arg judge "${JUDGE}" \
   --arg judge_base_url "${JUDGE_BASE_URL}" \
+  --arg mode "${MODE}" \
+  --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
+  --arg prompt_contract_sha256 "${PROMPT_CONTRACT_HASH}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg work_dir "${WORK_DIR}" \
@@ -103,6 +149,9 @@ jq -n \
     datasets: ($dataset_names | split(",")),
     judge: $judge,
     judge_base_url: (if $judge_base_url == "" then null else $judge_base_url end),
+    mode: $mode,
+    prompt_contract: $prompt_contract,
+    prompt_contract_sha256: $prompt_contract_sha256,
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,

@@ -29,7 +29,7 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 ROWS="${RUN_DIR}/rows.jsonl"
 METRICS="${RUN_DIR}/metrics.json"
-COMMAND="artifacts/envs/vlmevalkit/bin/python scripts/postprocess_vlmeval_predictions.py --input ${INPUT} --rows-output ${ROWS} --metrics-output ${METRICS}"
+COMMAND="artifacts/envs/vlmevalkit/bin/python scripts/postprocess_vlmeval_predictions.py --input ${INPUT} --rows-output ${ROWS} --metrics-output ${METRICS} --run-manifest ${SOURCE_RUN_DIR}/run_manifest.json"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs"

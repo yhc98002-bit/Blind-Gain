@@ -33,6 +33,14 @@ def test_image_and_caption_evaluators_import_the_same_contract() -> None:
     assert "ANSWER_FORMAT_CONTRACT" in caption_source
 
 
+def test_vlmeval_launch_and_postprocess_pin_the_run_contract() -> None:
+    launch_source = (ROOT / "scripts" / "launch_vlmevalkit_eval.sh").read_text(encoding="utf-8")
+    postprocess_source = (ROOT / "scripts" / "launch_vlmeval_postprocess.sh").read_text(encoding="utf-8")
+    assert "prompt_contract_sha256" in launch_source
+    assert "PromptContract(" in launch_source
+    assert "--run-manifest ${SOURCE_RUN_DIR}/run_manifest.json" in postprocess_source
+
+
 def test_contract_valid_requires_one_nonempty_final_answer_tag() -> None:
     assert response_satisfies_contract("reasoning\n<answer>5</answer>")
     assert not response_satisfies_contract(r"reasoning \boxed{5}")

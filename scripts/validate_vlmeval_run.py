@@ -16,7 +16,7 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def validate_outputs(config_path: Path, work_dir: Path) -> dict[str, Any]:
+def validate_outputs(config_path: Path, work_dir: Path, *, require_scores: bool = True) -> dict[str, Any]:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     model_names = sorted(config.get("model", {}))
     dataset_names = sorted(config.get("data", {}))
@@ -56,7 +56,7 @@ def validate_outputs(config_path: Path, work_dir: Path) -> dict[str, Any]:
                     if path.is_file() and path.stat().st_size > 0
                 }
             )
-            if not score_candidates:
+            if require_scores and not score_candidates:
                 missing.append(f"{model_name}/({'|'.join(score_patterns)})")
                 continue
             for path in score_candidates:
@@ -78,6 +78,7 @@ def validate_outputs(config_path: Path, work_dir: Path) -> dict[str, Any]:
         "work_dir": str(work_dir),
         "models": model_names,
         "datasets": dataset_names,
+        "require_scores": require_scores,
         "artifacts": artifacts,
         "score_artifacts": score_artifacts,
     }
@@ -88,8 +89,9 @@ def main() -> None:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--work-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--allow-missing-scores", action="store_true")
     args = parser.parse_args()
-    payload = validate_outputs(args.config, args.work_dir)
+    payload = validate_outputs(args.config, args.work_dir, require_scores=not args.allow_missing_scores)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({"status": payload["status"], "artifact_count": len(payload["artifacts"])}))
