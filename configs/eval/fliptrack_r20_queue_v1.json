@@ -1,0 +1,36 @@
+{
+  "node": "an12",
+  "shard_offset": -4,
+  "num_shards": 4,
+  "gpu_list": "4 5 6 7",
+  "free_memory_threshold_mib": 1024,
+  "max_new_tokens": 32,
+  "image_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_r20_private_full_v1_20260711T124039Z/shards/captions_shard_0.jsonl",
+  "models": {
+    "3b": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "7b": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct"
+  },
+  "caption_inputs": {
+    "3b": "experiments/runs/caption_qa_pair_build_fliptrack_r20_qwen25vl3b_384_20260711T120014Z",
+    "7b": "experiments/runs/caption_qa_pair_build_fliptrack_r20_qwen25vl7b_384_20260711T124039Z"
+  },
+  "cells": [
+    {
+      "id": "qwen25vl7b_real",
+      "model": "7b",
+      "kind": "image",
+      "mode": "real",
+      "existing_run": "experiments/runs/fliptrack_r20_qwen25vl7b_real_an12_20260711T124144Z"
+    },
+    {"id": "qwen25vl7b_gray", "model": "7b", "kind": "image", "mode": "gray"},
+    {"id": "qwen25vl7b_noise", "model": "7b", "kind": "image", "mode": "noise"},
+    {"id": "qwen25vl7b_caption", "model": "7b", "kind": "caption", "mode": "caption"},
+    {"id": "qwen25vl3b_real", "model": "3b", "kind": "image", "mode": "real"},
+    {"id": "qwen25vl3b_gray", "model": "3b", "kind": "image", "mode": "gray"},
+    {"id": "qwen25vl3b_noise", "model": "3b", "kind": "image", "mode": "noise"},
+    {"id": "qwen25vl3b_caption", "model": "3b", "kind": "caption", "mode": "caption"},
+    {"id": "qwen25vl3b_mild", "model": "3b", "kind": "image", "mode": "mild"},
+    {"id": "qwen25vl3b_medium", "model": "3b", "kind": "image", "mode": "medium"},
+    {"id": "qwen25vl3b_severe", "model": "3b", "kind": "image", "mode": "severe"}
+  ]
+}
