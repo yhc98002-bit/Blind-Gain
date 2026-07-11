@@ -1,0 +1,24 @@
+{
+  "model": {
+    "BG-Qwen2.5-VL-3B-Greedy": {
+      "class": "Qwen2VLChat",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "min_pixels": 200704,
+      "max_pixels": 1003520,
+      "max_new_tokens": 256,
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "top_k": 1,
+      "do_sample": false,
+      "use_custom_prompt": false,
+      "use_vllm": true,
+      "system_prompt": "Return only the final answer wrapped exactly in <answer>...</answer>."
+    }
+  },
+  "data": {
+    "MMMU_LOCAL_V2": {
+      "class": "MMMUDataset",
+      "dataset": "MMMU_LOCAL_V2"
+    }
+  }
+}

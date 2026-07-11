@@ -9,6 +9,7 @@ import pytest
 from PIL import Image
 
 from scripts.prepare_layer1_vlmeval import (
+    _write_outputs,
     prepare_blink_frames,
     prepare_hallusion_json,
     prepare_mathvista_frame,
@@ -22,6 +23,33 @@ def _image_record(color: str) -> dict[str, bytes]:
     buffer = io.BytesIO()
     Image.new("RGB", (12, 8), color).save(buffer, format="PNG")
     return {"bytes": buffer.getvalue()}
+
+
+def test_tsv_writer_escapes_lone_carriage_return_without_splitting_row(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source.json"
+    source.write_text("{}\n", encoding="utf-8")
+    output = tmp_path / "MMMU_LOCAL_V2.tsv"
+    metadata = tmp_path / "MMMU_LOCAL_V2.metadata.json"
+    option = "$Ag^+ + Zn$ $\rightarrow$ $Ag + Zn^{2+}$"
+    rows = [
+        {
+            "index": "validation_Chemistry_10",
+            "image_path": "/tmp/image.png",
+            "question": "Choose the net ionic equation.",
+            "answer": "A",
+            "A": option,
+        }
+    ]
+
+    payload = _write_outputs(rows, [source], output, metadata, "mmmu")
+    loaded = pd.read_csv(output, sep="\t")
+
+    assert len(loaded) == 1
+    assert loaded.loc[0, "image_path"] == "/tmp/image.png"
+    assert loaded.loc[0, "A"] == option.replace("\r", r"\r")
+    assert payload["tsv_carriage_return_escapes"] == 1
 
 
 def test_mathvista_adapter_preserves_typed_metadata_and_derives_option(tmp_path: Path) -> None:

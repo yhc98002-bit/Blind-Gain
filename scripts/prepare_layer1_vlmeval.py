@@ -592,7 +592,18 @@ def _write_outputs(
     if output.exists() or metadata_output.exists():
         raise FileExistsError(f"refusing to overwrite adapter outputs: {output} / {metadata_output}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(rows).to_csv(output, sep="\t", index=False)
+    sanitized_rows: list[dict[str, Any]] = []
+    carriage_return_escapes = 0
+    for row in rows:
+        sanitized: dict[str, Any] = {}
+        for key, value in row.items():
+            if isinstance(value, str):
+                value = value.replace("\r\n", "\n")
+                carriage_return_escapes += value.count("\r")
+                value = value.replace("\r", r"\r")
+            sanitized[key] = value
+        sanitized_rows.append(sanitized)
+    pd.DataFrame(sanitized_rows).to_csv(output, sep="\t", index=False)
     image_paths = []
     for row in rows:
         value = row["image_path"]
@@ -608,6 +619,7 @@ def _write_outputs(
         "source_files": [{"path": str(path), "sha256": sha256_file(path)} for path in source_paths],
         "output": str(output),
         "output_sha256": sha256_file(output),
+        "tsv_carriage_return_escapes": carriage_return_escapes,
         "deviations": deviations or {},
     }
     metadata_output.parent.mkdir(parents=True, exist_ok=True)
