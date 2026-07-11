@@ -66,7 +66,7 @@ def load_validated_v2_resume_prefix(
     batch_size: int,
     seed: int,
     source_manifest_sha256: str,
-    train_filter_sha256: str,
+    train_filter_sha256: str | None,
 ) -> list[str]:
     raw_lines = resume_from.read_text(encoding="utf-8").splitlines()
     if not raw_lines or any(not line.strip() for line in raw_lines):
@@ -146,7 +146,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", required=True)
     parser.add_argument("--manifest", type=Path, required=True)
-    parser.add_argument("--train-filter-ids", type=Path, required=True)
+    parser.add_argument("--train-filter-ids", type=Path)
     parser.add_argument("--format-prompt", type=Path, required=True)
     parser.add_argument("--condition", choices=CONDITIONS, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -179,8 +179,8 @@ def main() -> None:
     prompt_contract = load_prompt_contract_from_run_manifest(args.run_manifest)
     if prompt_contract.sha256 != DEFAULT_PROMPT_CONTRACT.sha256:
         raise ValueError("L7 run manifest does not use the registered pilot prompt contract")
-    train_filter_ids = load_train_filter_ids(args.train_filter_ids)
-    train_filter_sha256 = _sha256(args.train_filter_ids)
+    train_filter_ids = load_train_filter_ids(args.train_filter_ids) if args.train_filter_ids else None
+    train_filter_sha256 = _sha256(args.train_filter_ids) if args.train_filter_ids else None
     source_manifest_sha256 = _sha256(args.manifest)
     rows = load_geometry_rows(
         args.manifest,

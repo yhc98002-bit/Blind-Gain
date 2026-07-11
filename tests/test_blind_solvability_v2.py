@@ -46,6 +46,15 @@ def test_filtered_loader_fails_on_unknown_train_id(tmp_path: Path) -> None:
         load_geometry_rows(manifest, train_filter_ids={1, 999})
 
 
+def test_unfiltered_audit_split_does_not_require_train_filter(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    _write_manifest(manifest)
+
+    rows = load_geometry_rows(manifest, splits=("test",), train_filter_ids=None)
+
+    assert [(row["split"], row["row_index"]) for row in rows] == [("test", 0)]
+
+
 def test_train_filter_rejects_duplicate_or_boolean_ids(tmp_path: Path) -> None:
     duplicate = tmp_path / "duplicate.json"
     duplicate.write_text("[1, 1]\n", encoding="utf-8")
