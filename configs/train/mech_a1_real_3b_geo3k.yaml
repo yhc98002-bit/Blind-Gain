@@ -89,7 +89,10 @@ worker:
     offload:
       offload_params: false
   reward:
-    reward_function: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1/examples/reward_function/r1v.py:compute_score
+    reward_function: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/src/rewards/pilot_reward.py:compute_score
+    reward_function_kwargs:
+      format_weight: 0.5
+      require_shadow_log: true
 trainer:
   total_epochs: 1
   max_steps: 100
