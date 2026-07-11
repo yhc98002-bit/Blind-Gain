@@ -33,12 +33,19 @@ mkdir -p "${QA_RUN_DIR}/logs" "${QA_RUN_DIR}/pids" "${QA_RUN_DIR}/shards" "${QA_
 GIT_HASH="$(git rev-parse HEAD)"
 CAPTION_HASH="$(find "${CAPTION_RUN_DIR}/shards" -type f -name 'captions_shard_*.jsonl' -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 CONFIG_HASH="$(printf 'model=%s\ncaption_hash=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${CAPTION_HASH}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
+GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
+REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
 cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
 {
   "run_id": "$(basename "${QA_RUN_DIR}")",
   "job_type": "fliptrack_v02_caption_only_qa",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
+  "gpu_ids": ${GPU_IDS_JSON},
+  "tensor_parallel_width": 1,
+  "replica_count": ${REPLICA_COUNT},
+  "placement_justification": "Independent TP1 replicas answer disjoint caption-only QA shards on one node; the model is at or below 7B.",
+  "placement_policy_version": "pi-2026-07-11",
   "git_hash": "${GIT_HASH}",
   "config_hash": "${CONFIG_HASH}",
   "data_manifest": "${CAPTION_RUN_DIR}/shards",

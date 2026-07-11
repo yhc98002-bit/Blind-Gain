@@ -33,11 +33,18 @@ mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
 GIT_HASH="$(git rev-parse HEAD)"
 CONFIG_HASH="$(printf 'model=%s\nmanifest=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${MANIFEST}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
+GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
+REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {
   "job_type": "fliptrack_question_blind_caption_generation",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
+  "gpu_ids": ${GPU_IDS_JSON},
+  "tensor_parallel_width": 1,
+  "replica_count": ${REPLICA_COUNT},
+  "placement_justification": "Independent TP1 replicas generate question-blind captions for disjoint image shards on one node; the model is at or below 7B.",
+  "placement_policy_version": "pi-2026-07-11",
   "git_hash": "${GIT_HASH}",
   "config_hash": "${CONFIG_HASH}",
   "data_manifest": "${MANIFEST}",

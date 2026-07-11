@@ -76,11 +76,18 @@ if [[ "${RESUME_RUN}" != "-" ]]; then
   fi
 fi
 CONFIG_HASH="$(printf 'model=%s\nimage_hash=%s\nmax_new_tokens=%s\nprompt=question_blind_v1\nresume_source_hash=%s\n' "${MODEL_PATH}" "${IMAGE_HASH}" "${MAX_NEW_TOKENS}" "${RESUME_SOURCE_HASH}" | sha256sum | awk '{print $1}')"
+GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
+REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {
   "job_type": "caption_image_store_generation",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
+  "gpu_ids": ${GPU_IDS_JSON},
+  "tensor_parallel_width": 1,
+  "replica_count": ${REPLICA_COUNT},
+  "placement_justification": "Independent TP1 replicas build disjoint question-blind caption-store shards on one node; this launcher is for models at or below 7B.",
+  "placement_policy_version": "pi-2026-07-11",
   "git_hash": "${GIT_HASH}",
   "config_hash": "${CONFIG_HASH}",
   "data_manifest": "${IMAGE_DIR}",
