@@ -13,6 +13,7 @@ def test_anchor_resume_keeps_native_recipe_and_single_node_placement() -> None:
     assert 'gpu_ids: [0,1,2,3]' in source
     assert "pilot_reward" not in source
     assert "[r]un_blind_solvability_v2.py|[V]LMEvalKit/run.py" in source
+    assert "short_ray_tmp_dir" in source
 
 
 def test_anchor_resume_requires_checksum_restore_marker() -> None:

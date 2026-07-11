@@ -13,6 +13,7 @@ if [[ "${NODE}" != "an12" ]]; then
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT}/scripts/lib/run_paths.sh"
 SOURCE_RUN_ID="anchor_a0_recipe_3b_geo3k_20260709T224852Z"
 SOURCE_RUN="experiments/runs/${SOURCE_RUN_ID}"
 CHECKPOINT_ROOT="${ROOT}/checkpoints/anchor_a0_recipe_3b_geo3k/${SOURCE_RUN_ID}"
@@ -50,7 +51,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
 MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
-RAY_TMP_DIR="/dev/shm/bg-ray-anchor-resume-${STAMP}"
+RAY_TMP_DIR="$(short_ray_tmp_dir "${USER}:${NODE}:${RUN_ID}")"
 COMMAND="PYTHONPATH=${ROOT}/artifacts/repos/EasyR1:${ROOT} python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.save_checkpoint_path=${CHECKPOINT_ROOT} trainer.experiment_name=${SOURCE_RUN_ID} trainer.load_checkpoint_path=${RESUME_CHECKPOINT} trainer.find_last_checkpoint=false"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
