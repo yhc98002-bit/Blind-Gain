@@ -8,7 +8,7 @@ L6 | pass | named reports repaired; four consistency classes and non-gating GPU-
 L7 | blocked | all five runs are active: real/gray/noise/none on an29 at 20260711T141452Z/141458Z/141503Z/141514Z and caption on an12 at 20260711T142842Z
 L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | blocked | 72B captioner is selected for compute-node dev-shm; stress run still depends on R20 generation
-L10 | blocked | MathVerse/MMMU adapters and canonical-v2 rescoring of ten historical base cells are complete; four new base cells and the five-condition ViRL39K audit remain
+L10 | blocked | MathVerse 3B/7B inference and canonical-v2 postprocess recovered; corrupt MMMU v1 TSV is preserved, V2 3B/7B TP1 reruns are active on an12 GPUs 4/5, and five-condition ViRL39K remains
 L11 | blocked | one declared 100-pair dense-document batch is generated and validated; 3B/7B real plus 7B caption scoring remains for free GPUs
 L12 | blocked | preregistration depends on L7 plus PI sign-off and the human R19 audit
 L13 | blocked | pilot launch depends on L3, L4, L5, and merged L12 preregistration
