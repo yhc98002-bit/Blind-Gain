@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from src.eval.parser_agreement import agreement_rows, build_r1v_messages
+from src.rewards.answer_reward import PARSER_VERSION
 
 
 def test_r1v_messages_bind_each_marker_to_the_matching_image() -> None:
@@ -29,6 +30,8 @@ def test_parser_agreement_enforces_sample_floor_and_directions() -> None:
 
     assert metrics["agreement"] == 0.0
     assert metrics["canonical_only"] == 300
+    assert metrics["parser_version"] == PARSER_VERSION
+    assert scored[0]["parser_version"] == PARSER_VERSION
     assert scored[0]["disagreement_direction"] == "canonical_only"
     with pytest.raises(ValueError, match="at least 300"):
         agreement_rows(rows[:299], lambda response, gold: 1.0)

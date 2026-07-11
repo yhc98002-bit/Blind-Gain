@@ -7,7 +7,7 @@ from typing import Any, Callable, Iterable
 
 from jinja2 import Template
 
-from src.rewards.answer_reward import answer_reward, extract_answer_span
+from src.rewards.answer_reward import PARSER_VERSION, answer_reward, extract_answer_span
 
 
 def load_geometry_examples(manifest: str | Path, split: str, limit: int) -> list[dict[str, Any]]:
@@ -66,6 +66,7 @@ def agreement_rows(
                 "extracted_answer": extracted.span,
                 "extraction_level": extracted.extraction_level,
                 "format_valid": extracted.format_valid,
+                "parser_version": PARSER_VERSION,
                 "disagreement_direction": (
                     "canonical_only" if ours and not reference else "easyr1_only" if reference and not ours else None
                 ),
@@ -75,7 +76,8 @@ def agreement_rows(
         raise ValueError(f"parser agreement requires at least 300 generations, found {len(rows)}")
     n = len(rows)
     metrics = {
-        "schema_version": "blind-gains.parser-agreement.v1",
+        "schema_version": "blind-gains.parser-agreement.v2",
+        "parser_version": PARSER_VERSION,
         "n": n,
         "agreement": sum(row["agree"] for row in rows) / n,
         "canonical_accuracy": sum(row["canonical_correct"] for row in rows) / n,

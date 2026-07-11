@@ -9,6 +9,21 @@ from typing import Any
 
 ANSWER_TAG_RE = re.compile(r"<answer>\s*(.*?)\s*</answer>", re.IGNORECASE | re.DOTALL)
 FINAL_RE = re.compile(r"(?:final answer|answer)\s*[:：]\s*(.*)$", re.IGNORECASE)
+PARSER_VERSION = "canonical-v2"
+
+_UNIT_PATTERNS = (
+    (re.compile(r"square\s+centimeters?|cm\^?2", re.IGNORECASE), "cm2"),
+    (re.compile(r"square\s+meters?|m\^?2", re.IGNORECASE), "m2"),
+    (re.compile(r"square\s+inches?|in\^?2", re.IGNORECASE), "in2"),
+    (re.compile(r"square\s+feet|ft\^?2", re.IGNORECASE), "ft2"),
+    (re.compile(r"millimeters?|mm", re.IGNORECASE), "mm"),
+    (re.compile(r"centimeters?|cm", re.IGNORECASE), "cm"),
+    (re.compile(r"kilometers?|km", re.IGNORECASE), "km"),
+    (re.compile(r"meters?|metres?|m", re.IGNORECASE), "m"),
+    (re.compile(r"inches?|in", re.IGNORECASE), "in"),
+    (re.compile(r"feet|foot|ft", re.IGNORECASE), "ft"),
+    (re.compile(r"degrees?|deg", re.IGNORECASE), "degree"),
+)
 
 
 @dataclass(frozen=True)
@@ -17,6 +32,7 @@ class ExtractedAnswer:
     extraction_level: str
     extraction_fallback_used: bool
     format_valid: bool
+    parser_version: str = PARSER_VERSION
 
 
 def _balanced_boxed_spans(text: str) -> list[str]:
@@ -92,8 +108,54 @@ def numeric_value(text: str) -> float | None:
         return None
 
 
+def _unwrap_presentation(text: str) -> str:
+    previous = None
+    while text != previous:
+        previous = text
+        stripped = text.strip()
+        wrappers = (("$", "$"), (r"\(", r"\)"), (r"\[", r"\]"))
+        for opening, closing in wrappers:
+            if stripped.startswith(opening) and stripped.endswith(closing):
+                inner = stripped[len(opening) : len(stripped) - len(closing)].strip()
+                if inner:
+                    text = inner
+                    break
+        else:
+            text = stripped
+        text = re.sub(r"\\text\{([^{}]*)\}", r"\1", text)
+    return text
+
+
+def normalize_presentation(value: Any) -> str:
+    text = _unwrap_presentation(str(value))
+    text = re.sub(r"\\(?:left|right)\s*", "", text)
+    text = re.sub(r"\^\s*\{?\s*\\circ\s*\}?", " degrees", text)
+    text = text.replace("°", " degrees")
+    text = re.sub(r"\\(?:,|;|!|quad\b|qquad\b)", " ", text)
+    text = re.sub(r"\\([A-Za-z]+)\s+\{", r"\\\1{", text)
+    text = re.sub(r"\\sqrt\s+([+-]?(?:\d+(?:\.\d*)?|\.\d+))\b", r"\\sqrt{\1}", text)
+    text = re.sub(r"\{\s+", "{", text)
+    text = re.sub(r"\s+\}", "}", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    # Whitespace around TeX structure is presentation-only, including implicit multiplication.
+    text = re.sub(r"\s*(\\[A-Za-z]+|[{}^_])\s*", r"\1", text)
+    return text
+
+
+def _split_unit_suffix(text: str) -> tuple[str, str | None]:
+    for pattern, canonical in _UNIT_PATTERNS:
+        match = re.fullmatch(rf"(.+?)\s*(?:{pattern.pattern})", text, re.IGNORECASE)
+        if not match:
+            continue
+        core = match.group(1).strip()
+        # Unit stripping is only valid for an answer-like numeric or mathematical span.
+        if re.search(r"\d|\\(?:frac|sqrt)", core):
+            return core, canonical
+    return text, None
+
+
 def normalize_text(value: Any) -> str:
-    text = str(value)
+    text = normalize_presentation(value)
     text = text.strip().lower()
     text = re.sub(r"\s+", " ", text)
     text = re.sub(r"^[\"'`]+|[\"'`]+$", "", text)
@@ -110,6 +172,15 @@ def answers_match(prediction: Any, gold: Any, numeric_tol: float = 1e-4) -> bool
     target = normalize_text(gold)
     if pred == target:
         return True
+    pred_core, pred_unit = _split_unit_suffix(pred)
+    target_core, target_unit = _split_unit_suffix(target)
+    if pred_unit is not None and target_unit is not None and pred_unit != target_unit:
+        return False
+    if pred_unit is not None or target_unit is not None:
+        pred = pred_core
+        target = target_core
+        if pred == target:
+            return True
     pred_num = numeric_value(pred)
     target_num = numeric_value(target)
     if pred_num is not None and target_num is not None:
