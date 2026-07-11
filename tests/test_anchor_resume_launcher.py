@@ -7,6 +7,7 @@ def test_anchor_resume_keeps_native_recipe_and_single_node_placement() -> None:
     assert "configs/train/anchor_a0_recipe_3b_geo3k.yaml" in source
     assert "trainer.load_checkpoint_path=${RESUME_CHECKPOINT}" in source
     assert "trainer.find_last_checkpoint=false" in source
+    assert 'COMMAND="PYTHONPATH=${ROOT}/artifacts/repos/EasyR1:${ROOT} python' in source
     assert 'tensor_parallel_width: 1' in source
     assert 'replica_count: 1' in source
     assert 'gpu_ids: [0,1,2,3]' in source

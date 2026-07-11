@@ -51,7 +51,7 @@ LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
 MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
 RAY_TMP_DIR="/dev/shm/bg-ray-anchor-resume-${STAMP}"
-COMMAND="python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.save_checkpoint_path=${CHECKPOINT_ROOT} trainer.experiment_name=${SOURCE_RUN_ID} trainer.load_checkpoint_path=${RESUME_CHECKPOINT} trainer.find_last_checkpoint=false"
+COMMAND="PYTHONPATH=${ROOT}/artifacts/repos/EasyR1:${ROOT} python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.save_checkpoint_path=${CHECKPOINT_ROOT} trainer.experiment_name=${SOURCE_RUN_ID} trainer.load_checkpoint_path=${RESUME_CHECKPOINT} trainer.find_last_checkpoint=false"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 BASE_CONFIG_HASH="$(sha256sum "${CONFIG_PATH}" | awk '{print $1}')"
