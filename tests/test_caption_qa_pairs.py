@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from scripts.build_caption_qa_pairs import partition_rows
-from src.captioning.qa_pairs import build_caption_qa_rows
+from src.captioning.qa_pairs import build_caption_qa_rows, build_private_caption_qa_rows
 
 
 def _fixture_rows() -> tuple[list[dict], list[dict], list[dict]]:
@@ -64,6 +64,14 @@ def test_caption_qa_adapter_requires_exact_caption_coverage() -> None:
     captions.append({"image_sha256": "extra", "caption": "not in release"})
     with pytest.raises(ValueError, match="outside the release"):
         build_caption_qa_rows(release, key, captions, "/release")
+    rows = build_caption_qa_rows(
+        release,
+        key,
+        captions,
+        "/release",
+        allow_extra_captions=True,
+    )
+    assert len(rows) == 1
 
 
 def test_caption_qa_adapter_rejects_release_key_member_mismatch() -> None:
@@ -83,3 +91,36 @@ def test_caption_qa_shards_are_deterministic_and_exhaustive() -> None:
     ]
     with pytest.raises(ValueError, match="positive"):
         partition_rows(rows, 0)
+
+
+def test_private_caption_adapter_preserves_constructed_sides_and_is_strict() -> None:
+    private = [
+        {
+            "pair_id": "calibration-pair",
+            "question": "Read the code.",
+            "category": "document",
+            "template_id": "dense",
+            "catch_twin_id": None,
+            "answer_a": "A1",
+            "answer_b": "B2",
+            "image_a_path": "source/a.png",
+            "image_b_path": "source/b.png",
+            "image_a_sha256": "hash-a",
+            "image_b_sha256": "hash-b",
+        }
+    ]
+    captions = [
+        {"image_sha256": "hash-a", "caption": "code A1"},
+        {"image_sha256": "hash-b", "caption": "code B2"},
+    ]
+
+    rows = build_private_caption_qa_rows(private, captions)
+
+    assert rows[0]["member_id_a"] == "calibration-pair:a"
+    assert rows[0]["answer_b"] == "B2"
+    assert rows[0]["caption_a"] == "code A1"
+    with pytest.raises(ValueError, match="outside the private manifest"):
+        build_private_caption_qa_rows(
+            private,
+            [*captions, {"image_sha256": "extra", "caption": "extra"}],
+        )

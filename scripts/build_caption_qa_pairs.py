@@ -66,6 +66,7 @@ def main() -> None:
     outputs.add_argument("--output", type=Path)
     outputs.add_argument("--output-pattern")
     parser.add_argument("--num-shards", type=int, default=1)
+    parser.add_argument("--allow-extra-captions", action="store_true")
     parser.add_argument("--summary", type=Path, required=True)
     args = parser.parse_args()
     if args.num_shards < 1:
@@ -79,6 +80,7 @@ def main() -> None:
         _read_jsonl(args.key_file),
         _read_jsonl(args.caption_store),
         args.release_manifest.parent,
+        allow_extra_captions=args.allow_extra_captions,
     )
     template_counts: dict[str, int] = {}
     for row in rows:
@@ -94,6 +96,7 @@ def main() -> None:
         "release_manifest": str(args.release_manifest),
         "key_file": str(args.key_file),
         "caption_store": str(args.caption_store),
+        "allow_extra_captions": args.allow_extra_captions,
     }
     partitioned = partition_rows(rows, args.num_shards)
     if args.output is not None:

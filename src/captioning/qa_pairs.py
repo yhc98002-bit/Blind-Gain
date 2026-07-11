@@ -10,6 +10,8 @@ def build_caption_qa_rows(
     key_rows: Iterable[dict[str, Any]],
     caption_rows: Iterable[dict[str, Any]],
     release_dir: str | Path,
+    *,
+    allow_extra_captions: bool = False,
 ) -> list[dict[str, Any]]:
     release_dir = Path(release_dir)
     keys_by_pair: dict[str, dict[str, Any]] = {}
@@ -83,6 +85,64 @@ def build_caption_qa_rows(
     if extra_keys:
         raise ValueError(f"private key has {len(extra_keys)} extra pair rows")
     extra_captions = set(captions_by_hash) - release_hashes
-    if extra_captions:
+    if extra_captions and not allow_extra_captions:
         raise ValueError(f"caption store has {len(extra_captions)} hashes outside the release")
+    return output
+
+
+def build_private_caption_qa_rows(
+    private_rows: Iterable[dict[str, Any]],
+    caption_rows: Iterable[dict[str, Any]],
+    *,
+    allow_extra_captions: bool = False,
+) -> list[dict[str, Any]]:
+    captions_by_hash: dict[str, dict[str, Any]] = {}
+    for caption in caption_rows:
+        digest = str(caption["image_sha256"])
+        if digest in captions_by_hash:
+            raise ValueError(f"duplicate caption image hash: {digest}")
+        if not str(caption["caption"]).strip():
+            raise ValueError(f"empty caption for image hash: {digest}")
+        captions_by_hash[digest] = caption
+
+    output: list[dict[str, Any]] = []
+    used_hashes: set[str] = set()
+    seen_pairs: set[str] = set()
+    for source in private_rows:
+        pair_id = str(source["pair_id"])
+        if pair_id in seen_pairs:
+            raise ValueError(f"duplicate private pair_id: {pair_id}")
+        seen_pairs.add(pair_id)
+        row: dict[str, Any] = {
+            "schema_version": "blind-gains.fliptrack-caption-qa-input.v1",
+            "pair_id": pair_id,
+            "source_pair_id": pair_id,
+            "question": str(source["question"]),
+            "category": source.get("category"),
+            "template_id": source.get("template_id"),
+            "catch_twin_id": source.get("catch_twin_id"),
+        }
+        for side in ("a", "b"):
+            digest = str(source[f"image_{side}_sha256"])
+            if digest in used_hashes:
+                raise ValueError(f"private image hash reused across members: {digest}")
+            used_hashes.add(digest)
+            if digest not in captions_by_hash:
+                raise ValueError(f"missing caption for private image hash: {digest}")
+            row.update(
+                {
+                    f"member_id_{side}": f"{pair_id}:{side}",
+                    f"answer_{side}": str(source[f"answer_{side}"]),
+                    f"image_{side}_path": str(source[f"image_{side}_path"]),
+                    f"image_{side}_sha256": digest,
+                    f"caption_{side}": str(captions_by_hash[digest]["caption"]).strip(),
+                }
+            )
+        output.append(row)
+
+    extra_captions = set(captions_by_hash) - used_hashes
+    if extra_captions and not allow_extra_captions:
+        raise ValueError(
+            f"caption store has {len(extra_captions)} hashes outside the private manifest"
+        )
     return output
