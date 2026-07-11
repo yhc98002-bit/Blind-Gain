@@ -1,0 +1,90 @@
+{
+  "calibration_verdict": "too-easy",
+  "cells": {
+    "qwen25vl3b_real": {
+      "ambiguous_rate": 0.0,
+      "collapse_rate": 0.2,
+      "contract_valid_rate": 1.0,
+      "extraction_fallback_rate": 0.0,
+      "extractor_valid_rate": 1.0,
+      "format_valid_rate": 1.0,
+      "full_text_mentions_both_rate": 0.0,
+      "image_mode": "real",
+      "member_accuracy": 0.725,
+      "n_pairs": 100.0,
+      "num_shards": 1.0,
+      "pair_accuracy": 0.69,
+      "parser_version": "canonical-v2",
+      "prompt_contract_id": "answer-tags-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "shard_index": 0.0,
+      "strict_member_accuracy": 0.725,
+      "strict_pair_accuracy": 0.69
+    },
+    "qwen25vl7b_caption": {
+      "ambiguous_rate": 0.0,
+      "collapse_rate": 0.58,
+      "contract_valid_rate": 0.91,
+      "extraction_fallback_rate": 0.09,
+      "extractor_valid_rate": 0.91,
+      "format_valid_rate": 0.91,
+      "full_text_mentions_both_rate": 0.0,
+      "member_accuracy": 0.075,
+      "n_pairs": 100.0,
+      "pair_accuracy": 0.04,
+      "parser_version": "canonical-v2",
+      "prompt_contract_id": "answer-tags-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "strict_member_accuracy": 0.075,
+      "strict_pair_accuracy": 0.04
+    },
+    "qwen25vl7b_real": {
+      "ambiguous_rate": 0.0,
+      "collapse_rate": 0.0,
+      "contract_valid_rate": 1.0,
+      "extraction_fallback_rate": 0.0,
+      "extractor_valid_rate": 1.0,
+      "format_valid_rate": 1.0,
+      "full_text_mentions_both_rate": 0.0,
+      "image_mode": "real",
+      "member_accuracy": 1.0,
+      "n_pairs": 100.0,
+      "num_shards": 1.0,
+      "pair_accuracy": 1.0,
+      "parser_version": "canonical-v2",
+      "prompt_contract_id": "answer-tags-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "shard_index": 0.0,
+      "strict_member_accuracy": 1.0,
+      "strict_pair_accuracy": 1.0
+    }
+  },
+  "iteration_policy": "one declared batch; no regeneration or threshold change in this round",
+  "manifest": "data/fliptrack_document_vnext_calibration_manifest.jsonl",
+  "manifest_sha256": "8b7cb91f54af62092197b4c9f2eb8d785e3f9cebe60c7ef6f0cd58ed77cc7dc6",
+  "metric_artifacts": {
+    "qwen25vl3b_real": {
+      "path": "experiments/runs/document_vnext_qwen25vl3b_real_an29_20260711T162020Z/metrics/shard_0.json",
+      "sha256": "a932c82514b9ec16391a86bfa6f0a0d06de3d504855ae1d82a0d84a2e1b47d74"
+    },
+    "qwen25vl7b_caption": {
+      "path": "experiments/runs/document_vnext_qwen25vl7b_captionqa384_an29_20260711T164048Z/metrics/shard_0.json",
+      "sha256": "2c2125861b5ae81d2a08f839f0b0c744ae3acfaef4b321f3bd353363339d8acf"
+    },
+    "qwen25vl7b_real": {
+      "path": "experiments/runs/document_vnext_qwen25vl7b_real_an29_20260711T161608Z/metrics/shard_0.json",
+      "sha256": "6bf4b858f7c2f709b95dcc68fbacc3789da46eaf31232199621a6b3cda8cb21a"
+    }
+  },
+  "n_pairs": 100,
+  "observed_7b_real_pair_accuracy": 1.0,
+  "schema_version": "blind-gains.document-vnext-calibration-report.v1",
+  "seed": 20261101,
+  "status": "complete",
+  "target_7b_real_pair_accuracy": [
+    0.5,
+    0.9
+  ],
+  "task": "L11",
+  "template_id": "dense_control_register_code_v01"
+}
