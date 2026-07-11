@@ -116,6 +116,8 @@ def test_generic_launcher_records_manifest_split_and_multi_image_context() -> No
     assert 'data_manifest: $manifest' in source
     assert 'resume_from: (if $resume_from == "-" then null else $resume_from end)' in source
     assert 'caption_source_run: (if $caption_source_run == "-" then null else $caption_source_run end)' in source
+    assert "--run-manifest ${RUN_MANIFEST}" in source
+    assert "prompt_contract_sha256" in source
 
 
 def test_geometry_launcher_uses_memory_backed_condition_cache() -> None:

@@ -34,13 +34,16 @@ PID_FILE="${RUN_DIR}/pids/${NODE}_gpu${GPU}.pid"
 OUTPUT="${RUN_DIR}/per_item.jsonl"
 CACHE_ROOT="${BLIND_GAINS_CACHE_ROOT:-/dev/shm/blind-gains}"
 CACHE_DIR="${CACHE_ROOT}/${RUN_ID}/condition_cache"
+PROMPT_CONTRACT_JSON="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'import json; from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(json.dumps(DEFAULT_PROMPT_CONTRACT.to_dict(), sort_keys=True))')"
+PROMPT_CONTRACT_HASH="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(DEFAULT_PROMPT_CONTRACT.sha256)')"
+PARSER_VERSION="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'from src.rewards.answer_reward import PARSER_VERSION; print(PARSER_VERSION)')"
 CAPTION_ARGS=""
 DATA_FILES=("${MANIFEST}" "${FORMAT_PROMPT}")
 if [[ "${CONDITION}" == "caption" ]]; then
   CAPTION_ARGS="--caption-shards ${CAPTION_RUN}/shards/store_shard_0.jsonl ${CAPTION_RUN}/shards/store_shard_1.jsonl ${CAPTION_RUN}/shards/store_shard_2.jsonl"
   DATA_FILES+=("${CAPTION_RUN}/shards/store_shard_0.jsonl" "${CAPTION_RUN}/shards/store_shard_1.jsonl" "${CAPTION_RUN}/shards/store_shard_2.jsonl")
 fi
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 .venv/bin/python scripts/run_blind_solvability.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} ${CAPTION_ARGS} --splits train test --batch-size 8 --max-tokens 512 --group-size 5 --sample-count 16 --sample-temperature 1.0 --seed 20260710"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 .venv/bin/python scripts/run_blind_solvability.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS} --splits train test --batch-size 8 --max-tokens 512 --group-size 5 --sample-count 16 --sample-temperature 1.0 --seed 20260710"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
@@ -58,6 +61,9 @@ jq -n \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg output "${OUTPUT}" \
   --arg cache_dir "${CACHE_DIR}" \
+  --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
+  --arg prompt_contract_hash "${PROMPT_CONTRACT_HASH}" \
+  --arg parser_version "${PARSER_VERSION}" \
   '{
     run_id: $run_id,
     job_type: "p2_2_geometry3k_blind_solvability",
@@ -73,6 +79,9 @@ jq -n \
     group_size: 5,
     sample_count: 16,
     sample_temperature: 1.0,
+    prompt_contract: $prompt_contract,
+    prompt_contract_sha256: $prompt_contract_hash,
+    parser_version: $parser_version,
     local_condition_cache: $cache_dir,
     command: $command,
     start_time_utc: $start_time_utc,

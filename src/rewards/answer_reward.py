@@ -31,8 +31,13 @@ class ExtractedAnswer:
     span: str
     extraction_level: str
     extraction_fallback_used: bool
-    format_valid: bool
+    extractor_valid: bool
     parser_version: str = PARSER_VERSION
+
+    @property
+    def format_valid(self) -> bool:
+        """Compatibility alias; scoring outputs must distinguish contract validity."""
+        return self.extractor_valid
 
 
 def _balanced_boxed_spans(text: str) -> list[str]:

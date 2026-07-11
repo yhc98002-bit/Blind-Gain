@@ -9,6 +9,8 @@ from typing import Any
 
 from src.analysis.blind_solvability import real_blind_quadrants, summarize_condition
 from src.eval.blind_solvability import CONDITIONS, score_item
+from src.eval.prompt_contract import PromptContract, load_prompt_contract_from_run_manifest
+from src.rewards.answer_reward import PARSER_VERSION
 
 
 _SCORE_FIELDS = (
@@ -16,6 +18,14 @@ _SCORE_FIELDS = (
     "greedy_correct",
     "greedy_extracted_answer",
     "greedy_format_valid",
+    "greedy_extractor_valid",
+    "greedy_contract_valid",
+    "greedy_acc_strict",
+    "sampled_extractor_valid",
+    "sampled_contract_valid",
+    "parser_version",
+    "prompt_contract_id",
+    "prompt_contract_sha256",
     "sample_count",
     "sample_correct_count",
     "sample_correct",
@@ -67,9 +77,10 @@ def _validate_scored_row(
     condition: str,
     group_size: int,
     sample_count: int,
+    prompt_contract: PromptContract,
 ) -> None:
     key = (row.get("split"), row.get("row_index"))
-    if row.get("schema_version") != "blind-gains.blind-solvability.v1":
+    if row.get("schema_version") != "blind-gains.blind-solvability.v2":
         raise ValueError(f"unsupported row schema for {condition} at {key}")
     if row.get("condition") != condition:
         raise ValueError(f"condition mismatch for {condition} at {key}")
@@ -81,6 +92,7 @@ def _validate_scored_row(
         str(row.get("greedy_response", "")),
         [str(response) for response in sampled],
         group_size,
+        prompt_contract,
     )
     for field in _SCORE_FIELDS:
         if field not in row or not _values_match(row[field], expected[field]):
@@ -135,12 +147,15 @@ def build_summary(
         manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
         if manifest.get("status") != "complete":
             raise ValueError(f"condition {condition} is not complete: {manifest.get('status')}")
+        prompt_contract = load_prompt_contract_from_run_manifest(run_dir / "run_manifest.json")
         manifest_contract = {
             "model_revision": manifest.get("model_revision"),
             "data_manifest": manifest.get("data_manifest"),
             "group_size": manifest.get("group_size"),
             "sample_count": manifest.get("sample_count"),
             "sample_temperature": manifest.get("sample_temperature"),
+            "prompt_contract_sha256": prompt_contract.sha256,
+            "parser_version": manifest.get("parser_version"),
         }
         if manifest.get("condition") != condition:
             raise ValueError(f"run manifest condition mismatch for {condition}")
@@ -158,6 +173,8 @@ def build_summary(
             raise ValueError(f"missing sampling contract for {condition}") from error
         if group_size != 5 or sample_count != 16 or manifest_contract["sample_temperature"] != 1.0:
             raise ValueError(f"unregistered sampling contract for {condition}: {manifest_contract!r}")
+        if manifest_contract["parser_version"] != PARSER_VERSION:
+            raise ValueError(f"parser version mismatch for {condition}: {manifest_contract!r}")
         rows = _read_jsonl(run_dir / "per_item.jsonl")
         for row in rows:
             _validate_scored_row(
@@ -165,6 +182,7 @@ def build_summary(
                 condition=condition,
                 group_size=group_size,
                 sample_count=sample_count,
+                prompt_contract=prompt_contract,
             )
             decoding = row.get("decoding")
             _validate_decoding_contract(
@@ -229,7 +247,7 @@ def build_summary(
             },
         }
     return {
-        "schema_version": "blind-gains.blind-solvability-summary.v3",
+        "schema_version": "blind-gains.blind-solvability-summary.v4",
         "dataset_name": dataset_name,
         "splits": list(splits),
         "n_items": len(expected_keys),
@@ -241,6 +259,7 @@ def build_summary(
             **(shared_manifest_contract or {}),
             "decoding": shared_decoding_contract,
         },
+        "parser_version": PARSER_VERSION,
         "registered_sampling": {"group_size": 5, "sample_count": 16, "temperature": 1.0},
         "runs": manifests,
         "aggregates": aggregates,

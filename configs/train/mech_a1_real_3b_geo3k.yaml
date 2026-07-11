@@ -21,6 +21,10 @@ data:
   filter_overlong_prompts: true
   image_condition: real
   image_condition_seed: 20260710
+  caption_store_paths:
+  - experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_0.jsonl
+  - experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_1.jsonl
+  - experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_2.jsonl
 algorithm:
   adv_estimator: grpo
   disable_kl: false

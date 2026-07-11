@@ -11,6 +11,8 @@ from typing import Any, Iterable
 import pandas as pd
 
 from scripts.postprocess_vlmeval_predictions import _choice_payload, score_mcq_prediction, score_open_prediction
+from src.eval.prompt_contract import PromptContractLike, prompt_contract_metadata
+from src.rewards.answer_reward import PARSER_VERSION
 
 
 PROTOCOL_VERSION = "blind-gains.layer1-image-removed.v1"
@@ -63,6 +65,8 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
             "Acc_strict": math.nan,
             "Acc_final": math.nan,
             "Format_valid": math.nan,
+            "Extractor_valid": math.nan,
+            "Contract_valid": math.nan,
             "Ambiguous_rate": math.nan,
             "Extraction_fallback_rate": math.nan,
         }
@@ -72,13 +76,18 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
         "Acc_strict": sum(row["acc_strict"] for row in rows) / count,
         "Acc_final": sum(row["acc_final"] for row in rows) / count,
         "Format_valid": sum(row["format_valid"] for row in rows) / count,
+        "Extractor_valid": sum(row["extractor_valid"] for row in rows) / count,
+        "Contract_valid": sum(row["contract_valid"] for row in rows) / count,
         "Ambiguous_rate": sum(row["ambiguous"] for row in rows) / count,
         "Extraction_fallback_rate": sum(row["extraction_fallback_used"] for row in rows) / count,
     }
 
 
 def score_predictions(
-    rows: list[dict[str, Any]], predictions: Iterable[str], dataset_type: str
+    rows: list[dict[str, Any]],
+    predictions: Iterable[str],
+    dataset_type: str,
+    prompt_contract: PromptContractLike = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     predictions = list(predictions)
     if len(rows) != len(predictions):
@@ -94,20 +103,24 @@ def score_predictions(
             ]
             options = {label: row[label] for label in labels}
             gold = str(row["answer"]).strip().upper()
-            scored = score_mcq_prediction(prediction, gold, labels, options)
+            scored = score_mcq_prediction(
+                prediction, gold, labels, options, prompt_contract
+            )
             category = str(row.get("category", "unknown"))
-            contract = "multiple_choice_final_span"
+            grading_contract = "multiple_choice_final_span"
         else:
             payload = _choice_payload(row)
             if payload is None:
                 labels = []
                 gold = str(row["answer"])
-                scored = score_open_prediction(prediction, gold)
-                contract = "open_final_span"
+                scored = score_open_prediction(prediction, gold, prompt_contract)
+                grading_contract = "open_final_span"
             else:
                 labels, options, gold = payload
-                scored = score_mcq_prediction(prediction, gold, labels, options)
-                contract = "multiple_choice_final_span"
+                scored = score_mcq_prediction(
+                    prediction, gold, labels, options, prompt_contract
+                )
+                grading_contract = "multiple_choice_final_span"
             category = str(row.get("task", "unknown"))
         prompt = build_text_prompt(row, dataset_type)
         record = {
@@ -119,7 +132,7 @@ def score_predictions(
             "gold_value": str(row["answer"]),
             "prediction": prediction,
             "category": category,
-            "scoring_contract": contract,
+            "scoring_contract": grading_contract,
             "option_labels": labels,
             **scored,
         }
@@ -129,6 +142,8 @@ def score_predictions(
         "schema_version": PROTOCOL_VERSION,
         "dataset_type": dataset_type,
         "image_removed": True,
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "overall": _aggregate(scored_rows),
         "per_category": {key: _aggregate(value) for key, value in sorted(by_category.items())},
     }

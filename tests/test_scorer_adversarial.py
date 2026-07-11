@@ -66,10 +66,27 @@ def test_empty_output_is_incorrect_fulltext_fallback():
 def test_format_only_output_with_no_answer_is_incorrect():
     score = pair_score(_row("Answer:"))
     assert score["correct_a"] is False
-    assert score["format_valid_a"] is True
+    assert score["extractor_valid_a"] is True
+    assert score["contract_valid_a"] is False
+    assert score["format_valid_a"] is False
 
 
 def test_unparseable_rambling_with_both_golds_is_guarded_by_lastline():
     score = pair_score(_row("left right"))
     assert score["correct_a"] is False
     assert score["ambiguous_a"] is True
+
+
+def test_boxed_answer_is_extractor_valid_but_not_registered_contract_valid():
+    score = pair_score(_row(r"\boxed{left}"))
+    assert score["correct_a"] is True
+    assert score["extractor_valid_a"] is True
+    assert score["contract_valid_a"] is False
+    assert score["acc_strict_a"] is False
+
+
+def test_scoring_rows_stamp_parser_and_prompt_contract_versions():
+    score = pair_score(_row("<answer>left</answer>"))
+    assert score["parser_version"] == "canonical-v2"
+    assert score["prompt_contract_id"] == "answer-tags-v1"
+    assert len(score["prompt_contract_sha256"]) == 64

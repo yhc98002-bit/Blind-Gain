@@ -8,13 +8,15 @@ import pytest
 
 from scripts.summarize_blind_solvability import build_summary
 from src.eval.blind_solvability import CONDITIONS, score_item
+from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
+from src.rewards.answer_reward import PARSER_VERSION
 
 
 def _row(condition: str) -> dict[str, object]:
     greedy = "<answer>3</answer>"
     sampled = ["<answer>3</answer>"] * 8 + ["<answer>4</answer>"] * 8
     return {
-        "schema_version": "blind-gains.blind-solvability.v1",
+        "schema_version": "blind-gains.blind-solvability.v2",
         "split": "audit",
         "row_index": 0,
         "qid": "audit-0",
@@ -53,6 +55,9 @@ def _runs(tmp_path: Path, mutations: dict[str, dict[str, object]] | None = None)
             "group_size": 5,
             "sample_count": 16,
             "sample_temperature": 1.0,
+            "prompt_contract": DEFAULT_PROMPT_CONTRACT.to_dict(),
+            "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
+            "parser_version": PARSER_VERSION,
             "git_hash": "git",
             "config_hash": "config",
             "data_manifest_hash": "data",
@@ -69,7 +74,7 @@ def test_summary_accepts_exact_item_and_decoding_contract(tmp_path: Path) -> Non
         splits=("audit",),
     )
 
-    assert summary["schema_version"] == "blind-gains.blind-solvability-summary.v3"
+    assert summary["schema_version"] == "blind-gains.blind-solvability-summary.v4"
     assert summary["n_items"] == 1
     assert summary["evaluation_contract"]["decoding"]["sampled"]["n"] == 16
 

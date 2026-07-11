@@ -11,6 +11,7 @@ CONFIGS = {
     "real": ROOT / "configs/train/mech_a1_real_3b_geo3k.yaml",
     "gray": ROOT / "configs/train/mech_a2_gray_3b_geo3k.yaml",
     "none": ROOT / "configs/train/mech_a2b_noimage_3b_geo3k.yaml",
+    "caption": ROOT / "configs/train/mech_a3_caption_3b_geo3k.yaml",
 }
 
 
@@ -34,6 +35,7 @@ def test_mechanical_pilot_configs_are_matched_except_arm_identity() -> None:
         assert config["worker"]["actor"]["model"]["freeze_vision_tower"] is True
         assert config["trainer"]["max_steps"] == 100
         assert "/checkpoints/pilot/" in config["trainer"]["save_checkpoint_path"]
+        assert len(config["data"]["caption_store_paths"]) == 3
         assert config["trainer"]["val_before_train"] is True
         assert config["trainer"]["val_freq"] == 10
         assert config["worker"]["rollout"]["val_override_config"] == {

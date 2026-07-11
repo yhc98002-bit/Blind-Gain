@@ -18,7 +18,13 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.eval.fliptrack_metrics import match_tier
-from src.rewards.answer_reward import extract_answer_span
+from src.eval.prompt_contract import (
+    PromptContractLike,
+    load_prompt_contract_from_run_manifest,
+    prompt_contract_metadata,
+    response_satisfies_contract,
+)
+from src.rewards.answer_reward import PARSER_VERSION, extract_answer_span
 
 
 def _explicit_choice_labels(span: str, labels: list[str]) -> list[str]:
@@ -38,7 +44,11 @@ def _explicit_choice_labels(span: str, labels: list[str]) -> list[str]:
 
 
 def score_mcq_prediction(
-    prediction: Any, gold: Any, labels: list[str], options: dict[str, Any] | None = None
+    prediction: Any,
+    gold: Any,
+    labels: list[str],
+    options: dict[str, Any] | None = None,
+    prompt_contract: PromptContractLike = None,
 ) -> dict[str, Any]:
     extracted = extract_answer_span(prediction)
     explicit = _explicit_choice_labels(extracted.span, labels)
@@ -58,33 +68,45 @@ def score_mcq_prediction(
     normalized_gold = str(gold).strip().upper()
     ambiguous = len(winners) > 1
     acc_final = len(winners) == 1 and winners[0] == normalized_gold
+    contract_valid = response_satisfies_contract(prediction, prompt_contract)
     return {
         "extracted_answer": extracted.span,
         "extraction_level": extracted.extraction_level,
         "extraction_fallback_used": extracted.extraction_fallback_used,
-        "format_valid": extracted.format_valid,
+        "extractor_valid": extracted.extractor_valid,
+        "contract_valid": contract_valid,
+        "format_valid": contract_valid,
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "ambiguous": ambiguous,
         "winning_labels": winners,
         "match_tiers": tiers,
         "acc_final": acc_final,
-        "acc_strict": extracted.format_valid and acc_final,
+        "acc_strict": contract_valid and acc_final,
     }
 
 
-def score_open_prediction(prediction: Any, gold: Any) -> dict[str, Any]:
+def score_open_prediction(
+    prediction: Any, gold: Any, prompt_contract: PromptContractLike = None
+) -> dict[str, Any]:
     extracted = extract_answer_span(prediction)
     tier = match_tier(extracted.span, gold)
     acc_final = tier > 0
+    contract_valid = response_satisfies_contract(prediction, prompt_contract)
     return {
         "extracted_answer": extracted.span,
         "extraction_level": extracted.extraction_level,
         "extraction_fallback_used": extracted.extraction_fallback_used,
-        "format_valid": extracted.format_valid,
+        "extractor_valid": extracted.extractor_valid,
+        "contract_valid": contract_valid,
+        "format_valid": contract_valid,
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "ambiguous": False,
         "winning_labels": ["gold"] if acc_final else [],
         "match_tiers": {"gold": tier},
         "acc_final": acc_final,
-        "acc_strict": extracted.format_valid and acc_final,
+        "acc_strict": contract_valid and acc_final,
     }
 
 
@@ -134,6 +156,8 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
             "Acc_strict": math.nan,
             "Acc_final": math.nan,
             "Format_valid": math.nan,
+            "Extractor_valid": math.nan,
+            "Contract_valid": math.nan,
             "Ambiguous_rate": math.nan,
             "Extraction_fallback_rate": math.nan,
         }
@@ -143,6 +167,8 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
         "Acc_strict": sum(row["acc_strict"] for row in rows) / n,
         "Acc_final": sum(row["acc_final"] for row in rows) / n,
         "Format_valid": sum(row["format_valid"] for row in rows) / n,
+        "Extractor_valid": sum(row["extractor_valid"] for row in rows) / n,
+        "Contract_valid": sum(row["contract_valid"] for row in rows) / n,
         "Ambiguous_rate": sum(row["ambiguous"] for row in rows) / n,
         "Extraction_fallback_rate": sum(row["extraction_fallback_used"] for row in rows) / n,
     }
@@ -168,7 +194,12 @@ def _aggregate_pairs(rows: list[dict[str, Any]]) -> dict[str, float] | None:
     }
 
 
-def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> dict[str, Any]:
+def postprocess(
+    input_path: Path,
+    rows_output: Path,
+    metrics_output: Path,
+    prompt_contract: PromptContractLike = None,
+) -> dict[str, Any]:
     frame = pd.read_excel(input_path)
     required = {"index", "answer", "prediction"}
     missing = required - set(frame.columns)
@@ -180,12 +211,14 @@ def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> di
         choice_payload = _choice_payload(raw)
         if choice_payload is None:
             labels: list[str] = []
-            scored = score_open_prediction(raw["prediction"], raw["answer"])
+            scored = score_open_prediction(raw["prediction"], raw["answer"], prompt_contract)
             scoring_contract = "open_final_span"
             gold = str(raw["answer"])
         else:
             labels, options, gold = choice_payload
-            scored = score_mcq_prediction(raw["prediction"], gold, labels, options)
+            scored = score_mcq_prediction(
+                raw["prediction"], gold, labels, options, prompt_contract
+            )
             scoring_contract = "multiple_choice_final_span"
         category = raw.get("category")
         if not _not_missing(category):
@@ -214,6 +247,8 @@ def postprocess(input_path: Path, rows_output: Path, metrics_output: Path) -> di
     payload = {
         "schema_version": "blind-gains.vlmeval-unified-scores.v2",
         "source_workbook": str(input_path),
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "overall": _aggregate(scored_rows),
         "paired": _aggregate_pairs(scored_rows),
         "per_category": {key: _aggregate(value) for key, value in sorted(by_category.items())},
@@ -232,8 +267,14 @@ def main() -> None:
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--rows-output", type=Path, required=True)
     parser.add_argument("--metrics-output", type=Path, required=True)
+    parser.add_argument("--run-manifest", type=Path)
     args = parser.parse_args()
-    payload = postprocess(args.input, args.rows_output, args.metrics_output)
+    contract = (
+        load_prompt_contract_from_run_manifest(args.run_manifest)
+        if args.run_manifest is not None
+        else None
+    )
+    payload = postprocess(args.input, args.rows_output, args.metrics_output, contract)
     print(json.dumps(payload["overall"], sort_keys=True))
 
 

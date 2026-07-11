@@ -16,6 +16,12 @@ from src.eval.blind_solvability import (
     score_item,
     vllm_multimodal_limits,
 )
+from src.eval.prompt_contract import (
+    PromptContractLike,
+    load_prompt_contract_from_run_manifest,
+    prompt_contract_metadata,
+)
+from src.rewards.answer_reward import PARSER_VERSION
 
 
 _RESUME_SCORE_FIELDS = {
@@ -25,6 +31,14 @@ _RESUME_SCORE_FIELDS = {
     "greedy_correct",
     "greedy_extracted_answer",
     "greedy_format_valid",
+    "greedy_extractor_valid",
+    "greedy_contract_valid",
+    "greedy_acc_strict",
+    "sampled_extractor_valid",
+    "sampled_contract_valid",
+    "parser_version",
+    "prompt_contract_id",
+    "prompt_contract_sha256",
     "sample_count",
     "sample_correct_count",
     "sample_correct",
@@ -45,6 +59,7 @@ def load_validated_resume_prefix(
     sample_count: int,
     sample_temperature: float,
     seed: int,
+    prompt_contract: PromptContractLike = None,
 ) -> list[str]:
     """Return raw JSONL rows after proving they are this run's canonical prefix."""
     raw_lines = resume_from.read_text(encoding="utf-8").splitlines()
@@ -86,7 +101,7 @@ def load_validated_resume_prefix(
         seen.add(identity)
 
         expected = {
-            "schema_version": "blind-gains.blind-solvability.v1",
+            "schema_version": "blind-gains.blind-solvability.v2",
             "split": source_row["split"],
             "row_index": source_row["row_index"],
             "qid": source_row.get("qid"),
@@ -96,6 +111,8 @@ def load_validated_resume_prefix(
             "condition": condition,
             "source_metadata": source_row.get("metadata"),
             "sample_count": sample_count,
+            "parser_version": PARSER_VERSION,
+            **prompt_contract_metadata(prompt_contract),
             "decoding": expected_decoding,
         }
         for key, expected_value in expected.items():
@@ -148,11 +165,13 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20260710)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.72)
     parser.add_argument("--max-model-len", type=int, default=4096)
+    parser.add_argument("--run-manifest", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite blind-solvability output: {args.output}")
     if args.sample_count < args.group_size:
         raise ValueError("sample count must be at least the registered group size")
+    prompt_contract = load_prompt_contract_from_run_manifest(args.run_manifest)
 
     format_prompt = args.format_prompt.read_text(encoding="utf-8")
     captions = load_caption_map(args.caption_shards or []) if args.condition == "caption" else None
@@ -169,6 +188,7 @@ def main() -> None:
             sample_count=args.sample_count,
             sample_temperature=args.sample_temperature,
             seed=args.seed,
+            prompt_contract=prompt_contract,
         )
         if args.resume_from
         else []
@@ -245,9 +265,15 @@ def main() -> None:
             for row, greedy_output, sampled_output in zip(batch, greedy_outputs, sampled_outputs):
                 greedy_response = greedy_output.outputs[0].text.strip()
                 sampled_responses = [output.text.strip() for output in sampled_output.outputs]
-                scored = score_item(str(row["answer"]), greedy_response, sampled_responses, args.group_size)
+                scored = score_item(
+                    str(row["answer"]),
+                    greedy_response,
+                    sampled_responses,
+                    args.group_size,
+                    prompt_contract,
+                )
                 output = {
-                    "schema_version": "blind-gains.blind-solvability.v1",
+                    "schema_version": "blind-gains.blind-solvability.v2",
                     "split": row["split"],
                     "row_index": row["row_index"],
                     "qid": row.get("qid"),

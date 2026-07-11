@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from scripts.run_blind_solvability import load_validated_resume_prefix
+from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 
 
 def _rows(count: int = 4) -> list[dict[str, object]]:
@@ -26,7 +27,7 @@ def _rows(count: int = 4) -> list[dict[str, object]]:
 def _result(row: dict[str, object], condition: str = "noise") -> dict[str, object]:
     sampled_correct = [False] * 16
     return {
-        "schema_version": "blind-gains.blind-solvability.v1",
+        "schema_version": "blind-gains.blind-solvability.v2",
         "split": row["split"],
         "row_index": row["row_index"],
         "qid": row["qid"],
@@ -41,6 +42,14 @@ def _result(row: dict[str, object], condition: str = "noise") -> dict[str, objec
         "greedy_correct": False,
         "greedy_extracted_answer": None,
         "greedy_format_valid": False,
+        "greedy_extractor_valid": False,
+        "greedy_contract_valid": False,
+        "greedy_acc_strict": False,
+        "sampled_extractor_valid": [False] * 16,
+        "sampled_contract_valid": [False] * 16,
+        "parser_version": "canonical-v2",
+        "prompt_contract_id": DEFAULT_PROMPT_CONTRACT.contract_id,
+        "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
         "sample_count": 16,
         "sample_correct_count": 0,
         "sample_correct": sampled_correct,

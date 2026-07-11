@@ -7,7 +7,18 @@ from collections import defaultdict
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-from src.rewards.answer_reward import extract_answer_span, normalize_text, numeric_value
+from src.eval.prompt_contract import (
+    PromptContractLike,
+    prompt_contract_metadata,
+    response_satisfies_contract,
+)
+from src.rewards.answer_reward import (
+    PARSER_VERSION,
+    answers_match,
+    extract_answer_span,
+    normalize_text,
+    numeric_value,
+)
 
 
 def match_tier(span: Any, answer: Any, numeric_tol: float = 1e-4) -> int:
@@ -16,6 +27,8 @@ def match_tier(span: Any, answer: Any, numeric_tol: float = 1e-4) -> int:
     if not pred or not gold:
         return 0
     if pred == gold:
+        return 2
+    if answers_match(span, answer, numeric_tol=numeric_tol):
         return 2
     pred_num = numeric_value(pred)
     gold_num = numeric_value(gold)
@@ -38,6 +51,7 @@ def _score_member(
     gold: Any,
     other_gold: Any,
     prefix: str,
+    prompt_contract: PromptContractLike,
 ) -> dict[str, Any]:
     extracted = extract_answer_span(prediction)
     span = extracted.span
@@ -46,7 +60,9 @@ def _score_member(
     highest = max(gold_tier, other_tier)
     ambiguous = highest > 0 and gold_tier == other_tier
     acc_final = gold_tier > other_tier and gold_tier > 0
-    acc_strict = extracted.format_valid and acc_final
+    extractor_valid = extracted.extractor_valid
+    contract_valid = response_satisfies_contract(prediction, prompt_contract)
+    acc_strict = contract_valid and acc_final
     full_tier_gold = match_tier(prediction, gold)
     full_tier_other = match_tier(prediction, other_gold)
     full_text_mentions_both = full_tier_gold > 0 and full_tier_other > 0
@@ -54,7 +70,10 @@ def _score_member(
         f"extracted_answer_{prefix}": span,
         f"extraction_level_{prefix}": extracted.extraction_level,
         f"extraction_fallback_used_{prefix}": extracted.extraction_fallback_used,
-        f"format_valid_{prefix}": extracted.format_valid,
+        f"extractor_valid_{prefix}": extractor_valid,
+        f"contract_valid_{prefix}": contract_valid,
+        f"format_valid_{prefix}": contract_valid,
+        f"parser_version_{prefix}": PARSER_VERSION,
         f"ambiguous_{prefix}": ambiguous,
         f"full_text_mentions_both_{prefix}": full_text_mentions_both,
         f"match_tier_{prefix}": gold_tier,
@@ -64,9 +83,18 @@ def _score_member(
     }
 
 
-def pair_score(row: dict[str, Any], pred_a_key: str = "prediction_a", pred_b_key: str = "prediction_b") -> dict[str, Any]:
-    side_a = _score_member(row.get(pred_a_key, ""), row["answer_a"], row["answer_b"], "a")
-    side_b = _score_member(row.get(pred_b_key, ""), row["answer_b"], row["answer_a"], "b")
+def pair_score(
+    row: dict[str, Any],
+    pred_a_key: str = "prediction_a",
+    pred_b_key: str = "prediction_b",
+    prompt_contract: PromptContractLike = None,
+) -> dict[str, Any]:
+    side_a = _score_member(
+        row.get(pred_a_key, ""), row["answer_a"], row["answer_b"], "a", prompt_contract
+    )
+    side_b = _score_member(
+        row.get(pred_b_key, ""), row["answer_b"], row["answer_a"], "b", prompt_contract
+    )
     correct_a = bool(side_a["acc_final_a"])
     correct_b = bool(side_b["acc_final_b"])
     strict_a = bool(side_a["acc_strict_a"])
@@ -83,7 +111,11 @@ def pair_score(row: dict[str, Any], pred_a_key: str = "prediction_a", pred_b_key
         "collapsed": collapsed and normalize_text(row["answer_a"]) != normalize_text(row["answer_b"]),
         "acc_final": correct_a and correct_b,
         "acc_strict": strict_a and strict_b,
-        "format_valid": bool(side_a["format_valid_a"] and side_b["format_valid_b"]),
+        "extractor_valid": bool(side_a["extractor_valid_a"] and side_b["extractor_valid_b"]),
+        "contract_valid": bool(side_a["contract_valid_a"] and side_b["contract_valid_b"]),
+        "format_valid": bool(side_a["contract_valid_a"] and side_b["contract_valid_b"]),
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "ambiguous": bool(side_a["ambiguous_a"] or side_b["ambiguous_b"]),
         "full_text_mentions_both": bool(side_a["full_text_mentions_both_a"] or side_b["full_text_mentions_both_b"]),
         "extraction_fallback_used": bool(side_a["extraction_fallback_used_a"] or side_b["extraction_fallback_used_b"]),
@@ -94,8 +126,10 @@ def pair_score(row: dict[str, Any], pred_a_key: str = "prediction_a", pred_b_key
     return scored
 
 
-def aggregate_pair_metrics(rows: Iterable[dict[str, Any]]) -> dict[str, float]:
-    scores = [pair_score(row) for row in rows]
+def aggregate_pair_metrics(
+    rows: Iterable[dict[str, Any]], prompt_contract: PromptContractLike = None
+) -> dict[str, Any]:
+    scores = [pair_score(row, prompt_contract=prompt_contract) for row in rows]
     if not scores:
         return {
             "n_pairs": 0,
@@ -107,7 +141,11 @@ def aggregate_pair_metrics(rows: Iterable[dict[str, Any]]) -> dict[str, float]:
             "ambiguous_rate": math.nan,
             "full_text_mentions_both_rate": math.nan,
             "format_valid_rate": math.nan,
+            "extractor_valid_rate": math.nan,
+            "contract_valid_rate": math.nan,
             "extraction_fallback_rate": math.nan,
+            "parser_version": PARSER_VERSION,
+            **prompt_contract_metadata(prompt_contract),
         }
     n = len(scores)
     member_correct = sum(score["correct_a"] + score["correct_b"] for score in scores)
@@ -122,15 +160,30 @@ def aggregate_pair_metrics(rows: Iterable[dict[str, Any]]) -> dict[str, float]:
         "ambiguous_rate": sum(score["ambiguous"] for score in scores) / n,
         "full_text_mentions_both_rate": sum(score["full_text_mentions_both"] for score in scores) / n,
         "format_valid_rate": sum(score["format_valid_a"] + score["format_valid_b"] for score in scores) / (2 * n),
+        "extractor_valid_rate": sum(
+            score["extractor_valid_a"] + score["extractor_valid_b"] for score in scores
+        )
+        / (2 * n),
+        "contract_valid_rate": sum(
+            score["contract_valid_a"] + score["contract_valid_b"] for score in scores
+        )
+        / (2 * n),
         "extraction_fallback_rate": sum(score["extraction_fallback_used_a"] + score["extraction_fallback_used_b"] for score in scores) / (2 * n),
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
     }
 
 
-def aggregate_pair_metrics_by_template(rows: Iterable[dict[str, Any]]) -> dict[str, dict[str, float]]:
+def aggregate_pair_metrics_by_template(
+    rows: Iterable[dict[str, Any]], prompt_contract: PromptContractLike = None
+) -> dict[str, dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         grouped[str(row.get("template_id", "unknown"))].append(row)
-    return {template: aggregate_pair_metrics(template_rows) for template, template_rows in sorted(grouped.items())}
+    return {
+        template: aggregate_pair_metrics(template_rows, prompt_contract=prompt_contract)
+        for template, template_rows in sorted(grouped.items())
+    }
 
 
 def bootstrap_ci(values: list[float], n_boot: int = 2000, alpha: float = 0.05, seed: int = 0) -> tuple[float, float]:

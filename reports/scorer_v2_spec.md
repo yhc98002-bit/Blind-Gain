@@ -19,7 +19,7 @@ Evidence:
 4. `lastline`: last non-empty line. This sets `extraction_fallback_used=true`.
 5. `fulltext`: full text when no non-empty line exists. This sets `extraction_fallback_used=true`.
 
-`format_valid=true` only for `tag`, `boxed`, and `line`.
+In scorer-v2 outputs created before the L2 revision, `format_valid=true` meant `tag`, `boxed`, or `line`. New outputs preserve that diagnostic as `extractor_valid` and define `format_valid` as a compatibility alias of `contract_valid`.
 
 ## Matching Tiers
 
@@ -67,3 +67,43 @@ Aggregate metrics include:
 Decision:
 - Primary accuracy is based on extracted final spans, not raw full-text scans.
 - `full_text_mentions_both` is a diagnostic signal only, not a penalty.
+
+## L2 Validity Revision
+
+Version pins:
+
+- Parser: `canonical-v2`.
+- Prompt-contract schema: `blind-gains.prompt-contract.v1`.
+- Registered contract: `answer-tags-v1` with response format `single_final_answer_tag`.
+- Every new scoring row and aggregate records `parser_version`, `prompt_contract_id`, and `prompt_contract_sha256`.
+
+Definitions:
+
+- `extractor_valid`: the canonical extraction ladder found a supported explicit convention (`tag`, `boxed`, or answer line). This is a parsing diagnostic and does not establish prompt compliance.
+- `contract_valid`: the response satisfies the contract loaded from the run manifest. Under `answer-tags-v1`, it contains exactly one nonempty `<answer>...</answer>` span and no content after the closing tag.
+- `Acc_final`: answer correctness, unchanged by this revision.
+- `Acc_strict = contract_valid AND Acc_final`.
+- New `format_valid` compatibility fields equal `contract_valid`. Broad extraction validity is never inferred from that alias.
+
+The contract loader rejects missing mappings, unsupported schema versions, extra or missing fields, and manifest hash drift. Future run-level scorers receive the contract object loaded from `run_manifest.json`; the built-in default remains available only for direct library calls and legacy harness entry points.
+
+### Regenerated Sample
+
+All rows below have gold `5` and were regenerated with `score_open_prediction` under `answer-tags-v1`.
+
+| Response | Extraction level | `extractor_valid` | `contract_valid` | `Acc_final` | `Acc_strict` |
+| --- | --- | --- | --- | --- | --- |
+| `<answer>5</answer>` | tag | true | true | true | true |
+| `\\boxed{5}` | boxed | true | false | true | false |
+| `Answer: 5` | line | true | false | true | false |
+| `5` | lastline | false | false | true | false |
+
+The boxed row is the adversarial fixture the old implementation fails: it is answer-correct and extractor-valid, but it cannot receive strict credit under a tag-only run contract.
+
+### Accounting Identity
+
+`src/eval/scorer_accounting.py` computes rates as exact rational numbers and enforces:
+
+`StrictGain = AnswerGain + G_format`
+
+where `G_format` is the change in the strict-minus-final gap. `tests/test_scorer_accounting.py` verifies the equality exactly, without floating-point tolerance.

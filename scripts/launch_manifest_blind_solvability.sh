@@ -19,6 +19,9 @@ MAX_MODEL_LEN="${10:-8192}"
 RESUME_FROM="${11:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
+PROMPT_CONTRACT_JSON="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'import json; from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(json.dumps(DEFAULT_PROMPT_CONTRACT.to_dict(), sort_keys=True))')"
+PROMPT_CONTRACT_HASH="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(DEFAULT_PROMPT_CONTRACT.sha256)')"
+PARSER_VERSION="$(PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" -c 'from src.rewards.answer_reward import PARSER_VERSION; print(PARSER_VERSION)')"
 
 if [[ ! "${GPU}" =~ ^[0-7]$ || ! "${CONDITION}" =~ ^(real|gray|noise|none|caption)$ ]]; then
   echo "Invalid GPU or condition" >&2
@@ -83,6 +86,7 @@ if [[ "${RESUME_FROM}" != "-" ]]; then
     --arg split "${SPLIT}" \
     --argjson batch_size "${BATCH_SIZE}" \
     --argjson max_model_len "${MAX_MODEL_LEN}" \
+    --arg prompt_hash "${PROMPT_CONTRACT_HASH}" \
     '(.condition == $condition) and
      (.model_revision == $model) and
      (.data_manifest == $manifest) and
@@ -91,7 +95,8 @@ if [[ "${RESUME_FROM}" != "-" ]]; then
      (.max_model_len == $max_model_len) and
      (.group_size == 5) and
      (.sample_count == 16) and
-     (.sample_temperature == 1)' "${RESUME_MANIFEST}" >/dev/null; then
+     (.sample_temperature == 1) and
+     (.prompt_contract_sha256 == $prompt_hash)' "${RESUME_MANIFEST}" >/dev/null; then
     echo "Resume source run contract does not match the requested run" >&2
     exit 2
   fi
@@ -108,7 +113,7 @@ PID_FILE="${RUN_DIR}/pids/${NODE}_gpu${GPU}.pid"
 OUTPUT="${RUN_DIR}/per_item.jsonl"
 CACHE_ROOT="${BLIND_GAINS_CACHE_ROOT:-/dev/shm/blind-gains}"
 CACHE_DIR="${CACHE_ROOT}/${RUN_ID}/condition_cache"
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 .venv/bin/python scripts/run_blind_solvability.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} ${CAPTION_ARGS}${RESUME_ARGS} --splits ${SPLIT} --batch-size ${BATCH_SIZE} --max-tokens 512 --max-model-len ${MAX_MODEL_LEN} --group-size 5 --sample-count 16 --sample-temperature 1.0 --seed 20260710"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 .venv/bin/python scripts/run_blind_solvability.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits ${SPLIT} --batch-size ${BATCH_SIZE} --max-tokens 512 --max-model-len ${MAX_MODEL_LEN} --group-size 5 --sample-count 16 --sample-temperature 1.0 --seed 20260710"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
@@ -131,6 +136,9 @@ jq -n \
   --arg caption_source_run "${CAPTION_RUN}" \
   --argjson batch_size "${BATCH_SIZE}" \
   --argjson max_model_len "${MAX_MODEL_LEN}" \
+  --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
+  --arg prompt_contract_hash "${PROMPT_CONTRACT_HASH}" \
+  --arg parser_version "${PARSER_VERSION}" \
   '{
     run_id: $run_id,
     job_type: "p2_2_manifest_blind_solvability",
@@ -147,6 +155,9 @@ jq -n \
     group_size: 5,
     sample_count: 16,
     sample_temperature: 1.0,
+    prompt_contract: $prompt_contract,
+    prompt_contract_sha256: $prompt_contract_hash,
+    parser_version: $parser_version,
     batch_size: $batch_size,
     max_model_len: $max_model_len,
     local_condition_cache: $cache_dir,

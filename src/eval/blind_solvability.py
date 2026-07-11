@@ -10,7 +10,12 @@ from jinja2 import Template
 
 from src.captioning.store import merge_caption_rows
 from src.eval.image_conditions import materialize_image
-from src.rewards.answer_reward import answer_reward, extract_answer_span
+from src.eval.prompt_contract import (
+    PromptContractLike,
+    prompt_contract_metadata,
+    response_satisfies_contract,
+)
+from src.rewards.answer_reward import PARSER_VERSION, answer_reward, extract_answer_span
 
 
 CONDITIONS = ("real", "gray", "noise", "none", "caption")
@@ -111,6 +116,7 @@ def score_item(
     greedy_response: str,
     sampled_responses: list[str],
     group_size: int,
+    prompt_contract: PromptContractLike = None,
 ) -> dict[str, Any]:
     if not sampled_responses:
         raise ValueError("sampled responses cannot be empty")
@@ -120,11 +126,23 @@ def score_item(
     c = sum(sampled_correct)
     p = c / n
     greedy_extracted = extract_answer_span(greedy_response)
+    greedy_contract_valid = response_satisfies_contract(greedy_response, prompt_contract)
+    sampled_extractor_valid = [extract_answer_span(response).extractor_valid for response in sampled_responses]
+    sampled_contract_valid = [
+        response_satisfies_contract(response, prompt_contract) for response in sampled_responses
+    ]
     return {
         "p_greedy": float(greedy),
         "greedy_correct": greedy,
         "greedy_extracted_answer": greedy_extracted.span,
-        "greedy_format_valid": greedy_extracted.format_valid,
+        "greedy_extractor_valid": greedy_extracted.extractor_valid,
+        "greedy_contract_valid": greedy_contract_valid,
+        "greedy_format_valid": greedy_contract_valid,
+        "greedy_acc_strict": greedy_contract_valid and greedy,
+        "sampled_extractor_valid": sampled_extractor_valid,
+        "sampled_contract_valid": sampled_contract_valid,
+        "parser_version": PARSER_VERSION,
+        **prompt_contract_metadata(prompt_contract),
         "sample_count": n,
         "sample_correct_count": c,
         "sample_correct": sampled_correct,

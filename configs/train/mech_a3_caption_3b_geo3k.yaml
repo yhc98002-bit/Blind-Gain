@@ -19,7 +19,7 @@ data:
   min_pixels: 262144
   max_pixels: 4194304
   filter_overlong_prompts: true
-  image_condition: none
+  image_condition: caption
   image_condition_seed: 20260710
   caption_store_paths:
   - experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_0.jsonl
@@ -94,7 +94,7 @@ trainer:
   total_epochs: 1
   max_steps: 100
   project_name: blind_gains_mech_pilot
-  experiment_name: mech_a2b_noimage
+  experiment_name: mech_a3_caption
   logger:
   - file
   nnodes: 1
@@ -107,6 +107,6 @@ trainer:
   save_freq: 20
   save_limit: -1
   save_model_only: false
-  save_checkpoint_path: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a2b_noimage
+  save_checkpoint_path: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a3_caption
   load_checkpoint_path: null
   find_last_checkpoint: false

@@ -27,6 +27,8 @@ def test_mcq_postprocessor_uses_final_span_and_format_decomposition() -> None:
     assert scored["acc_final"] is True
     assert scored["acc_strict"] is True
     assert scored["ambiguous"] is False
+    assert scored["extractor_valid"] is True
+    assert scored["contract_valid"] is True
 
 
 def test_mcq_postprocessor_marks_untagged_fallback_separately() -> None:
@@ -34,6 +36,8 @@ def test_mcq_postprocessor_marks_untagged_fallback_separately() -> None:
     assert scored["acc_final"] is True
     assert scored["acc_strict"] is False
     assert scored["format_valid"] is False
+    assert scored["extractor_valid"] is False
+    assert scored["contract_valid"] is False
 
 
 def test_mcq_postprocessor_rejects_multiple_winning_labels() -> None:
@@ -69,6 +73,14 @@ def test_open_postprocessor_uses_numeric_equivalence_and_format_decomposition() 
     plain = score_open_prediction("Reasoning\n1.0", "1")
     assert tagged["acc_final"] is True and tagged["acc_strict"] is True
     assert plain["acc_final"] is True and plain["acc_strict"] is False
+
+
+def test_boxed_output_is_extractable_but_not_strictly_contract_compliant() -> None:
+    scored = score_open_prediction(r"\boxed{1}", "1")
+    assert scored["acc_final"] is True
+    assert scored["extractor_valid"] is True
+    assert scored["contract_valid"] is False
+    assert scored["acc_strict"] is False
 
 
 def test_mathvista_choice_payload_uses_serialized_choices_and_answer_option() -> None:

@@ -12,7 +12,14 @@ ARMS = {
     "mech_a1_real_3b_geo3k.yaml": ("real", "mech_a1_real"),
     "mech_a2_gray_3b_geo3k.yaml": ("gray", "mech_a2_gray"),
     "mech_a2b_noimage_3b_geo3k.yaml": ("none", "mech_a2b_noimage"),
+    "mech_a3_caption_3b_geo3k.yaml": ("caption", "mech_a3_caption"),
 }
+
+CAPTION_STORE_PATHS = [
+    "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_0.jsonl",
+    "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_1.jsonl",
+    "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards/store_shard_2.jsonl",
+]
 
 
 def build_configs(source: Path, output_dir: Path) -> list[Path]:
@@ -27,6 +34,7 @@ def build_configs(source: Path, output_dir: Path) -> list[Path]:
         config = copy.deepcopy(base)
         config["data"]["image_condition"] = condition
         config["data"]["image_condition_seed"] = 20260710
+        config["data"]["caption_store_paths"] = CAPTION_STORE_PATHS
         config["worker"]["actor"]["model"]["freeze_vision_tower"] = True
         config["trainer"]["project_name"] = "blind_gains_mech_pilot"
         config["trainer"]["experiment_name"] = run_name

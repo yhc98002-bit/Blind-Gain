@@ -7,6 +7,7 @@ from typing import Any, Callable, Iterable
 
 from jinja2 import Template
 
+from src.eval.prompt_contract import prompt_contract_metadata, response_satisfies_contract
 from src.rewards.answer_reward import PARSER_VERSION, answer_reward, extract_answer_span
 
 
@@ -57,6 +58,7 @@ def agreement_rows(
         ours = bool(answer_reward(response, ground_truth))
         reference = bool(reference_accuracy(response, ground_truth))
         extracted = extract_answer_span(response)
+        contract_valid = response_satisfies_contract(response)
         rows.append(
             {
                 **raw,
@@ -65,8 +67,11 @@ def agreement_rows(
                 "agree": ours == reference,
                 "extracted_answer": extracted.span,
                 "extraction_level": extracted.extraction_level,
-                "format_valid": extracted.format_valid,
+                "extractor_valid": extracted.extractor_valid,
+                "contract_valid": contract_valid,
+                "format_valid": contract_valid,
                 "parser_version": PARSER_VERSION,
+                **prompt_contract_metadata(),
                 "disagreement_direction": (
                     "canonical_only" if ours and not reference else "easyr1_only" if reference and not ours else None
                 ),
@@ -85,5 +90,8 @@ def agreement_rows(
         "disagreements": sum(not row["agree"] for row in rows),
         "canonical_only": sum(row["disagreement_direction"] == "canonical_only" for row in rows),
         "easyr1_only": sum(row["disagreement_direction"] == "easyr1_only" for row in rows),
+        "extractor_valid_rate": sum(row["extractor_valid"] for row in rows) / n,
+        "contract_valid_rate": sum(row["contract_valid"] for row in rows) / n,
+        **prompt_contract_metadata(),
     }
     return rows, metrics

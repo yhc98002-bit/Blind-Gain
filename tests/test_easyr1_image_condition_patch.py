@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from pathlib import Path
 
@@ -64,6 +65,21 @@ def _dataset(tmp_path: Path, condition: str) -> tuple[RLHFDataset, FakeTokenizer
     image_dir = tmp_path / "images"
     image_dir.mkdir(exist_ok=True)
     Image.new("RGB", (10, 6), (255, 0, 0)).save(image_dir / "sample.png")
+    image_hash = hashlib.sha256((image_dir / "sample.png").read_bytes()).hexdigest()
+    caption_store = tmp_path / "captions.jsonl"
+    caption_store.write_text(
+        json.dumps(
+            {
+                "schema_version": "blind-gains.caption-store.v1",
+                "image_sha256": image_hash,
+                "caption": "A red rectangle labeled seven.",
+                "caption_model_path": "Qwen2.5-VL-3B-Instruct",
+                "caption_prompt_sha256": "a" * 64,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     source = tmp_path / f"{condition}.jsonl"
     source.write_text(
         json.dumps({"problem": "<image>Read the diagram.", "answer": "7", "images": ["sample.png"]}) + "\n",
@@ -86,6 +102,7 @@ def _dataset(tmp_path: Path, condition: str) -> tuple[RLHFDataset, FakeTokenizer
         filter_overlong_prompts=False,
         image_condition=condition,
         image_condition_seed=19,
+        caption_store_paths=[str(caption_store)],
     )
     return dataset, tokenizer, processor
 
@@ -105,6 +122,25 @@ def test_none_condition_removes_image_token_and_multimodal_payload(tmp_path: Pat
     assert "<image>" not in tokenizer.last_prompt
     assert tokenizer.last_prompt == "Read the diagram."
     assert processor.last_images is None
+
+
+def test_caption_condition_uses_fixed_text_and_sends_no_image_tensor(tmp_path: Path) -> None:
+    dataset, tokenizer, processor = _dataset(tmp_path, "caption")
+    row = dataset[0]
+    assert "multi_modal_data" not in row
+    assert "<image>" not in tokenizer.last_prompt
+    assert "[Question-blind image description 1: A red rectangle labeled seven.]" in tokenizer.last_prompt
+    assert "Read the diagram." in tokenizer.last_prompt
+    assert processor.last_images is None
+    assert dataset.caption_store_metadata["caption_model_path"] == "Qwen2.5-VL-3B-Instruct"
+    assert len(dataset.caption_store_metadata["caption_store_sha256"]) == 64
+
+
+def test_caption_condition_fails_loudly_when_content_hash_is_missing(tmp_path: Path) -> None:
+    dataset, _, _ = _dataset(tmp_path, "caption")
+    dataset.caption_by_hash.clear()
+    with pytest.raises(KeyError, match="missing fixed caption"):
+        dataset[0]
 
 
 def test_noise_condition_is_deterministic_and_content_keyed() -> None:
