@@ -54,6 +54,17 @@ def test_mcq_postprocessor_scores_registered_multiselect_set() -> None:
     assert partial["acc_final"] is False
 
 
+def test_mcq_postprocessor_surfaces_missing_gold_option_without_credit() -> None:
+    scored = score_mcq_prediction(
+        "<answer>B</answer>",
+        "A",
+        list("BCD"),
+        {"B": "two", "C": "one", "D": "cannot be determined"},
+    )
+    assert scored["acc_final"] is False
+    assert scored["scoring_error"] == "gold_label_missing_from_options"
+
+
 def test_mcq_postprocessor_does_not_treat_article_as_option_a() -> None:
     scored = score_mcq_prediction(
         "D: The buildings beside a lake",

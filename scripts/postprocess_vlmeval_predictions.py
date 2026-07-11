@@ -70,10 +70,11 @@ def score_mcq_prediction(
         normalized_gold = sorted({str(label).strip().upper() for label in gold})
     else:
         normalized_gold = [str(gold).strip().upper()]
-    if not normalized_gold or any(label not in labels for label in normalized_gold):
-        raise ValueError(f"invalid MCQ gold labels: {normalized_gold}")
+    invalid_gold = not normalized_gold or any(
+        label not in labels for label in normalized_gold
+    )
     ambiguous = len(winners) > 1 and not (explicit and sorted(winners) == normalized_gold)
-    acc_final = sorted(winners) == normalized_gold
+    acc_final = not invalid_gold and sorted(winners) == normalized_gold
     contract_valid = response_satisfies_contract(prediction, prompt_contract)
     return {
         "extracted_answer": extracted.span,
@@ -87,6 +88,7 @@ def score_mcq_prediction(
         "ambiguous": ambiguous,
         "winning_labels": winners,
         "gold_labels": normalized_gold,
+        "scoring_error": "gold_label_missing_from_options" if invalid_gold else None,
         "match_tiers": tiers,
         "acc_final": acc_final,
         "acc_strict": contract_valid and acc_final,
@@ -110,6 +112,7 @@ def score_open_prediction(
         "parser_version": PARSER_VERSION,
         **prompt_contract_metadata(prompt_contract),
         "ambiguous": False,
+        "scoring_error": None,
         "winning_labels": ["gold"] if acc_final else [],
         "match_tiers": {"gold": tier},
         "acc_final": acc_final,
@@ -184,6 +187,7 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
             "Contract_valid": math.nan,
             "Ambiguous_rate": math.nan,
             "Extraction_fallback_rate": math.nan,
+            "Scoring_error_rate": math.nan,
         }
     n = len(rows)
     return {
@@ -195,6 +199,7 @@ def _aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
         "Contract_valid": sum(row["contract_valid"] for row in rows) / n,
         "Ambiguous_rate": sum(row["ambiguous"] for row in rows) / n,
         "Extraction_fallback_rate": sum(row["extraction_fallback_used"] for row in rows) / n,
+        "Scoring_error_rate": sum(row.get("scoring_error") is not None for row in rows) / n,
     }
 
 
