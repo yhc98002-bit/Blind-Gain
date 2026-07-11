@@ -100,6 +100,7 @@ Decision:
 - Keep L0 `blocked`; do not reinterpret tmpfs capacity as eligible scratch.
 - Select the L9 strong captioner as **32B**, because no eligible writable serving-node scratch has at least 200 GiB free after accounting. This is a size decision only; the download remains blocked until approved scratch exists.
 - Continue the native anchor untouched. Use login `/tmp` only for the already-practiced, checksummed anchor archive flow.
+- `anchor_checkpoint_retention_watch_login_20260711T052047Z` now enforces the same guarded flow for anchor steps 80 and 100; this operational watcher does not unblock L0 or launch pilot work.
 
 Next actions:
 

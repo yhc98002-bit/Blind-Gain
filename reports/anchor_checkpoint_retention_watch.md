@@ -2,7 +2,7 @@
 
 Status:
 
-- Prepared for the native `anchor_a0_recipe_3b_geo3k_20260709T224852Z` steps 80 and 100. This is checkpoint lifecycle automation only; it does not inspect training or validation metrics.
+- Running for the native `anchor_a0_recipe_3b_geo3k_20260709T224852Z` steps 80 and 100. This is checkpoint lifecycle automation only; it does not inspect training or validation metrics.
 
 Evidence:
 
@@ -12,6 +12,7 @@ Evidence:
 - Step 80: merge, archive latest raw state, preserve merged checkpoint in Tier T.
 - Step 100: merge, archive latest raw state, retain final merged checkpoint on Tier S.
 - The watcher reads no metric or generation log. Pilot metrics remain inaccessible before preregistration.
+- Main run: `experiments/runs/anchor_checkpoint_retention_watch_login_20260711T052047Z/`; git `b15e6da6ebee3ac2b68ca985ebc4cfc9979f8db1`; tmux session `anchor_checkpoint_retention_watch`; start `2026-07-11T05:20:47Z`.
 
 Problems:
 
@@ -19,7 +20,7 @@ Problems:
 
 Decision:
 
-- Run the watcher in a detached `tmux` session after its fixtures pass and its code is committed.
+- Keep the detached watcher running; a nonzero subjob or storage refusal terminates it with a failed manifest instead of continuing unsafely.
 
 Next actions:
 
