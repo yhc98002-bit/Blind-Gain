@@ -46,6 +46,8 @@ def test_ephemeral_model_launcher_is_node_local_guarded_and_cpu_only() -> None:
     assert "tensor_parallel_width: 0" in launcher
     assert "replica_count: 0" in launcher
     assert "run_reverse_proxy_manifest_job.py" in launcher
+    assert 'BOOTSTRAP_LOG="${RUN_DIR}/logs/login_bootstrap.log"' in launcher
+    assert '> "${BOOTSTRAP_LOG}" 2>&1' in launcher
     assert '"ExitOnForwardFailure=yes"' in wrapper
     assert 'f"{remote_proxy_port}:127.0.0.1:7890"' in wrapper
     assert "reject_memory_filesystem=not args.allow_memory_filesystem" in downloader

@@ -63,6 +63,7 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 CHECKOUT_MANIFEST="${RUN_DIR}/model_checkout.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 WRAPPER_LOG="${RUN_DIR}/logs/login_ssh.log"
+BOOTSTRAP_LOG="${RUN_DIR}/logs/login_bootstrap.log"
 PID_FILE="${RUN_DIR}/pids/login_ssh.pid"
 COMMAND="env http_proxy=http://127.0.0.1:${REMOTE_PROXY_PORT} https_proxy=http://127.0.0.1:${REMOTE_PROXY_PORT} HTTP_PROXY=http://127.0.0.1:${REMOTE_PROXY_PORT} HTTPS_PROXY=http://127.0.0.1:${REMOTE_PROXY_PORT} .venv/bin/python scripts/download_modelscope_model.py --model-id ${MODEL_ID} --revision ${REVISION} --local-dir ${LOCAL_DIR} --license '${LICENSE}' --redistribution '${REDISTRIBUTION}' --storage-tier T --expected-bytes ${EXPECTED_BYTES} --allow-memory-filesystem --checkout-manifest ${CHECKOUT_MANIFEST} --notes 'L9 strong question-blind captioner; ephemeral weights; delete after caption stores commit'"
 
@@ -119,6 +120,6 @@ nohup "${ROOT}/.venv/bin/python" scripts/run_reverse_proxy_manifest_job.py \
   --manifest "${ROOT}/${MANIFEST}" \
   --log "${ROOT}/${LOG}" \
   --wrapper-log "${ROOT}/${WRAPPER_LOG}" \
-  > /dev/null 2>&1 < /dev/null &
+  > "${BOOTSTRAP_LOG}" 2>&1 < /dev/null &
 echo $! > "${PID_FILE}"
 printf '%s\n' "${RUN_DIR}"

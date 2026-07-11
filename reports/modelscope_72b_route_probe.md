@@ -14,6 +14,7 @@ Evidence:
 - Compute-node route: one foreground `ssh -R 17890:127.0.0.1:7890 an29 ... ms info ...` probe succeeded, proving the tunnel remains available for the lifetime of the download SSH process.
 - License was downloaded separately as a 6.96 kB probe artifact to `/tmp/blindgain_qwen25vl72b_license_probe/LICENSE`.
 - License: Qwen License Agreement, release date 2024-09-19. Research use is allowed; redistribution is allowed with the agreement, modification notices, and required Qwen attribution. The greater-than-100-million-MAU commercial restriction is not relevant to this research run.
+- First mass-download launch attempt: `experiments/runs/modelscope_ephemeral_qwen25vl72b_l9_an29_20260711T160104Z`. The login wrapper exited before a remote worker or local checkout appeared; the attempt is preserved `fail` with exit 70. The launcher now retains a separate bootstrap stderr log before retry.
 
 Problems:
 - Compute nodes cannot resolve external hosts directly.
