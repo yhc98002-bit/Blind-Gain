@@ -262,7 +262,11 @@ def enforce_latest_raw_retention(
             except ValueError:
                 continue
             actor_archive = step_dir / "actor"
-            if step < current_step and actor_archive.is_dir():
+            if step >= current_step or not actor_archive.is_dir():
+                continue
+            has_raw = any(actor_archive.glob("*_world_size_*_rank_*.pt"))
+            has_checksum = (actor_archive / CHECKSUM_NAME).is_file()
+            if has_raw or has_checksum:
                 candidates.append((step, actor_archive))
     if not candidates:
         return []

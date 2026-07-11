@@ -200,3 +200,31 @@ def test_retention_expires_only_raw_files_and_preserves_merged_intermediate(tmp_
     assert (merged / "model.safetensors.index.json").is_file()
     assert not list(old.glob("*_world_size_*.pt"))
     assert not (old / "raw_training_state.source.sha256").exists()
+
+
+def test_later_retention_ignores_merged_only_older_step(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_100")
+    actor = shared / "global_step_100" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+
+    merged_only = run_archive / "global_step_60" / "actor" / "huggingface"
+    merged_only.mkdir(parents=True)
+    (merged_only / "model.safetensors.index.json").write_text("{}\n", encoding="utf-8")
+    (merged_only / "merged_checkpoint.source.sha256").write_text("kept\n", encoding="ascii")
+    latest_old_raw = _archived_raw_state(run_archive, 80)
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    payload = relocate_raw_checkpoint(
+        actor,
+        run_archive / "global_step_100" / "actor",
+        run_archive_root=run_archive,
+        run_manifest=run_manifest,
+        retention_report=tmp_path / "retention.md",
+    )
+
+    assert merged_only.is_dir()
+    assert not latest_old_raw.exists()
+    assert [record["step"] for record in payload["retention_expired_states"]] == [80]
