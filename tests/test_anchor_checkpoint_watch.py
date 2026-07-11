@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from scripts.watch_anchor_checkpoints import (
+    code_bundle_hash,
     merged_checkpoint_complete,
     raw_signature,
     tracker_reached,
@@ -118,3 +119,14 @@ def test_watcher_never_reads_training_or_validation_metric_logs() -> None:
     assert "experiment_log.jsonl" not in source
     assert "generations.log" not in source
     assert "best_val_reward_score" not in source
+
+
+def test_code_bundle_hash_changes_when_future_subjob_code_changes(tmp_path: Path) -> None:
+    first = tmp_path / "first.py"
+    second = tmp_path / "second.py"
+    first.write_text("value = 1\n", encoding="utf-8")
+    second.write_text("value = 2\n", encoding="utf-8")
+    before = code_bundle_hash((first, second))
+    second.write_text("value = 3\n", encoding="utf-8")
+
+    assert code_bundle_hash((first, second)) != before

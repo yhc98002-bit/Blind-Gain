@@ -11,7 +11,6 @@ RUN_ID="anchor_checkpoint_retention_watch_login_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
-COMMAND=".venv/bin/python scripts/watch_anchor_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --anchor-manifest ${ANCHOR_MANIFEST} --node an12"
 
 cd "${ROOT}"
 if tmux has-session -t anchor_checkpoint_retention_watch 2>/dev/null; then
@@ -19,7 +18,8 @@ if tmux has-session -t anchor_checkpoint_retention_watch 2>/dev/null; then
   exit 2
 fi
 mkdir -p "${RUN_DIR}/logs"
-CONFIG_HASH="$(sha256sum scripts/watch_anchor_checkpoints.py scripts/relocate_easyr1_raw_checkpoint.py scripts/relocate_merged_checkpoint.py | sort -k2 | sha256sum | awk '{print $1}')"
+CONFIG_HASH="$(.venv/bin/python -c 'from scripts.watch_anchor_checkpoints import code_bundle_hash; print(code_bundle_hash())')"
+COMMAND=".venv/bin/python scripts/watch_anchor_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --anchor-manifest ${ANCHOR_MANIFEST} --node an12 --expected-code-hash ${CONFIG_HASH}"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg git_hash "$(git rev-parse HEAD)" \

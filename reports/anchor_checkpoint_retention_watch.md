@@ -8,6 +8,7 @@ Evidence:
 
 - `scripts/watch_anchor_checkpoints.py` waits for `checkpoint_tracker.json` to reach the target and requires two identical complete model/optimizer shard signatures one minute apart.
 - Every quota refresh, merge, raw relocation, and merged relocation receives its own immutable run directory and `run_manifest.json`.
+- The launcher pins a SHA256 over the watcher, guards, merger, and relocation code; the watcher rechecks that bundle immediately before each future operation and fails if it changed.
 - Shared usage is measured before merge, after merge, and after relocation. The shared and scratch guards remain fail-closed.
 - Step 80: merge, archive latest raw state, preserve merged checkpoint in Tier T.
 - Step 100: merge, archive latest raw state, retain final merged checkpoint on Tier S.

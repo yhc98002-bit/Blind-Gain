@@ -20,6 +20,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SHARED_QUOTA_ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289")
 CURRENT_USAGE_SNAPSHOT = ROOT / "reports" / "storage_usage_snapshot.json"
 RAW_RE = re.compile(r"^(model|optim)_world_size_(\d+)_rank_(\d+)\.pt$")
+CODE_BUNDLE_PATHS = (
+    ROOT / "scripts/watch_anchor_checkpoints.py",
+    ROOT / "scripts/measure_storage_usage.py",
+    ROOT / "scripts/model_merger_no_deepspeed.py",
+    ROOT / "scripts/relocate_easyr1_raw_checkpoint.py",
+    ROOT / "scripts/relocate_merged_checkpoint.py",
+    ROOT / "src/ops/storage_guard.py",
+    ROOT / "artifacts/repos/EasyR1/scripts/model_merger.py",
+)
 
 
 @dataclass(frozen=True)
@@ -42,6 +51,21 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def code_bundle_hash(paths: tuple[Path, ...] = CODE_BUNDLE_PATHS) -> str:
+    digest = hashlib.sha256()
+    for path in sorted((item.resolve() for item in paths), key=str):
+        digest.update(f"{_sha256(path)}  {path}\n".encode("utf-8"))
+    return digest.hexdigest()
+
+
+def require_code_bundle(expected_hash: str) -> None:
+    actual = code_bundle_hash()
+    if actual != expected_hash:
+        raise RuntimeError(
+            f"anchor watcher code bundle changed: expected {expected_hash}, found {actual}; relaunch required"
+        )
 
 
 def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
@@ -394,11 +418,15 @@ def process_step(
     step: int,
     node: str,
     relocate_merged_output: bool,
+    expected_code_hash: str,
 ) -> None:
     actor_dir = wait_for_stable_checkpoint(run_root, step, poll_seconds=60)
+    require_code_bundle(expected_code_hash)
     refresh_usage_snapshot(step, "premerge")
+    require_code_bundle(expected_code_hash)
     merge_checkpoint(actor_dir, step, node)
     refresh_usage_snapshot(step, "postmerge")
+    require_code_bundle(expected_code_hash)
     relocate_raw(
         actor_dir=actor_dir,
         archive_root=archive_root,
@@ -406,6 +434,7 @@ def process_step(
         step=step,
     )
     if relocate_merged_output:
+        require_code_bundle(expected_code_hash)
         relocate_merged(actor_dir, archive_root, step)
     refresh_usage_snapshot(step, "postrelocation")
 
@@ -416,7 +445,9 @@ def main() -> None:
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--anchor-manifest", type=Path, required=True)
     parser.add_argument("--node", default="an12")
+    parser.add_argument("--expected-code-hash", required=True)
     args = parser.parse_args()
+    require_code_bundle(args.expected_code_hash)
     process_step(
         run_root=args.run_root,
         archive_root=args.archive_root,
@@ -424,6 +455,7 @@ def main() -> None:
         step=80,
         node=args.node,
         relocate_merged_output=True,
+        expected_code_hash=args.expected_code_hash,
     )
     process_step(
         run_root=args.run_root,
@@ -432,6 +464,7 @@ def main() -> None:
         step=100,
         node=args.node,
         relocate_merged_output=False,
+        expected_code_hash=args.expected_code_hash,
     )
 
 
