@@ -19,6 +19,11 @@ REQUIRED_FIELDS = {
     "contract_valid",
     "parser_version",
     "pilot_reward_version",
+    "symbolic_grader_guard_version",
+    "symbolic_grader_timeout_seconds",
+    "mathruler_error",
+    "native_r1v_shadow_error",
+    "native_r1v_shadow_valid",
 }
 VALID_REASONS = {
     "none",
@@ -43,6 +48,9 @@ def audit_shadow_rows(
     identity_mismatches = 0
     nonfinite_values = 0
     version_mismatches = 0
+    guard_mismatches = 0
+    invalid_native_shadows = 0
+    symbolic_timeout_counts: collections.Counter[str] = collections.Counter()
     for row in rows:
         for field in REQUIRED_FIELDS - row.keys():
             missing_counts[field] += 1
@@ -73,6 +81,27 @@ def audit_shadow_rows(
             errors.append(f"invalid reward disagreement reason: {reason}")
         if row.get("parser_version") != "canonical-v2" or row.get("pilot_reward_version") != "pilot-reward-v1":
             version_mismatches += 1
+        try:
+            guard_matches = (
+                row.get("symbolic_grader_guard_version") == "posix-itimer-v1"
+                and math.isclose(
+                    float(row.get("symbolic_grader_timeout_seconds")),
+                    5.0,
+                    abs_tol=1e-12,
+                )
+            )
+        except (TypeError, ValueError):
+            guard_matches = False
+        if not guard_matches:
+            guard_mismatches += 1
+        if row.get("native_r1v_shadow_valid") is not True or row.get(
+            "native_r1v_shadow_error"
+        ) is not None:
+            invalid_native_shadows += 1
+        if row.get("mathruler_error") == "SymbolicGraderTimeout":
+            symbolic_timeout_counts["mathruler"] += 1
+        if row.get("native_r1v_shadow_error") == "SymbolicGraderTimeout":
+            symbolic_timeout_counts["native_r1v_shadow"] += 1
 
     checks = {
         "row_count_matches_contract": (
@@ -86,6 +115,8 @@ def audit_shadow_rows(
         "training_reward_non_degenerate": len(reward_counts) >= 2,
         "reason_codes_valid": not errors,
         "parser_and_reward_versions_exact": version_mismatches == 0,
+        "symbolic_grader_guard_exact": guard_mismatches == 0,
+        "native_shadows_valid": invalid_native_shadows == 0,
     }
     if require_exact_row_count and len(rows) != expected_minimum_rows:
         errors.append(
@@ -105,6 +136,10 @@ def audit_shadow_rows(
         errors.append("training reward is degenerate")
     if version_mismatches:
         errors.append(f"parser/reward version mismatches: {version_mismatches}")
+    if guard_mismatches:
+        errors.append(f"symbolic grader guard mismatches: {guard_mismatches}")
+    if invalid_native_shadows:
+        errors.append(f"invalid native-r1v shadows: {invalid_native_shadows}")
     return {
         "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
         "status": "pass" if all(checks.values()) and not errors else "fail",
@@ -119,6 +154,9 @@ def audit_shadow_rows(
         "identity_mismatches": identity_mismatches,
         "nonfinite_rows": nonfinite_values,
         "version_mismatches": version_mismatches,
+        "symbolic_grader_guard_mismatches": guard_mismatches,
+        "invalid_native_shadow_rows": invalid_native_shadows,
+        "symbolic_timeout_counts": dict(sorted(symbolic_timeout_counts.items())),
         "errors": errors,
     }
 
@@ -251,7 +289,7 @@ def main() -> None:
     )
     payload.update(
         {
-            "schema_version": "blind-gains.pilot-reward-smoke-audit.v3",
+            "schema_version": "blind-gains.pilot-reward-smoke-audit.v4",
             "run_manifest": str(args.run_manifest),
             "shadow_jsonl": str(args.shadow_jsonl),
             "training_log": str(training_log_path),

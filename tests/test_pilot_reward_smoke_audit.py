@@ -19,6 +19,11 @@ def _row(training: float, accuracy: float, contract: bool, reason: str = "none")
         "contract_valid": contract,
         "parser_version": "canonical-v2",
         "pilot_reward_version": "pilot-reward-v1",
+        "symbolic_grader_guard_version": "posix-itimer-v1",
+        "symbolic_grader_timeout_seconds": 5.0,
+        "mathruler_error": None,
+        "native_r1v_shadow_error": None,
+        "native_r1v_shadow_valid": True,
     }
 
 
@@ -57,6 +62,25 @@ def test_shadow_audit_rejects_extra_rows_and_version_drift_under_exact_contract(
     assert payload["status"] == "fail"
     assert payload["checks"]["row_count_matches_contract"] is False
     assert payload["checks"]["parser_and_reward_versions_exact"] is False
+
+
+def test_shadow_audit_rejects_missing_guard_and_invalid_native_shadow() -> None:
+    missing_guard = _row(1.0, 1.0, True)
+    missing_guard.pop("symbolic_grader_guard_version")
+    invalid_native = _row(0.5, 0.0, True)
+    invalid_native["native_r1v_shadow_valid"] = False
+    invalid_native["native_r1v_shadow_error"] = "SymbolicGraderTimeout"
+
+    payload = audit_shadow_rows(
+        [missing_guard, invalid_native],
+        expected_minimum_rows=2,
+    )
+
+    assert payload["status"] == "fail"
+    assert payload["checks"]["all_required_fields_present"] is False
+    assert payload["checks"]["symbolic_grader_guard_exact"] is False
+    assert payload["checks"]["native_shadows_valid"] is False
+    assert payload["symbolic_timeout_counts"] == {"native_r1v_shadow": 1}
 
 
 def test_training_contract_requires_five_step_marker_and_clean_log() -> None:
