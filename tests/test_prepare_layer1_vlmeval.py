@@ -12,6 +12,7 @@ from scripts.prepare_layer1_vlmeval import (
     prepare_blink_frames,
     prepare_hallusion_json,
     prepare_mathvista_frame,
+    prepare_mathverse_frame,
     prepare_mmvp_csv,
 )
 
@@ -71,6 +72,68 @@ def test_mathvista_adapter_rejects_ambiguous_choice_mapping(tmp_path: Path) -> N
         dropped_ids=dropped,
     ) == []
     assert dropped == ["8"]
+
+
+def test_mathverse_adapter_keeps_mixed_scoring_contracts(tmp_path: Path) -> None:
+    frame = pd.DataFrame(
+        [
+            {
+                "sample_index": "1",
+                "problem_index": "9",
+                "problem_version": "Vision Only",
+                "question": "Which value?\nChoice:\nA.5 cm\nB.5 m",
+                "image": _image_record("red"),
+                "answer": "5 cm",
+                "question_type": "multi-choice",
+                "metadata": {"subject": "Geometry", "subfield": "Length", "source": "fixture"},
+                "query_wo": "Return the correct option.\nWhich value?\nChoices:\nA:5 cm\nB:5 m",
+                "question_for_eval": "Which value?\nChoice:\nA.5 cm\nB.5 m",
+            },
+            {
+                "sample_index": "2",
+                "problem_index": "10",
+                "problem_version": "Text Dominant",
+                "question": "What is 2 + 3?",
+                "image": _image_record("blue"),
+                "answer": "5",
+                "question_type": "free-form",
+                "metadata": {"subject": "Arithmetic"},
+                "query_wo": "Directly answer.\nWhat is 2 + 3?",
+                "question_for_eval": "What is 2 + 3?",
+            },
+        ]
+    )
+
+    rows = prepare_mathverse_frame(frame, tmp_path / "images")
+
+    assert rows[0]["A"] == "5 cm" and rows[0]["B"] == "5 m"
+    assert rows[0]["answer_option"] == "A"
+    assert rows[0]["answer_options"] == "['A']"
+    assert rows[0]["question_type"] == "multi_choice"
+    assert "A" not in rows[1] and rows[1]["answer_option"] == ""
+    assert rows[1]["question_type"] == "free_form"
+    assert rows[1]["question"] == "Directly answer.\nWhat is 2 + 3?"
+
+
+def test_mathverse_adapter_rejects_declared_free_form_choice_block(tmp_path: Path) -> None:
+    frame = pd.DataFrame(
+        [
+            {
+                "sample_index": "1",
+                "problem_index": "1",
+                "problem_version": "Vision Only",
+                "question": "Value?\nChoices:\nA:1\nB:2",
+                "image": _image_record("red"),
+                "answer": "1",
+                "question_type": "free-form",
+                "metadata": {},
+                "query_wo": "Value?",
+                "question_for_eval": "Value?\nChoices:\nA:1\nB:2",
+            }
+        ]
+    )
+    with pytest.raises(ValueError, match="free-form but contains a choice block"):
+        prepare_mathverse_frame(frame, tmp_path / "images")
 
 
 def test_blink_adapter_keeps_image_order_and_removes_duplicate_choice_block(tmp_path: Path) -> None:

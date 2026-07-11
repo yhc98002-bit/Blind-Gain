@@ -14,8 +14,8 @@ METADATA_OUTPUT="$5"
 RUN_TAG="$6"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "blink" && "${DATASET}" != "mmvp" && "${DATASET}" != "hallusion" ]]; then
-  echo "DATASET must be mathvista, blink, mmvp, or hallusion" >&2
+if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "mathverse" && "${DATASET}" != "blink" && "${DATASET}" != "mmvp" && "${DATASET}" != "hallusion" ]]; then
+  echo "DATASET must be mathvista, mathverse, blink, mmvp, or hallusion" >&2
   exit 2
 fi
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then

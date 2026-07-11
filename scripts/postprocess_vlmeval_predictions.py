@@ -65,9 +65,14 @@ def score_mcq_prediction(
         }
         highest = max(tiers.values(), default=0)
         winners = sorted(label for label, tier in tiers.items() if tier == highest and tier > 0)
-    normalized_gold = str(gold).strip().upper()
-    ambiguous = len(winners) > 1
-    acc_final = len(winners) == 1 and winners[0] == normalized_gold
+    if isinstance(gold, (list, tuple, set)):
+        normalized_gold = sorted({str(label).strip().upper() for label in gold})
+    else:
+        normalized_gold = [str(gold).strip().upper()]
+    if not normalized_gold or any(label not in labels for label in normalized_gold):
+        raise ValueError(f"invalid MCQ gold labels: {normalized_gold}")
+    ambiguous = len(winners) > 1 and not (explicit and sorted(winners) == normalized_gold)
+    acc_final = sorted(winners) == normalized_gold
     contract_valid = response_satisfies_contract(prediction, prompt_contract)
     return {
         "extracted_answer": extracted.span,
@@ -80,6 +85,7 @@ def score_mcq_prediction(
         **prompt_contract_metadata(prompt_contract),
         "ambiguous": ambiguous,
         "winning_labels": winners,
+        "gold_labels": normalized_gold,
         "match_tiers": tiers,
         "acc_final": acc_final,
         "acc_strict": contract_valid and acc_final,
@@ -120,7 +126,7 @@ def _not_missing(value: Any) -> bool:
     return bool(not missing) if isinstance(missing, (bool, np.bool_)) else True
 
 
-def _choice_payload(raw: dict[str, Any]) -> tuple[list[str], dict[str, Any], str] | None:
+def _choice_payload(raw: dict[str, Any]) -> tuple[list[str], dict[str, Any], str | list[str]] | None:
     labels = [label for label in string.ascii_uppercase if label in raw and _not_missing(raw[label])]
     options = {label: raw[label] for label in labels}
     if not labels:
@@ -139,8 +145,25 @@ def _choice_payload(raw: dict[str, Any]) -> tuple[list[str], dict[str, Any], str
     if not labels:
         return None
 
+    answer_options = raw.get("answer_options")
+    parsed_answer_options: list[str] = []
+    if _not_missing(answer_options) and str(answer_options).strip():
+        if isinstance(answer_options, str):
+            try:
+                parsed = ast.literal_eval(answer_options)
+            except (SyntaxError, ValueError):
+                parsed = []
+        else:
+            parsed = answer_options
+        if isinstance(parsed, (list, tuple, set)):
+            parsed_answer_options = [str(label).strip().upper() for label in parsed]
     answer_option = raw.get("answer_option")
-    if _not_missing(answer_option):
+    if parsed_answer_options:
+        unknown = sorted(set(parsed_answer_options) - set(labels))
+        if unknown:
+            raise ValueError(f"answer_options contains unknown labels: {unknown}")
+        gold: str | list[str] = sorted(set(parsed_answer_options))
+    elif _not_missing(answer_option):
         gold = str(answer_option).strip().upper()
     else:
         raw_gold = str(raw["answer"]).strip()

@@ -108,6 +108,166 @@ def prepare_mathvista_frame(
     return rows
 
 
+_MATHVERSE_CHOICE_LINE = re.compile(r"^\s*([A-Z])\s*[:.]\s*(.*?)\s*$")
+
+
+def _mathverse_choices(question: Any) -> dict[str, str]:
+    choices: dict[str, str] = {}
+    in_choice_block = False
+    for line in str(question).splitlines():
+        if line.strip().casefold() in {"choice:", "choices:"}:
+            if choices:
+                break
+            in_choice_block = True
+            continue
+        if not in_choice_block:
+            continue
+        match = _MATHVERSE_CHOICE_LINE.fullmatch(line)
+        if not match:
+            if line.strip() and not choices:
+                raise ValueError(f"malformed MathVerse choice line: {line!r}")
+            if line.strip():
+                break
+            continue
+        label, value = match.groups()
+        if label in choices:
+            raise ValueError(f"invalid MathVerse choice {label}: {value!r}")
+        choices[label] = value
+    if choices:
+        expected = list(string.ascii_uppercase[: len(choices)])
+        if list(choices) != expected:
+            raise ValueError(f"MathVerse choices must be contiguous from A: {list(choices)}")
+    return choices
+
+
+def _mathverse_explicit_answer_labels(answer: str, labels: list[str]) -> list[str]:
+    stripped = answer.strip()
+    if stripped in labels:
+        return [stripped]
+    parenthesized = re.fullmatch(r"\(([A-Z])\)", stripped)
+    if parenthesized and parenthesized.group(1) in labels:
+        return [parenthesized.group(1)]
+    tokens = re.findall(r"[A-Z]", stripped)
+    residue = re.sub(r"[A-Z\s(),;/+&]", "", stripped)
+    if tokens and not residue and all(token in labels for token in tokens):
+        return [label for label in labels if label in set(tokens)]
+    return []
+
+
+def prepare_mathverse_frame(frame: pd.DataFrame, image_dir: Path) -> list[dict[str, Any]]:
+    required = {
+        "sample_index",
+        "problem_index",
+        "problem_version",
+        "question",
+        "image",
+        "answer",
+        "question_type",
+        "metadata",
+        "query_wo",
+        "question_for_eval",
+    }
+    missing = required - set(frame.columns)
+    if missing:
+        raise ValueError(f"MathVerse parquet missing columns: {sorted(missing)}")
+
+    raw_rows = frame.to_dict(orient="records")
+    parsed_choices: dict[str, dict[str, str]] = {}
+    choice_variants_by_problem: dict[str, list[dict[str, str]]] = {}
+    for raw in raw_rows:
+        source_id = str(raw["sample_index"]).strip()
+        choices = _mathverse_choices(raw["question_for_eval"])
+        parsed_choices[source_id] = choices
+        if not choices:
+            continue
+        problem_id = str(raw["problem_index"])
+        variants = choice_variants_by_problem.setdefault(problem_id, [])
+        if variants and tuple(variants[0]) != tuple(choices):
+            raise ValueError(f"MathVerse problem {problem_id} has inconsistent choice labels across versions")
+        if choices not in variants:
+            variants.append(choices)
+
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw in raw_rows:
+        source_id = str(raw["sample_index"]).strip()
+        if not source_id or source_id in seen:
+            raise ValueError(f"duplicate or empty MathVerse sample_index: {source_id!r}")
+        seen.add(source_id)
+        metadata = raw.get("metadata") or {}
+        if not isinstance(metadata, dict):
+            raise ValueError(f"MathVerse row {source_id} metadata is not a mapping")
+        question_type = str(raw["question_type"]).strip()
+        if question_type not in {"multi-choice", "free-form"}:
+            raise ValueError(f"MathVerse row {source_id} has unsupported question type {question_type!r}")
+        choices = dict(parsed_choices[source_id])
+        answer = str(raw["answer"]).strip()
+        if not answer:
+            raise ValueError(f"MathVerse row {source_id} has an empty answer")
+        choice_labels_inferred = False
+        choice_source = "question_for_eval" if choices else "none"
+        answer_option = ""
+        if question_type == "multi-choice":
+            problem_variants = choice_variants_by_problem.get(str(raw["problem_index"]), [])
+            if not choices and problem_variants:
+                choices = {label: label for label in problem_variants[0]}
+                choice_source = "sibling_problem_version_labels"
+            if not choices and re.fullmatch(r"[A-Z]", answer):
+                upper_bound = max(string.ascii_uppercase.index(answer), 3)
+                choices = {label: label for label in string.ascii_uppercase[: upper_bound + 1]}
+                choice_labels_inferred = True
+                choice_source = "answer_label_fallback"
+            if len(choices) < 2:
+                raise ValueError(f"MathVerse row {source_id} is multiple-choice without choices")
+            answer_labels = _mathverse_explicit_answer_labels(answer, list(choices))
+            if not answer_labels:
+                answer_sources = [choices] if choice_source == "question_for_eval" else []
+                answer_sources.extend(problem_variants)
+                matching = sorted(
+                    {
+                        label
+                        for source_choices in answer_sources
+                        for label, value in source_choices.items()
+                        if value.strip() == answer
+                    }
+                )
+                if len(matching) != 1:
+                    raise ValueError(
+                        f"MathVerse row {source_id} answer {answer!r} does not identify exactly one choice"
+                    )
+                answer_labels = matching
+            answer_option = answer_labels[0] if len(answer_labels) == 1 else ""
+        else:
+            if choices:
+                raise ValueError(f"MathVerse row {source_id} is free-form but contains a choice block")
+            answer_labels = []
+
+        prompt = str(raw["query_wo"]).strip()
+        if not prompt:
+            raise ValueError(f"MathVerse row {source_id} has an empty query_wo prompt")
+        record: dict[str, Any] = {
+            "index": f"mathverse_{source_id}",
+            "image_path": str(_materialize_png(raw["image"], image_dir)),
+            "question": prompt,
+            "answer": answer,
+            "question_type": "multi_choice" if choices else "free_form",
+            "answer_type": "choice" if choices else "free_form",
+            "answer_option": answer_option,
+            "answer_options": repr(answer_labels),
+            "category": str(raw["problem_version"]),
+            "l2_category": str(metadata.get("subject", "unknown")),
+            "subfield": str(metadata.get("subfield", "unknown")),
+            "source": str(metadata.get("source", "unknown")),
+            "problem_index": str(raw["problem_index"]),
+            "source_sample_index": source_id,
+            "choice_labels_inferred": choice_labels_inferred,
+            "choice_source": choice_source,
+        }
+        record.update(choices)
+        rows.append(record)
+    return rows
+
+
 _BLINK_CHOICE_BLOCK = re.compile(r"\nSelect from the following choices\.\s*\n[\s\S]*$", re.IGNORECASE)
 _BLINK_OPTION_LINE = re.compile(r"\n\([A-Z]\)\s")
 
@@ -346,7 +506,11 @@ def _write_outputs(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=("mathvista", "blink", "mmvp", "hallusion"), required=True)
+    parser.add_argument(
+        "--dataset",
+        choices=("mathvista", "mathverse", "blink", "mmvp", "hallusion"),
+        required=True,
+    )
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--image-dir", type=Path, required=True)
@@ -364,6 +528,25 @@ def main() -> None:
             dropped_ids=dropped_ids,
         )
         deviations = {"dropped_ambiguous_choice_ids": dropped_ids}
+    elif args.dataset == "mathverse":
+        sources = [args.source]
+        rows = prepare_mathverse_frame(pd.read_parquet(args.source), args.image_dir)
+        version_counts: dict[str, int] = {}
+        for row in rows:
+            version_counts[row["category"]] = version_counts.get(row["category"], 0) + 1
+        deviations = {
+            "source_prompt_field": "query_wo",
+            "problem_version_counts": dict(sorted(version_counts.items())),
+            "choice_labels_inferred_rows": sum(row["choice_labels_inferred"] for row in rows),
+            "sibling_choice_recovery_rows": sum(
+                row["choice_source"] == "sibling_problem_version_labels" for row in rows
+            ),
+            "empty_choice_value_rows": sum(
+                any(not str(row.get(label, "")).strip() for label in string.ascii_uppercase if label in row)
+                for row in rows
+            ),
+            "official_llm_judge_not_run_by_adapter": True,
+        }
     elif args.dataset == "blink":
         sources = sorted(args.source.glob("*/val-*.parquet"))
         if not sources:

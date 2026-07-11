@@ -46,6 +46,14 @@ def test_mcq_postprocessor_rejects_multiple_winning_labels() -> None:
     assert scored["ambiguous"] is True
 
 
+def test_mcq_postprocessor_scores_registered_multiselect_set() -> None:
+    correct = score_mcq_prediction("<answer>D and C</answer>", ["C", "D"], list("ABCD"))
+    partial = score_mcq_prediction("<answer>C</answer>", ["C", "D"], list("ABCD"))
+    assert correct["acc_final"] is True and correct["ambiguous"] is False
+    assert correct["gold_labels"] == ["C", "D"]
+    assert partial["acc_final"] is False
+
+
 def test_mcq_postprocessor_does_not_treat_article_as_option_a() -> None:
     scored = score_mcq_prediction(
         "D: The buildings beside a lake",
@@ -95,6 +103,25 @@ def test_mathvista_choice_payload_uses_serialized_choices_and_answer_option() ->
         ["A", "B", "C", "D"],
         {"A": "135 degrees", "B": "140 degrees", "C": "145 degrees", "D": "150 degrees"},
         "C",
+    )
+
+
+def test_choice_payload_prefers_registered_multiselect_labels() -> None:
+    payload = _choice_payload(
+        {
+            "answer": "C\nD",
+            "answer_option": "",
+            "answer_options": "['C', 'D']",
+            "A": "one",
+            "B": "two",
+            "C": "three",
+            "D": "four",
+        }
+    )
+    assert payload == (
+        ["A", "B", "C", "D"],
+        {"A": "one", "B": "two", "C": "three", "D": "four"},
+        ["C", "D"],
     )
 
 
