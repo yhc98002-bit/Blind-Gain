@@ -113,3 +113,17 @@ def test_strong_caption_report_rejects_selected_or_incomplete_package(
             },
             artifact_paths=_artifact_paths(tmp_path),
         )
+
+
+def test_strong_caption_report_launcher_is_cpu_only_and_post_deletion() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_strong_caption_report.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'job_type: "l9_strong_caption_report"' in launcher
+    assert "gpu_ids: []" in launcher
+    assert "tensor_parallel_width: 0" in launcher
+    assert "DELETION_RECORD" in launcher
+    assert "Refusing to overwrite strong-caption reports" in launcher
