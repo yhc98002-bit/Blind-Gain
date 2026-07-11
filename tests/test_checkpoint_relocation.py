@@ -169,3 +169,34 @@ def test_retention_refuses_unexpected_sidecar_before_deleting_any_raw_state(tmp_
 
     assert (old / "unregistered_resume_note.txt").is_file()
     assert len(list(old.glob("*_world_size_*.pt"))) == 4
+
+
+def test_retention_expires_only_raw_files_and_preserves_merged_intermediate(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_80")
+    actor = shared / "global_step_80" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    old = _archived_raw_state(run_archive, 60)
+    merged = old / "huggingface"
+    merged.mkdir()
+    (merged / "model.safetensors.index.json").write_text("{}\n", encoding="utf-8")
+    (merged / "merged_checkpoint.source.sha256").write_text(
+        "0" * 64 + "  model.safetensors.index.json\n",
+        encoding="ascii",
+    )
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    relocate_raw_checkpoint(
+        actor,
+        run_archive / "global_step_80" / "actor",
+        run_archive_root=run_archive,
+        run_manifest=run_manifest,
+        retention_report=tmp_path / "retention.md",
+    )
+
+    assert merged.is_dir()
+    assert (merged / "model.safetensors.index.json").is_file()
+    assert not list(old.glob("*_world_size_*.pt"))
+    assert not (old / "raw_training_state.source.sha256").exists()

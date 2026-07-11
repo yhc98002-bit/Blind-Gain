@@ -167,9 +167,21 @@ def _verify_raw_archive(actor_archive: Path) -> dict[str, Any]:
             f"raw archive manifest/file set differs: listed={sorted(listed_names)} files={sorted(raw_names)}"
         )
     allowed = listed_names | {CHECKSUM_NAME}
-    unexpected = sorted(path.name for path in actor_archive.iterdir() if path.name not in allowed)
+    unexpected = sorted(
+        path.name
+        for path in actor_archive.iterdir()
+        if path.name not in allowed and path.name != "huggingface"
+    )
     if unexpected:
         raise RuntimeError(f"raw archive contains unexpected entries: {unexpected}")
+    merged_sibling = actor_archive / "huggingface"
+    if merged_sibling.exists():
+        if not merged_sibling.is_dir():
+            raise RuntimeError("raw archive huggingface sibling is not a directory")
+        if not (merged_sibling / "model.safetensors.index.json").is_file():
+            raise RuntimeError("raw archive merged sibling has no model index")
+        if not (merged_sibling / "merged_checkpoint.source.sha256").is_file():
+            raise RuntimeError("raw archive merged sibling has no checksum manifest")
     if not records:
         raise ValueError(f"raw archive checksum manifest is empty: {checksum_path}")
     return {
@@ -272,12 +284,11 @@ def enforce_latest_raw_retention(
     )
     for record in verified:
         actor_archive = Path(record["path"])
-        for path in actor_archive.iterdir():
-            if path.is_file():
-                path.unlink()
-            else:
-                raise RuntimeError(f"unexpected directory inside raw archive: {path}")
-        actor_archive.rmdir()
+        for file_record in record["files"]:
+            (actor_archive / file_record["file"]).unlink()
+        (actor_archive / CHECKSUM_NAME).unlink()
+        if not any(actor_archive.iterdir()):
+            actor_archive.rmdir()
         step_dir = actor_archive.parent
         if not any(step_dir.iterdir()):
             step_dir.rmdir()
