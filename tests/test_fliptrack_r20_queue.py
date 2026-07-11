@@ -37,3 +37,12 @@ def test_r20_queue_builds_complete_image_and_caption_commands() -> None:
     assert image[-3:] == ["32", "4 5 6 7", "medium"]
     assert caption[-2:] == ["4 5 6 7", "32"]
     assert config["caption_inputs"]["7b"] in caption
+
+
+def test_r20_queue_uses_nonblocking_aggregation() -> None:
+    queue_source = (ROOT / "scripts/run_fliptrack_r20_queue.py").read_text(encoding="utf-8")
+    aggregate_source = (ROOT / "scripts/launch_fliptrack_aggregate.sh").read_text(encoding="utf-8")
+    assert 'str(cell["id"]), "async"' in queue_source
+    assert "_wait_for_aggregates" in queue_source
+    assert 'LAUNCH_MODE="${3:-sync}"' in aggregate_source
+    assert "nohup setsid --wait" in aggregate_source

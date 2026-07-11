@@ -20,10 +20,23 @@
       "model": "7b",
       "kind": "image",
       "mode": "real",
-      "existing_run": "experiments/runs/fliptrack_r20_qwen25vl7b_real_an12_20260711T124144Z"
+      "existing_run": "experiments/runs/fliptrack_r20_qwen25vl7b_real_an12_20260711T124144Z",
+      "existing_aggregate_run": "experiments/runs/fliptrack_aggregate_qwen25vl7b_real_20260711T125108Z"
     },
-    {"id": "qwen25vl7b_gray", "model": "7b", "kind": "image", "mode": "gray"},
-    {"id": "qwen25vl7b_noise", "model": "7b", "kind": "image", "mode": "noise"},
+    {
+      "id": "qwen25vl7b_gray",
+      "model": "7b",
+      "kind": "image",
+      "mode": "gray",
+      "existing_run": "experiments/runs/fliptrack_r20_qwen25vl7b_gray_an12_20260711T125104Z"
+    },
+    {
+      "id": "qwen25vl7b_noise",
+      "model": "7b",
+      "kind": "image",
+      "mode": "noise",
+      "existing_run": "experiments/runs/fliptrack_r20_qwen25vl7b_noise_an12_20260711T130239Z"
+    },
     {"id": "qwen25vl7b_caption", "model": "7b", "kind": "caption", "mode": "caption"},
     {"id": "qwen25vl3b_real", "model": "3b", "kind": "image", "mode": "real"},
     {"id": "qwen25vl3b_gray", "model": "3b", "kind": "image", "mode": "gray"},

@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 SOURCE_RUN_DIR RUN_TAG" >&2
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+  echo "Usage: $0 SOURCE_RUN_DIR RUN_TAG [sync|async]" >&2
   exit 2
 fi
 
 SOURCE_RUN="$1"
 RUN_TAG="$2"
+LAUNCH_MODE="${3:-sync}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG must contain only lowercase letters, numbers, underscores, and hyphens" >&2
+  exit 2
+fi
+if [[ "${LAUNCH_MODE}" != "sync" && "${LAUNCH_MODE}" != "async" ]]; then
+  echo "Launch mode must be sync or async" >&2
   exit 2
 fi
 if [[ ! -f "${ROOT}/${SOURCE_RUN}/run_manifest.json" ]]; then
@@ -65,5 +70,12 @@ jq -n \
     expected_artifacts: [$output]
   }' > "${MANIFEST}"
 
-"${ROOT}/.venv/bin/python" scripts/run_manifest_job.py "${MANIFEST}" "${LOG}"
+if [[ "${LAUNCH_MODE}" == "async" ]]; then
+  mkdir -p "${RUN_DIR}/pids"
+  nohup setsid --wait "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py \
+    "${MANIFEST}" "${LOG}" > /dev/null 2>&1 < /dev/null &
+  echo "$!" > "${RUN_DIR}/pids/login.pid"
+else
+  "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py "${MANIFEST}" "${LOG}"
+fi
 printf '%s\n' "${RUN_DIR}"

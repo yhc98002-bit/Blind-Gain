@@ -174,10 +174,14 @@ def _wait_for_cell(root: Path, cell: dict[str, Any], state: dict[str, Any], poll
 def _aggregate(root: Path, cell: dict[str, Any], state: dict[str, Any]) -> None:
     record = state["cells"][cell["id"]]
     existing = record.get("aggregate_run")
-    if existing and _manifest_status(root, existing) == "complete":
-        return
+    if existing:
+        status = _manifest_status(root, existing)
+        if status in {"running", "complete"}:
+            return
+        if status == "fail":
+            raise RuntimeError(f"R20 aggregate failed: {cell['id']} at {existing}")
     completed = subprocess.run(
-        ["scripts/launch_fliptrack_aggregate.sh", record["run_dir"], str(cell["id"])],
+        ["scripts/launch_fliptrack_aggregate.sh", record["run_dir"], str(cell["id"]), "async"],
         cwd=root,
         check=True,
         capture_output=True,
@@ -187,7 +191,25 @@ def _aggregate(root: Path, cell: dict[str, Any], state: dict[str, Any]) -> None:
     if not lines or not lines[-1].startswith("experiments/runs/"):
         raise RuntimeError(f"could not identify aggregate run for {cell['id']}: {completed.stdout!r}")
     record["aggregate_run"] = lines[-1]
-    print(f"aggregate_complete id={cell['id']} run={record['aggregate_run']}", flush=True)
+    print(f"aggregate_launched id={cell['id']} run={record['aggregate_run']}", flush=True)
+
+
+def _wait_for_aggregates(root: Path, cells: list[dict[str, Any]], state: dict[str, Any], poll_seconds: int) -> None:
+    while True:
+        pending = []
+        for cell in cells:
+            aggregate_run = state["cells"][cell["id"]].get("aggregate_run")
+            if not aggregate_run:
+                raise RuntimeError(f"R20 cell has no aggregate run: {cell['id']}")
+            status = _manifest_status(root, aggregate_run)
+            if status == "fail":
+                raise RuntimeError(f"R20 aggregate failed: {cell['id']} at {aggregate_run}")
+            if status != "complete":
+                pending.append((cell["id"], status))
+        if not pending:
+            return
+        print(f"aggregate_wait pending={pending}", flush=True)
+        time.sleep(poll_seconds)
 
 
 def run_queue(config_path: Path, state_path: Path, poll_seconds: int) -> None:
@@ -211,7 +233,7 @@ def run_queue(config_path: Path, state_path: Path, poll_seconds: int) -> None:
             if cell.get("existing_run"):
                 state["cells"][cell["id"]] = {
                     "run_dir": cell["existing_run"],
-                    "aggregate_run": None,
+                    "aggregate_run": cell.get("existing_aggregate_run"),
                 }
         _atomic_write(state_path, state)
 
@@ -231,6 +253,7 @@ def run_queue(config_path: Path, state_path: Path, poll_seconds: int) -> None:
         _aggregate(root, cell, state)
         _atomic_write(state_path, state)
 
+    _wait_for_aggregates(root, cells, state, poll_seconds)
     state["status"] = "complete"
     state["completed_at_utc"] = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     _atomic_write(state_path, state)
