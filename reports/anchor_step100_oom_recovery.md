@@ -1,9 +1,9 @@
 # Anchor Step-100 OOM Recovery
 
 Status:
-- `active continuation`. The original native-reward anchor attempt passed and archived step 80 but was killed by Ray's host-memory monitor before the step-100 checkpoint.
+- `active continuation`. The original native-reward anchor attempt passed and archived step 80 but was killed by Ray's host-memory monitor before the step-100 checkpoint. The isolated continuation has now completed resumed optimizer step 81 and entered the step-82 rollout.
 - No anchor config, chat template, image path, or reward implementation has been changed. The recovery target is the exact archived step-80 raw state.
-- The original attempt is finalized `fail`; the archived state was independently reverified and restored. The isolated continuation has loaded all step-80 state and entered registered validation.
+- The original attempt is finalized `fail`; the archived state was independently reverified and restored. The isolated continuation loaded all step-80 state, completed registered validation, and completed its first resumed optimizer step.
 
 Evidence:
 - Attempt: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T224852Z` on `an12` GPUs 0-3.
@@ -24,10 +24,13 @@ Evidence:
 - Startup attempt `experiments/runs/anchor_a0_recipe_3b_geo3k_resume80_20260711T150357Z` is preserved `fail`: its Ray UNIX socket path exceeded 107 bytes, so Ray stopped before GPU allocation.
 - Active continuation: `experiments/runs/anchor_a0_recipe_3b_geo3k_resume80_20260711T150633Z`, git `91bb0f2`, `an12` GPUs 0-3, TP1, one synchronous replica.
 - The active log records `Load from checkpoint: .../global_step_80`, followed by model, optimizer, and extra-state loads on ranks 0-3 and `Start validation...`.
+- The log reached `Running step ... 81/100` after all four training mini-batches completed, then began the next 1,280-prompt rollout. This is the first complete optimizer step after restoration.
+- Host-memory watcher: `experiments/runs/anchor_resume_host_memory_watch_20260711T151344Z`.
+- From watcher start through the first resumed step and its transition, minimum `MemAvailable` was 795,235,916 KiB and maximum aggregate monitored RSS was 213,021,556 KiB. Ray's prior kill occurred near 95 percent total-memory use; the restored run therefore retained hundreds of GiB of observed headroom.
 
 Problems:
 - The original attempt's manifest did not self-finalize after the Ray exception because its launcher predates `scripts/run_manifest_job.py` wrapping.
-- Resuming while other VLM evaluators remain on `an12` would repeat the host-RAM risk even though GPUs 0-3 are disjoint.
+- The first-step trace establishes a safe window for one 3B TP1 evaluator on a disjoint GPU, but it does not justify restoring the previous set of several concurrent evaluators.
 
 Decision:
 - The original attempt was finalized as failed after terminating only its traceback-stuck parent PID.
@@ -36,7 +39,7 @@ Decision:
 - Resume with the original config and native reward after the project evaluators have left `an12` host memory.
 - Record the resumed attempt in a new immutable run directory with TP1, one synchronous replica, GPUs 0-3, and an explicit host-memory exclusivity deviation.
 - Use `scripts/launch_anchor_step80_resume.sh`; it refuses cross-node placement, a missing restore marker, incomplete raw ranks, a duplicate anchor, or concurrent project VLM evaluators on `an12`.
-- Keep L7 caption paused until the continuation passes its first resumed optimizer step and host-memory peak is measured; current idle/validation memory is not used to infer peak safety.
+- The pause condition is satisfied: step 81 completed and the measured trace retained a large margin. Resume exactly one L7 caption TP1 replica on a disjoint `an12` GPU and keep the memory watcher active; do not add further project VLM evaluators on this host while the anchor runs.
 
 Next actions:
 - Monitor through the first resumed optimizer step, retain the existing checkpoint watcher, and complete the step-100 merge/retention sequence.
