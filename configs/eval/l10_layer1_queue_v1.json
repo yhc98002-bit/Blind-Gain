@@ -1,0 +1,40 @@
+{
+  "schema_version": "blind-gains.l10-layer1-queue.v1",
+  "node": "an12",
+  "poll_seconds": 60,
+  "gpu_free_threshold_mib": 1024,
+  "jobs": [
+    {
+      "id": "mathverse3b",
+      "gpu": 4,
+      "config": "configs/eval/vlmevalkit_l10_mathverse_local_3b.json",
+      "run_tag": "l10_mathverse3b",
+      "judge": "exact_matching",
+      "mode": "infer"
+    },
+    {
+      "id": "mathverse7b",
+      "gpu": 5,
+      "config": "configs/eval/vlmevalkit_l10_mathverse_local_7b.json",
+      "run_tag": "l10_mathverse7b",
+      "judge": "exact_matching",
+      "mode": "infer"
+    },
+    {
+      "id": "mmmu3b",
+      "gpu": 6,
+      "config": "configs/eval/vlmevalkit_l10_mmmu_local_3b.json",
+      "run_tag": "l10_mmmu3b",
+      "judge": "exact_matching",
+      "mode": "all"
+    },
+    {
+      "id": "mmmu7b",
+      "gpu": 7,
+      "config": "configs/eval/vlmevalkit_l10_mmmu_local_7b.json",
+      "run_tag": "l10_mmmu7b",
+      "judge": "exact_matching",
+      "mode": "all"
+    }
+  ]
+}
