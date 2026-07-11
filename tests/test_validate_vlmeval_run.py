@@ -61,3 +61,22 @@ def test_validate_outputs_inference_only_still_requires_workbook(tmp_path: Path)
     workbook.unlink()
     with pytest.raises(FileNotFoundError, match="model-a_bench-a"):
         validate_outputs(config, tmp_path / "work", require_scores=False)
+
+
+def test_validate_outputs_accepts_timestamp_nested_workbook(tmp_path: Path) -> None:
+    config = tmp_path / "config.json"
+    _write_config(config)
+    workbook = (
+        tmp_path
+        / "work"
+        / "model-a"
+        / "T20260711-221656"
+        / "model-a_bench-a.xlsx"
+    )
+    workbook.parent.mkdir(parents=True)
+    workbook.write_bytes(b"nested-workbook")
+
+    payload = validate_outputs(config, tmp_path / "work", require_scores=False)
+
+    assert payload["status"] == "pass"
+    assert payload["artifacts"][0]["path"] == str(workbook)

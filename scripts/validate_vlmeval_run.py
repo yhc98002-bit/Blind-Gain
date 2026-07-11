@@ -30,7 +30,11 @@ def validate_outputs(config_path: Path, work_dir: Path, *, require_scores: bool 
         model_dir = work_dir / model_name
         for dataset_name in dataset_names:
             pattern = f"{model_name}_{dataset_name}*.xlsx"
-            candidates = sorted(path for path in model_dir.glob(pattern) if path.is_file() and path.stat().st_size > 0)
+            candidates = sorted(
+                path
+                for path in model_dir.rglob(pattern)
+                if path.is_file() and path.stat().st_size > 0
+            )
             if not candidates:
                 missing.append(f"{model_name}/{pattern}")
                 continue
@@ -52,7 +56,7 @@ def validate_outputs(config_path: Path, work_dir: Path, *, require_scores: bool 
                 {
                     path
                     for score_pattern in score_patterns
-                    for path in model_dir.glob(score_pattern)
+                    for path in model_dir.rglob(score_pattern)
                     if path.is_file() and path.stat().st_size > 0
                 }
             )
