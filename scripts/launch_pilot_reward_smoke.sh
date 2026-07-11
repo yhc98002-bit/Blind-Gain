@@ -19,7 +19,6 @@ if [[ "$(printf '%s\n' "${GPUS[@]}" | sort -u | wc -l)" -ne 4 ]]; then
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "${ROOT}/scripts/lib/run_paths.sh"
 cd "${ROOT}"
 CONFIG_PATH="${ROOT}/configs/train/mech_a1_real_3b_geo3k.yaml"
 DATA_PATH="data/geo3k_pilot_filtered.jsonl"
@@ -30,7 +29,8 @@ MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
 LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
 SHADOW_PATH="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
-RAY_TMP_DIR="$(short_ray_tmp_dir "${USER}:${NODE}:${RUN_ID}")"
+RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
+RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
 LOCK_PATH="/tmp/blind_gains_${NODE}_pilot_reward_smoke.lock"
 COMMAND="python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.max_steps=5 trainer.val_before_train=false trainer.val_freq=-1 trainer.save_freq=-1 trainer.experiment_name=${RUN_ID} trainer.find_last_checkpoint=false"
 
@@ -41,6 +41,11 @@ for GPU in "${GPUS[@]}"; do
     exit 75
   fi
 done
+SHM_FREE_KIB="$(ssh "${NODE}" "df -Pk /dev/shm | awk 'NR==2 {print \\$4}'")"
+if [[ ! "${SHM_FREE_KIB}" =~ ^[0-9]+$ || "${SHM_FREE_KIB}" -lt $((40 * 1024 * 1024)) ]]; then
+  echo "Refusing pilot reward smoke: ${NODE} /dev/shm has less than 40 GiB free" >&2
+  exit 75
+fi
 if ssh "${NODE}" "pgrep -af '[p]ython.*verl.trainer.main.*mech_a1_real_3b_geo3k.yaml'"; then
   echo "Refusing duplicate pilot reward smoke on ${NODE}" >&2
   exit 73
