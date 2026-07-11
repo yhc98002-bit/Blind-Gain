@@ -33,6 +33,7 @@ def test_mechanical_pilot_configs_are_matched_except_arm_identity() -> None:
         assert config["data"]["image_condition_seed"] == 20260710
         assert config["worker"]["actor"]["model"]["freeze_vision_tower"] is True
         assert config["trainer"]["max_steps"] == 100
+        assert "/checkpoints/pilot/" in config["trainer"]["save_checkpoint_path"]
         assert config["trainer"]["val_before_train"] is True
         assert config["trainer"]["val_freq"] == 10
         assert config["worker"]["rollout"]["val_override_config"] == {

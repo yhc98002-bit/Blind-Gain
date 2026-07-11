@@ -14,7 +14,7 @@ if [[ "$(git -C "${TARGET}" rev-parse HEAD)" != "${PINNED_REVISION}" ]]; then
   echo "EasyR1 revision does not match ${PINNED_REVISION}" >&2
   exit 1
 fi
-if grep -q 'guard_easyr1_checkpoint_save' "${TARGET}/verl/trainer/ray_trainer.py"; then
+if grep -q 'wait_for_easyr1_checkpoint_storage' "${TARGET}/verl/trainer/ray_trainer.py"; then
   echo "EasyR1 storage-guard patch already applied"
   exit 0
 fi

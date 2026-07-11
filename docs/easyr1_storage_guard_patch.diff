@@ -5,9 +5,9 @@ diff --git a/verl/trainer/ray_trainer.py b/verl/trainer/ray_trainer.py
      def _save_checkpoint(self) -> None:
          # path: {save_checkpoint_path}/global_step_{global_step}/{actor,critic}
 +        if os.getenv("BLIND_GAINS_STORAGE_GUARD_ENABLED") == "1":
-+            from src.ops.easyr1_checkpoint_guard import guard_easyr1_checkpoint_save
++            from src.ops.easyr1_checkpoint_guard import wait_for_easyr1_checkpoint_storage
 +
-+            guard_easyr1_checkpoint_save(
++            wait_for_easyr1_checkpoint_storage(
 +                self.config.trainer.save_checkpoint_path,
 +                self.global_step,
 +            )

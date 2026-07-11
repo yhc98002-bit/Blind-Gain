@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import time
 from pathlib import Path
 from typing import Callable, Mapping
 
@@ -67,3 +68,43 @@ def guard_easyr1_checkpoint_save(
     if not result.allowed:
         raise StorageGuardRefusal(result)
     return result
+
+
+def wait_for_easyr1_checkpoint_storage(
+    checkpoint_root: str | Path,
+    global_step: int,
+    *,
+    environment: Mapping[str, str] | None = None,
+    usage_probe: Callable[[Path], int] = allocated_bytes,
+    free_probe: Callable[[Path], int] = disk_free_bytes,
+    filesystem_probe: Callable[[Path], str] = filesystem_type,
+    sleep: Callable[[float], None] = time.sleep,
+) -> GuardResult | None:
+    """Wait for quota headroom instead of terminating a pilot at a save boundary."""
+    env = os.environ if environment is None else environment
+    retry_text = env.get("BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS", "300")
+    attempts_text = env.get("BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS", "0")
+    try:
+        retry_seconds = float(retry_text)
+        max_attempts = int(attempts_text)
+    except ValueError as error:
+        raise ValueError("storage guard retry settings must be numeric") from error
+    if retry_seconds < 0 or max_attempts < 0:
+        raise ValueError("storage guard retry settings must be nonnegative")
+
+    attempt = 0
+    while True:
+        attempt += 1
+        try:
+            return guard_easyr1_checkpoint_save(
+                checkpoint_root,
+                global_step,
+                environment=env,
+                usage_probe=usage_probe,
+                free_probe=free_probe,
+                filesystem_probe=filesystem_probe,
+            )
+        except StorageGuardRefusal:
+            if max_attempts and attempt >= max_attempts:
+                raise
+            sleep(retry_seconds)

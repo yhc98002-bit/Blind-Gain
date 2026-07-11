@@ -32,7 +32,7 @@ def build_configs(source: Path, output_dir: Path) -> list[Path]:
         config["trainer"]["experiment_name"] = run_name
         config["trainer"]["max_steps"] = 100
         config["trainer"]["save_checkpoint_path"] = str(
-            source.resolve().parents[2] / "checkpoints" / "mech_pilot" / run_name
+            source.resolve().parents[2] / "checkpoints" / "pilot" / run_name
         )
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")

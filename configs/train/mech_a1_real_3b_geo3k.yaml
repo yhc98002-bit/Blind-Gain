@@ -103,6 +103,6 @@ trainer:
   save_freq: 20
   save_limit: -1
   save_model_only: false
-  save_checkpoint_path: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mech_pilot/mech_a1_real
+  save_checkpoint_path: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real
   load_checkpoint_path: null
   find_last_checkpoint: false
