@@ -29,7 +29,16 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 OUTPUT="${RUN_DIR}/validation.json"
-COMMAND=".venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${OUTPUT}"
+SOURCE_MODE="$(jq -r '.mode // empty' "${SOURCE_RUN_DIR}/run_manifest.json")"
+if [[ "${SOURCE_MODE}" == "infer" ]]; then
+  SCORE_ARGS="--allow-missing-scores"
+elif [[ "${SOURCE_MODE}" == "all" ]]; then
+  SCORE_ARGS=""
+else
+  echo "Source run manifest has unsupported or missing mode: ${SOURCE_MODE}" >&2
+  exit 2
+fi
+COMMAND=".venv/bin/python scripts/validate_vlmeval_run.py --config ${CONFIG} --work-dir ${WORK_DIR} --output ${OUTPUT} ${SCORE_ARGS}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs"
@@ -49,6 +58,11 @@ jq -n \
     job_type: "p1_2_vlmevalkit_validation_recovery",
     node: "login",
     gpu_allocation: [],
+    gpu_ids: [],
+    tensor_parallel_width: 0,
+    replica_count: 0,
+    placement_justification: "CPU-only validation recovery over an immutable VLMEvalKit inference directory.",
+    placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_path: $config_path,
     config_hash: $config_hash,

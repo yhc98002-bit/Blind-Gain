@@ -8,6 +8,9 @@ import pytest
 from scripts.validate_vlmeval_run import validate_outputs
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def _write_config(path: Path) -> None:
     path.write_text(json.dumps({"model": {"model-a": {}}, "data": {"bench-a": {}}}), encoding="utf-8")
 
@@ -80,3 +83,13 @@ def test_validate_outputs_accepts_timestamp_nested_workbook(tmp_path: Path) -> N
 
     assert payload["status"] == "pass"
     assert payload["artifacts"][0]["path"] == str(workbook)
+
+
+def test_validation_recovery_preserves_registered_infer_only_mode() -> None:
+    launcher = (ROOT / "scripts/launch_vlmeval_validation_recovery.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "SOURCE_MODE" in launcher
+    assert "--allow-missing-scores" in launcher
+    assert 'SOURCE_MODE}" == "infer"' in launcher
