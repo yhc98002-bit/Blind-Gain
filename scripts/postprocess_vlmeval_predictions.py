@@ -171,8 +171,14 @@ def _choice_payload(raw: dict[str, Any]) -> tuple[list[str], dict[str, Any], str
         gold = str(answer_option).strip().upper()
     else:
         raw_gold = str(raw["answer"]).strip()
-        matching = [label for label, option in options.items() if str(option).strip() == raw_gold]
-        gold = matching[0] if len(matching) == 1 else raw_gold.upper()
+        raw_gold_label = raw_gold.upper()
+        if raw_gold_label in labels:
+            gold = raw_gold_label
+        else:
+            matching = [
+                label for label, option in options.items() if str(option).strip() == raw_gold
+            ]
+            gold = matching[0] if len(matching) == 1 else raw_gold_label
     return labels, options, gold
 
 

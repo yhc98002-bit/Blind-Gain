@@ -136,6 +136,23 @@ def test_choice_payload_prefers_registered_multiselect_labels() -> None:
     )
 
 
+def test_choice_payload_does_not_remap_authoritative_label_to_option_text() -> None:
+    payload = _choice_payload(
+        {
+            "answer": "A",
+            "A": "C",
+            "B": "B",
+            "C": "A",
+            "D": "none",
+        }
+    )
+    assert payload == (
+        ["A", "B", "C", "D"],
+        {"A": "C", "B": "B", "C": "A", "D": "none"},
+        "A",
+    )
+
+
 def test_pair_aggregation_requires_both_members_correct() -> None:
     rows = [
         {"pair_id": "0", "acc_final": True, "acc_strict": True},
