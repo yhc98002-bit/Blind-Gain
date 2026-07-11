@@ -136,11 +136,62 @@ def audit_training_contract(
     }
 
 
+def audit_shadow_partitions(
+    rows: list[dict[str, Any]],
+    *,
+    expected_training_rows: int,
+    validation_ground_truths: list[str],
+) -> dict[str, Any]:
+    expected_validation_rows = len(validation_ground_truths)
+    training_rows = rows[:expected_training_rows]
+    validation_rows = rows[expected_training_rows:]
+    observed_validation_ground_truths = [
+        str(row.get("ground_truth", "")).strip() for row in validation_rows
+    ]
+    expected_validation_ground_truths = [
+        str(value).strip() for value in validation_ground_truths
+    ]
+    checks = {
+        "total_count_matches_training_plus_validation": len(rows)
+        == expected_training_rows + expected_validation_rows,
+        "training_partition_count_exact": len(training_rows) == expected_training_rows,
+        "validation_partition_count_exact": len(validation_rows)
+        == expected_validation_rows,
+        "validation_ground_truth_sequence_exact": observed_validation_ground_truths
+        == expected_validation_ground_truths,
+    }
+    return {
+        "status": "pass" if all(checks.values()) else "fail",
+        "checks": checks,
+        "n_training_rows": len(training_rows),
+        "expected_training_rows": expected_training_rows,
+        "n_validation_rows": len(validation_rows),
+        "expected_validation_rows": expected_validation_rows,
+        "training_audit": audit_shadow_rows(
+            training_rows,
+            expected_minimum_rows=expected_training_rows,
+            require_exact_row_count=True,
+        ),
+        "validation_audit": audit_shadow_rows(
+            validation_rows,
+            expected_minimum_rows=expected_validation_rows,
+            require_exact_row_count=True,
+        ),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-manifest", type=Path, required=True)
     parser.add_argument("--shadow-jsonl", type=Path, required=True)
     parser.add_argument("--training-log", type=Path)
+    parser.add_argument(
+        "--validation-manifest",
+        type=Path,
+        default=Path("data/geometry3k_caption_images_manifest.jsonl"),
+    )
+    parser.add_argument("--validation-split", default="test")
+    parser.add_argument("--validation-answer-key", default="answer")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-steps", type=int, default=5)
     parser.add_argument("--rollout-batch-size", type=int, default=512)
@@ -158,27 +209,60 @@ def main() -> None:
         for line in args.shadow_jsonl.read_text(encoding="utf-8").splitlines()
         if line
     ]
-    expected = args.expected_steps * args.rollout_batch_size * args.group_size
+    validation_source_rows = [
+        json.loads(line)
+        for line in args.validation_manifest.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
+    validation_ground_truths = [
+        str(row[args.validation_answer_key])
+        for row in validation_source_rows
+        if str(row.get("split")) == args.validation_split
+    ]
+    if not validation_ground_truths:
+        raise ValueError("validation manifest produced no registered ground truths")
+    expected_training = args.expected_steps * args.rollout_batch_size * args.group_size
+    expected_total = expected_training + len(validation_ground_truths)
     payload = audit_shadow_rows(
         rows,
-        expected_minimum_rows=expected,
+        expected_minimum_rows=expected_total,
         require_exact_row_count=True,
+    )
+    partitions = audit_shadow_partitions(
+        rows,
+        expected_training_rows=expected_training,
+        validation_ground_truths=validation_ground_truths,
     )
     training_checks = audit_training_contract(
         manifest, training_log, expected_steps=args.expected_steps
     )
+    training_checks["final_validation_marker_present"] = "Start validation..." in training_log
+    training_checks["final_validation_finish_marker_present"] = "Finish validation." in training_log
     payload["training_contract_checks"] = training_checks
+    payload["partition_audit"] = partitions
     payload["status"] = (
-        "pass" if payload["status"] == "pass" and all(training_checks.values()) else "fail"
+        "pass"
+        if payload["status"] == "pass"
+        and partitions["status"] == "pass"
+        and partitions["training_audit"]["status"] == "pass"
+        and partitions["validation_audit"]["status"] == "pass"
+        and all(training_checks.values())
+        else "fail"
     )
     payload.update(
         {
+            "schema_version": "blind-gains.pilot-reward-smoke-audit.v3",
             "run_manifest": str(args.run_manifest),
             "shadow_jsonl": str(args.shadow_jsonl),
             "training_log": str(training_log_path),
             "expected_steps": args.expected_steps,
             "rollout_batch_size": args.rollout_batch_size,
             "group_size": args.group_size,
+            "n_training_shadow_rows": partitions["n_training_rows"],
+            "n_validation_shadow_rows": partitions["n_validation_rows"],
+            "validation_manifest": str(args.validation_manifest),
+            "validation_split": args.validation_split,
+            "validation_answer_key": args.validation_answer_key,
         }
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -18,15 +18,35 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         raise ValueError("refusing to publish pilot reward spec from a non-pass smoke audit")
     if manifest.get("status") != "complete" or manifest.get("exit_code") != 0:
         raise ValueError("pilot reward smoke manifest is not complete with exit code zero")
-    if audit.get("n_rows") != 12800 or audit.get("expected_steps") != 5:
-        raise ValueError("pilot reward smoke does not satisfy the exact five-step/12,800-row contract")
+    if (
+        audit.get("n_rows") != 13401
+        or audit.get("n_training_shadow_rows") != 12800
+        or audit.get("n_validation_shadow_rows") != 601
+        or audit.get("expected_steps") != 5
+    ):
+        raise ValueError(
+            "pilot reward smoke does not satisfy the exact five-step training/final-validation contract"
+        )
     checks = audit.get("checks", {})
     training_checks = audit.get("training_contract_checks", {})
-    if not checks or not training_checks or not all(checks.values()) or not all(training_checks.values()):
+    partition_audit = audit.get("partition_audit", {})
+    partition_checks = partition_audit.get("checks", {})
+    if (
+        not checks
+        or not training_checks
+        or not partition_checks
+        or not all(checks.values())
+        or not all(training_checks.values())
+        or not all(partition_checks.values())
+        or partition_audit.get("training_audit", {}).get("status") != "pass"
+        or partition_audit.get("validation_audit", {}).get("status") != "pass"
+    ):
         raise ValueError("pilot reward smoke audit contains a false sub-check")
 
-    reward_counts = audit["training_reward_counts"]
-    reason_counts = audit["reward_disagreement_reason_counts"]
+    training_partition = partition_audit["training_audit"]
+    validation_partition = partition_audit["validation_audit"]
+    reward_counts = training_partition["training_reward_counts"]
+    reason_counts = training_partition["reward_disagreement_reason_counts"]
     lines = [
         "# Pilot Reward Specification",
         "",
@@ -38,9 +58,11 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "Evidence:",
         f"- Smoke run: `{manifest['run_id']}` on `{manifest['node']}` GPUs `{manifest['gpu_allocation']}`.",
         f"- Git/config/data hashes: `{manifest['git_hash']}` / `{manifest['config_hash']}` / `{manifest['data_manifest_hash']}`.",
-        f"- Exact shadow rows: `{audit['n_rows']}` = 5 steps x 512 rollout prompts x group size 5.",
-        f"- Training reward counts: `{reward_counts}`.",
-        f"- Disagreement reason counts: `{reason_counts}`.",
+        "- Exact training shadow rows: `12800` = 5 steps x 512 rollout prompts x group size 5.",
+        "- Exact final-validation shadow rows: `601`, matching the frozen Geometry3K test answers in sequence.",
+        f"- Training-partition reward counts: `{reward_counts}`.",
+        f"- Training-partition disagreement reason counts: `{reason_counts}`.",
+        f"- Validation-partition reward counts: `{validation_partition['training_reward_counts']}`.",
         "- All shadow values are finite; every training-reward identity recomputes exactly; parser/reward versions are canonical-v2/pilot-reward-v1.",
         "- Image-grid regression evidence: `reports/easyr1_image_grid_audit_v1.md` (0/1,288 mismatches after the payload fix).",
         "",
@@ -54,6 +76,7 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "",
         "Problems:",
         "- The first full-path smoke exposed double-resized visual-grid drift before optimizer step 1. That run remains preserved in `reports/pilot_reward_smoke_failure_20260711.md`; the repaired run is the evidence above.",
+        "- EasyR1 always performs a final validation pass and calls the same reward function. The failed v1 audit expected only training rows; v2 partitions the append-only shadow log using the exact 601-row test-answer sequence.",
         "- A five-step smoke certifies reward plumbing and nondegeneracy, not training stability or scientific efficacy.",
         "",
         "Decision:",

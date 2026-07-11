@@ -1,0 +1,46 @@
+{
+  "checks": {
+    "all_numeric_shadows_finite": true,
+    "all_required_fields_present": true,
+    "parser_and_reward_versions_exact": true,
+    "reason_codes_valid": true,
+    "row_count_matches_contract": false,
+    "training_reward_identity_exact": true,
+    "training_reward_non_degenerate": true
+  },
+  "errors": [
+    "shadow row count 13401 does not equal expected contract 12800"
+  ],
+  "expected_minimum_rows": 12800,
+  "expected_steps": 5,
+  "group_size": 5,
+  "identity_mismatches": 0,
+  "missing_field_counts": {},
+  "n_rows": 13401,
+  "nonfinite_rows": 0,
+  "reward_disagreement_reason_counts": {
+    "canonical_correct_mathruler_incorrect": 173,
+    "mathruler_correct_canonical_incorrect": 84,
+    "none": 13144
+  },
+  "rollout_batch_size": 512,
+  "run_manifest": "experiments/runs/pilot_reward_smoke_an29_20260711T114247Z/run_manifest.json",
+  "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
+  "shadow_jsonl": "experiments/runs/pilot_reward_smoke_an29_20260711T114247Z/reward_shadow.jsonl",
+  "status": "fail",
+  "training_contract_checks": {
+    "command_registers_expected_steps": true,
+    "manifest_exit_zero": true,
+    "manifest_job_type_exact": true,
+    "training_log_has_no_image_grid_mismatch": true,
+    "training_log_has_no_traceback": true,
+    "training_progress_reaches_expected_steps": true
+  },
+  "training_log": "experiments/runs/pilot_reward_smoke_an29_20260711T114247Z/logs/an29.log",
+  "training_reward_counts": {
+    "0.0": 4446,
+    "0.5": 8041,
+    "1.0": 914
+  },
+  "version_mismatches": 0
+}

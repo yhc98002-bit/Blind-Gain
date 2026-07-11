@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import math
 
-from scripts.audit_pilot_reward_smoke import audit_shadow_rows, audit_training_contract
+from scripts.audit_pilot_reward_smoke import (
+    audit_shadow_partitions,
+    audit_shadow_rows,
+    audit_training_contract,
+)
 
 
 def _row(training: float, accuracy: float, contract: bool, reason: str = "none") -> dict:
@@ -76,3 +80,28 @@ def test_training_contract_requires_five_step_marker_and_clean_log() -> None:
     )
     assert failed["training_progress_reaches_expected_steps"] is False
     assert failed["training_log_has_no_traceback"] is False
+
+
+def test_partition_audit_requires_exact_validation_suffix_identity() -> None:
+    rows = [
+        {**_row(1.0, 1.0, True), "ground_truth": "train-a"},
+        {**_row(0.5, 0.0, True), "ground_truth": "train-b"},
+        {**_row(1.0, 1.0, True), "ground_truth": "test-a"},
+        {**_row(0.5, 0.0, True), "ground_truth": "test-b"},
+    ]
+    accepted = audit_shadow_partitions(
+        rows,
+        expected_training_rows=2,
+        validation_ground_truths=["test-a", "test-b"],
+    )
+    rejected = audit_shadow_partitions(
+        rows,
+        expected_training_rows=2,
+        validation_ground_truths=["test-b", "test-a"],
+    )
+
+    assert accepted["status"] == "pass"
+    assert accepted["training_audit"]["status"] == "pass"
+    assert accepted["validation_audit"]["status"] == "pass"
+    assert rejected["status"] == "fail"
+    assert rejected["checks"]["validation_ground_truth_sequence_exact"] is False
