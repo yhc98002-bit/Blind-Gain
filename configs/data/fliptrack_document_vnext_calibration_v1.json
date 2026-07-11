@@ -1,0 +1,9 @@
+{
+  "schema_version": "blind-gains.document-vnext-calibration.v1",
+  "n_pairs": 100,
+  "seed": 20261101,
+  "template_id": "dense_control_register_code_v01",
+  "target_7b_real_pair_accuracy": [0.5, 0.9],
+  "evaluation_cells": ["qwen25vl3b_real", "qwen25vl7b_real", "qwen25vl7b_caption"],
+  "iteration_policy": "one declared batch; no regeneration or threshold change in this round"
+}
