@@ -1,5 +1,5 @@
 data:
-  train_files: hiyouga/geometry3k@train
+  train_files: data/geo3k_pilot_filtered.jsonl
   val_files: hiyouga/geometry3k@test
   prompt_key: problem
   answer_key: answer

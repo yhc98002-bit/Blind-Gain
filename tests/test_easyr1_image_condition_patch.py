@@ -156,3 +156,23 @@ def test_noise_condition_is_deterministic_and_content_keyed() -> None:
 def test_unknown_condition_fails_closed(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="unsupported image_condition"):
         _dataset(tmp_path, "invisible")
+
+
+@pytest.mark.skipif(
+    not (ROOT / "data" / "geo3k_pilot_filtered.jsonl").is_file(),
+    reason="frozen prelaunch Geometry3K subset is not present",
+)
+def test_frozen_geo3k_sample_real_and_caption_paths() -> None:
+    from scripts.audit_a3_caption_path import build_audit
+
+    source = ROOT / "data" / "geo3k_pilot_filtered.jsonl"
+    caption_stores = sorted(
+        (ROOT / "experiments" / "runs" / "geometry3k_qwen25vl3b_captionstore384_20260710T005300Z" / "shards").glob("store_shard_*.jsonl")
+    )
+
+    payload = build_audit(source, caption_stores)
+
+    assert payload["status"] == "pass"
+    assert payload["n_rows"] == 1288
+    assert payload["caption_store_coverage"] == 1.0
+    assert all(not row["caption_has_multimodal_data"] for row in payload["sample_checks"])
