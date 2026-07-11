@@ -6,7 +6,7 @@ L4 | pass | reports/a3_caption_path.md: frozen corpus has 100% fixed-caption cov
 L5 | pass | required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1
 L6 | pass | named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests
 L7 | blocked | four image-condition runs are active on an29: real 20260711T141452Z, gray 20260711T141458Z, noise 20260711T141503Z, none 20260711T141514Z; caption remains queued
-L8 | blocked | all four 7B cells plus 3B real/gray/noise are scored; 3B caption is active and three degradation cells remain
+L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | blocked | 72B captioner is selected for compute-node dev-shm; stress run still depends on R20 generation
 L10 | blocked | MathVerse/MMMU adapters and canonical-v2 rescoring of ten historical base cells are complete; four new base cells and the five-condition ViRL39K audit remain
 L11 | blocked | one declared 100-pair dense-document batch is generated and validated; 3B/7B real plus 7B caption scoring remains for free GPUs
