@@ -119,4 +119,6 @@ def test_pilot_reward_smoke_uses_dev_shm_for_ray_runtime() -> None:
     launcher = (ROOT / "scripts/launch_pilot_reward_smoke.sh").read_text(encoding="utf-8")
     assert 'RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"' in launcher
     assert 'df -Pk /dev/shm' in launcher
+    assert "awk 'NR==2 {print \\$4}'" in launcher
+    assert "awk 'NR==2 {print \\\\$4}'" not in launcher
     assert "short_ray_tmp_dir" not in launcher

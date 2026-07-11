@@ -41,7 +41,7 @@ for GPU in "${GPUS[@]}"; do
     exit 75
   fi
 done
-SHM_FREE_KIB="$(ssh "${NODE}" "df -Pk /dev/shm | awk 'NR==2 {print \\$4}'")"
+SHM_FREE_KIB="$(ssh "${NODE}" "df -Pk /dev/shm | awk 'NR==2 {print \$4}'")"
 if [[ ! "${SHM_FREE_KIB}" =~ ^[0-9]+$ || "${SHM_FREE_KIB}" -lt $((40 * 1024 * 1024)) ]]; then
   echo "Refusing pilot reward smoke: ${NODE} /dev/shm has less than 40 GiB free" >&2
   exit 75
