@@ -163,6 +163,58 @@ def test_embedding_comparison_flags_only_high_cosine_candidate(tmp_path: Path) -
     assert result["candidate_edges"][0]["action"] == "remove"
 
 
+def test_same_dataset_dino_similarity_requires_corroboration(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    Image.new("RGB", (96, 72), "yellow").save(eval_image)
+    train = enrich_records(
+        [_row("train", "geometry3k", train_image, "Find the missing triangle angle", "40")]
+    )
+    evaluation = enrich_records(
+        [_row("eval", "geometry3k", eval_image, "Compute the circle diameter shown", "12")]
+    )
+    image_features = {
+        train[0]["image_sha256"]: np.asarray([1.0, 0.0], dtype=np.float32),
+        evaluation[0]["image_sha256"]: np.asarray([1.0, 0.0], dtype=np.float32),
+    }
+    text_features = {
+        "train": np.asarray([1.0, 0.0], dtype=np.float32),
+        "eval": np.asarray([0.0, 1.0], dtype=np.float32),
+    }
+
+    result = merge_embedding_signals(
+        {"candidate_edges": []}, train, evaluation, image_features, text_features, device="cpu"
+    )
+
+    assert result["candidate_edges"][0]["signals"] == {"dinov2_cosine": 1.0}
+    assert result["candidate_edges"][0]["action"] == "inspect"
+
+
+def test_generic_bge_similarity_cannot_bypass_distinctiveness_guard(tmp_path: Path) -> None:
+    train_image = tmp_path / "train.png"
+    eval_image = tmp_path / "eval.png"
+    _image(train_image)
+    Image.new("RGB", (96, 72), "green").save(eval_image)
+    train = enrich_records([_row("train", "geometry3k", train_image, "Find x", "5")])
+    evaluation = enrich_records([_row("eval", "geometry3k", eval_image, "Find x", "9")])
+    image_features = {
+        train[0]["image_sha256"]: np.asarray([1.0, 0.0], dtype=np.float32),
+        evaluation[0]["image_sha256"]: np.asarray([0.0, 1.0], dtype=np.float32),
+    }
+    text_features = {
+        "train": np.asarray([1.0, 0.0], dtype=np.float32),
+        "eval": np.asarray([1.0, 0.0], dtype=np.float32),
+    }
+
+    result = merge_embedding_signals(
+        {"candidate_edges": []}, train, evaluation, image_features, text_features, device="cpu"
+    )
+
+    assert result["candidate_edges"][0]["signals"] == {"bge_question_cosine": 1.0}
+    assert result["candidate_edges"][0]["action"] == "inspect"
+
+
 def test_ocr_overlap_is_inspection_only_without_image_corroboration(tmp_path: Path) -> None:
     train_image = tmp_path / "train.png"
     eval_image = tmp_path / "eval.png"

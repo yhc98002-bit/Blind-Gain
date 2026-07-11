@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 import torch
 
-from src.decon.core import DEFAULT_THRESHOLDS
+from src.decon.core import DEFAULT_THRESHOLDS, normalize_text
 
 
 def load_embeddings(path: str | Path) -> dict[str, np.ndarray]:
@@ -67,7 +67,15 @@ def merge_embedding_signals(
     }
     action_rank = {"none": 0, "inspect": 1, "remove": 2}
 
-    def add(train_index: int, eval_index: int, signal: str, score: float, remove_min: float) -> None:
+    def add(
+        train_index: int,
+        eval_index: int,
+        signal: str,
+        score: float,
+        remove_min: float,
+        *,
+        allow_remove: bool = True,
+    ) -> None:
         train = train_rows[train_index]
         evaluation = eval_rows[eval_index]
         key = (train["record_id"], evaluation["record_id"])
@@ -83,7 +91,7 @@ def merge_embedding_signals(
             },
         )
         edge["signals"][signal] = score
-        action = "remove" if score >= remove_min else "inspect"
+        action = "remove" if score >= remove_min and allow_remove else "inspect"
         if action_rank[action] > action_rank[edge["action"]]:
             edge["action"] = action
 
@@ -95,7 +103,18 @@ def merge_embedding_signals(
         float(thresholds["image_embedding_inspect_min"]),
         device=device,
     ):
-        add(train_index, eval_index, "dinov2_cosine", score, float(thresholds["image_embedding_remove_min"]))
+        # A shared renderer makes same-dataset diagrams highly DINO-similar even when
+        # their geometry and answers differ. Keep a lone same-dataset DINO match as
+        # inspection evidence; hash, text, or later OCR evidence may still remove it.
+        allow_remove = train_rows[train_index]["dataset"] != eval_rows[eval_index]["dataset"]
+        add(
+            train_index,
+            eval_index,
+            "dinov2_cosine",
+            score,
+            float(thresholds["image_embedding_remove_min"]),
+            allow_remove=allow_remove,
+        )
     for train_index, eval_index, score in cosine_candidates(
         train_rows,
         eval_rows,
@@ -104,7 +123,19 @@ def merge_embedding_signals(
         float(thresholds["text_embedding_inspect_min"]),
         device=device,
     ):
-        add(train_index, eval_index, "bge_question_cosine", score, float(thresholds["text_embedding_remove_min"]))
+        minimum_tokens = int(thresholds["exact_text_remove_min_tokens"])
+        distinctive = min(
+            len(normalize_text(train_rows[train_index]["question"]).split()),
+            len(normalize_text(eval_rows[eval_index]["question"]).split()),
+        ) >= minimum_tokens
+        add(
+            train_index,
+            eval_index,
+            "bge_question_cosine",
+            score,
+            float(thresholds["text_embedding_remove_min"]),
+            allow_remove=distinctive,
+        )
 
     edges = sorted(edge_map.values(), key=lambda row: (row["train_record_id"], row["eval_record_id"]))
     result = {key: value for key, value in baseline.items() if key not in {"candidate_edges", "pending_layers"}}
