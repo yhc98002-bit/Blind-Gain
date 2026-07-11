@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.eval.fliptrack_metrics import match_tier
 from src.eval.prompt_contract import (
     PromptContractLike,
+    load_prompt_contract_from_legacy_config_run_manifest,
     load_prompt_contract_from_run_manifest,
     prompt_contract_metadata,
     response_satisfies_contract,
@@ -222,6 +223,7 @@ def postprocess(
     rows_output: Path,
     metrics_output: Path,
     prompt_contract: PromptContractLike = None,
+    prompt_contract_resolution: str = "embedded-run-manifest",
 ) -> dict[str, Any]:
     frame = pd.read_excel(input_path)
     required = {"index", "answer", "prediction"}
@@ -271,6 +273,7 @@ def postprocess(
         "schema_version": "blind-gains.vlmeval-unified-scores.v2",
         "source_workbook": str(input_path),
         "parser_version": PARSER_VERSION,
+        "prompt_contract_resolution": prompt_contract_resolution,
         **prompt_contract_metadata(prompt_contract),
         "overall": _aggregate(scored_rows),
         "paired": _aggregate_pairs(scored_rows),
@@ -291,13 +294,28 @@ def main() -> None:
     parser.add_argument("--rows-output", type=Path, required=True)
     parser.add_argument("--metrics-output", type=Path, required=True)
     parser.add_argument("--run-manifest", type=Path)
+    parser.add_argument("--allow-legacy-config-contract", action="store_true")
     args = parser.parse_args()
-    contract = (
-        load_prompt_contract_from_run_manifest(args.run_manifest)
-        if args.run_manifest is not None
-        else None
+    if args.run_manifest is None:
+        if args.allow_legacy_config_contract:
+            raise ValueError("legacy config contract resolution requires --run-manifest")
+        contract = None
+        resolution = "default-contract"
+    elif args.allow_legacy_config_contract:
+        contract = load_prompt_contract_from_legacy_config_run_manifest(
+            args.run_manifest, Path(__file__).resolve().parents[1]
+        )
+        resolution = "legacy-hash-pinned-run-config"
+    else:
+        contract = load_prompt_contract_from_run_manifest(args.run_manifest)
+        resolution = "embedded-run-manifest"
+    payload = postprocess(
+        args.input,
+        args.rows_output,
+        args.metrics_output,
+        contract,
+        prompt_contract_resolution=resolution,
     )
-    payload = postprocess(args.input, args.rows_output, args.metrics_output, contract)
     print(json.dumps(payload["overall"], sort_keys=True))
 
 

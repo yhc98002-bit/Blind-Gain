@@ -91,6 +91,55 @@ def load_prompt_contract_from_run_manifest(path: str | Path) -> PromptContract:
     return resolved
 
 
+def load_prompt_contract_from_legacy_config_run_manifest(
+    path: str | Path, repo_root: str | Path
+) -> PromptContract:
+    manifest_path = Path(path)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if isinstance(payload.get("prompt_contract"), dict):
+        raise ValueError(
+            f"legacy config resolution is not allowed for a run with an embedded contract: {path}"
+        )
+    config_value = payload.get("config_path")
+    expected_hash = payload.get("config_hash")
+    if not isinstance(config_value, str) or not config_value:
+        raise ValueError(f"legacy run manifest has no config_path: {path}")
+    if not isinstance(expected_hash, str) or len(expected_hash) != 64:
+        raise ValueError(f"legacy run manifest has no valid config_hash: {path}")
+    config_path = Path(config_value)
+    if not config_path.is_absolute():
+        config_path = Path(repo_root) / config_path
+    config_bytes = config_path.read_bytes()
+    observed_hash = hashlib.sha256(config_bytes).hexdigest()
+    if observed_hash != expected_hash:
+        raise ValueError(
+            f"legacy run config hash mismatch: expected {expected_hash}, found {observed_hash}"
+        )
+    config = json.loads(config_bytes)
+    models = config.get("model")
+    if not isinstance(models, dict) or not models:
+        raise ValueError(f"legacy run config has no model mapping: {config_path}")
+    prompts = {
+        str(model.get("system_prompt", "")).strip()
+        for model in models.values()
+        if isinstance(model, dict) and str(model.get("system_prompt", "")).strip()
+    }
+    if len(prompts) != 1:
+        raise ValueError(
+            f"legacy run config must contain exactly one nonempty system_prompt: {config_path}"
+        )
+    instruction = prompts.pop()
+    if "<answer>" not in instruction.lower() or "</answer>" not in instruction.lower():
+        raise ValueError(
+            f"legacy system_prompt does not register the answer-tag contract: {config_path}"
+        )
+    return PromptContract(
+        contract_id="answer-tags-v1",
+        instruction=instruction,
+        response_format="single_final_answer_tag",
+    )
+
+
 def format_question(question: str, contract: PromptContractLike = None) -> str:
     resolved = resolve_prompt_contract(contract)
     return f"{question.strip()}\n\n{resolved.instruction}"

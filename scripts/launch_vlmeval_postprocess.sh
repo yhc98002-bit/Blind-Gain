@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 3 ]]; then
-  echo "Usage: $0 INPUT_WORKBOOK SOURCE_RUN_DIR RUN_TAG" >&2
+if [[ $# -lt 3 || $# -gt 4 ]]; then
+  echo "Usage: $0 INPUT_WORKBOOK SOURCE_RUN_DIR RUN_TAG [embedded|legacy-config]" >&2
   exit 2
 fi
 
 INPUT="$1"
 SOURCE_RUN_DIR="$2"
 RUN_TAG="$3"
+CONTRACT_MODE="${4:-embedded}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG must contain only lowercase letters, numbers, underscores, and hyphens" >&2
+  exit 2
+fi
+if [[ "${CONTRACT_MODE}" != "embedded" && "${CONTRACT_MODE}" != "legacy-config" ]]; then
+  echo "Contract mode must be embedded or legacy-config" >&2
   exit 2
 fi
 for REQUIRED in "${INPUT}" "${SOURCE_RUN_DIR}/run_manifest.json"; do
@@ -29,7 +34,11 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 ROWS="${RUN_DIR}/rows.jsonl"
 METRICS="${RUN_DIR}/metrics.json"
-COMMAND="artifacts/envs/vlmevalkit/bin/python scripts/postprocess_vlmeval_predictions.py --input ${INPUT} --rows-output ${ROWS} --metrics-output ${METRICS} --run-manifest ${SOURCE_RUN_DIR}/run_manifest.json"
+LEGACY_FLAG=""
+if [[ "${CONTRACT_MODE}" == "legacy-config" ]]; then
+  LEGACY_FLAG="--allow-legacy-config-contract"
+fi
+COMMAND="artifacts/envs/vlmevalkit/bin/python scripts/postprocess_vlmeval_predictions.py --input ${INPUT} --rows-output ${ROWS} --metrics-output ${METRICS} --run-manifest ${SOURCE_RUN_DIR}/run_manifest.json ${LEGACY_FLAG}"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs"
@@ -39,6 +48,7 @@ jq -n \
   --arg input "${INPUT}" \
   --arg input_hash "$(sha256sum "${INPUT}" | awk '{print $1}')" \
   --arg source_run "${SOURCE_RUN_DIR}" \
+  --arg contract_mode "${CONTRACT_MODE}" \
   --arg command "${COMMAND}" \
   --arg command_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -54,6 +64,7 @@ jq -n \
     data_manifest: $input,
     data_manifest_hash: $input_hash,
     source_run: $source_run,
+    prompt_contract_resolution: $contract_mode,
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,
