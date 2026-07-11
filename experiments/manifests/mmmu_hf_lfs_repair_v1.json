@@ -1,0 +1,37 @@
+{
+  "checkout": "data/modelscope/MMMU",
+  "files": [
+    {
+      "action": "installed",
+      "bytes": 6394029,
+      "path": "Art_Theory/dev-00000-of-00001.parquet",
+      "sha256": "2076245171d6d78332ca15d9194a97a062e1a32474fce01292bb15eddf7225b7",
+      "source_url": "https://huggingface.co/datasets/MMMU/MMMU/resolve/98e6ac0cb9b7b2cd2c991b85a50762edc4aedc68/Art_Theory/dev-00000-of-00001.parquet"
+    },
+    {
+      "action": "installed",
+      "bytes": 8494798,
+      "path": "Biology/validation-00000-of-00001.parquet",
+      "sha256": "644e5b10eb90689a0e41a7c738526113551f59ab5e66c44a870e6bca52d39e08",
+      "source_url": "https://huggingface.co/datasets/MMMU/MMMU/resolve/98e6ac0cb9b7b2cd2c991b85a50762edc4aedc68/Biology/validation-00000-of-00001.parquet"
+    },
+    {
+      "action": "installed",
+      "bytes": 8430352,
+      "path": "History/validation-00000-of-00001.parquet",
+      "sha256": "fe6ba5fa13133d43afbd63abfe75b49ac45c5de566ac896fbc370cb1492c8f82",
+      "source_url": "https://huggingface.co/datasets/MMMU/MMMU/resolve/98e6ac0cb9b7b2cd2c991b85a50762edc4aedc68/History/validation-00000-of-00001.parquet"
+    },
+    {
+      "action": "installed",
+      "bytes": 9363650,
+      "path": "Music/validation-00000-of-00001.parquet",
+      "sha256": "132f8e3965276788f1b5388c39565d5475b8eb61af3142522be446e9a131af8f",
+      "source_url": "https://huggingface.co/datasets/MMMU/MMMU/resolve/98e6ac0cb9b7b2cd2c991b85a50762edc4aedc68/Music/validation-00000-of-00001.parquet"
+    }
+  ],
+  "repo_id": "MMMU/MMMU",
+  "revision": "98e6ac0cb9b7b2cd2c991b85a50762edc4aedc68",
+  "schema_version": "blind-gains.hf-file-repair.v1",
+  "status": "pass"
+}

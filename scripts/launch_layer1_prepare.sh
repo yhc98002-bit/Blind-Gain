@@ -14,8 +14,8 @@ METADATA_OUTPUT="$5"
 RUN_TAG="$6"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "mathverse" && "${DATASET}" != "blink" && "${DATASET}" != "mmvp" && "${DATASET}" != "hallusion" ]]; then
-  echo "DATASET must be mathvista, mathverse, blink, mmvp, or hallusion" >&2
+if [[ "${DATASET}" != "mathvista" && "${DATASET}" != "mathverse" && "${DATASET}" != "mmmu" && "${DATASET}" != "blink" && "${DATASET}" != "mmvp" && "${DATASET}" != "hallusion" ]]; then
+  echo "DATASET must be mathvista, mathverse, mmmu, blink, mmvp, or hallusion" >&2
   exit 2
 fi
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
@@ -46,6 +46,14 @@ if [[ -e "${OUTPUT}" || -e "${METADATA_OUTPUT}" ]]; then
 fi
 if [[ -f "${SOURCE}" ]]; then
   SOURCE_HASH="$(sha256sum "${SOURCE}" | awk '{print $1}')"
+elif [[ "${DATASET}" == "mmmu" ]]; then
+  SOURCE_HASH="$({
+    find "${SOURCE}" -mindepth 2 -maxdepth 2 -type f \
+      \( -name 'dev-*.parquet' -o -name 'validation-*.parquet' \) -print0 \
+      | sort -z | xargs -0 sha256sum
+    test ! -f experiments/manifests/mmmu_hf_lfs_repair_v1.json \
+      || sha256sum experiments/manifests/mmmu_hf_lfs_repair_v1.json
+  } | sha256sum | awk '{print $1}')"
 else
   SOURCE_HASH="$(find "${SOURCE}" -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 fi

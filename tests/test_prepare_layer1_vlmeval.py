@@ -13,6 +13,7 @@ from scripts.prepare_layer1_vlmeval import (
     prepare_hallusion_json,
     prepare_mathvista_frame,
     prepare_mathverse_frame,
+    prepare_mmmu_frames,
     prepare_mmvp_csv,
 )
 
@@ -134,6 +135,68 @@ def test_mathverse_adapter_rejects_declared_free_form_choice_block(tmp_path: Pat
     )
     with pytest.raises(ValueError, match="free-form but contains a choice block"):
         prepare_mathverse_frame(frame, tmp_path / "images")
+
+
+def test_mmmu_adapter_preserves_multi_image_order_and_open_contract(tmp_path: Path) -> None:
+    frame = pd.DataFrame(
+        [
+            {
+                "id": "validation_Physics_1",
+                "question": "Compare <image 2> with <image 1>.",
+                "options": "['left', 'right']",
+                "answer": "B",
+                "question_type": "multiple-choice",
+                "subfield": "Mechanics",
+                "topic_difficulty": "Hard",
+                "img_type": "['Plots', 'Diagrams']",
+                "image_1": _image_record("red"),
+                "image_2": _image_record("blue"),
+            },
+            {
+                "id": "validation_Physics_2",
+                "question": "Read <image 1>.",
+                "options": "[]",
+                "answer": "42",
+                "question_type": "open",
+                "subfield": "Mechanics",
+                "topic_difficulty": "Easy",
+                "img_type": "['Plots']",
+                "image_1": _image_record("green"),
+                "image_2": None,
+            },
+        ]
+    )
+
+    rows = prepare_mmmu_frames([("Physics", "validation", frame)], tmp_path / "images")
+
+    assert rows[0]["image_count"] == 2
+    assert rows[0]["image_references"] == "[2, 1]"
+    assert rows[0]["A"] == "left" and rows[0]["answer_option"] == "B"
+    assert rows[1]["question_type"] == "free_form" and "A" not in rows[1]
+    assert rows[1]["split"] == "validation" and rows[1]["category"] == "Physics"
+
+
+def test_mmmu_adapter_rejects_noncontiguous_or_missing_image_reference(tmp_path: Path) -> None:
+    base = {
+        "id": "dev_Art_1",
+        "question": "Inspect <image 2>.",
+        "options": "['yes', 'no']",
+        "answer": "A",
+        "question_type": "multiple-choice",
+        "subfield": "Art",
+        "topic_difficulty": "Easy",
+        "image_1": _image_record("red"),
+        "image_2": None,
+    }
+    with pytest.raises(ValueError, match="references image 2"):
+        prepare_mmmu_frames([("Art", "dev", pd.DataFrame([base]))], tmp_path / "images-a")
+
+    noncontiguous = {**base, "question": "Inspect <image 2>.", "image_1": None, "image_2": _image_record("blue")}
+    with pytest.raises(ValueError, match="noncontiguous image fields"):
+        prepare_mmmu_frames(
+            [("Art", "dev", pd.DataFrame([noncontiguous]))],
+            tmp_path / "images-b",
+        )
 
 
 def test_blink_adapter_keeps_image_order_and_removes_duplicate_choice_block(tmp_path: Path) -> None:

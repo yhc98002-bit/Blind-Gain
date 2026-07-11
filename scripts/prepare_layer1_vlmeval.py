@@ -268,6 +268,117 @@ def prepare_mathverse_frame(frame: pd.DataFrame, image_dir: Path) -> list[dict[s
     return rows
 
 
+def _mmmu_options(value: Any) -> list[str]:
+    if isinstance(value, str):
+        try:
+            parsed = ast.literal_eval(value)
+        except (SyntaxError, ValueError) as error:
+            raise ValueError(f"malformed MMMU options: {value!r}") from error
+    else:
+        parsed = value.tolist() if hasattr(value, "tolist") else value
+    if parsed is None:
+        return []
+    if not isinstance(parsed, (list, tuple)):
+        raise ValueError(f"MMMU options must decode to a list: {value!r}")
+    return [str(option) for option in parsed]
+
+
+_MMMU_IMAGE_REFERENCE = re.compile(r"<image\s+(\d+)>", re.IGNORECASE)
+
+
+def prepare_mmmu_frames(
+    frames: Iterable[tuple[str, str, pd.DataFrame]], image_dir: Path
+) -> list[dict[str, Any]]:
+    required = {
+        "id",
+        "question",
+        "options",
+        "answer",
+        "question_type",
+        "subfield",
+        "topic_difficulty",
+    }
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for subject, split, frame in frames:
+        missing = required - set(frame.columns)
+        if missing:
+            raise ValueError(f"MMMU {subject}/{split} parquet missing columns: {sorted(missing)}")
+        for raw in frame.to_dict(orient="records"):
+            source_id = str(raw["id"]).strip()
+            if not source_id or source_id in seen:
+                raise ValueError(f"duplicate or empty MMMU id: {source_id!r}")
+            seen.add(source_id)
+            question_type = str(raw["question_type"]).strip()
+            if question_type not in {"multiple-choice", "open"}:
+                raise ValueError(f"MMMU row {source_id} has unsupported question type {question_type!r}")
+            options = _mmmu_options(raw["options"])
+            answer = str(raw["answer"]).strip()
+            if not answer:
+                raise ValueError(f"MMMU row {source_id} has an empty answer")
+            if question_type == "multiple-choice":
+                if len(options) < 2:
+                    raise ValueError(f"MMMU row {source_id} is multiple-choice without options")
+                if not re.fullmatch(r"[A-Z]", answer) or string.ascii_uppercase.index(answer) >= len(options):
+                    raise ValueError(f"MMMU row {source_id} answer {answer!r} is not a valid option label")
+            elif options:
+                raise ValueError(f"MMMU row {source_id} is open-answer but contains options")
+
+            image_records = [raw.get(f"image_{index}") for index in range(1, 8)]
+            present = [isinstance(value, dict) and isinstance(value.get("bytes"), bytes) for value in image_records]
+            if any(present[index] and not all(present[:index]) for index in range(len(present))):
+                raise ValueError(f"MMMU row {source_id} has noncontiguous image fields")
+            image_count = sum(present)
+            if image_count == 0:
+                raise ValueError(f"MMMU row {source_id} has no embedded images")
+            question = str(raw["question"]).strip()
+            references = [int(value) for value in _MMMU_IMAGE_REFERENCE.findall(question)]
+            references.extend(
+                int(value)
+                for option in options
+                for value in _MMMU_IMAGE_REFERENCE.findall(option)
+            )
+            if not references:
+                raise ValueError(f"MMMU row {source_id} has no image references in its prompt")
+            if min(references) < 1 or max(references) > image_count:
+                raise ValueError(
+                    f"MMMU row {source_id} references image {max(references)} but has {image_count} images"
+                )
+            referenced_indices = sorted(set(references))
+            if referenced_indices != list(range(1, max(referenced_indices) + 1)):
+                raise ValueError(f"MMMU row {source_id} has noncontiguous image references {referenced_indices}")
+            paths = [
+                str(_materialize_png(image_records[index], image_dir))
+                for index in range(image_count)
+            ]
+            record: dict[str, Any] = {
+                "index": source_id,
+                "image_path": repr(paths) if len(paths) > 1 else paths[0],
+                "question": question,
+                "answer": answer,
+                "question_type": "multi_choice" if options else "free_form",
+                "answer_type": "choice" if options else "free_form",
+                "answer_option": answer if options else "",
+                "category": subject,
+                "l2_category": str(raw["subfield"]),
+                "split": split,
+                "difficulty": str(raw["topic_difficulty"]),
+                "image_count": image_count,
+                "prompt_image_count": len(referenced_indices),
+                "image_references": repr(references),
+                "image_types": repr(_as_list(raw.get("img_type"))),
+                "source_id": source_id,
+            }
+            record.update(
+                {
+                    string.ascii_uppercase[index]: option
+                    for index, option in enumerate(options)
+                }
+            )
+            rows.append(record)
+    return rows
+
+
 _BLINK_CHOICE_BLOCK = re.compile(r"\nSelect from the following choices\.\s*\n[\s\S]*$", re.IGNORECASE)
 _BLINK_OPTION_LINE = re.compile(r"\n\([A-Z]\)\s")
 
@@ -508,7 +619,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dataset",
-        choices=("mathvista", "mathverse", "blink", "mmvp", "hallusion"),
+        choices=("mathvista", "mathverse", "mmmu", "blink", "mmvp", "hallusion"),
         required=True,
     )
     parser.add_argument("--source", type=Path, required=True)
@@ -546,6 +657,28 @@ def main() -> None:
                 for row in rows
             ),
             "official_llm_judge_not_run_by_adapter": True,
+        }
+    elif args.dataset == "mmmu":
+        sources = sorted(args.source.glob("*/dev-*.parquet")) + sorted(
+            args.source.glob("*/validation-*.parquet")
+        )
+        if not sources:
+            raise FileNotFoundError(f"no MMMU dev/validation parquet files under {args.source}")
+        frame_inputs = (
+            (path.parent.name, "dev" if path.name.startswith("dev-") else "validation", pd.read_parquet(path))
+            for path in sources
+        )
+        rows = prepare_mmmu_frames(frame_inputs, args.image_dir)
+        split_counts: dict[str, int] = {}
+        for row in rows:
+            split_counts[row["split"]] = split_counts.get(row["split"], 0) + 1
+        deviations = {
+            "splits": dict(sorted(split_counts.items())),
+            "subjects": len({row["category"] for row in rows}),
+            "source_checkout": str(args.source),
+            "rows_with_unreferenced_embedded_images": sum(
+                row["image_count"] > row["prompt_image_count"] for row in rows
+            ),
         }
     elif args.dataset == "blink":
         sources = sorted(args.source.glob("*/val-*.parquet"))
