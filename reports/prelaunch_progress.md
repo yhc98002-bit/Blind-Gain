@@ -5,7 +5,7 @@ L3 | blocked | reports/l7_noimage_symbolic_grader_stall.md: original five-step s
 L4 | pass | reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload
 L5 | pass | required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1
 L6 | pass | named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests
-L7 | blocked | gray and noise are complete; real remains active on an29, guarded none resumed from row 100 on an29 GPU7, and guarded caption resumed from row 332 on an12 GPU6
+L7 | blocked | real/gray/noise are complete; guarded none is deliberately paused at a validated 1,104-row prefix for the L3 smoke, while guarded caption remains active on an12 GPU6
 L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | blocked | R20 is complete; guarded 72B ModelScope download is active in an29 /dev/shm, while TP4 captioning and standard caption-only QA still await a four-GPU single-node window
 L10 | blocked | MathVerse and repaired-V2 MMMU 3B/7B rows are complete and published; the five-condition ViRL39K sample audit remains
