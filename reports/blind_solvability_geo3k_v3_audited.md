@@ -1,5 +1,10 @@
 # Geometry3K Blind-Solvability Audit
 
+Audit provenance:
+- This v3 artifact was regenerated through the strict summary builder, which checks cross-condition item identity and decoding-contract equality and recomputes every stored score before aggregation.
+- Adversarial coverage is in `tests/test_blind_solvability_summary_audit.py`: changed scientific items, decoding drift, stale scores, and non-greedy registered decoding are rejected.
+- This is the Gate-2 512-token canonical-v1 audit artifact. It is not the future L7 v2 pilot-contract audit, which remains blocked in `reports/prelaunch_progress.md`.
+
 Status:
 - Complete over 2702 Geometry3K items under all five registered conditions.
 - Metrics use the canonical answer parser; intervals are 2,000-draw item-bootstrap 95% confidence intervals.

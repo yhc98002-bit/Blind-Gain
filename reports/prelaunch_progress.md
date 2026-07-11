@@ -4,7 +4,7 @@ L2 | blocked | validity-field split waits for L0
 L3 | blocked | pilot reward depends on L0 and L1 before its smoke run
 L4 | blocked | A3 caption path waits for L0
 L5 | blocked | pilot-corpus decontamination waits for L0
-L6 | blocked | consistency auditor and report repairs wait for L0
+L6 | blocked | objective consistency auditor is implemented; stale-report repairs and the GPU-hours report still wait for L0
 L7 | blocked | blind-solvability v2 depends on L1, L2, L3, and L5
 L8 | blocked | R20 confirmatory generation waits for L0
 L9 | blocked | stronger-caption stress depends on L0 captioner decision and L8 generation
