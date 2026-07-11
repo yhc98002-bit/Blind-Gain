@@ -12,6 +12,7 @@ Evidence:
 - Dedicated byte-exact snapshot: `src/fliptrack/frozen_r20/fliptrack_metrics.py`.
 - Current live scorer SHA256: `7812612c4b0fcbd24e2c20b1afc48cf33b7884efd3b9e2baaea368f42d28b446`; it changed later for optimized permutation-null computation.
 - Before repair, the full suite reported 397 passes and exactly two failures, both from `verify_frozen_inputs` comparing the historical hash against the later live file.
+- After repair, the targeted R20 tests pass 3/3 and the full repository suite passes 400/400 in 76.54 seconds.
 
 Problems:
 - A freeze declaration had been represented as a hash over a mutable working path. Legitimate post-freeze scorer maintenance therefore made the historical generator test fail even though R20 generation code, seeds, counts, and outputs were unchanged.
@@ -23,5 +24,4 @@ Decision:
 - Keep the live scorer as the maintained evaluation implementation; do not import or execute the frozen snapshot in new evaluations.
 
 Next actions:
-- Re-run the R20 generation tests and then the full suite.
 - Preserve this report with the R20 confirmatory package so future scorer changes cannot be mistaken for generator drift.
