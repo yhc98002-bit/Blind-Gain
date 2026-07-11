@@ -123,3 +123,12 @@ def test_generic_launcher_records_manifest_split_and_multi_image_context() -> No
 def test_geometry_launcher_uses_memory_backed_condition_cache() -> None:
     source = (ROOT / "scripts/launch_blind_solvability_condition.sh").read_text(encoding="utf-8")
     assert "BLIND_GAINS_CACHE_ROOT:-/dev/shm/blind-gains" in source
+
+
+def test_virl_launcher_records_sample_and_prompt_contract_hashes() -> None:
+    source = (ROOT / "scripts/launch_virl39k_blind_v1_condition.sh").read_text(encoding="utf-8")
+    assert 'FORMAT_PROMPT_HASH="$(sha256sum' in source
+    assert "format_prompt_sha256: $format_prompt_hash" in source
+    assert "sample_spec_sha256: $sample_hash" in source
+    assert "sample_size: $sample_size" in source
+    assert "max_images_per_item: $max_images" in source

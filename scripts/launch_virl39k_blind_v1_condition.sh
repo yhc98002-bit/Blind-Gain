@@ -89,6 +89,9 @@ PARSER_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.answer_rewa
 REWARD_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.pilot_reward import PILOT_REWARD_VERSION; print(PILOT_REWARD_VERSION)')"
 SOURCE_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
 SAMPLE_HASH="$(sha256sum "${SAMPLE_SPEC}" | awk '{print $1}')"
+FORMAT_PROMPT_HASH="$(sha256sum "${FORMAT_PROMPT}" | awk '{print $1}')"
+SAMPLE_SIZE="$(jq -r '.sample_size' "${SAMPLE_SPEC}")"
+MAX_IMAGES="$(jq -r '.max_images_per_item' "${SAMPLE_SPEC}")"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
 COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits audit --batch-size 2 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --seed 20260710"
 
@@ -103,6 +106,7 @@ jq -n \
   --arg data_hash "${DATA_HASH}" \
   --arg source_hash "${SOURCE_HASH}" \
   --arg sample_hash "${SAMPLE_HASH}" \
+  --arg format_prompt_hash "${FORMAT_PROMPT_HASH}" \
   --arg command "${COMMAND}" \
   --arg start "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg output "${OUTPUT}" \
@@ -113,6 +117,8 @@ jq -n \
   --arg reward_version "${REWARD_VERSION}" \
   --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
   --arg prompt_hash "${PROMPT_CONTRACT_HASH}" \
+  --argjson sample_size "${SAMPLE_SIZE}" \
+  --argjson max_images "${MAX_IMAGES}" \
   '{
     run_id: $run_id,
     job_type: "l10_virl39k_blind_solvability_v1",
@@ -126,9 +132,12 @@ jq -n \
     source_manifest_sha256: $source_hash,
     sample_spec: "reports/virl39k_blind_sample_4096.json",
     sample_spec_sha256: $sample_hash,
+    sample_size: $sample_size,
+    max_images_per_item: $max_images,
     train_filter_ids: null,
     train_filter_sha256: null,
     model_revision: "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    format_prompt_sha256: $format_prompt_hash,
     parser_version: $parser_version,
     pilot_reward_version: $reward_version,
     scoring_mode: "pilot-reward-v1+canonical-v2",
