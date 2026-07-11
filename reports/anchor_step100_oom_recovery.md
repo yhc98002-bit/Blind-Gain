@@ -1,9 +1,9 @@
 # Anchor Step-100 OOM Recovery
 
 Status:
-- `active recovery`. The original native-reward anchor attempt passed and archived step 80 but was killed by Ray's host-memory monitor before the step-100 checkpoint.
+- `active continuation`. The original native-reward anchor attempt passed and archived step 80 but was killed by Ray's host-memory monitor before the step-100 checkpoint.
 - No anchor config, chat template, image path, or reward implementation has been changed. The recovery target is the exact archived step-80 raw state.
-- The original attempt is finalized `fail`; the archived state has been independently reverified and restored. Resume launch is waiting for the deliberate host-memory isolation window.
+- The original attempt is finalized `fail`; the archived state was independently reverified and restored. The isolated continuation has loaded all step-80 state and entered registered validation.
 
 Evidence:
 - Attempt: `experiments/runs/anchor_a0_recipe_3b_geo3k_20260709T224852Z` on `an12` GPUs 0-3.
@@ -20,6 +20,10 @@ Evidence:
 - Guarded restore: `experiments/runs/anchor_step80_restore_login_20260711T144238Z`; exactly `46,304,794,904` bytes were restored and reverified.
 - Restore marker: `checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_80/actor/RAW_STATE_RESTORED_FOR_RESUME.json`; checksum-manifest SHA256 `aa2dbf8f77b7a1a4cfbc924521d6516302331e52ca450c26dbad9932ad59fd1e`.
 - The 39G L3 smoke checkpoint was separately checksum-verified and removed, restoring enough shared headroom for the eventual step-100 save.
+- Startup attempt `experiments/runs/anchor_a0_recipe_3b_geo3k_resume80_20260711T150253Z` is preserved `fail`: the wrapper's child command lacked an explicit EasyR1 `PYTHONPATH`, so `verl` never imported and no GPU state was touched.
+- Startup attempt `experiments/runs/anchor_a0_recipe_3b_geo3k_resume80_20260711T150357Z` is preserved `fail`: its Ray UNIX socket path exceeded 107 bytes, so Ray stopped before GPU allocation.
+- Active continuation: `experiments/runs/anchor_a0_recipe_3b_geo3k_resume80_20260711T150633Z`, git `91bb0f2`, `an12` GPUs 0-3, TP1, one synchronous replica.
+- The active log records `Load from checkpoint: .../global_step_80`, followed by model, optimizer, and extra-state loads on ranks 0-3 and `Start validation...`.
 
 Problems:
 - The original attempt's manifest did not self-finalize after the Ray exception because its launcher predates `scripts/run_manifest_job.py` wrapping.
@@ -32,6 +36,7 @@ Decision:
 - Resume with the original config and native reward after the project evaluators have left `an12` host memory.
 - Record the resumed attempt in a new immutable run directory with TP1, one synchronous replica, GPUs 0-3, and an explicit host-memory exclusivity deviation.
 - Use `scripts/launch_anchor_step80_resume.sh`; it refuses cross-node placement, a missing restore marker, incomplete raw ranks, a duplicate anchor, or concurrent project VLM evaluators on `an12`.
+- Keep L7 caption paused until the continuation passes its first resumed optimizer step and host-memory peak is measured; current idle/validation memory is not used to infer peak safety.
 
 Next actions:
-- Pause and register the L7 caption prefix, then launch the unchanged step-80-to-100 continuation on `an12` GPUs 0-3.
+- Monitor through the first resumed optimizer step, retain the existing checkpoint watcher, and complete the step-100 merge/retention sequence.
