@@ -47,6 +47,32 @@ def _read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def read_jsonl_input(path: Path) -> list[dict[str, Any]]:
+    paths = sorted(path.glob("*.jsonl")) if path.is_dir() else [path]
+    if not paths or any(not candidate.is_file() for candidate in paths):
+        raise ValueError(f"JSONL input has no readable files: {path}")
+    rows: list[dict[str, Any]] = []
+    for candidate in paths:
+        rows.extend(
+            json.loads(line)
+            for line in candidate.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+    return rows
+
+
+def hash_jsonl_input(path: Path) -> str:
+    paths = sorted(path.glob("*.jsonl")) if path.is_dir() else [path]
+    if not paths or any(not candidate.is_file() for candidate in paths):
+        raise ValueError(f"JSONL input has no hashable files: {path}")
+    digest = hashlib.sha256()
+    for candidate in paths:
+        digest.update(candidate.name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(bytes.fromhex(_sha256(candidate)))
+    return digest.hexdigest()
+
+
 def _read_jsonl_glob(run_dir: Path) -> list[dict[str, Any]]:
     paths = sorted((run_dir / "shards").glob("*.jsonl"))
     if not paths:
@@ -67,6 +93,29 @@ def _parse_mapping(values: list[str], expected: set[str]) -> dict[str, Path]:
     if set(result) != expected:
         raise ValueError(f"expected mappings for {sorted(expected)}, found {sorted(result)}")
     return result
+
+
+def resolve_release_templates(
+    release_rows: list[dict[str, Any]],
+    reference_templates: dict[str, str],
+) -> tuple[frozenset[str], dict[str, str]]:
+    pair_ids = [str(row["pair_id"]) for row in release_rows]
+    release_ids = frozenset(pair_ids)
+    if len(pair_ids) != len(release_ids):
+        raise ValueError("R20 release manifest contains duplicate pair IDs")
+    if set(reference_templates) != set(release_ids):
+        raise ValueError("R20 release and private evaluation pair IDs differ")
+
+    public_template_fields = ["template_id" in row for row in release_rows]
+    if any(public_template_fields):
+        if not all(public_template_fields):
+            raise ValueError("R20 release manifest has partially present template metadata")
+        public_templates = {
+            str(row["pair_id"]): str(row["template_id"]) for row in release_rows
+        }
+        if public_templates != reference_templates:
+            raise ValueError("R20 public and private template mappings differ")
+    return release_ids, dict(reference_templates)
 
 
 @dataclass(frozen=True)
@@ -141,6 +190,21 @@ def load_cell(key: str, aggregate_run: Path) -> Cell:
     pair_ids = [str(row["pair_id"]) for row in rows]
     if len(pair_ids) != len(set(pair_ids)):
         raise ValueError(f"duplicate pair IDs in {source_run}")
+    source_data_manifest = Path(str(source_manifest["data_manifest"]))
+    input_rows = read_jsonl_input(source_data_manifest)
+    input_pair_ids = [str(row["pair_id"]) for row in input_rows]
+    if len(input_pair_ids) != len(set(input_pair_ids)):
+        raise ValueError(f"duplicate pair IDs in source data manifest: {source_data_manifest}")
+    input_template_by_pair = {
+        str(row["pair_id"]): str(row["template_id"]) for row in input_rows
+    }
+    output_template_by_pair = {
+        str(row["pair_id"]): str(row["template_id"]) for row in rows
+    }
+    if output_template_by_pair != input_template_by_pair:
+        raise ValueError(
+            f"output row identity/template metadata drift from source data: {source_run}"
+        )
     parser_versions = {str(row.get("parser_version")) for row in rows}
     if parser_versions != {PARSER_VERSION}:
         raise ValueError(f"parser version drift in {source_run}: {parser_versions}")
@@ -148,18 +212,18 @@ def load_cell(key: str, aggregate_run: Path) -> Cell:
     metrics = _read_json(metrics_path)
     if int(metrics.get("n_pairs", -1)) != len(rows):
         raise ValueError(f"aggregate row count mismatch in {aggregate_run}")
-    template_by_pair = {str(row["pair_id"]): str(row["template_id"]) for row in rows}
     return Cell(
         key=key,
         aggregate_run=aggregate_run,
         source_run=source_run,
         metrics=metrics,
         pair_ids=frozenset(pair_ids),
-        template_by_pair=template_by_pair,
+        template_by_pair=output_template_by_pair,
         hashes={
             "aggregate_manifest_sha256": _sha256(aggregate_run / "run_manifest.json"),
             "metrics_sha256": _sha256(metrics_path),
             "source_manifest_sha256": _sha256(source_manifest_path),
+            "source_data_manifest_sha256": hash_jsonl_input(source_data_manifest),
         },
     )
 
@@ -239,17 +303,21 @@ def build_package(
     lint_json: Path,
     attacker_json: Path,
 ) -> dict[str, Any]:
-    release_rows = [json.loads(line) for line in release_manifest.read_text(encoding="utf-8").splitlines() if line.strip()]
-    release_ids = {str(row["pair_id"]) for row in release_rows}
-    release_templates = {str(row["pair_id"]): str(row["template_id"]) for row in release_rows}
-    if len(release_rows) != 1200 or len(release_ids) != 1200:
+    release_rows = read_jsonl_input(release_manifest)
+    if len(release_rows) != 1200:
         raise ValueError("R20 release manifest must contain 1,200 unique pairs")
-    counts = {template: sum(value == template for value in release_templates.values()) for template in TEMPLATE_COUNTS}
-    if counts != TEMPLATE_COUNTS:
-        raise ValueError(f"R20 template counts drifted: {counts}")
 
     cells = {key: load_cell(key, run) for key, run in cell_runs.items()}
     degradation = {mode: load_cell(mode, run) for mode, run in degradation_runs.items()}
+    release_ids, release_templates = resolve_release_templates(
+        release_rows, cells["3b_real"].template_by_pair
+    )
+    counts = {
+        template: sum(value == template for value in release_templates.values())
+        for template in TEMPLATE_COUNTS
+    }
+    if counts != TEMPLATE_COUNTS:
+        raise ValueError(f"R20 template counts drifted: {counts}")
     for cell in (*cells.values(), *degradation.values()):
         if cell.pair_ids != release_ids or cell.template_by_pair != release_templates:
             raise ValueError(f"R20 row identity/metadata mismatch in {cell.source_run}")

@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from scripts.build_fliptrack_r20_confirmatory import render_markdown, template_criteria
+import pytest
+
+from scripts.build_fliptrack_r20_confirmatory import (
+    hash_jsonl_input,
+    read_jsonl_input,
+    render_markdown,
+    resolve_release_templates,
+    template_criteria,
+)
 
 
 TEMPLATE = "header_cued_table_code_v02"
@@ -10,6 +18,36 @@ TEMPLATE = "header_cued_table_code_v02"
 
 def _metrics(value: float) -> dict[str, object]:
     return {"per_template": {TEMPLATE: {"pair_accuracy": value}}}
+
+
+def test_public_release_manifest_may_strip_private_template_metadata() -> None:
+    release_rows = [{"pair_id": "pair-a"}, {"pair_id": "pair-b"}]
+    private_templates = {"pair-a": "template-a", "pair-b": "template-b"}
+
+    pair_ids, templates = resolve_release_templates(release_rows, private_templates)
+
+    assert pair_ids == {"pair-a", "pair-b"}
+    assert templates == private_templates
+
+
+def test_release_template_resolution_rejects_identity_drift() -> None:
+    release_rows = [{"pair_id": "pair-a"}, {"pair_id": "pair-b"}]
+
+    with pytest.raises(ValueError, match="pair IDs differ"):
+        resolve_release_templates(release_rows, {"pair-a": "template-a"})
+
+
+def test_jsonl_input_reader_accepts_registered_shard_directory(tmp_path: Path) -> None:
+    shards = tmp_path / "shards"
+    shards.mkdir()
+    (shards / "part_1.jsonl").write_text('{"pair_id":"pair-b"}\n', encoding="utf-8")
+    (shards / "part_0.jsonl").write_text('{"pair_id":"pair-a"}\n', encoding="utf-8")
+
+    rows = read_jsonl_input(shards)
+
+    assert [row["pair_id"] for row in rows] == ["pair-a", "pair-b"]
+    assert len(hash_jsonl_input(shards)) == 64
+    assert hash_jsonl_input(shards) == hash_jsonl_input(shards)
 
 
 def test_confirmatory_template_passes_only_all_prefrozen_criteria() -> None:
