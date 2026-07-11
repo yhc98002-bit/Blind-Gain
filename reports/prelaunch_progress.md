@@ -6,7 +6,7 @@ L4 | pass | reports/a3_caption_path.md: frozen corpus has 100% fixed-caption cov
 L5 | pass | required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1
 L6 | pass | named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests
 L7 | blocked | blind-solvability v2 depends on L1, L2, L3, and L5
-L8 | blocked | one-shot 1,200-pair generation and leakage lint pass; grouped attacker and all seven hardness cells remain
+L8 | blocked | one-shot 1,200-pair generation, leakage lint, grouped attacker, and fixed 3B caption store are complete; 7B captioning plus eight hardness and three degradation cells remain
 L9 | blocked | 72B captioner is selected for compute-node dev-shm; stress run still depends on R20 generation
 L10 | blocked | Layer-1 completion and ViRL39K audit wait for L0 and Wave-1 contracts
 L11 | blocked | document calibration remains lowest priority and may run only on genuinely free GPUs
