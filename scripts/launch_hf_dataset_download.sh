@@ -12,6 +12,7 @@ LOCAL_DIR="$3"
 RUN_TAG="$4"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROXY_URL="${PROXY_URL:-http://127.0.0.1:7890}"
+EXPECTED_BYTES="${BLIND_GAINS_DOWNLOAD_EXPECTED_BYTES:?set BLIND_GAINS_DOWNLOAD_EXPECTED_BYTES to the dataset's conservative byte budget}"
 
 if [[ ! "${REPO_ID}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
   echo "REPO_ID must have namespace/name form" >&2
@@ -25,6 +26,13 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG must contain only lowercase letters, numbers, underscores, and hyphens" >&2
   exit 2
 fi
+
+"${ROOT}/.venv/bin/python" "${ROOT}/scripts/storage_guard.py" \
+  --tier S \
+  --path "${ROOT}/${LOCAL_DIR}" \
+  --operation hf_dataset_download \
+  --required-bytes "${EXPECTED_BYTES}" \
+  --log "${ROOT}/logs/storage_guard.jsonl"
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="hf_dataset_${RUN_TAG}_${STAMP}"
@@ -49,6 +57,7 @@ jq -n \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg local_dir "${LOCAL_DIR}" \
+  --argjson expected_bytes "${EXPECTED_BYTES}" \
   '{
     run_id: $run_id,
     job_type: "external_dataset_acquisition",
@@ -62,7 +71,8 @@ jq -n \
     start_time_utc: $start_time_utc,
     end_time_utc: null,
     status: "running",
-    expected_artifacts: [$local_dir]
+    expected_artifacts: [$local_dir],
+    expected_download_bytes: $expected_bytes
   }' > "${MANIFEST}"
 
 tmux new-session -d -s "${SESSION}" \

@@ -13,6 +13,8 @@ REDISTRIBUTION="$4"
 REVISION="${5:-master}"
 RUN_TAG="${6:-$(printf '%s' "${MODEL_ID}" | tr '/.' '--' | tr '[:upper:]' '[:lower:]')}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+EXPECTED_BYTES="${BLIND_GAINS_DOWNLOAD_EXPECTED_BYTES:?set BLIND_GAINS_DOWNLOAD_EXPECTED_BYTES to the model's conservative byte budget}"
+DOWNLOAD_TIER="${BLIND_GAINS_DOWNLOAD_TIER:-S}"
 
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "RUN_TAG must contain only lowercase letters, numbers, underscores, and hyphens" >&2
@@ -29,7 +31,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 PID_FILE="${RUN_DIR}/pids/login.pid"
-COMMAND="env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY .venv/bin/python scripts/download_modelscope_model.py --model-id ${MODEL_ID} --revision ${REVISION} --local-dir ${LOCAL_DIR} --license ${LICENSE} --redistribution ${REDISTRIBUTION} --notes 'P1.10 text embedding cosine'"
+COMMAND="env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY .venv/bin/python scripts/download_modelscope_model.py --model-id ${MODEL_ID} --revision ${REVISION} --local-dir ${LOCAL_DIR} --license ${LICENSE} --redistribution ${REDISTRIBUTION} --storage-tier ${DOWNLOAD_TIER} --expected-bytes ${EXPECTED_BYTES} --notes 'P1.10 text embedding cosine'"
 
 cd "${ROOT}"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
@@ -40,6 +42,8 @@ jq -n \
   --arg model_id "${MODEL_ID}" \
   --arg revision "${REVISION}" \
   --arg local_dir "${LOCAL_DIR}" \
+  --arg storage_tier "${DOWNLOAD_TIER}" \
+  --argjson expected_bytes "${EXPECTED_BYTES}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '{
@@ -55,6 +59,8 @@ jq -n \
     source_url: ("https://modelscope.cn/models/" + $model_id),
     model_revision: $revision,
     local_path: $local_dir,
+    storage_tier: $storage_tier,
+    expected_download_bytes: $expected_bytes,
     command: $command,
     start_time_utc: $start_time_utc,
     end_time_utc: null,

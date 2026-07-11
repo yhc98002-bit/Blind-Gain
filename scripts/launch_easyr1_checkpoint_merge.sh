@@ -26,6 +26,19 @@ if compgen -G "${ROOT}/${ACTOR_DIR}/huggingface/*.safetensors" > /dev/null; then
   exit 2
 fi
 
+# The raw model shards are a conservative upper bound for merged output bytes.
+MERGE_REQUIRED_BYTES=0
+for SHARD in "${MODEL_SHARDS[@]}"; do
+  SHARD_BYTES="$(stat -c '%s' "${SHARD}")"
+  MERGE_REQUIRED_BYTES="$((MERGE_REQUIRED_BYTES + SHARD_BYTES))"
+done
+"${ROOT}/.venv/bin/python" "${ROOT}/scripts/storage_guard.py" \
+  --tier S \
+  --path "${ROOT}/${ACTOR_DIR}/huggingface" \
+  --operation checkpoint_merge \
+  --required-bytes "${MERGE_REQUIRED_BYTES}" \
+  --log "${ROOT}/logs/storage_guard.jsonl"
+
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="easyr1_checkpoint_merge_${RUN_TAG}_${NODE}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"

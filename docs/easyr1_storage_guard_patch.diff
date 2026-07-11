@@ -1,0 +1,17 @@
+diff --git a/verl/trainer/ray_trainer.py b/verl/trainer/ray_trainer.py
+--- a/verl/trainer/ray_trainer.py
++++ b/verl/trainer/ray_trainer.py
+@@ -307,6 +307,13 @@ class RayPPOTrainer:
+ 
+     def _save_checkpoint(self) -> None:
+         # path: {save_checkpoint_path}/global_step_{global_step}/{actor,critic}
++        if os.getenv("BLIND_GAINS_STORAGE_GUARD_ENABLED") == "1":
++            from src.ops.easyr1_checkpoint_guard import guard_easyr1_checkpoint_save
++
++            guard_easyr1_checkpoint_save(
++                self.config.trainer.save_checkpoint_path,
++                self.global_step,
++            )
+         if self.val_reward_score > self.best_val_reward_score:
+             self.best_val_reward_score = self.val_reward_score
+             self.best_global_step = self.global_step

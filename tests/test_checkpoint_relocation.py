@@ -19,7 +19,10 @@ def _actor(tmp_path: Path, *, merged: bool = True) -> Path:
     if merged:
         huggingface = actor / "huggingface"
         huggingface.mkdir()
-        (huggingface / "model.safetensors.index.json").write_text("{}\n", encoding="ascii")
+        (huggingface / "model.safetensors.index.json").write_text(
+            '{"weight_map": {"weight": "model-00001-of-00001.safetensors"}}\n',
+            encoding="ascii",
+        )
         (huggingface / "model-00001-of-00001.safetensors").write_bytes(b"merged")
     return actor
 
@@ -71,3 +74,98 @@ def test_relocation_rejects_incomplete_rank_set(tmp_path: Path) -> None:
         relocate_raw_checkpoint(actor, tmp_path / "archive")
 
     assert len(list(actor.glob("*_world_size_*.pt"))) == 3
+
+
+def _archived_raw_state(run_root: Path, step: int, *, corrupt: bool = False) -> Path:
+    actor = run_root / f"global_step_{step}" / "actor"
+    actor.mkdir(parents=True)
+    lines = []
+    for family in ("model", "optim"):
+        for rank in range(2):
+            path = actor / f"{family}_world_size_2_rank_{rank}.pt"
+            path.write_bytes(f"{family}-{rank}-step-{step}".encode("ascii"))
+            import hashlib
+
+            lines.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n")
+    (actor / "raw_training_state.source.sha256").write_text("".join(lines), encoding="ascii")
+    if corrupt:
+        (actor / "model_world_size_2_rank_0.pt").write_bytes(b"changed after manifest")
+    return actor
+
+
+def test_relocation_keeps_only_latest_raw_state_and_records_deletions(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_60")
+    actor = shared / "global_step_60" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    old20 = _archived_raw_state(run_archive, 20)
+    old40 = _archived_raw_state(run_archive, 40)
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+    report = tmp_path / "retention.md"
+
+    payload = relocate_raw_checkpoint(
+        actor,
+        run_archive / "global_step_60" / "actor",
+        run_archive_root=run_archive,
+        run_manifest=run_manifest,
+        retention_report=report,
+    )
+
+    assert not old20.exists()
+    assert not old40.exists()
+    assert (run_archive / "global_step_60" / "actor" / "model_world_size_2_rank_0.pt").is_file()
+    assert [record["step"] for record in payload["retention_expired_states"]] == [20, 40]
+    assert "global_step_20" in report.read_text(encoding="utf-8")
+    manifest = json.loads(run_manifest.read_text(encoding="utf-8"))
+    event = manifest["storage_retention_events"][0]
+    assert event["status"] == "deleted_after_verification"
+    assert event["merged_checkpoint_sha256"] == payload["merged_checkpoint_sha256"]
+
+
+def test_retention_refuses_to_delete_archive_with_checksum_drift(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_60")
+    actor = shared / "global_step_60" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    old = _archived_raw_state(run_archive, 40, corrupt=True)
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="checksum mismatch"):
+        relocate_raw_checkpoint(
+            actor,
+            run_archive / "global_step_60" / "actor",
+            run_archive_root=run_archive,
+            run_manifest=run_manifest,
+            retention_report=tmp_path / "retention.md",
+        )
+
+    assert old.is_dir()
+    assert len(list(actor.glob("*_world_size_*.pt"))) == 4
+
+
+def test_retention_refuses_unexpected_sidecar_before_deleting_any_raw_state(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_60")
+    actor = shared / "global_step_60" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    old = _archived_raw_state(run_archive, 40)
+    (old / "unregistered_resume_note.txt").write_text("must survive\n", encoding="utf-8")
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="unexpected entries"):
+        relocate_raw_checkpoint(
+            actor,
+            run_archive / "global_step_60" / "actor",
+            run_archive_root=run_archive,
+            run_manifest=run_manifest,
+            retention_report=tmp_path / "retention.md",
+        )
+
+    assert (old / "unregistered_resume_note.txt").is_file()
+    assert len(list(old.glob("*_world_size_*.pt"))) == 4
