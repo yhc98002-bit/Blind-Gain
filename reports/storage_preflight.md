@@ -2,8 +2,8 @@
 
 Status:
 
-- `blocked`. The guards and retention implementation pass focused tests, but neither compute node exposes a writable persistent local path that satisfies the 40 GiB floor. The required pilot dry save/read/merge therefore has not been performed.
-- This report does not declare a compute or scientific gate passed.
+- `pass`. Every enumerated L0 sub-check is satisfied: per-node storage was measured, Tier-S and Tier-T guards pass their fixtures, latest-raw retention passes its fixtures, the PI-approved storage layout is recorded, and an immutable dry save/sweep/read-back run passed all nine checks.
+- This is an operational L0 result only. It does not declare a compute or scientific gate passed.
 
 Evidence:
 
@@ -14,19 +14,21 @@ Measured 2026-07-11. Byte-exact `df -B1` outputs and mount metadata were collect
 | Node | Path/mount | Capacity GiB | Free GiB | User writable | Eligible use |
 | --- | --- | ---: | ---: | --- | --- |
 | `an12` | `/tmp` and `/var/tmp` (`/dev/loop0`, XFS) | 31.98 | 18.47 | `/tmp`: yes; `/var/tmp`: no | no: below 40 GiB floor even before a write |
-| `an12` | `/dev/shm` (tmpfs) | 503.76 | 499.13 | yes | staging only; process-survival checkpoints prohibited |
+| `an12` | `/dev/shm` (tmpfs) | 503.76 | 499.13 | yes | re-derivable staging and captioner weights; never checkpoints |
 | `an12` | `/run/user/22847` (tmpfs) | 100.75 | 100.75 | yes | staging only; process-survival checkpoints prohibited |
 | `an12` | `/logdir` (XFS) | 99.95 | 96.29 | no, root-owned | unavailable |
 | `an12` | `/var/lib/containerd` (XFS) | 399.80 | 392.77 | no, root-owned | unavailable and reserved for system use |
 | `an29` | `/tmp` and `/var/tmp` (`/dev/loop0`, XFS) | 31.98 | 1.14 | `/tmp`: yes; `/var/tmp`: no | no: below 40 GiB floor even before a write |
-| `an29` | `/dev/shm` (tmpfs) | 503.76 | 350.06 | yes | staging only; process-survival checkpoints prohibited |
+| `an29` | `/dev/shm` (tmpfs) | 503.76 | 350.06 | yes | re-derivable staging and captioner weights; never checkpoints |
 | `an29` | `/run/user/22847` (tmpfs) | 100.75 | 100.75 | yes | staging only; process-survival checkpoints prohibited |
 | `an29` | `/logdir` (XFS) | 99.95 | 57.79 | no, root-owned | unavailable |
 | `an29` | `/var/lib/containerd` (XFS) | 399.80 | 81.13 | no, root-owned | unavailable and reserved for system use |
-| login | `/tmp` (ext4) | 814.62 | 339.11 at initial probe | yes | Tier T archival path already used for anchor state; not visible as node-local pilot storage |
+| login | `/tmp` (ext4) | 814.62 | 339.11 at initial probe | yes | approved Tier-T archive for swept raw and intermediate merged checkpoints |
 | login | `/HOME/paratera_xy/pxy1289` | 100.00 | 31.51 | yes | Tier S2; project cap 15 GiB, small archives only |
 
 The supplied reference claim of approximately 339 GiB free under compute-node `/tmp` is not true inside either current SSH environment. The 339 GiB figure applies to login-node `/tmp`.
+
+The PI resolved the topology on 2026-07-11: pilot saves land under shared `checkpoints/pilot/<arm>/`; the login process sweeps raw state and intermediate merged checkpoints to `/tmp/blindgain_checkpoint_archive/pilot/<run>/`; only each arm's step-100 merged checkpoint remains on shared storage. Compute-node `/tmp` is not used for checkpoints.
 
 ## Shared quota accounting
 
@@ -58,6 +60,8 @@ After verified step-60 raw and merged relocation, the same command completed at 
 
 The exact snapshots are retained as `reports/storage_usage_snapshot_20260711T044850Z.json` and `reports/storage_usage_snapshot_20260711T051241Z.json`; `reports/storage_usage_snapshot.json` contains the newest measured values for guard consumption.
 
+The PI-resolution dry cycle used `reports/storage_usage_snapshot_20260711T092259Z.json`, measured at 2026-07-11T09:39:11Z. It recorded 400,496,500,736 allocated bytes and 136,374,411,264 bytes (127.008 GiB) of quota headroom before the guarded dry write.
+
 ## Project footprint
 
 | Project path/store | Allocated bytes | GiB |
@@ -78,6 +82,26 @@ The exact snapshots are retained as `reports/storage_usage_snapshot_20260711T044
 - `scripts/relocate_easyr1_raw_checkpoint.py` verifies the newer merged checkpoint and every older raw-state checksum before latest-only deletion. It records paths, byte counts, hashes, and deletion status in both a report and the anchor run manifest.
 - `scripts/relocate_merged_checkpoint.py` copies to a partial directory, rehashes every file, commits a shared marker, and only then removes the shared merged source.
 - Focused verification at 2026-07-11T04:50Z: `25 passed` across storage guards, raw/merged relocation, merge launcher, download launchers, and EasyR1 pilot hook.
+- The pilot save hook now waits and rechecks after a quota refusal. `BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS` defaults to 300 seconds; zero `BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS` means retry without an artificial attempt limit. Every refusal and later acceptance is appended to `logs/storage_guard.jsonl`.
+- Pilot config roots are `checkpoints/pilot/mech_a1_real`, `checkpoints/pilot/mech_a2_gray`, and `checkpoints/pilot/mech_a2b_noimage`; A3 will use the same root convention.
+- Focused verification after the PI decision: `8 passed` across the save-retry fixture, matched pilot roots, and dry-cycle adversarial fixtures.
+
+## Approved dry save/sweep/read-back
+
+Run: `experiments/runs/pilot_storage_dry_cycle_login_20260711T094144Z/`
+
+| Field | Value |
+| --- | --- |
+| Run status | `complete` |
+| Run git hash | `06e7daeef01be3e575821a41477886d04d326722` |
+| Config hash | `ee4d92290047d8d076439ed48311861bef82e08091fc40d519493acfc80f2d5e` |
+| Input snapshot hash | `90f727a1c5bc2e40b98bdea07d65d2fc58d284b33fc67be98304c48fe21720fe` |
+| Shared dry checkpoint | `checkpoints/pilot/pilot_storage_dry_cycle_login_20260711T094144Z/global_step_1/actor/` |
+| Login archive | `/tmp/blindgain_checkpoint_archive/pilot/pilot_storage_dry_cycle_login_20260711T094144Z/global_step_1/actor/` |
+| Result artifact | `experiments/runs/pilot_storage_dry_cycle_login_20260711T094144Z/dry_cycle_result.json` |
+| Result SHA256 | `5e21db2a345de3e9d5056fd3ebadf8cbfda3a845c9ce82e2c0160c6723557c43` |
+
+The dry checkpoint uses minimal synthetic EasyR1-compatible model, optimizer, and merged-shard files. This tests storage plumbing without violating the L12 ordering rule by taking an optimizer step. The shared quota guard passed before save. The standard relocation implementation copied and hashed raw state, removed shared raw payloads, copied and hashed the merged payload, removed the shared merged directory, retained both relocation markers on shared storage, and read every archived payload back. All nine machine checks are true, including exact SHA256 equality.
 
 ## Reclamation
 
@@ -91,20 +115,21 @@ The exact snapshots are retained as `reports/storage_usage_snapshot_20260711T044
 
 Problems:
 
-- **Blocking resource question:** which writable persistent node-local directories should be used on `an12` and `an29`? The paths must support at least one approximately 46 GiB raw pilot checkpoint while preserving 40 GiB free. Provisioning user-owned subdirectories on a sufficiently large local disk, or supplying an approved equivalent, is required.
-- The 1-step EasyR1 save/read/merge dry run is blocked by that missing path. Using `/dev/shm` would violate the explicit storage contract.
-- Pilot checkpoint configs remain unmodified until a valid per-node path is known. No pilot optimizer step has been launched.
+- No open L0 resource question remains.
+- The approximately 66 GiB of superseded Gate-2-era checkpoints may be reclaimed opportunistically after they are listed with sizes. This is not an L0 condition.
+- No pilot optimizer step has been launched; L12 ordering remains intact.
 
 Decision:
 
-- Keep L0 `blocked`; do not reinterpret tmpfs capacity as eligible scratch.
-- Select the L9 strong captioner as **32B**, because no eligible writable serving-node scratch has at least 200 GiB free after accounting. This is a size decision only; the download remains blocked until approved scratch exists.
-- Continue the native anchor untouched. Use login `/tmp` only for the already-practiced, checksummed anchor archive flow.
-- `anchor_checkpoint_retention_watch_login_20260711T052335Z` now enforces the same guarded flow for anchor steps 80 and 100 with code-bundle pinning; this operational watcher does not unblock L0 or launch pilot work.
+- Close L0 on the approved shared-save/login-archive topology.
+- Use no save semaphore. A refused shared save waits and retries; arm save steps may be staggered operationally if useful.
+- Select the L9 strong captioner as **72B**. Its re-derivable weights may use compute-node `/dev/shm`; caption stores and results remain on shared storage, and weights are deleted after serving.
+- Continue the native anchor untouched. The anchor watcher retains its pinned code bundle for steps 80 and 100.
+- Start L1, L2, L4 unit-test work, L5, L6 report repairs, and L8 generation without treating them as L0 dependencies.
 
 Next actions:
 
 - Refresh the shared usage snapshot before its six-hour freshness window expires or before the next large shared write, whichever comes first.
-- Obtain the two approved writable persistent local paths.
-- Configure pilot save roots, apply the explicit pilot-only EasyR1 hook, and run the required 1-step save/read/merge dry test.
-- Only after those checks pass may L0 be reconsidered and Wave 1 begin.
+- Extend the watcher to all four immutable pilot run roots before L13.
+- Keep latest raw state only after each newer merged checkpoint is hash-verified; keep intermediate merged checkpoints in the login archive for the round.
+- Advance the newly authorized Wave-1 tasks and R20 generation. Pilot optimization remains prohibited until merged L12 preregistration.

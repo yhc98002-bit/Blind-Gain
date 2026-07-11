@@ -2,6 +2,8 @@
 
 This file is the authoritative task and named-report registry for `reports/prelaunch_progress.md`. A task may be marked `pass` only when every report listed on its registry line exists under `reports/` and is non-empty. Generated data, code, configs, run directories, and non-report artifacts remain additional task requirements but are outside this ledger-evidence check.
 
+PI-authored source: `docs/PRELAUNCH_BRIEF.md`. The registry only indexes named report evidence; it does not replace or weaken any requirement in that brief.
+
 ## Registry
 
 - `L0` reports: `reports/storage_preflight.md`

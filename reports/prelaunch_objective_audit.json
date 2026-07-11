@@ -45,11 +45,11 @@
   ],
   "ledger": {
     "L0": {
-      "note": "reports/storage_preflight.md: guards/tests pass, but which writable persistent local paths on an12/an29 should hold pilot checkpoints while preserving the 40 GiB floor?",
-      "status": "blocked"
+      "note": "reports/storage_preflight.md: PI-approved shared save to login-archive sweep passed all nine dry-cycle checks with exact read-back hashes",
+      "status": "pass"
     },
     "L1": {
-      "note": "canonical-v2 parser work waits for L0",
+      "note": "canonical-v2 implementation and repeated 320-row agreement audit are now in progress",
       "status": "blocked"
     },
     "L10": {
@@ -57,7 +57,7 @@
       "status": "blocked"
     },
     "L11": {
-      "note": "document calibration may run only after L0 on genuinely free GPUs",
+      "note": "document calibration remains lowest priority and may run only on genuinely free GPUs",
       "status": "blocked"
     },
     "L12": {
@@ -69,7 +69,7 @@
       "status": "blocked"
     },
     "L2": {
-      "note": "validity-field split waits for L0",
+      "note": "extractor_valid and per-run contract_valid implementation is now in progress",
       "status": "blocked"
     },
     "L3": {
@@ -77,15 +77,15 @@
       "status": "blocked"
     },
     "L4": {
-      "note": "A3 caption path waits for L0",
+      "note": "A3 caption-path unit-test work started; the fixed caption store coverage must still be established",
       "status": "blocked"
     },
     "L5": {
-      "note": "pilot-corpus decontamination waits for L0",
+      "note": "geometry3k train-vs-test decontamination and frozen filtered IDs are now in progress",
       "status": "blocked"
     },
     "L6": {
-      "note": "objective consistency auditor is implemented; stale-report repairs and the GPU-hours report still wait for L0",
+      "note": "objective consistency auditor is implemented; stale-report repairs and the GPU-hours report are now in progress",
       "status": "blocked"
     },
     "L7": {
@@ -93,15 +93,23 @@
       "status": "blocked"
     },
     "L8": {
-      "note": "R20 confirmatory generation waits for L0",
+      "note": "one-shot R20 generation is now unblocked; complete pipeline artifacts do not yet exist",
       "status": "blocked"
     },
     "L9": {
-      "note": "stronger-caption stress depends on L0 captioner decision and L8 generation",
+      "note": "72B captioner is selected for compute-node dev-shm; stress run still depends on R20 generation",
       "status": "blocked"
     }
   },
-  "pass_report_checks": {},
+  "pass_report_checks": {
+    "L0": {
+      "reports/storage_preflight.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 10987
+      }
+    }
+  },
   "registry": {
     "L0": [
       "reports/storage_preflight.md"
