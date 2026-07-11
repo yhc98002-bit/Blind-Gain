@@ -40,7 +40,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 PID_FILE="${RUN_DIR}/pids/${NODE}.pid"
-OUTPUT="${RUN_DIR}/comparison_v3.json"
+OUTPUT="${RUN_DIR}/comparison_v4.json"
 SHARD_ARGS="$(printf ' %q' "${OCR_SHARDS[@]#${ROOT}/}")"
 COMMAND=".venv/bin/python scripts/compare_decon_ocr.py --baseline ${BASELINE} --train-records ${TRAIN_RECORDS} --eval-records ${EVAL_RECORDS} --ocr-shards${SHARD_ARGS} --output ${OUTPUT}"
 

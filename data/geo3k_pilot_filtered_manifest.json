@@ -1,0 +1,205 @@
+{
+  "base_difficulty_rows": "experiments/runs/blind_solvability_geo3k_real_an12_20260710T074916Z/per_item.jsonl",
+  "base_difficulty_rows_sha256": "83c6dbe0b3701205a473f95534cbf83f1cb02f0cfeb1543bd71401c110a22569",
+  "category_note": "hiyouga/geometry3k exposes no source category field; derived_category is a deterministic question-text taxonomy and is reported as a proxy",
+  "dataset_output": "data/geo3k_pilot_filtered.jsonl",
+  "dataset_sha256": "f3d88dd1e52ccef833f266880e487eef252193f774c1076f7dfbccd180b450e6",
+  "distribution": {
+    "filtered": {
+      "answer_type": {
+        "decimal": {
+          "count": 283,
+          "fraction": 0.21972049689440995
+        },
+        "expression_or_text": {
+          "count": 97,
+          "fraction": 0.07531055900621118
+        },
+        "fraction": {
+          "count": 31,
+          "fraction": 0.02406832298136646
+        },
+        "integer": {
+          "count": 875,
+          "fraction": 0.6793478260869565
+        },
+        "other": {
+          "count": 2,
+          "fraction": 0.0015527950310559005
+        }
+      },
+      "base_model_difficulty": {
+        "bands": {
+          "0.25<=p<0.75": {
+            "count": 81,
+            "fraction": 0.06288819875776397
+          },
+          "0.75<=p<1": {
+            "count": 1,
+            "fraction": 0.0007763975155279503
+          },
+          "0<p<0.25": {
+            "count": 318,
+            "fraction": 0.2468944099378882
+          },
+          "p=0": {
+            "count": 888,
+            "fraction": 0.6894409937888198
+          }
+        },
+        "greedy_accuracy": 0.10248447204968944,
+        "mean_p_sample": 0.04949534161490683,
+        "median_p_sample": 0.0
+      },
+      "derived_category": {
+        "angle_lines": {
+          "count": 228,
+          "fraction": 0.17701863354037267
+        },
+        "area_volume": {
+          "count": 116,
+          "fraction": 0.09006211180124224
+        },
+        "circle_arc_tangent": {
+          "count": 134,
+          "fraction": 0.10403726708074534
+        },
+        "length_ratio_similarity": {
+          "count": 44,
+          "fraction": 0.034161490683229816
+        },
+        "other": {
+          "count": 251,
+          "fraction": 0.19487577639751552
+        },
+        "quadrilateral_polygon": {
+          "count": 192,
+          "fraction": 0.14906832298136646
+        },
+        "triangle_trigonometry": {
+          "count": 114,
+          "fraction": 0.08850931677018634
+        },
+        "underspecified_visual": {
+          "count": 209,
+          "fraction": 0.1622670807453416
+        }
+      },
+      "n": 1288,
+      "question_length_tokens": {
+        "max": 53,
+        "mean": 10.187888198757763,
+        "median": 9.0,
+        "min": 2
+      }
+    },
+    "original": {
+      "answer_type": {
+        "decimal": {
+          "count": 410,
+          "fraction": 0.1951451689671585
+        },
+        "expression_or_text": {
+          "count": 163,
+          "fraction": 0.07758210376011423
+        },
+        "fraction": {
+          "count": 62,
+          "fraction": 0.029509757258448358
+        },
+        "integer": {
+          "count": 1463,
+          "fraction": 0.6963350785340314
+        },
+        "other": {
+          "count": 3,
+          "fraction": 0.0014278914802475012
+        }
+      },
+      "base_model_difficulty": {
+        "bands": {
+          "0.25<=p<0.75": {
+            "count": 153,
+            "fraction": 0.07282246549262256
+          },
+          "0.75<=p<1": {
+            "count": 2,
+            "fraction": 0.0009519276534983341
+          },
+          "0<p<0.25": {
+            "count": 549,
+            "fraction": 0.2613041408852927
+          },
+          "p=0": {
+            "count": 1397,
+            "fraction": 0.6649214659685864
+          }
+        },
+        "greedy_accuracy": 0.10804378867206092,
+        "mean_p_sample": 0.05485483103284151,
+        "median_p_sample": 0.0
+      },
+      "derived_category": {
+        "angle_lines": {
+          "count": 411,
+          "fraction": 0.19562113279390766
+        },
+        "area_volume": {
+          "count": 126,
+          "fraction": 0.05997144217039505
+        },
+        "circle_arc_tangent": {
+          "count": 176,
+          "fraction": 0.08376963350785341
+        },
+        "coordinate_geometry": {
+          "count": 2,
+          "fraction": 0.0009519276534983341
+        },
+        "length_ratio_similarity": {
+          "count": 57,
+          "fraction": 0.027129938124702522
+        },
+        "other": {
+          "count": 441,
+          "fraction": 0.20990004759638267
+        },
+        "quadrilateral_polygon": {
+          "count": 324,
+          "fraction": 0.15421227986673014
+        },
+        "triangle_trigonometry": {
+          "count": 202,
+          "fraction": 0.09614469300333174
+        },
+        "underspecified_visual": {
+          "count": 362,
+          "fraction": 0.17229890528319847
+        }
+      },
+      "n": 2101,
+      "question_length_tokens": {
+        "max": 53,
+        "mean": 10.248929081389814,
+        "median": 9,
+        "min": 2
+      }
+    }
+  },
+  "ids_output": "data/geo3k_pilot_filtered_ids.json",
+  "ids_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+  "layer1_filter": "experiments/manifests/decon_geo3k_vs_layer1_v2.json",
+  "layer1_filter_sha256": "4f36dbb7d636e95e4e6a8708c7928ad5ccd52608847b0a92396794f2cb5771db",
+  "n_layer1_remove": 463,
+  "n_original_train": 2101,
+  "n_remove_intersection": 148,
+  "n_remove_union": 813,
+  "n_retained": 1288,
+  "n_train_test_remove": 498,
+  "schema_version": "blind-gains.geo3k-pilot-filtered.v1",
+  "source_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+  "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+  "status": "pass",
+  "train_test_filter": "experiments/runs/decon_summary_geo3k_train_test_v4_login_20260711T105057Z/filter_manifest.json",
+  "train_test_filter_sha256": "cf6affe7d74af2f52daaf03d561e41031d60f03f29ad341d1410740a2883eddc"
+}
