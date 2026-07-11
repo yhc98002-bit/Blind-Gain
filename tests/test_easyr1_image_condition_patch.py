@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EASYR1 = ROOT / "artifacts" / "repos" / "EasyR1"
 sys.path.insert(0, str(EASYR1))
 
-from verl.utils.dataset import RLHFDataset, condition_image  # noqa: E402
+from verl.utils.dataset import RLHFDataset, condition_image, process_image  # noqa: E402
 
 
 class FakeTokenizer:
@@ -61,10 +61,16 @@ class FakeProcessor:
         return {"input_ids": torch.tensor([[21, 22, 23]]), "attention_mask": torch.ones((1, 3), dtype=torch.long)}
 
 
-def _dataset(tmp_path: Path, condition: str) -> tuple[RLHFDataset, FakeTokenizer, FakeProcessor]:
+def _dataset(
+    tmp_path: Path,
+    condition: str,
+    *,
+    image_size: tuple[int, int] = (10, 6),
+    min_pixels: int | None = None,
+) -> tuple[RLHFDataset, FakeTokenizer, FakeProcessor]:
     image_dir = tmp_path / "images"
     image_dir.mkdir(exist_ok=True)
-    Image.new("RGB", (10, 6), (255, 0, 0)).save(image_dir / "sample.png")
+    Image.new("RGB", image_size, (255, 0, 0)).save(image_dir / "sample.png")
     image_hash = hashlib.sha256((image_dir / "sample.png").read_bytes()).hexdigest()
     caption_store = tmp_path / "captions.jsonl"
     caption_store.write_text(
@@ -97,7 +103,7 @@ def _dataset(tmp_path: Path, condition: str) -> tuple[RLHFDataset, FakeTokenizer
         image_dir=str(image_dir),
         max_prompt_length=16,
         truncation="right",
-        min_pixels=None,
+        min_pixels=min_pixels,
         max_pixels=None,
         filter_overlong_prompts=False,
         image_condition=condition,
@@ -113,6 +119,25 @@ def test_gray_condition_reaches_processor_and_rollout_payload(tmp_path: Path) ->
     rollout_image = row["multi_modal_data"]["images"][0]
     assert np.all(np.asarray(rollout_image) == 128)
     assert np.all(np.asarray(processor.last_images[0]) == 128)
+
+
+@pytest.mark.parametrize("condition", ["real", "gray", "noise"])
+def test_worker_reprocessing_preserves_prompt_image_grid(
+    tmp_path: Path, condition: str
+) -> None:
+    dataset, _, processor = _dataset(
+        tmp_path,
+        condition,
+        image_size=(20, 36),
+        min_pixels=262144,
+    )
+
+    row = dataset[0]
+    rollout_image = row["multi_modal_data"]["images"][0]
+    worker_image = process_image(rollout_image, min_pixels=262144, max_pixels=None)
+
+    assert processor.last_images[0].size == (381, 686)
+    assert worker_image.size == processor.last_images[0].size
 
 
 def test_none_condition_removes_image_token_and_multimodal_payload(tmp_path: Path) -> None:
