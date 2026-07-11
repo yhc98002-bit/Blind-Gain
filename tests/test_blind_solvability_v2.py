@@ -17,7 +17,11 @@ from src.eval.blind_solvability import (
 )
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+)
 
 
 def _write_manifest(path: Path) -> None:
@@ -90,6 +94,10 @@ def test_pilot_scoring_records_exact_reward_and_canonical_comparison(
 
     assert scored["scoring_mode"] == PILOT_SCORING_MODE
     assert scored["pilot_reward_version"] == PILOT_REWARD_VERSION
+    assert scored["symbolic_grader_guard_version"] == SYMBOLIC_GRADER_GUARD_VERSION
+    assert scored["symbolic_grader_timeout_seconds"] == (
+        DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
+    )
     assert scored["greedy_training_reward"] == 1.0
     assert scored["sample_correct_count"] == 0
     assert scored["p_sample"] == 0.0

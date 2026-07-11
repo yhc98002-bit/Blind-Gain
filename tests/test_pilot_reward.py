@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
 
+import src.rewards.pilot_reward as pilot_reward
 from src.rewards.pilot_reward import (
     NATIVE_R1V_PATH,
     PILOT_REWARD_VERSION,
@@ -98,6 +101,65 @@ def test_native_shadow_calls_the_pinned_easy_r1_reward(tmp_path: Path) -> None:
         shadow_log_path=str(tmp_path / "shadow.jsonl"),
     )
     assert pilot["native_r1v_shadow_reward"] == native["overall"]
+    assert pilot["native_r1v_shadow_valid"] == 1.0
+
+
+def test_hanging_mathruler_is_bounded_and_logged(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def hang_forever(_answer: str, _ground_truth: str) -> bool:
+        while True:
+            time.sleep(1)
+
+    monkeypatch.setattr(pilot_reward, "grade_answer", hang_forever)
+    monkeypatch.setattr(
+        pilot_reward,
+        "load_native_r1v",
+        lambda: SimpleNamespace(compute_score=lambda *_args, **_kwargs: {"overall": 1.0}),
+    )
+    shadow = tmp_path / "shadow.jsonl"
+
+    started = time.monotonic()
+    score = compute_score(
+        {"response": "<answer>5</answer>", "ground_truth": "5"},
+        shadow_log_path=str(shadow),
+        symbolic_grader_timeout_seconds=0.05,
+    )
+
+    assert time.monotonic() - started < 1.0
+    assert score["accuracy"] == 0.0
+    assert score["canonical_eval_reward"] == 1.0
+    row = json.loads(shadow.read_text(encoding="utf-8"))
+    assert row["mathruler_error"] == "SymbolicGraderTimeout"
+    assert row["reward_disagreement_reason"] == "mathruler_error_canonical_correct"
+
+
+def test_hanging_native_shadow_is_bounded_without_changing_training_reward(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def hang_forever(*_args: object, **_kwargs: object) -> dict[str, float]:
+        while True:
+            time.sleep(1)
+
+    monkeypatch.setattr(
+        pilot_reward,
+        "load_native_r1v",
+        lambda: SimpleNamespace(compute_score=hang_forever),
+    )
+    shadow = tmp_path / "shadow.jsonl"
+
+    score = compute_score(
+        {"response": "<answer>5</answer>", "ground_truth": "5"},
+        shadow_log_path=str(shadow),
+        symbolic_grader_timeout_seconds=0.05,
+    )
+
+    assert score["training_reward"] == 1.0
+    assert score["native_r1v_shadow_reward"] == 0.0
+    assert score["native_r1v_shadow_valid"] == 0.0
+    row = json.loads(shadow.read_text(encoding="utf-8"))
+    assert row["native_r1v_shadow_error"] == "SymbolicGraderTimeout"
+    assert row["native_r1v_shadow_valid"] is False
 
 
 def test_anchor_remains_native_and_all_mechanical_arms_bind_pilot_reward() -> None:
@@ -112,6 +174,7 @@ def test_anchor_remains_native_and_all_mechanical_arms_bind_pilot_reward() -> No
         assert reward["reward_function_kwargs"] == {
             "format_weight": 0.5,
             "require_shadow_log": True,
+            "symbolic_grader_timeout_seconds": 5.0,
         }
 
 

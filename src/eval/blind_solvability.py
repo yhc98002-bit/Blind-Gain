@@ -18,7 +18,13 @@ from src.eval.prompt_contract import (
     response_satisfies_contract,
 )
 from src.rewards.answer_reward import PARSER_VERSION, answer_reward, extract_answer_span
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION, REASON_CODES, compute_score as pilot_compute_score
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    REASON_CODES,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+    compute_score as pilot_compute_score,
+)
 
 
 CONDITIONS = ("real", "gray", "noise", "none", "caption")
@@ -168,6 +174,7 @@ def score_item_pilot(
     prompt_contract: PromptContractLike = None,
     *,
     format_weight: float = 0.5,
+    symbolic_grader_timeout_seconds: float = DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
 ) -> dict[str, Any]:
     """Score L7 with the exact pilot reward and canonical-v2 in parallel."""
 
@@ -185,6 +192,7 @@ def score_item_pilot(
                 {"response": response, "ground_truth": gold},
                 format_weight=format_weight,
                 require_shadow_log=False,
+                symbolic_grader_timeout_seconds=symbolic_grader_timeout_seconds,
             )
             for response in responses
         ]
@@ -213,6 +221,9 @@ def score_item_pilot(
     sampled_native_rewards = [
         float(score["native_r1v_shadow_reward"]) for score in sampled_scores
     ]
+    sampled_native_valid = [
+        bool(score["native_r1v_shadow_valid"]) for score in sampled_scores
+    ]
     sampled_canonical_rewards = [
         float(score["canonical_eval_reward"]) for score in sampled_scores
     ]
@@ -221,12 +232,15 @@ def score_item_pilot(
     return {
         "scoring_mode": PILOT_SCORING_MODE,
         "pilot_reward_version": PILOT_REWARD_VERSION,
+        "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+        "symbolic_grader_timeout_seconds": symbolic_grader_timeout_seconds,
         "format_weight": format_weight,
         "p_greedy": float(greedy_score["accuracy"]),
         "greedy_correct": bool(greedy_score["accuracy"]),
         "greedy_training_reward": float(greedy_score["training_reward"]),
         "greedy_format_reward": float(greedy_score["format"]),
         "greedy_native_r1v_shadow_reward": float(greedy_score["native_r1v_shadow_reward"]),
+        "greedy_native_r1v_shadow_valid": bool(greedy_score["native_r1v_shadow_valid"]),
         "greedy_canonical_correct": canonical_correct[0],
         "greedy_reward_disagreement_reason": reason_names[0],
         "greedy_extracted_answer": extracted[0].span,
@@ -239,6 +253,7 @@ def score_item_pilot(
         "sampled_training_rewards": sampled_training_rewards,
         "sampled_format_rewards": sampled_format_rewards,
         "sampled_native_r1v_shadow_rewards": sampled_native_rewards,
+        "sampled_native_r1v_shadow_valid": sampled_native_valid,
         "sampled_canonical_rewards": sampled_canonical_rewards,
         "sampled_reward_disagreement_reasons": reason_names[1:],
         "parser_version": PARSER_VERSION,

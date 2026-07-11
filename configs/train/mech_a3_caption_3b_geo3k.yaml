@@ -93,6 +93,7 @@ worker:
     reward_function_kwargs:
       format_weight: 0.5
       require_shadow_log: true
+      symbolic_grader_timeout_seconds: 5.0
 trainer:
   total_epochs: 1
   max_steps: 100

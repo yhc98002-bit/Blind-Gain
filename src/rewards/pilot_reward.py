@@ -6,11 +6,15 @@ import hashlib
 import importlib.util
 import json
 import os
+import signal
 import sys
+import threading
+import time
+from contextlib import contextmanager
 from functools import lru_cache
 from pathlib import Path
 from types import ModuleType
-from typing import Any
+from typing import Any, Callable, Iterator, TypeVar
 
 from mathruler.grader import grade_answer
 
@@ -25,6 +29,8 @@ from src.rewards.answer_reward import (
 REWARD_NAME = "blind_gains_pilot_v1"
 REWARD_TYPE = "sequential"
 PILOT_REWARD_VERSION = "pilot-reward-v1"
+SYMBOLIC_GRADER_GUARD_VERSION = "posix-itimer-v1"
+DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS = 5.0
 ROOT = Path(__file__).resolve().parents[2]
 NATIVE_R1V_PATH = ROOT / "artifacts" / "repos" / "EasyR1" / "examples" / "reward_function" / "r1v.py"
 REASON_CODES = {
@@ -34,6 +40,49 @@ REASON_CODES = {
     "mathruler_error_canonical_incorrect": 3.0,
     "mathruler_error_canonical_correct": 4.0,
 }
+
+_T = TypeVar("_T")
+
+
+class SymbolicGraderTimeout(TimeoutError):
+    pass
+
+
+@contextmanager
+def _symbolic_grader_deadline(seconds: float) -> Iterator[None]:
+    if seconds <= 0:
+        raise ValueError("symbolic grader timeout must be positive")
+    if threading.current_thread() is not threading.main_thread():
+        raise RuntimeError("symbolic grader timeout requires the process main thread")
+
+    previous_handler = signal.getsignal(signal.SIGALRM)
+    previous_delay, previous_interval = signal.getitimer(signal.ITIMER_REAL)
+    started = time.monotonic()
+
+    def _raise_timeout(_signum: int, _frame: Any) -> None:
+        raise SymbolicGraderTimeout(
+            f"symbolic grader exceeded {seconds:.3f} seconds"
+        )
+
+    signal.signal(signal.SIGALRM, _raise_timeout)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0.0)
+        signal.signal(signal.SIGALRM, previous_handler)
+        if previous_delay > 0.0:
+            elapsed = time.monotonic() - started
+            signal.setitimer(
+                signal.ITIMER_REAL,
+                max(previous_delay - elapsed, 1e-6),
+                previous_interval,
+            )
+
+
+def _bounded_call(call: Callable[[], _T], timeout_seconds: float) -> _T:
+    with _symbolic_grader_deadline(timeout_seconds):
+        return call()
 
 
 @lru_cache(maxsize=1)
@@ -49,11 +98,37 @@ def load_native_r1v() -> ModuleType:
     return module
 
 
-def _mathruler_grade(answer: str, ground_truth: str) -> tuple[bool, str | None]:
+def _mathruler_grade(
+    answer: str, ground_truth: str, timeout_seconds: float
+) -> tuple[bool, str | None]:
     try:
-        return bool(grade_answer(answer, ground_truth)), None
+        return bool(
+            _bounded_call(
+                lambda: grade_answer(answer, ground_truth),
+                timeout_seconds,
+            )
+        ), None
     except Exception as error:  # pragma: no cover - depends on symbolic parser internals
         return False, type(error).__name__
+
+
+def _native_r1v_shadow(
+    response: str,
+    ground_truth: str,
+    format_weight: float,
+    timeout_seconds: float,
+) -> tuple[float, str | None]:
+    try:
+        score = _bounded_call(
+            lambda: load_native_r1v().compute_score(
+                {"response": response, "ground_truth": ground_truth},
+                format_weight=format_weight,
+            ),
+            timeout_seconds,
+        )
+        return float(score["overall"]), None
+    except Exception as error:  # shadow failures must not change the optimized reward
+        return 0.0, type(error).__name__
 
 
 def _disagreement_reason(
@@ -90,6 +165,7 @@ def compute_score(
     format_weight: float = 0.5,
     shadow_log_path: str | None = None,
     require_shadow_log: bool = False,
+    symbolic_grader_timeout_seconds: float = DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
 ) -> dict[str, float]:
     """Compute the pilot reward with mathruler precedence and canonical-v2 shadows.
 
@@ -103,7 +179,11 @@ def compute_score(
     response = str(reward_input["response"])
     ground_truth = str(reward_input["ground_truth"]).strip()
     extracted = extract_answer_span(response)
-    mathruler_correct, mathruler_error = _mathruler_grade(extracted.span, ground_truth)
+    mathruler_correct, mathruler_error = _mathruler_grade(
+        extracted.span,
+        ground_truth,
+        symbolic_grader_timeout_seconds,
+    )
     canonical_correct = bool(answers_match(extracted.span, ground_truth))
     contract_valid = bool(response_satisfies_contract(response))
     reason = _disagreement_reason(
@@ -114,10 +194,12 @@ def compute_score(
     accuracy_reward = float(mathruler_correct)
     format_reward = float(contract_valid)
     training_reward = (1.0 - format_weight) * accuracy_reward + format_weight * format_reward
-    native_score = load_native_r1v().compute_score(
-        {"response": response, "ground_truth": ground_truth}, format_weight=format_weight
+    native_shadow, native_shadow_error = _native_r1v_shadow(
+        response,
+        ground_truth,
+        format_weight,
+        symbolic_grader_timeout_seconds,
     )
-    native_shadow = float(native_score["overall"])
     canonical_shadow = float(canonical_correct)
 
     resolved_shadow_path = shadow_log_path or os.environ.get("BLIND_GAINS_REWARD_SHADOW_LOG")
@@ -133,6 +215,8 @@ def compute_score(
                 "timestamp_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "pid": os.getpid(),
                 "pilot_reward_version": PILOT_REWARD_VERSION,
+                "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+                "symbolic_grader_timeout_seconds": symbolic_grader_timeout_seconds,
                 "parser_version": PARSER_VERSION,
                 "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
                 "ground_truth": ground_truth,
@@ -144,6 +228,8 @@ def compute_score(
                 "mathruler_error": mathruler_error,
                 "training_reward": training_reward,
                 "native_r1v_shadow_reward": native_shadow,
+                "native_r1v_shadow_error": native_shadow_error,
+                "native_r1v_shadow_valid": native_shadow_error is None,
                 "canonical_eval_reward": canonical_shadow,
                 "reward_disagreement_reason": reason,
             },
@@ -155,6 +241,7 @@ def compute_score(
         "accuracy": accuracy_reward,
         "training_reward": training_reward,
         "native_r1v_shadow_reward": native_shadow,
+        "native_r1v_shadow_valid": float(native_shadow_error is None),
         "canonical_eval_reward": canonical_shadow,
         "reward_disagreement": float(reason != "none"),
         "reward_disagreement_reason_code": REASON_CODES[reason],

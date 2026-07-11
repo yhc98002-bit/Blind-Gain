@@ -27,7 +27,10 @@ from src.eval.prompt_contract import (
     prompt_contract_metadata,
 )
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+)
 
 
 REGISTERED_MAX_TOKENS = 2048
@@ -35,6 +38,7 @@ REGISTERED_SAMPLE_COUNT = 16
 REGISTERED_SAMPLE_TEMPERATURE = 1.0
 REGISTERED_GROUP_SIZE = 5
 REGISTERED_FORMAT_WEIGHT = 0.5
+REGISTERED_SYMBOLIC_GRADER_TIMEOUT_SECONDS = DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
 
 
 def _sha256(path: Path) -> str:
@@ -136,6 +140,7 @@ def _validate_registered_contract(args: argparse.Namespace) -> None:
         "sample_temperature": REGISTERED_SAMPLE_TEMPERATURE,
         "group_size": REGISTERED_GROUP_SIZE,
         "format_weight": REGISTERED_FORMAT_WEIGHT,
+        "symbolic_grader_timeout_seconds": REGISTERED_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
     }
     actual = {key: getattr(args, key) for key in expected}
     if actual != expected:
@@ -164,6 +169,11 @@ def main() -> None:
     )
     parser.add_argument("--group-size", type=int, default=REGISTERED_GROUP_SIZE)
     parser.add_argument("--format-weight", type=float, default=REGISTERED_FORMAT_WEIGHT)
+    parser.add_argument(
+        "--symbolic-grader-timeout-seconds",
+        type=float,
+        default=REGISTERED_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    )
     parser.add_argument("--seed", type=int, default=20260710)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.72)
     args = parser.parse_args()
@@ -283,6 +293,7 @@ def main() -> None:
                     args.group_size,
                     prompt_contract,
                     format_weight=args.format_weight,
+                    symbolic_grader_timeout_seconds=args.symbolic_grader_timeout_seconds,
                 )
                 output = {
                     "schema_version": PILOT_ROW_SCHEMA_VERSION,

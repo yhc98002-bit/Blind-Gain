@@ -22,6 +22,7 @@ SAMPLE_COUNT=16
 SAMPLE_TEMPERATURE=1.0
 GROUP_SIZE=5
 FORMAT_WEIGHT=0.5
+SYMBOLIC_GRADER_TIMEOUT_SECONDS=5.0
 SEED=20260710
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ || ! "${GPU}" =~ ^[0-7]$ ]]; then
@@ -99,11 +100,12 @@ PROMPT_CONTRACT_JSON="$(PYTHONPATH=. .venv/bin/python -c 'import json; from src.
 PROMPT_CONTRACT_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(DEFAULT_PROMPT_CONTRACT.sha256)')"
 PARSER_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.answer_reward import PARSER_VERSION; print(PARSER_VERSION)')"
 PILOT_REWARD_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.pilot_reward import PILOT_REWARD_VERSION; print(PILOT_REWARD_VERSION)')"
+SYMBOLIC_GRADER_GUARD_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.pilot_reward import SYMBOLIC_GRADER_GUARD_VERSION; print(SYMBOLIC_GRADER_GUARD_VERSION)')"
 TRAIN_FILTER_HASH="$(sha256sum "${TRAIN_FILTER}" | awk '{print $1}')"
 SOURCE_MANIFEST_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
 FORMAT_PROMPT_HASH="$(sha256sum "${FORMAT_PROMPT}" | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --train-filter-ids ${TRAIN_FILTER} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits train test --batch-size 4 --max-model-len 8192 --max-tokens ${MAX_TOKENS} --sample-count ${SAMPLE_COUNT} --sample-temperature ${SAMPLE_TEMPERATURE} --group-size ${GROUP_SIZE} --format-weight ${FORMAT_WEIGHT} --seed ${SEED}"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --train-filter-ids ${TRAIN_FILTER} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits train test --batch-size 4 --max-model-len 8192 --max-tokens ${MAX_TOKENS} --sample-count ${SAMPLE_COUNT} --sample-temperature ${SAMPLE_TEMPERATURE} --group-size ${GROUP_SIZE} --format-weight ${FORMAT_WEIGHT} --symbolic-grader-timeout-seconds ${SYMBOLIC_GRADER_TIMEOUT_SECONDS} --seed ${SEED}"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
@@ -127,6 +129,7 @@ jq -n \
   --arg resume_from "${RESUME_FROM}" \
   --arg parser_version "${PARSER_VERSION}" \
   --arg reward_version "${PILOT_REWARD_VERSION}" \
+  --arg symbolic_guard_version "${SYMBOLIC_GRADER_GUARD_VERSION}" \
   --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
   --arg prompt_contract_hash "${PROMPT_CONTRACT_HASH}" \
   --argjson max_tokens "${MAX_TOKENS}" \
@@ -134,6 +137,7 @@ jq -n \
   --argjson sample_temperature "${SAMPLE_TEMPERATURE}" \
   --argjson group_size "${GROUP_SIZE}" \
   --argjson format_weight "${FORMAT_WEIGHT}" \
+  --argjson symbolic_timeout "${SYMBOLIC_GRADER_TIMEOUT_SECONDS}" \
   --argjson seed "${SEED}" \
   '{
     run_id: $run_id,
@@ -157,6 +161,8 @@ jq -n \
     format_prompt_sha256: $format_prompt_hash,
     parser_version: $parser_version,
     pilot_reward_version: $reward_version,
+    symbolic_grader_guard_version: $symbolic_guard_version,
+    symbolic_grader_timeout_seconds: $symbolic_timeout,
     scoring_mode: "pilot-reward-v1+canonical-v2",
     prompt_contract: $prompt_contract,
     prompt_contract_sha256: $prompt_contract_hash,
