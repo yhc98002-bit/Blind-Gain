@@ -14,6 +14,8 @@ Evidence:
 - Generation is followed synchronously by `score_item_pilot`; that path calls MathRuler/SymPy for the pilot verdict and again through the native-r1v shadow. MathRuler itself notes that SymPy can hang. The observed CPU-only state is therefore consistent with, but does not directly prove, a symbolic-grading stall.
 - Regression command: `PYTHONPATH=. .venv/bin/pytest -q tests/test_pilot_reward.py tests/test_blind_solvability_v2.py`.
 - Regression result: 29 passed in 7.56 seconds.
+- Replacement run: `experiments/runs/blind_solvability_v2_geo3k_filtered_v2_timeoutguard_none_an29_20260711T153747Z`, git `14680b6`, `an29` GPU 7, TP1, one replica.
+- The replacement validated and copied the 100-row prefix, initialized locally, and advanced through at least row 124. Its first 24 new rows recorded zero MathRuler timeout reasons and zero invalid native shadows. This confirms recovery past the old frontier but leaves the exact old stall mechanism inferential rather than proven.
 
 Problems:
 - The pre-fix reward path had no deadline around either symbolic grader call, so one pathological generated answer could prevent an entire condition from completing.
@@ -26,5 +28,5 @@ Decision:
 - Restart no-image in a new immutable run from the validated 100-row prefix after terminating the stalled process. The final L7 audit must verify uniform recomputation across all five conditions.
 
 Next actions:
-- Launch a new TP1 no-image run on a single free GPU with `--resume-from` pointing to the preserved prefix.
+- Monitor the replacement TP1 no-image run through all 1,889 rows.
 - Run a replacement five-step reward-plumbing smoke before L12 because the pilot configs now pin the timeout argument.
