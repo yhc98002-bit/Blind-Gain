@@ -213,16 +213,24 @@ def permutation_null_pair_accuracy(
     pred_b_key: str = "prediction_b",
 ) -> dict[str, float]:
     rng = random.Random(seed)
-    observed = aggregate_pair_metrics(rows)["pair_accuracy"]
+    original_scores = []
+    swapped_scores = []
+    for source in rows:
+        original_scores.append(float(pair_score(source, pred_a_key, pred_b_key)["pair_correct"]))
+        swapped = dict(source)
+        swapped[pred_a_key], swapped[pred_b_key] = (
+            swapped.get(pred_b_key, ""),
+            swapped.get(pred_a_key, ""),
+        )
+        swapped_scores.append(float(pair_score(swapped, pred_a_key, pred_b_key)["pair_correct"]))
+    observed = sum(original_scores) / len(original_scores)
     null = []
     for _ in range(n_perm):
-        shuffled = []
-        for row in rows:
-            row = dict(row)
-            if rng.random() < 0.5:
-                row[pred_a_key], row[pred_b_key] = row.get(pred_b_key, ""), row.get(pred_a_key, "")
-            shuffled.append(row)
-        null.append(aggregate_pair_metrics(shuffled)["pair_accuracy"])
+        total = sum(
+            swapped if rng.random() < 0.5 else original
+            for original, swapped in zip(original_scores, swapped_scores)
+        )
+        null.append(total / len(rows))
     p_ge = (sum(x >= observed for x in null) + 1) / (len(null) + 1)
     return {"observed": observed, "null_mean": sum(null) / len(null), "p_ge": p_ge}
 
@@ -234,20 +242,34 @@ def template_key_shuffle_null_pair_accuracy(
 ) -> dict[str, float]:
     rows = [dict(row) for row in rows]
     rng = random.Random(seed)
-    observed = aggregate_pair_metrics(rows)["pair_accuracy"]
+    observed_scores = [float(pair_score(row)["pair_correct"]) for row in rows]
+    observed = sum(observed_scores) / len(observed_scores)
     by_template: dict[str, list[int]] = defaultdict(list)
     for idx, row in enumerate(rows):
         by_template[str(row.get("template_id", ""))].append(idx)
+    score_matrices: dict[str, list[list[float]]] = {}
+    for template, indices in by_template.items():
+        keys = [(rows[idx]["answer_a"], rows[idx]["answer_b"]) for idx in indices]
+        score_matrices[template] = [
+            [
+                float(
+                    pair_score({**rows[row_index], "answer_a": answer_a, "answer_b": answer_b})[
+                        "pair_correct"
+                    ]
+                )
+                for answer_a, answer_b in keys
+            ]
+            for row_index in indices
+        ]
     null = []
     for _ in range(n_perm):
-        shuffled = [dict(row) for row in rows]
-        for indices in by_template.values():
-            keys = [(rows[idx]["answer_a"], rows[idx]["answer_b"]) for idx in indices]
-            rng.shuffle(keys)
-            for idx, (answer_a, answer_b) in zip(indices, keys):
-                shuffled[idx]["answer_a"] = answer_a
-                shuffled[idx]["answer_b"] = answer_b
-        null.append(aggregate_pair_metrics(shuffled)["pair_accuracy"])
+        total = 0.0
+        for template, indices in by_template.items():
+            key_indices = list(range(len(indices)))
+            rng.shuffle(key_indices)
+            matrix = score_matrices[template]
+            total += sum(matrix[row_position][key_position] for row_position, key_position in enumerate(key_indices))
+        null.append(total / len(rows))
     p_ge = (sum(x >= observed for x in null) + 1) / (len(null) + 1)
     return {"observed": observed, "null_mean": sum(null) / len(null), "p_ge": p_ge}
 
