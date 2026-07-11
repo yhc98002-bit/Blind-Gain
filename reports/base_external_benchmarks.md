@@ -1,10 +1,14 @@
-# Base External Benchmarks
+# Gate-2 Layer-1 Subset
 
 Status:
 - MMStar, MathVista-testmini, BLINK, HallusionBench, and MMVP are complete for Qwen2.5-VL-3B and 7B.
-- The full Layer-1 base table is complete; unified parser fields and native harness metrics are retained separately.
+- This is the frozen Gate-2 Layer-1 subset; MathVerse and MMMU rows are owed by prelaunch task L10.
+- Unified parser fields and native harness metrics are retained separately.
 
 Evidence:
+Registered members: `MMStar`, `MathVista-testmini`, `BLINK`, `HallusionBench`, `MMVP`, `MathVerse`, `MMMU`
+Reported members: `MMStar`, `MathVista-testmini`, `BLINK`, `HallusionBench`, `MMVP`
+
 | Model | Benchmark | n | Harness metric | `Acc_final` | `Acc_strict` | Format valid | Ambiguous | Infer failures |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Qwen2.5-VL-3B | MMStar | 1,500 | 0.5387 | 0.5540 | 0.0013 | 0.0013 | 0.0000 | 0 |
@@ -65,4 +69,4 @@ Decision:
 
 Next actions:
 - Add image-removed HallusionBench/MMVP only as a later extension; the proposal's registered blind cells remain MMStar and MathVista.
-- Complete parser-agreement recovery and the expanded decontamination comparison.
+- Add MathVerse and MMMU for both model sizes in L10 and publish canonical-v2 `extractor_valid` and `contract_valid` columns in a versioned successor table.

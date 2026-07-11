@@ -64,3 +64,70 @@ def test_gate2_objective_rejects_pass_without_named_report(tmp_path: Path) -> No
 
     assert payload["status"] == "fail"
     assert payload["checks"]["every_pass_task_has_all_named_reports"] is False
+
+
+def test_gate2_objective_rejects_unresolved_pass_status_line(tmp_path: Path) -> None:
+    root = _fixture_root(tmp_path)
+    report = root / GATE2_TASK_REPORTS["P0.1"][0]
+    report.write_text("Status:\n- Evaluation remains pending.\n", encoding="utf-8")
+
+    payload = build_gate2_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["scientific_consistency_audit"]["checks"][
+        "pass_report_status_lines_are_resolved"
+    ] is False
+
+
+def test_gate2_objective_rejects_byte_identical_audited_copy(tmp_path: Path) -> None:
+    root = _fixture_root(tmp_path)
+    (root / "reports" / "result.md").write_text("same\n", encoding="utf-8")
+    (root / "reports" / "result_audited.md").write_text("same\n", encoding="utf-8")
+
+    payload = build_gate2_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["scientific_consistency_audit"]["checks"][
+        "audited_files_are_distinct"
+    ] is False
+
+
+def test_gate2_objective_rejects_missing_or_nonpass_machine_status(tmp_path: Path) -> None:
+    root = _fixture_root(tmp_path)
+    report = root / GATE2_TASK_REPORTS["P0.1"][0]
+    report.write_text(
+        "Status:\n- Complete.\n\nEvidence:\n"
+        "- Machine status JSON: `reports/missing.json`.\n",
+        encoding="utf-8",
+    )
+    payload = build_gate2_objective_audit(root)
+    assert payload["status"] == "fail"
+
+    machine = root / "reports" / "machine.json"
+    machine.write_text('{"status": "fail"}\n', encoding="utf-8")
+    report.write_text(
+        "Status:\n- Complete.\n\nEvidence:\n"
+        "- Machine status JSON: `reports/machine.json`.\n",
+        encoding="utf-8",
+    )
+    payload = build_gate2_objective_audit(root)
+    assert payload["status"] == "fail"
+    assert payload["scientific_consistency_audit"]["checks"][
+        "referenced_machine_statuses_pass"
+    ] is False
+
+
+def test_gate2_objective_rejects_incomplete_full_layer1_claim(tmp_path: Path) -> None:
+    root = _fixture_root(tmp_path)
+    report = root / GATE2_TASK_REPORTS["P0.1"][0]
+    report.write_text(
+        "Status:\n- The full Layer-1 base table contains MMStar and BLINK.\n",
+        encoding="utf-8",
+    )
+
+    payload = build_gate2_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["scientific_consistency_audit"]["checks"][
+        "full_claims_include_registered_members"
+    ] is False

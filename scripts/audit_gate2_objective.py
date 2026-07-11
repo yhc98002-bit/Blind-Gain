@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scripts.audit_consistency import build_consistency_audit
+
 
 GATE2_TASK_REPORTS: dict[str, tuple[str, ...]] = {
     "P0.1": ("reports/scorer_v2_spec.md",),
@@ -83,20 +85,31 @@ def build_gate2_objective_audit(root: Path) -> dict[str, Any]:
             if missing:
                 errors.append(f"pass task {task_id} is missing named reports: {missing}")
 
+    consistency_audit: dict[str, Any] = {}
+    if ledger:
+        try:
+            consistency_audit = build_consistency_audit(root, ledger, GATE2_TASK_REPORTS)
+            errors.extend(consistency_audit["errors"])
+        except OSError as error:
+            errors.append(str(error))
+
     checks = {
         "ledger_has_exact_in_scope_task_set": bool(ledger),
         "ledger_has_one_valid_status_and_note_per_task": bool(ledger),
         "every_pass_task_has_all_named_reports": bool(ledger)
         and all(all(paths.values()) for paths in report_checks.values()),
+        "scientific_consistency_audit_passes": bool(consistency_audit)
+        and consistency_audit.get("status") == "pass",
     }
     return {
-        "schema_version": "blind-gains.gate2-objective-audit.v1",
+        "schema_version": "blind-gains.gate2-objective-audit.v2",
         "status": "pass" if all(checks.values()) else "fail",
         "checks": checks,
         "expected_task_ids": list(GATE2_TASK_IDS),
         "ledger_task_count": len(ledger),
         "ledger": ledger,
         "pass_report_checks": report_checks,
+        "scientific_consistency_audit": consistency_audit,
         "errors": errors,
     }
 
@@ -104,10 +117,12 @@ def build_gate2_objective_audit(root: Path) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
-    parser.add_argument("--output", type=Path, default=Path("reports/gate2_objective_audit.json"))
+    parser.add_argument("--output", type=Path, default=Path("reports/gate2_objective_audit_v3.json"))
     args = parser.parse_args()
     payload = build_gate2_objective_audit(args.root)
     output = args.output if args.output.is_absolute() else args.root / args.output
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite objective audit: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(f".{output.name}.partial.{os.getpid()}")
     temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")

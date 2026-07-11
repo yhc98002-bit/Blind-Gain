@@ -3,7 +3,7 @@
 Status:
 - Gate-critical license identification is complete for both Qwen2.5-VL sizes, Geometry3K, ViRL39K, and MMK12; no `VERIFY` placeholder remains for those artifacts.
 - ViRL39K and MMK12 acquisition and loader acceptance both pass with `0.0%` missing-image rates.
-- COCO, VisMin, and VQAv2 remain pending with named provenance/redistribution review tasks; they are not used by current claims.
+- COCO, VisMin, and VQAv2 are outside the artifacts used by current claims; their provenance and redistribution review tasks remain separately tracked.
 
 Evidence:
 - Machine-readable table: `reports/license_log_v2.csv`.

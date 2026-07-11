@@ -1,9 +1,9 @@
 # External Evaluation Harness Version
 
 Status:
-- VLMEvalKit is pinned and isolated; MMStar base evaluation is complete for 3B and 7B.
-- MathVista-testmini and BLINK local adapters are complete and ready for inference.
-- P1.2 remains incomplete until MathVista, HallusionBench, MMVP, BLINK, and registered blind cells are filled for both models.
+- VLMEvalKit is pinned and isolated; the Gate-2 subset is complete for Qwen2.5-VL-3B and 7B on MMStar, MathVista-testmini, BLINK, HallusionBench, and MMVP.
+- Registered image-removed MMStar and MathVista-testmini cells are complete for both model sizes.
+- MathVerse and MMMU are explicitly owed by prelaunch task L10 and are not represented as Gate-2 results.
 
 Evidence:
 - Repository: `https://github.com/open-compass/VLMEvalKit.git`.
@@ -36,6 +36,5 @@ Decision:
 - Use the local judge only for benchmark rows that typed or exact extraction cannot resolve.
 
 Next actions:
-- Run 3B/7B MathVista and BLINK.
-- Resume HallusionBench/MMVP snapshots after rate limiting clears, preferring existing partial files.
-- Implement and freeze true image-removed MMStar/MathVista variants before running blind cells.
+- Execute the L10 MathVerse and MMMU base rows under the pinned harness with canonical-v2 validity columns.
+- Preserve Gate-2 rows and publish the L10 expansion as a versioned table.

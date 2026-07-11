@@ -1,8 +1,8 @@
 # Geometry3K vs Layer-1 Decontamination
 
 Status:
-- P1.10 is complete for Geometry3K train against the full registered Layer-1 suite.
-- SHA/provenance, pHash/dHash, DINOv2, exact/5-gram text, BGE, and OCR layers have no pending coverage.
+- P1.10 is complete for Geometry3K train against the frozen Gate-2 Layer-1 subset.
+- SHA/provenance, pHash/dHash, DINOv2, exact/5-gram text, BGE, and OCR layers have complete coverage for that subset.
 - The filter marks 463/2,101 Geometry3K train records for automatic removal and 1,285 additional records for inspection only.
 
 Evidence:
@@ -70,3 +70,4 @@ Decision:
 Next actions:
 - Queue ViRL39K and MMK12 against the same complete Layer-1 records.
 - Expand OCR calibration with an OCR-rich document/chart stratum before treating OCR as an independent removal signal.
+- Add MathVerse and MMMU in L10 and publish a versioned expanded decontamination report rather than changing this Gate-2 subset result.

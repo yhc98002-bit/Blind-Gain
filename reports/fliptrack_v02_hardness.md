@@ -3,7 +3,7 @@
 Status:
 - P1.6 implementation is complete with three retained templates: document 300, high-entropy geometry 600, and R16 chart 300.
 - All three satisfy the unchanged hardness contract, and R10 supplies the required Track-b geometry family.
-- The 1,200-pair R19 package passes P1.4 leakage lint and P1.5 grouped artifact attacks; the required human contact-sheet audit is pending.
+- The 1,200-pair R19 package passes P1.4 leakage lint and P1.5 grouped artifact attacks; the human contact-sheet audit remains a separate L12 prerequisite.
 
 Acceptance contract:
 - 7B question-blind caption pair accuracy <= 0.15.

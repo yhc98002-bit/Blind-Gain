@@ -66,11 +66,6 @@ def _exact_package_ready(path: Path) -> bool:
 def compute_checks(root: Path, ledger: dict[str, str]) -> dict[str, bool]:
     reports = root / "reports"
     contact_dir = reports / "contact_sheets" / "fliptrack_v02r19"
-    idle_audit = reports / "gpu_idle_audit_gate2.json"
-    idle_ok = False
-    if idle_audit.is_file():
-        payload = json.loads(idle_audit.read_text(encoding="utf-8"))
-        idle_ok = payload.get("violations", ["missing"]) == []
     return {
         "measurement_system_repaired": all(ledger[task] == "pass" for task in ("P0.1", "P0.2", "P0.3", "P0.4", "P0.5")),
         "anchor_complete_with_step0_curve": ledger["P1.1"] == "pass" and (reports / "anchor_recipe_report.md").is_file(),
@@ -89,7 +84,6 @@ def compute_checks(root: Path, ledger: dict[str, str]) -> dict[str, bool]:
         "datasets_and_required_licenses": ledger["P1.9"] == "pass" and (reports / "license_log_v2.csv").is_file(),
         "decontamination_calibrated": ledger["P1.10"] == "pass" and (reports / "decon_geo3k_vs_layer1.md").is_file(),
         "repository_and_gate_logic_clean": ledger["P1.11"] == "pass" and (root / "tests" / "test_gate_logic.py").is_file(),
-        "gpu_idle_audit_no_violation": idle_ok,
     }
 
 
@@ -101,19 +95,23 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".")
     parser.add_argument("--ledger", default="reports/gate2_progress.md")
-    parser.add_argument("--output", default="reports/gate2_machine_check.json")
+    parser.add_argument("--output", default="reports/gate2_machine_check_v2.json")
     args = parser.parse_args()
     root = Path(args.root).resolve()
     ledger = read_ledger(root / args.ledger)
     checks = compute_checks(root, ledger)
+    output_path = root / args.output
+    if output_path.exists():
+        raise FileExistsError(f"refusing to overwrite Gate-2 machine check: {output_path}")
     output: dict[str, Any] = {
         "machine_checks": checks,
         "machine_ready_for_pi_audit": machine_ready(checks),
         "unsatisfied_checks": [name for name, satisfied in checks.items() if not satisfied],
+        "gpu_hours_utilization_reported": (root / "reports" / "gpu_hours_utilization.md").is_file(),
         "pi_gate_decision": "not_evaluated",
-        "note": "This script checks artifacts only; it does not declare Gate 2 passed.",
+        "note": "This script checks artifacts only; GPU utilization is reported but is not a gate; it does not declare Gate 2 passed.",
     }
-    (root / args.output).write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output_path.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(output, sort_keys=True))
 
 

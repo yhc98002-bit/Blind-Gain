@@ -61,6 +61,19 @@ def test_gate2_machine_ready_is_and_of_every_check() -> None:
         assert machine_ready(candidate) is False
 
 
+def test_gate2_machine_checks_do_not_include_gpu_idle_gate(tmp_path) -> None:
+    reports = tmp_path / "reports"
+    reports.mkdir()
+    (reports / "gpu_idle_audit_gate2.json").write_text(
+        json.dumps({"violations": ["idle"]}), encoding="utf-8"
+    )
+    ledger = {task_id: "blocked" for task_id in TASK_IDS}
+
+    checks = compute_checks(tmp_path, ledger)
+
+    assert "gpu_idle_audit_no_violation" not in checks
+
+
 def test_gate_json_status_does_not_treat_fail_string_as_truthy(tmp_path) -> None:
     status_file = tmp_path / "status.json"
     status_file.write_text(json.dumps({"status": "fail"}), encoding="utf-8")

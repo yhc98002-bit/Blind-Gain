@@ -2,8 +2,8 @@
 
 Status:
 - The corrected attacker implementation is complete and DINOv2 ran successfully.
-- The first broad V0.2 candidate failed as documented below.
-- The R17 900-pair candidate failed narrowly on geometry metadata; the all-inclusive R19 expansion passes every unchanged point and CI rule.
+- The all-inclusive R19 expansion passes every unchanged point and confidence-interval rule.
+- Earlier candidate outcomes remain preserved in the calibration history below.
 
 Evidence:
 - Run: `experiments/runs/artifact_gate_v02_an12_gpu4_20260709T225131Z`, exit code 0, `an12` GPU 4.

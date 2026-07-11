@@ -1,0 +1,296 @@
+{
+  "checks": {
+    "every_pass_task_has_all_named_reports": true,
+    "ledger_has_exact_in_scope_task_set": true,
+    "ledger_has_one_valid_status_and_note_per_task": true,
+    "scientific_consistency_audit_passes": true
+  },
+  "errors": [],
+  "expected_task_ids": [
+    "P0.1",
+    "P0.2",
+    "P0.3",
+    "P0.4",
+    "P0.5",
+    "P1.1",
+    "P1.2",
+    "P1.3",
+    "P1.4",
+    "P1.5",
+    "P1.6",
+    "P1.7",
+    "P1.8",
+    "P1.9",
+    "P1.10",
+    "P1.11",
+    "P2.1",
+    "P2.2"
+  ],
+  "ledger": {
+    "P0.1": {
+      "note": "final-answer-span scorer and all adversarial fixtures are complete",
+      "status": "pass"
+    },
+    "P0.2": {
+      "note": "320 recovered-step-30 generations audited; agreement is 0.921875 with 25 categorized disagreements and versioned fixes required",
+      "status": "pass"
+    },
+    "P0.3": {
+      "note": "within-template key-shuffle and auxiliary swap nulls are implemented and tested",
+      "status": "pass"
+    },
+    "P0.4": {
+      "note": "cached V0.1 predictions are re-scored in `reports/fliptrack_v01_rescored.md`",
+      "status": "pass"
+    },
+    "P0.5": {
+      "note": "resolved EasyR1 reference diff covers every required field",
+      "status": "pass"
+    },
+    "P1.1": {
+      "note": "recipe-scale anchor is healthy through step 40/100; validations 0/10/20/30/40 and merged step-20/40 checkpoints are preserved",
+      "status": "blocked"
+    },
+    "P1.10": {
+      "note": "calibrated full Geometry3K x 7,603-row Layer-1 hash/DINO/BGE/OCR manifest is complete with zero pending layers",
+      "status": "pass"
+    },
+    "P1.11": {
+      "note": "gate logic passes, but worktree contains external `CLAUDE.md` deletion and untracked `AGENTS.md`",
+      "status": "blocked"
+    },
+    "P1.2": {
+      "note": "MMStar/MathVista/BLINK plus HallusionBench/MMVP complete for 3B/7B; registered MMStar/MathVista blind cells complete",
+      "status": "pass"
+    },
+    "P1.3": {
+      "note": "measured NCCL and actual-3B FSDP smokes are implemented; full 2x8 window is blocked by active project jobs plus an unrelated four-GPU service on an29",
+      "status": "blocked"
+    },
+    "P1.4": {
+      "note": "1,200-pair same-salt R19 package passes all 12 leakage-linter checks",
+      "status": "pass"
+    },
+    "P1.5": {
+      "note": "all-inclusive same-salt R19 expansion passes grouped frequency, metadata, and DINOv2 point/CI rules",
+      "status": "pass"
+    },
+    "P1.6": {
+      "note": "exact R19 package has document 300, geometry 600, chart 300; all meet registered 3B real and 7B caption ceilings with contact sheets",
+      "status": "pass"
+    },
+    "P1.7": {
+      "note": "exact-package real scale gain is +0.2475 versus +0.0083 caption overall; document has a disclosed significant 1% to 6% caption caveat",
+      "status": "pass"
+    },
+    "P1.8": {
+      "note": "final R19 3B and 7B stores each cover all 2,400 release hashes exactly under one fixed prompt/token contract",
+      "status": "pass"
+    },
+    "P1.9": {
+      "note": "ViRL39K/MMK12 loaders cover all rows and critical model/dataset licenses are resolved",
+      "status": "pass"
+    },
+    "P2.1": {
+      "note": "image-condition path and three matched configs pass tests; execution waits only for P1.1 completion",
+      "status": "blocked"
+    },
+    "P2.2": {
+      "note": "all five 2,702-item Geometry3K conditions pass V3 item/decoding/recomputed-score integrity audit with unchanged metrics",
+      "status": "pass"
+    }
+  },
+  "ledger_task_count": 18,
+  "pass_report_checks": {
+    "P0.1": {
+      "reports/scorer_v2_spec.md": true
+    },
+    "P0.2": {
+      "reports/parser_agreement_audit.md": true
+    },
+    "P0.3": {
+      "reports/fliptrack_nulls.md": true
+    },
+    "P0.4": {
+      "reports/fliptrack_v01_rescored.md": true
+    },
+    "P0.5": {
+      "reports/grpo_config_diff.md": true
+    },
+    "P1.10": {
+      "reports/decon_calibration.md": true,
+      "reports/decon_geo3k_vs_layer1.md": true
+    },
+    "P1.2": {
+      "reports/base_external_benchmarks.md": true,
+      "reports/eval_harness_version.md": true
+    },
+    "P1.4": {
+      "reports/fliptrack_v02_packaging.md": true
+    },
+    "P1.5": {
+      "reports/artifact_gate_v02.md": true
+    },
+    "P1.6": {
+      "reports/fliptrack_v02_hardness.md": true
+    },
+    "P1.7": {
+      "reports/positive_controls_v02.md": true
+    },
+    "P1.8": {
+      "reports/caption_infra.md": true
+    },
+    "P1.9": {
+      "reports/dataset_license_triage_v2.md": true,
+      "reports/license_log_v2.csv": true,
+      "reports/virl39k_loader.md": true
+    },
+    "P2.2": {
+      "reports/blind_solvability_geo3k.md": true,
+      "reports/blind_solvability_geo3k_v3_audited.md": true
+    }
+  },
+  "schema_version": "blind-gains.gate2-objective-audit.v1",
+  "scientific_consistency_audit": {
+    "audited_file_checks": {
+      "reports/blind_solvability_geo3k_v3_audited.json": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.json",
+        "audited_sha256": "3af83d4503096ad55a3ba7435d6f10c54f2b0f93ce8761a71ed53e244c779b01",
+        "audited_size_bytes": 33192,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.json",
+        "counterpart_sha256": "c6bd96d847fb1ab21ea6056e49ee9556b7807c14c8cbd2cb7aa4305f112651db",
+        "counterpart_size_bytes": 32664
+      },
+      "reports/blind_solvability_geo3k_v3_audited.md": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.md",
+        "audited_sha256": "65c747d7e3cd45992499203b66fed0de3f19685d9053224e8f7d901596d7b990",
+        "audited_size_bytes": 5603,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.md",
+        "counterpart_sha256": "a8a138a96180fcae1174810418a47a32ceb92b41e704fdb965e814266a7321b6",
+        "counterpart_size_bytes": 5035
+      }
+    },
+    "checks": {
+      "audited_files_are_distinct": true,
+      "full_claims_include_registered_members": true,
+      "pass_report_status_lines_are_resolved": true,
+      "referenced_machine_statuses_pass": true
+    },
+    "errors": [],
+    "pass_reports": {
+      "reports/artifact_gate_v02.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.5"
+      },
+      "reports/base_external_benchmarks.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.2"
+      },
+      "reports/blind_solvability_geo3k.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P2.2"
+      },
+      "reports/blind_solvability_geo3k_v3_audited.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P2.2"
+      },
+      "reports/caption_infra.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.8"
+      },
+      "reports/dataset_license_triage_v2.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.9"
+      },
+      "reports/decon_calibration.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.10"
+      },
+      "reports/decon_geo3k_vs_layer1.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.10"
+      },
+      "reports/eval_harness_version.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.2"
+      },
+      "reports/fliptrack_nulls.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P0.3"
+      },
+      "reports/fliptrack_v01_rescored.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P0.4"
+      },
+      "reports/fliptrack_v02_hardness.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.6"
+      },
+      "reports/fliptrack_v02_packaging.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.4"
+      },
+      "reports/grpo_config_diff.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P0.5"
+      },
+      "reports/parser_agreement_audit.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P0.2"
+      },
+      "reports/positive_controls_v02.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.7"
+      },
+      "reports/scorer_v2_spec.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P0.1"
+      },
+      "reports/virl39k_loader.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "P1.9"
+      }
+    },
+    "schema_version": "blind-gains.scientific-consistency-audit.v1",
+    "status": "pass"
+  },
+  "status": "pass"
+}

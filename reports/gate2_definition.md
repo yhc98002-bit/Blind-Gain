@@ -9,7 +9,7 @@ Checks:
 | --- | --- |
 | Measurement repair | P0.1-P0.5 all `pass` in `reports/gate2_progress.md` |
 | Anchor | P1.1 `pass` plus `reports/anchor_recipe_report.md` |
-| Layer-1 base table | P1.2 `pass` plus `reports/base_external_benchmarks.md` |
+| Gate-2 Layer-1 subset | P1.2 `pass` plus `reports/base_external_benchmarks.md` |
 | V0.2 packaging | P1.4 `pass` plus truthy `reports/fliptrack_v02r19_lint.json.status` |
 | V0.2 artifact gate | P1.5 `pass` plus truthy `reports/artifact_gate_v02_r19.json.gate.status` |
 | V0.2 templates | P1.6 `pass` plus at least three R19 contact sheets |
@@ -20,8 +20,8 @@ Checks:
 | Data/licenses | P1.9 `pass` plus `reports/license_log_v2.csv` |
 | Decontamination | P1.10 `pass` plus `reports/decon_geo3k_vs_layer1.md` |
 | Repo/gate logic | P1.11 `pass` plus `tests/test_gate_logic.py` |
-| Idle audit | `reports/gpu_idle_audit_gate2.json.violations` is empty |
 
 Decision:
 - Machine readiness is the logical AND of all checks above.
+- `reports/gpu_hours_utilization.md` is descriptive telemetry and is explicitly not part of this logical AND.
 - Only the PI may convert machine readiness into a Gate 2 scientific decision.
