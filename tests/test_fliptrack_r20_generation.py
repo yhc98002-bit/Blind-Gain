@@ -1,14 +1,34 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from pathlib import Path
 
-from src.fliptrack.build_r20 import build_r20, verify_frozen_inputs
+from src.fliptrack.build_r20 import (
+    FROZEN_INPUT_HASHES,
+    FROZEN_INPUT_SNAPSHOTS,
+    FROZEN_SNAPSHOT_SOURCE_COMMITS,
+    ROOT,
+    build_r20,
+    verify_frozen_inputs,
+)
 
 
 def test_frozen_r20_inputs_match_recorded_hashes() -> None:
     observed = verify_frozen_inputs()
     assert len(observed) == 6
+
+
+def test_mutable_metric_module_resolves_to_exact_historical_snapshot() -> None:
+    logical = "src/eval/fliptrack_metrics.py"
+    snapshot = ROOT / FROZEN_INPUT_SNAPSHOTS[logical]
+    mutable = ROOT / logical
+
+    assert FROZEN_SNAPSHOT_SOURCE_COMMITS[logical] == (
+        "4058924530ee70b98a9d1ce3a6b448a8fe2baa70"
+    )
+    assert snapshot.read_bytes() != mutable.read_bytes()
+    assert hashlib.sha256(snapshot.read_bytes()).hexdigest() == FROZEN_INPUT_HASHES[logical]
 
 
 def test_r20_builder_is_one_shot_and_preserves_declared_counts(tmp_path: Path) -> None:

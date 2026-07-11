@@ -25,6 +25,12 @@ FROZEN_INPUT_HASHES = {
     "reports/fliptrack_v02r19_exact_package.json": "5056eb2be0c97793dedb4c9f87ad75b817ed727dd85239beec5c2b1be9cc860a",
     "data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl": "23dd24452670392d6355c06b6b167a1c868660c11d21b20e0bae393dc82126f0",
 }
+FROZEN_INPUT_SNAPSHOTS = {
+    "src/eval/fliptrack_metrics.py": "src/fliptrack/frozen_r20/fliptrack_metrics.py",
+}
+FROZEN_SNAPSHOT_SOURCE_COMMITS = {
+    "src/eval/fliptrack_metrics.py": "4058924530ee70b98a9d1ce3a6b448a8fe2baa70",
+}
 R20_SEEDS = {
     "document": 20261001,
     "geometry": 20261002,
@@ -48,9 +54,11 @@ def _sha256(path: Path) -> str:
 def verify_frozen_inputs(root: Path = ROOT) -> dict[str, str]:
     observed = {}
     for relative, expected in FROZEN_INPUT_HASHES.items():
-        path = root / relative
+        path = root / FROZEN_INPUT_SNAPSHOTS.get(relative, relative)
         if not path.is_file():
-            raise FileNotFoundError(f"frozen R20 input is missing: {path}")
+            raise FileNotFoundError(
+                f"frozen R20 input or dedicated snapshot is missing: {path}"
+            )
         observed[relative] = _sha256(path)
         if observed[relative] != expected:
             raise RuntimeError(
