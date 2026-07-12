@@ -14,6 +14,7 @@ import numpy as np
 from src.analysis.blind_solvability import bootstrap_mean_ci, real_blind_quadrants
 from src.eval.blind_solvability import (
     CONDITIONS,
+    GUARDED_RESCORE_VERSION,
     PILOT_ROW_SCHEMA_VERSION,
     PILOT_SCORING_MODE,
     load_geometry_rows,
@@ -22,18 +23,25 @@ from src.eval.blind_solvability import (
 )
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT, load_prompt_contract_from_run_manifest
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+)
 
 
 SCORE_FIELDS = (
     "scoring_mode",
     "pilot_reward_version",
+    "symbolic_grader_guard_version",
+    "symbolic_grader_timeout_seconds",
     "format_weight",
     "p_greedy",
     "greedy_correct",
     "greedy_training_reward",
     "greedy_format_reward",
     "greedy_native_r1v_shadow_reward",
+    "greedy_native_r1v_shadow_valid",
     "greedy_canonical_correct",
     "greedy_reward_disagreement_reason",
     "greedy_extracted_answer",
@@ -46,6 +54,7 @@ SCORE_FIELDS = (
     "sampled_training_rewards",
     "sampled_format_rewards",
     "sampled_native_r1v_shadow_rewards",
+    "sampled_native_r1v_shadow_valid",
     "sampled_canonical_rewards",
     "sampled_reward_disagreement_reasons",
     "parser_version",
@@ -135,10 +144,32 @@ def _check_manifest_contract(manifest: dict[str, Any], condition: str) -> bool:
         seed = int(manifest.get("seed", -1))
     except (TypeError, ValueError):
         return False
+    job_type = manifest.get("job_type")
+    guarded_rescore_contract = (
+        job_type != "l7_blind_solvability_geo3k_v2_guarded_rescore"
+        or bool(
+            manifest.get("guarded_rescore_version") == GUARDED_RESCORE_VERSION
+            and isinstance(manifest.get("rescore_source_run"), str)
+            and bool(manifest["rescore_source_run"])
+            and isinstance(manifest.get("rescore_source_output_sha256"), str)
+            and len(manifest["rescore_source_output_sha256"]) == 64
+            and isinstance(manifest.get("rescore_source_manifest_sha256"), str)
+            and len(manifest["rescore_source_manifest_sha256"]) == 64
+            and isinstance(manifest.get("output_sha256"), str)
+            and len(manifest["output_sha256"]) == 64
+            and isinstance(manifest.get("guarded_rescore_stats"), dict)
+            and manifest["guarded_rescore_stats"].get("guarded_rescore_version")
+            == GUARDED_RESCORE_VERSION
+        )
+    )
     return bool(
         manifest.get("status") == "complete"
         and manifest.get("condition") == condition
-        and manifest.get("job_type") == "l7_blind_solvability_geo3k_v2"
+        and job_type
+        in {
+            "l7_blind_solvability_geo3k_v2",
+            "l7_blind_solvability_geo3k_v2_guarded_rescore",
+        }
         and manifest.get("scoring_mode") == PILOT_SCORING_MODE
         and manifest.get("pilot_reward_version") == PILOT_REWARD_VERSION
         and manifest.get("parser_version") == PARSER_VERSION
@@ -148,11 +179,16 @@ def _check_manifest_contract(manifest: dict[str, Any], condition: str) -> bool:
         and manifest.get("group_size") == 5
         and manifest.get("max_tokens") == 2048
         and manifest.get("format_weight") == 0.5
+        and manifest.get("symbolic_grader_guard_version")
+        == SYMBOLIC_GRADER_GUARD_VERSION
+        and manifest.get("symbolic_grader_timeout_seconds")
+        == DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
         and isinstance(manifest.get("source_manifest_sha256"), str)
         and len(manifest["source_manifest_sha256"]) == 64
         and isinstance(manifest.get("train_filter_sha256"), str)
         and len(manifest["train_filter_sha256"]) == 64
         and manifest.get("decoding") == _expected_decoding(seed)
+        and guarded_rescore_contract
     )
 
 
@@ -220,6 +256,17 @@ def audit_runs(run_dirs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, lis
                 and row.get("parser_version") == PARSER_VERSION
                 and row.get("pilot_reward_version") == PILOT_REWARD_VERSION
                 and row.get("scoring_mode") == PILOT_SCORING_MODE
+                and row.get("symbolic_grader_guard_version")
+                == SYMBOLIC_GRADER_GUARD_VERSION
+                and row.get("symbolic_grader_timeout_seconds")
+                == DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
+                and isinstance(row.get("greedy_native_r1v_shadow_valid"), bool)
+                and isinstance(row.get("sampled_native_r1v_shadow_valid"), list)
+                and len(row["sampled_native_r1v_shadow_valid"]) == 16
+                and all(
+                    isinstance(value, bool)
+                    for value in row["sampled_native_r1v_shadow_valid"]
+                )
             )
             sampled = row.get("sampled_responses")
             if not fixed_contract or not isinstance(sampled, list) or len(sampled) != 16:
@@ -292,6 +339,25 @@ def audit_runs(run_dirs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, lis
             item_contract_equal = False
     row_counts = {condition: len(rows) for condition, rows in rows_by_condition.items()}
     split_counts = Counter(str(row["split"]) for row in expected_rows)
+    native_shadow_invalid_counts = {
+        condition: sum(
+            int(not row["greedy_native_r1v_shadow_valid"])
+            + sum(int(not value) for value in row["sampled_native_r1v_shadow_valid"])
+            for row in rows
+        )
+        for condition, rows in rows_by_condition.items()
+    }
+    mathruler_error_counts = {
+        condition: sum(
+            int(str(row["greedy_reward_disagreement_reason"]).startswith("mathruler_error_"))
+            + sum(
+                int(str(reason).startswith("mathruler_error_"))
+                for reason in row["sampled_reward_disagreement_reasons"]
+            )
+            for row in rows
+        )
+        for condition, rows in rows_by_condition.items()
+    }
 
     checks = {
         "all_run_manifests_complete_and_registered": all(manifest_checks.values()),
@@ -311,6 +377,8 @@ def audit_runs(run_dirs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, lis
         "decoding_parameters_locked": all(decoding_checks.values()),
         "prompt_parser_reward_versions_locked": all(manifest_checks.values())
         and all(row_contract_checks.values()),
+        "symbolic_grader_guard_locked": all(manifest_checks.values())
+        and all(row_contract_checks.values()),
         "recomputed_scores_match": sum(mismatch_counts.values()) == 0,
         "output_hashes_recorded": len(output_hashes) == len(CONDITIONS)
         and all(len(value) == 64 for value in output_hashes.values()),
@@ -329,10 +397,14 @@ def audit_runs(run_dirs: dict[str, Path]) -> tuple[dict[str, Any], dict[str, lis
         "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
         "parser_version": PARSER_VERSION,
         "pilot_reward_version": PILOT_REWARD_VERSION,
+        "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+        "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
         "scoring_mode": PILOT_SCORING_MODE,
         "recomputed_score_mismatch_count": sum(mismatch_counts.values()),
         "recomputed_score_mismatch_rows_by_condition": mismatch_counts,
         "recomputed_score_mismatch_fields": dict(sorted(mismatch_fields.items())),
+        "native_r1v_shadow_invalid_counts": native_shadow_invalid_counts,
+        "mathruler_error_counts": mathruler_error_counts,
         "per_item_output_sha256": output_hashes,
         "run_manifest_sha256": {
             condition: _sha256(run_dirs[condition] / "run_manifest.json") for condition in CONDITIONS
@@ -451,6 +523,8 @@ def build_summary(
             "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
             "parser_version": PARSER_VERSION,
             "pilot_reward_version": PILOT_REWARD_VERSION,
+            "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+            "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
             "scoring_mode": PILOT_SCORING_MODE,
         },
         "audit": audit,
@@ -477,6 +551,7 @@ def render_summary(summary: dict[str, Any], audit_json: Path) -> str:
         f"- Items: {summary['n_items']} ({summary['split_counts']}).",
         f"- Prompt contract SHA256: `{summary['evaluation_contract']['prompt_contract_sha256']}`.",
         "- Sampling: n=16, temperature=1.0, G=5; greedy decoding uses temperature=0, top_p=1.0, n=1.",
+        f"- Symbolic grading: `{summary['evaluation_contract']['symbolic_grader_guard_version']}` at `{summary['evaluation_contract']['symbolic_grader_timeout_seconds']}` seconds per bounded call.",
         "",
         "Primary pilot-reward and canonical-v2 results:",
         "| Condition | Split | Pilot greedy accuracy | Canonical greedy accuracy | Mean p_i | Mean q_i | Mean pilot reward | Format rate |",

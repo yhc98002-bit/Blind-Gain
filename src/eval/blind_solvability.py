@@ -30,6 +30,7 @@ from src.rewards.pilot_reward import (
 CONDITIONS = ("real", "gray", "noise", "none", "caption")
 PILOT_SCORING_MODE = "pilot-reward-v1+canonical-v2"
 PILOT_ROW_SCHEMA_VERSION = "blind-gains.blind-solvability-pilot.v1"
+GUARDED_RESCORE_VERSION = "l7-guarded-rescore-v1"
 
 
 def vllm_multimodal_limits(condition: str, max_images: int = 1) -> dict[str, int]:

@@ -13,7 +13,11 @@ from src.eval.blind_solvability import (
 )
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+)
 
 
 def _sha256(path: Path) -> str:
@@ -97,6 +101,8 @@ def _fixture_runs(tmp_path: Path) -> dict[str, Path]:
             "sample_temperature": 1.0,
             "max_tokens": 2048,
             "format_weight": 0.5,
+            "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+            "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
             "seed": 20260710,
             "decoding": decoding,
             "git_hash": "git",
@@ -153,3 +159,16 @@ def test_v2_audit_rejects_shared_legacy_decoding_contract(tmp_path: Path) -> Non
     assert audit["status"] == "fail"
     assert audit["checks"]["all_run_manifests_complete_and_registered"] is False
     assert audit["checks"]["decoding_parameters_locked"] is False
+
+
+def test_v2_audit_rejects_missing_symbolic_guard_stamp(tmp_path: Path) -> None:
+    runs = _fixture_runs(tmp_path)
+    manifest_path = runs["real"] / "run_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest.pop("symbolic_grader_guard_version")
+    manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+
+    audit, _ = audit_runs(runs)
+
+    assert audit["status"] == "fail"
+    assert audit["checks"]["symbolic_grader_guard_locked"] is False
