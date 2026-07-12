@@ -31,15 +31,21 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
     training_checks = audit.get("training_contract_checks", {})
     partition_audit = audit.get("partition_audit", {})
     partition_checks = partition_audit.get("checks", {})
+    placement_audit = audit.get("placement_audit", {})
+    placement_checks = placement_audit.get("checks", {})
     if (
-        not checks
+        audit.get("schema_version") != "blind-gains.pilot-reward-smoke-audit.v6"
+        or not checks
         or not training_checks
         or not partition_checks
+        or not placement_checks
         or not all(checks.values())
         or not all(training_checks.values())
         or not all(partition_checks.values())
+        or not all(placement_checks.values())
         or partition_audit.get("training_audit", {}).get("status") != "pass"
         or partition_audit.get("validation_audit", {}).get("status") != "pass"
+        or placement_audit.get("status") != "pass"
     ):
         raise ValueError("pilot reward smoke audit contains a false sub-check")
 
@@ -59,6 +65,8 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "Evidence:",
         f"- Smoke run: `{manifest['run_id']}` on `{manifest['node']}` GPUs `{manifest['gpu_allocation']}`.",
         f"- Git/config/data hashes: `{manifest['git_hash']}` / `{manifest['config_hash']}` / `{manifest['data_manifest_hash']}`.",
+        f"- Placement: TP`{manifest['tensor_parallel_width']}` with `{manifest['replica_count']}` rollout replicas; runtime log values `{placement_audit['runtime_log_tensor_parallel_values']}`.",
+        f"- EasyR1 revision: `{manifest['easyr1_revision']}`; worktree patch SHA256 `{manifest['easyr1_worktree_patch_sha256']}`; logger SHA256 `{manifest['easyr1_logger_sha256']}`.",
         "- Exact training shadow rows: `12800` = 5 steps x 512 rollout prompts x group size 5.",
         "- Exact final-validation shadow rows: `601`, matching the frozen Geometry3K test answers in sequence.",
         f"- Training-partition reward counts: `{reward_counts}`.",
@@ -82,6 +90,7 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "- The first full-path smoke exposed double-resized visual-grid drift before optimizer step 1. That run remains preserved in `reports/pilot_reward_smoke_failure_20260711.md`; the repaired run is the evidence above.",
         "- EasyR1 always performs a final validation pass and calls the same reward function. The failed v1 audit expected only training rows; v2 partitions the append-only shadow log using the exact 601-row test-answer sequence.",
         "- An unbounded symbolic grader later stalled L7 no-image scoring. The guarded replacement smoke recorded zero guard mismatches and zero invalid native shadows; finite-call reward semantics remain unchanged.",
+        "- The historical five-step smoke used TP2 while its manifest claimed TP1. It remains preserved and rejected by `reports/pilot_reward_smoke_historical_reaudit_v6.json`; only the replacement run is completion evidence.",
         "- A five-step smoke certifies reward plumbing and nondegeneracy, not training stability or scientific efficacy.",
         "",
         "Decision:",
@@ -89,7 +98,7 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "- Keep the anchor config bound to EasyR1 native `r1v.py`; do not retroactively rescore or modify anchor optimization.",
         "",
         "Next actions:",
-        "- Run the five-condition L7 audit under this exact reward and fill preregistration quantities only from its audited outputs.",
+        "- Keep L13 blocked until the draft preregistration receives the separate human R19 audit and both PI signatures.",
     ]
     return "\n".join(lines) + "\n"
 
