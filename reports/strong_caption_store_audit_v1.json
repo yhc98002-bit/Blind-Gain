@@ -1,0 +1,73 @@
+{
+  "audited_at_utc": "2026-07-12T07:48:57Z",
+  "checks": {
+    "caption_image_files_match_hashes": true,
+    "exact_manifest_image_coverage": true,
+    "expected_model_exact": true,
+    "expected_revision_exact": true,
+    "expected_tensor_parallel_width_exact": true,
+    "one_row_per_image_hash": true,
+    "schema_prompt_decoding_budget_valid": true,
+    "single_caption_contract": true,
+    "source_manifests_disjoint": true
+  },
+  "contract": {
+    "caption_model_path": "Qwen/Qwen2.5-VL-72B-Instruct",
+    "caption_prompt_sha256": "9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0",
+    "coverage_complete": true,
+    "decoding": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "expected_hashes": 4800,
+    "max_new_tokens": 384,
+    "n_images": 4800,
+    "schema_version": "blind-gains.caption-store-merge.v1"
+  },
+  "cross_manifest_overlap_count": 0,
+  "cross_manifest_overlaps": {},
+  "manifest": null,
+  "manifest_sha256": null,
+  "manifests": [
+    {
+      "path": "data/fliptrack_v02r19_artifact_expanded/manifest.jsonl",
+      "sha256": "62553d701eb3e949910110057b65ab4e1146c602d21936268818fd1725b1b427"
+    },
+    {
+      "path": "data/fliptrack_r20/manifest.jsonl",
+      "sha256": "be033f67bd78d6207fb6dd1a3156810f3515416203b48fc65ae59334308255b4"
+    }
+  ],
+  "raw_row_audit": {
+    "checks": {
+      "caption_image_files_match_hashes": true,
+      "expected_model_exact": true,
+      "expected_revision_exact": true,
+      "expected_tensor_parallel_width_exact": true,
+      "one_row_per_image_hash": true
+    },
+    "duplicate_image_hashes": [],
+    "image_hash_mismatch_count": 0,
+    "model_paths": [
+      "Qwen/Qwen2.5-VL-72B-Instruct"
+    ],
+    "model_revisions": [
+      "master"
+    ],
+    "row_count": 4800,
+    "tensor_parallel_widths": [
+      4
+    ],
+    "unique_image_hashes": 4800
+  },
+  "schema_version": "blind-gains.caption-store-audit.v2",
+  "shards": [
+    {
+      "path": "experiments/runs/strong_caption_store_r19_r20_qwen25vl72b_384_an29_20260712T044619Z/captions.jsonl",
+      "sha256": "2683f7277920d42c1afc9e3d870ab9e63ed21434019b0be15298e984f282fda5",
+      "size_bytes": 7752170
+    }
+  ],
+  "status": "pass"
+}
