@@ -1,0 +1,108 @@
+{
+  "checks": {
+    "anchor_aggregate_canonical_v2": true,
+    "anchor_aggregate_complete": true,
+    "anchor_prompt_contract_exact": true,
+    "base_aggregate_canonical_v2": true,
+    "base_aggregate_complete": true,
+    "base_prompt_contract_exact": true,
+    "paired_bootstrap_present": true,
+    "paired_comparison_schema_v2": true,
+    "pair_identity_coverage_exact": true,
+    "r19_pair_count_exact": true
+  },
+  "comparison": {
+    "all": {
+      "base_pair_accuracy": 0.5616666666666666,
+      "base_strict_pair_accuracy": 0.37166666666666665,
+      "pair_delta": 0.0016666666666666668,
+      "pair_delta_ci95": [
+        -0.018333333333333333,
+        0.020854166666666552
+      ],
+      "pair_mcnemar_p": 0.9362204013023133,
+      "step100_pair_accuracy": 0.5633333333333334,
+      "step100_strict_pair_accuracy": 0.37,
+      "strict_delta": -0.0016666666666666668,
+      "strict_delta_ci95": [
+        -0.024166666666666666,
+        0.020833333333333332
+      ],
+      "strict_mcnemar_p": 0.9412590347294773
+    },
+    "chart_starred_series_value_nine_v07": {
+      "base_pair_accuracy": 0.43666666666666665,
+      "base_strict_pair_accuracy": 0.42,
+      "n_pairs": 300,
+      "pair_delta": 0.0,
+      "pair_delta_ci95": [
+        -0.05,
+        0.05
+      ],
+      "pair_mcnemar_p": 1.0,
+      "step100_pair_accuracy": 0.43666666666666665,
+      "step100_strict_pair_accuracy": 0.43,
+      "strict_delta": 0.01,
+      "strict_delta_ci95": [
+        -0.043333333333333335,
+        0.06
+      ],
+      "strict_mcnemar_p": 0.8043170001933986
+    },
+    "document_header_cued_table_code_v02": {
+      "base_pair_accuracy": 0.8666666666666667,
+      "base_strict_pair_accuracy": 0.18,
+      "n_pairs": 300,
+      "pair_delta": -0.01,
+      "pair_delta_ci95": [
+        -0.04,
+        0.016666666666666666
+      ],
+      "pair_mcnemar_p": 0.6476058959960938,
+      "step100_pair_accuracy": 0.8566666666666667,
+      "step100_strict_pair_accuracy": 0.09,
+      "strict_delta": -0.09,
+      "strict_delta_ci95": [
+        -0.12333333333333334,
+        -0.056666666666666664
+      ],
+      "strict_mcnemar_p": 1.1175870895385742e-07
+    },
+    "geometry_coordinate_register_twenty_point_x_v02": {
+      "base_pair_accuracy": 0.4716666666666667,
+      "base_strict_pair_accuracy": 0.44333333333333336,
+      "n_pairs": 600,
+      "pair_delta": 0.008333333333333333,
+      "pair_delta_ci95": [
+        -0.018333333333333333,
+        0.03666666666666667
+      ],
+      "pair_mcnemar_p": 0.644463913894226,
+      "step100_pair_accuracy": 0.48,
+      "step100_strict_pair_accuracy": 0.48,
+      "strict_delta": 0.03666666666666667,
+      "strict_delta_ci95": [
+        0.008333333333333333,
+        0.06666666666666667
+      ],
+      "strict_mcnemar_p": 0.02630166513112228
+    }
+  },
+  "n_pairs": 1200,
+  "scope": "engineering-anchor endpoint on R19-selected instrument; human R19 audit pending",
+  "source_artifacts": {
+    "anchor_aggregate_metrics": {
+      "path": "experiments/runs/fliptrack_aggregate_anchor_step100_real_20260712T091312Z/metrics.json",
+      "sha256": "4fe2d566a4bd512209c2b70b726f4a35b9d5efd6a0462e21b7ef300c3fa32db3"
+    },
+    "base_canonical_v2_aggregate_metrics": {
+      "path": "experiments/runs/fliptrack_aggregate_base3b_real_canonicalv2_20260712T092214Z/metrics.json",
+      "sha256": "d1f1d421a99af2c5898197bd1ca86ba1af4321d8f7df85d96558f1112ea33f92"
+    },
+    "paired_comparison_v2": {
+      "path": "experiments/runs/fliptrack_compare_anchor_step100_r19_v2_20260712T092541Z/comparison.json",
+      "sha256": "f29d395bf06e4000f18267c1e770587c7ce922beff3d7e246439eb0ae7e26612"
+    }
+  },
+  "status": "pass"
+}

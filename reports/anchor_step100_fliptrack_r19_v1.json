@@ -1,0 +1,68 @@
+{
+  "checks": {
+    "aggregate_scoring_contract_identical": false,
+    "anchor_aggregate_complete": true,
+    "anchor_evaluation_complete": true,
+    "base_aggregate_complete": true,
+    "base_aggregate_parser_version_stamped": false,
+    "base_evaluation_complete": true,
+    "decoding_contract_identical": true,
+    "paired_comparison_complete": true,
+    "pair_identity_coverage_exact": true,
+    "r19_pair_count_exact": true
+  },
+  "comparison": {
+    "all": {
+      "base_pair_accuracy": 0.5616666666666666,
+      "delta": 0.0016666666666667052,
+      "mcnemar_p": 0.9362204013023133,
+      "step100_pair_accuracy": 0.5633333333333334
+    },
+    "chart_starred_series_value_nine_v07": {
+      "base_pair_accuracy": 0.43666666666666665,
+      "delta": 0.0,
+      "mcnemar_p": 1.0,
+      "n_pairs": 300,
+      "step100_pair_accuracy": 0.43666666666666665
+    },
+    "document_header_cued_table_code_v02": {
+      "base_pair_accuracy": 0.8666666666666667,
+      "delta": -0.010000000000000009,
+      "mcnemar_p": 0.6476058959960938,
+      "n_pairs": 300,
+      "step100_pair_accuracy": 0.8566666666666667
+    },
+    "geometry_coordinate_register_twenty_point_x_v02": {
+      "base_pair_accuracy": 0.4716666666666667,
+      "delta": 0.008333333333333304,
+      "mcnemar_p": 0.644463913894226,
+      "n_pairs": 600,
+      "step100_pair_accuracy": 0.48
+    }
+  },
+  "n_pairs": 1200,
+  "scope": "failed publication audit: paired final-answer comparison is canonical-v2, but historical base strict diagnostics require canonical-v2 reaggregation",
+  "source_artifacts": {
+    "anchor_aggregate_metrics": {
+      "path": "experiments/runs/fliptrack_aggregate_anchor_step100_real_20260712T091312Z/metrics.json",
+      "sha256": "4fe2d566a4bd512209c2b70b726f4a35b9d5efd6a0462e21b7ef300c3fa32db3"
+    },
+    "anchor_evaluation": {
+      "path": "experiments/runs/fliptrack_v02r19_anchor_step100_real_an12_20260712T085144Z/shards/shard_0.jsonl",
+      "sha256": "b4923ae553c9ecc14803ae8dfcf55f463588f6a6892c08b2cd624e763ca9644f"
+    },
+    "base_aggregate_metrics": {
+      "path": "experiments/runs/fliptrack_aggregate_v02r19_qwen25vl3b_real_20260710T145051Z/metrics.json",
+      "sha256": "6e6aa2e9cd34971934f0c857a812fce832cbe94b84b6fb10d808d0e7f2df0847"
+    },
+    "base_evaluation": {
+      "path": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z/shards/shard_0.jsonl",
+      "sha256": "6643c7a112075a85258d5db4879df19104390b27b5ca42c8dd565e9a50d5bb12"
+    },
+    "paired_comparison": {
+      "path": "experiments/runs/fliptrack_compare_anchor_step100_r19_20260712T092004Z/comparison.json",
+      "sha256": "4fd73e64a61abfa356f527773ab27bce0cd59449039f1c656423cf839b10b87e"
+    }
+  },
+  "status": "fail"
+}
