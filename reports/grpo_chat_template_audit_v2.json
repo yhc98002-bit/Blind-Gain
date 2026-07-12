@@ -1,0 +1,382 @@
+{
+  "checks": {
+    "all_item_identities_unique": true,
+    "all_prompts_within_configured_limit": true,
+    "answer_contract_present": true,
+    "config_format_prompt_exists": true,
+    "config_has_no_chat_template_override": true,
+    "config_uses_images_key": true,
+    "config_uses_problem_prompt_key": true,
+    "exact_8_train_8_test": true,
+    "generation_prompt_present": true,
+    "image_markers_match_source_images": true,
+    "think_contract_present": true
+  },
+  "config": "configs/train/anchor_a0_recipe_3b_geo3k.yaml",
+  "config_sha256": "fdd39cead00fa6932d03c3040d90e76b71599983623b7478d67a309ce4dc3862",
+  "format_prompt": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja",
+  "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+  "max_pixels": 4194304,
+  "max_prompt_length": 2048,
+  "min_pixels": 262144,
+  "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+  "processor_chat_template_sha256": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb",
+  "rows": [
+    {
+      "ground_truth": "3",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00000_0.png"
+      ],
+      "image_sha256": [
+        "4db9db6d47381307e257e6b0af881cd39d9e57a619ac46b27d4c7c5009c5de16"
+      ],
+      "problem": "<image>Find x.",
+      "prompt_tokens": 449,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find x. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 556,
+      "rendered_prompt_sha256": "fb0fc358ed25a25821ccdd2536643778a4538c73ce12be6044532c0566bde6aa",
+      "rendered_vision_marker_count": 1,
+      "row_index": 0,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "120",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00001_0.png"
+      ],
+      "image_sha256": [
+        "d02cf5113b282aa2b73df895bac279cbb75e114f08449ceecacbf94a575d16ad"
+      ],
+      "problem": "<image>If $\\overline{B E} \\cong \\overline{E D}$ and $m \\widehat{E D}=120,$ find $m \\widehat{B E}$",
+      "prompt_tokens": 486,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>If $\\overline{B E} \\cong \\overline{E D}$ and $m \\widehat{E D}=120,$ find $m \\widehat{B E}$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 639,
+      "rendered_prompt_sha256": "d24e415d9626c726e6365e5e10eaad06801d4776aa2a22cc59ed8584c4868401",
+      "rendered_vision_marker_count": 1,
+      "row_index": 1,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "2 \\sqrt { 221 }",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00002_0.png"
+      ],
+      "image_sha256": [
+        "50452b85c2c92618d437ce4878ef802924d965b43e11872473b07f83972176ae"
+      ],
+      "problem": "<image>Find x.",
+      "prompt_tokens": 449,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find x. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 556,
+      "rendered_prompt_sha256": "fb0fc358ed25a25821ccdd2536643778a4538c73ce12be6044532c0566bde6aa",
+      "rendered_vision_marker_count": 1,
+      "row_index": 2,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "27",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00003_0.png"
+      ],
+      "image_sha256": [
+        "53f27895310f52122724ba0aefb37fdbc87a370b1055a7a056549429797fc02e"
+      ],
+      "problem": "<image>Find $x$ so that $m || n$.",
+      "prompt_tokens": 455,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find $x$ so that $m || n$. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 575,
+      "rendered_prompt_sha256": "989a5497dd8793444695a86d62bb7c61a5088fe9c7e55171efe6ecaa7d6bcd96",
+      "rendered_vision_marker_count": 1,
+      "row_index": 3,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "27",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00004_0.png"
+      ],
+      "image_sha256": [
+        "ed1661401c5372e9c797641a5095d228d81de21d1375d4b2b1e3d57b10eb5d07"
+      ],
+      "problem": "<image>GRID IN In the figure, the radius of circle $A$ is twice the radius of circle $B$ and four times the radius of circle $C .$ If the sum of the circumferences of the three circles is $42 \\pi,$ find the measure of $\\overline{A C}$",
+      "prompt_tokens": 501,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>GRID IN In the figure, the radius of circle $A$ is twice the radius of circle $B$ and four times the radius of circle $C .$ If the sum of the circumferences of the three circles is $42 \\pi,$ find the measure of $\\overline{A C}$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 776,
+      "rendered_prompt_sha256": "24cd716a926cbd9c7417faa007c28e9301b091e92713143a05c72ea3eb4fab71",
+      "rendered_vision_marker_count": 1,
+      "row_index": 4,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "34",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00005_0.png"
+      ],
+      "image_sha256": [
+        "f3f4fb951a114006680def9dcc346d7df52241a08b68330c8775135f912c5ff1"
+      ],
+      "problem": "<image>Find $m \\angle 2$.",
+      "prompt_tokens": 436,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find $m \\angle 2$. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 567,
+      "rendered_prompt_sha256": "2040e7d1752703307d6eec364bbc5e4146058863d709c21c657d2e1b0120c2da",
+      "rendered_vision_marker_count": 1,
+      "row_index": 5,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "374.1",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00006_0.png"
+      ],
+      "image_sha256": [
+        "9f85e82280c2a2eb3564d2d94815f80ef7e1a48818e0ee0cff655a7df310fb58"
+      ],
+      "problem": "<image>Find the area of a regular hexagon with a perimeter of 72 feet.",
+      "prompt_tokens": 461,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find the area of a regular hexagon with a perimeter of 72 feet. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 612,
+      "rendered_prompt_sha256": "95b386e7770a9c88a91f4b9b98bd75e85b0f0c542d509691162d84e59bd9a7ff",
+      "rendered_vision_marker_count": 1,
+      "row_index": 6,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "420",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/train/00007_0.png"
+      ],
+      "image_sha256": [
+        "27fdab11849b457e278507d2890fc676429e61651f67c3de9ceb809f7f5b3070"
+      ],
+      "problem": "<image>Find the area of the parallelogram. Round to the nearest tenth if necessary.",
+      "prompt_tokens": 457,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find the area of the parallelogram. Round to the nearest tenth if necessary. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 625,
+      "rendered_prompt_sha256": "4f48ffe7eed0b7a12fd0f0d27fdedf9edcdc52740811472d74d0742f685484e6",
+      "rendered_vision_marker_count": 1,
+      "row_index": 7,
+      "source_image_count": 1,
+      "split": "train",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "48",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00000_0.png"
+      ],
+      "image_sha256": [
+        "0074edf27df0c471c726fbcaa7c60b1baab8367076bd65866e1248facea09053"
+      ],
+      "problem": "<image>Chords $\\overline{A C}$ and $\\overline{D F}$ are equidistant from the center. If the radius of $\\odot G$ is 26 find $A C$",
+      "prompt_tokens": 470,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Chords $\\overline{A C}$ and $\\overline{D F}$ are equidistant from the center. If the radius of $\\odot G$ is 26 find $A C$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 670,
+      "rendered_prompt_sha256": "8743a7194cbc5cb1248da3dba2ab86098c3f60149f6bbf5a61bd8b050bbc4cf3",
+      "rendered_vision_marker_count": 1,
+      "row_index": 0,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "7.85",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00001_0.png"
+      ],
+      "image_sha256": [
+        "d68fabb28184d7cff4f7eb6dd5994d9a45e4c0c23158ad512e2511aa00628361"
+      ],
+      "problem": "<image>Find the length of $\\widehat {ZY}$. Round to the nearest hundredth.",
+      "prompt_tokens": 446,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find the length of $\\widehat {ZY}$. Round to the nearest hundredth. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 616,
+      "rendered_prompt_sha256": "87a83c377e75b251ecdd546b755fba0d9c4b395decc74b56678e6ed6f2d4137e",
+      "rendered_vision_marker_count": 1,
+      "row_index": 1,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "31.1",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00002_0.png"
+      ],
+      "image_sha256": [
+        "134f46de99cb610bcdaae4c6939e59b9c9a4dcc18c04cabbdbfc4de77a1dcfe5"
+      ],
+      "problem": "<image>Find the area of the figure to the nearest tenth.",
+      "prompt_tokens": 463,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Find the area of the figure to the nearest tenth. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 598,
+      "rendered_prompt_sha256": "04676cc7dc6e291b7624686960b69f7cd78a04797a9ace57372fd24220137699",
+      "rendered_vision_marker_count": 1,
+      "row_index": 2,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "4 \\frac { 4 } { 11 }",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00003_0.png"
+      ],
+      "image_sha256": [
+        "2021da7652f713b6a3d7cc9f4102b0d7648a782ce91a755248d626f1d2c909af"
+      ],
+      "problem": "<image>If pentagons $A B C D E$ and $P Q R S T$ are similar, find $S R$",
+      "prompt_tokens": 453,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>If pentagons $A B C D E$ and $P Q R S T$ are similar, find $S R$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 613,
+      "rendered_prompt_sha256": "f02ae1834014547ae2e28e6a1d6679453bfe818270f3e5cba05887968090d091",
+      "rendered_vision_marker_count": 1,
+      "row_index": 3,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "6",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00004_0.png"
+      ],
+      "image_sha256": [
+        "0dc948d27c73d4cc250602e7606f80f00603692fa3defaf575a91d4c690607b0"
+      ],
+      "problem": "<image>In $\\triangle PQR$, $\\overline{ST} \\| \\overline{R Q}$ . If  $PS=12.5$, $SR=5$, and $PT=15$, find $TQ$.",
+      "prompt_tokens": 635,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>In $\\triangle PQR$, $\\overline{ST} \\| \\overline{R Q}$ . If  $PS=12.5$, $SR=5$, and $PT=15$, find $TQ$. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 651,
+      "rendered_prompt_sha256": "496930c318bdec16f4a3e51d8e74b3683b116db682eee9303219cc784a31b35b",
+      "rendered_vision_marker_count": 1,
+      "row_index": 4,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "0.96",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00005_0.png"
+      ],
+      "image_sha256": [
+        "1bcb3c014ff6f90c679298d2601e35fd4dc8a6cabbf129a5ff35bce3e8e531ca"
+      ],
+      "problem": "<image>$a=14, b=48,$ and $c=50$ find $cosA$",
+      "prompt_tokens": 456,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>$a=14, b=48,$ and $c=50$ find $cosA$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 585,
+      "rendered_prompt_sha256": "c51951f7f6303a94b6c78be513105612b0a23ec045e6f1b502b76e40519ffdf0",
+      "rendered_vision_marker_count": 1,
+      "row_index": 5,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "58",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00006_0.png"
+      ],
+      "image_sha256": [
+        "37dfac3359e71ca98f0ed8c1bb4dff7645ed7bd03df5ff6511eb874c9e9b986a"
+      ],
+      "problem": "<image>$\\overline{A C}$ is a diagonal of rhombus $A B C D$ If $m \\angle C D E$ is $116,$ what is $m \\angle A C D ?$",
+      "prompt_tokens": 500,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>$\\overline{A C}$ is a diagonal of rhombus $A B C D$ If $m \\angle C D E$ is $116,$ what is $m \\angle A C D ?$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 657,
+      "rendered_prompt_sha256": "7e166ee0a90ca16c84c08989bcdb4e0c975430db88d87eccd7d8b8f7d280640d",
+      "rendered_vision_marker_count": 1,
+      "row_index": 6,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    },
+    {
+      "ground_truth": "71",
+      "has_answer_contract": true,
+      "has_generation_prompt": true,
+      "has_think_contract": true,
+      "image_paths": [
+        "data/geometry3k_caption_images/test/00007_0.png"
+      ],
+      "image_sha256": [
+        "28a0c75d8a145da682d273952fafeb1389c7b952040d93321c9461997417bffd"
+      ],
+      "problem": "<image>Use parallelogram $JKLM$ to find $m \\angle KLM$",
+      "prompt_tokens": 465,
+      "rendered_prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>Use parallelogram $JKLM$ to find $m \\angle KLM$ A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process and answer are enclosed within <think> </think> and <answer> </answer> tags, respectively, i.e., <think> reasoning process here </think><answer> answer here </answer><|im_end|>\n<|im_start|>assistant\n",
+      "rendered_prompt_chars": 596,
+      "rendered_prompt_sha256": "37fe4cf5cd0248881d72394ffc01e7135de68e186c43811842cd9d947fb3cec8",
+      "rendered_vision_marker_count": 1,
+      "row_index": 7,
+      "source_image_count": 1,
+      "split": "test",
+      "within_max_prompt_length": true
+    }
+  ],
+  "schema_version": "blind-gains.grpo-chat-template-audit.v2",
+  "source_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+  "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+  "status": "pass"
+}
