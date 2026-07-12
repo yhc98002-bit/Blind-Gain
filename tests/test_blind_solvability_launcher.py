@@ -132,3 +132,7 @@ def test_virl_launcher_records_sample_and_prompt_contract_hashes() -> None:
     assert "sample_spec_sha256: $sample_hash" in source
     assert "sample_size: $sample_size" in source
     assert "max_images_per_item: $max_images" in source
+    assert "SYMBOLIC_GRADER_TIMEOUT_SECONDS=5.0" in source
+    assert "--symbolic-grader-timeout-seconds ${SYMBOLIC_GRADER_TIMEOUT_SECONDS}" in source
+    assert "symbolic_grader_guard_version: $symbolic_guard_version" in source
+    assert "symbolic_grader_timeout_seconds: $symbolic_timeout" in source

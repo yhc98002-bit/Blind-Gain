@@ -17,6 +17,7 @@ MANIFEST="data/virl39k_blind_sample_4096.jsonl"
 SAMPLE_SPEC="reports/virl39k_blind_sample_4096.json"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 CAPTION_RUN="experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z"
+SYMBOLIC_GRADER_TIMEOUT_SECONDS=5.0
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ || ! "${GPU}" =~ ^[0-7]$ ]]; then
   echo "Invalid node or GPU" >&2
@@ -87,13 +88,14 @@ PROMPT_CONTRACT_JSON="$(PYTHONPATH=. .venv/bin/python -c 'import json; from src.
 PROMPT_CONTRACT_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(DEFAULT_PROMPT_CONTRACT.sha256)')"
 PARSER_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.answer_reward import PARSER_VERSION; print(PARSER_VERSION)')"
 REWARD_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.pilot_reward import PILOT_REWARD_VERSION; print(PILOT_REWARD_VERSION)')"
+SYMBOLIC_GRADER_GUARD_VERSION="$(PYTHONPATH=. .venv/bin/python -c 'from src.rewards.pilot_reward import SYMBOLIC_GRADER_GUARD_VERSION; print(SYMBOLIC_GRADER_GUARD_VERSION)')"
 SOURCE_HASH="$(sha256sum "${MANIFEST}" | awk '{print $1}')"
 SAMPLE_HASH="$(sha256sum "${SAMPLE_SPEC}" | awk '{print $1}')"
 FORMAT_PROMPT_HASH="$(sha256sum "${FORMAT_PROMPT}" | awk '{print $1}')"
 SAMPLE_SIZE="$(jq -r '.sample_size' "${SAMPLE_SPEC}")"
 MAX_IMAGES="$(jq -r '.max_images_per_item' "${SAMPLE_SPEC}")"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits audit --batch-size 2 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --seed 20260710"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits audit --batch-size 2 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --symbolic-grader-timeout-seconds ${SYMBOLIC_GRADER_TIMEOUT_SECONDS} --seed 20260710"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
@@ -115,6 +117,8 @@ jq -n \
   --arg resume "${RESUME_FROM}" \
   --arg parser_version "${PARSER_VERSION}" \
   --arg reward_version "${REWARD_VERSION}" \
+  --arg symbolic_guard_version "${SYMBOLIC_GRADER_GUARD_VERSION}" \
+  --argjson symbolic_timeout "${SYMBOLIC_GRADER_TIMEOUT_SECONDS}" \
   --argjson prompt_contract "${PROMPT_CONTRACT_JSON}" \
   --arg prompt_hash "${PROMPT_CONTRACT_HASH}" \
   --argjson sample_size "${SAMPLE_SIZE}" \
@@ -145,6 +149,8 @@ jq -n \
     format_prompt_sha256: $format_prompt_hash,
     parser_version: $parser_version,
     pilot_reward_version: $reward_version,
+    symbolic_grader_guard_version: $symbolic_guard_version,
+    symbolic_grader_timeout_seconds: $symbolic_timeout,
     scoring_mode: "pilot-reward-v1+canonical-v2",
     prompt_contract: $prompt_contract,
     prompt_contract_sha256: $prompt_hash,
