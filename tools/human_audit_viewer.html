@@ -812,7 +812,7 @@
           <span class="step-number" aria-hidden="true">1</span>
           <label for="imageDirectory">Choose the R19 package folder</label>
         </div>
-        <div class="path-hint">data/fliptrack_v02r19_artifact_expanded/</div>
+        <div class="path-hint">Downloaded ZIP: package/ | Cluster: data/fliptrack_v02r19_artifact_expanded/</div>
         <input id="imageDirectory" type="file" webkitdirectory directory multiple>
         <span id="packageSelection" class="file-state">No package folder selected</span>
       </div>
@@ -821,7 +821,7 @@
           <span class="step-number" aria-hidden="true">2</span>
           <label for="answerKeyFile">Choose the R19 private answer key</label>
         </div>
-        <div class="path-hint">.private/fliptrack_v02r19_key.jsonl</div>
+        <div class="path-hint">Downloaded ZIP: private/answer_key.jsonl | Cluster: .private/fliptrack_v02r19_key.jsonl</div>
         <input id="answerKeyFile" type="file" accept=".json,.jsonl,application/json">
         <span id="keySelection" class="file-state">No answer key selected</span>
       </div>
@@ -865,8 +865,8 @@
       <div class="control-field">
         <label for="scopeSelect">Audit scope</label>
         <select id="scopeSelect">
-          <option value="representative">First 20 per template</option>
-          <option value="all">All pairs</option>
+          <option value="representative">First 20 per loaded template</option>
+          <option value="all">All loaded pairs</option>
         </select>
       </div>
       <div class="control-field">
@@ -1333,6 +1333,14 @@
       });
     }
 
+    function isPreselectedAuditPackage() {
+      const counts = new Map();
+      for (const pair of state.allPairs) {
+        counts.set(pair.templateId, (counts.get(pair.templateId) || 0) + 1);
+      }
+      return counts.size > 0 && [...counts.values()].every((count) => count <= 20);
+    }
+
     function scopedPairs() {
       return dom.scopeSelect.value === "all" ? state.allPairs : representativePairs();
     }
@@ -1654,7 +1662,7 @@
         state.fitImages = true;
         state.zoom = 1;
         dom.zoomRange.value = "100";
-        dom.scopeSelect.value = "representative";
+        dom.scopeSelect.value = isPreselectedAuditPackage() ? "all" : "representative";
         dom.pairSearch.value = "";
         restoreProgress();
         populateTemplateFilter();
@@ -1699,7 +1707,9 @@
       const payload = {
         schema_version: "blind-gains.human-audit-failures.v1",
         generated_at_utc: new Date().toISOString(),
-        audit_scope: dom.scopeSelect.value === "all" ? "all_pairs" : "first_20_per_template",
+        audit_scope: dom.scopeSelect.value === "all"
+          ? "all_loaded_pairs"
+          : "first_20_per_template_in_loaded_manifest_order",
         source: {
           manifest_file: state.manifestName,
           manifest_sha256: state.manifestSha256,

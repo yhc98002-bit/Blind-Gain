@@ -82,6 +82,7 @@ def test_viewer_is_single_file_local_only_and_has_required_controls() -> None:
     assert "The package manifest is detected automatically." in source
     assert "data/fliptrack_v02r19_artifact_expanded/" in source
     assert ".private/fliptrack_v02r19_key.jsonl" in source
+    assert "Downloaded ZIP: package/" in source
     assert "press Ctrl+H" in source
     assert 'dom.loaderBand.classList.add("hidden")' in source
     assert 'dom.changePackageButton.classList.remove("hidden")' in source
@@ -128,6 +129,8 @@ def test_viewer_joins_answers_by_member_id_and_rejects_unsafe_inputs() -> None:
     assert "count < 20" in source
     assert "localStorage.setItem" in source
     assert "findPackageManifest(dom.imageDirectory.files)" in source
+    assert "isPreselectedAuditPackage()" in source
+    assert '"first_20_per_template_in_loaded_manifest_order"' in source
 
 
 def test_viewer_contains_no_model_result_vocabulary() -> None:
