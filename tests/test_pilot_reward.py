@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 import src.rewards.pilot_reward as pilot_reward
+from scripts.resolve_easyr1_rollout_placement import resolve_rollout_placement
 from src.rewards.pilot_reward import (
     NATIVE_R1V_PATH,
     PILOT_REWARD_VERSION,
@@ -186,7 +187,38 @@ def test_pilot_reward_smoke_uses_dev_shm_for_ray_runtime() -> None:
     assert "awk 'NR==2 {print \\\\$4}'" not in launcher
     assert "short_ray_tmp_dir" not in launcher
     assert "gpu_ids: $gpu_ids" in launcher
-    assert "tensor_parallel_width: 1" in launcher
-    assert "replica_count: 1" in launcher
+    assert "resolve_easyr1_rollout_placement.py" in launcher
+    assert "--require-tp 1" in launcher
+    assert "tensor_parallel_width: $tensor_parallel_width" in launcher
+    assert "replica_count: $replica_count" in launcher
+    assert "tensor_parallel_width: 1," not in launcher
+    assert "replica_count: 1," not in launcher
+    assert "effective_config.yaml" in launcher
+    assert "checkpoints/smoke/${RUN_ID}" in launcher
     assert "synchronous EasyR1/GRPO smoke" in launcher
-    assert "rollout is not disaggregated across nodes" in launcher
+    assert "four independent TP1 rollout replicas" in launcher
+
+
+def test_historical_tp2_smoke_config_is_rejected_before_launch() -> None:
+    config = yaml.safe_load(
+        (ROOT / "configs/train/mech_a1_real_3b_geo3k.yaml").read_text(encoding="utf-8")
+    )
+    config["worker"]["rollout"]["tensor_parallel_size"] = 2
+
+    with pytest.raises(ValueError, match="requires TP1, found TP2"):
+        resolve_rollout_placement(
+            config,
+            [1, 5, 6, 7],
+            required_tensor_parallel_width=1,
+        )
+
+
+def test_tp1_smoke_replica_count_is_derived_from_configured_gpu_count() -> None:
+    config = yaml.safe_load(
+        (ROOT / "configs/train/mech_a1_real_3b_geo3k.yaml").read_text(encoding="utf-8")
+    )
+
+    assert resolve_rollout_placement(config, [1, 5, 6, 7]) == {
+        "tensor_parallel_width": 1,
+        "replica_count": 4,
+    }

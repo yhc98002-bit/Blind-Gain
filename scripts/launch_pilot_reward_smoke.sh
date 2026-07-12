@@ -20,19 +20,20 @@ fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
-CONFIG_PATH="${ROOT}/configs/train/mech_a1_real_3b_geo3k.yaml"
+SOURCE_CONFIG_PATH="${ROOT}/configs/train/mech_a1_real_3b_geo3k.yaml"
 DATA_PATH="data/geo3k_pilot_filtered.jsonl"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="pilot_reward_smoke_${NODE}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
+CONFIG_PATH="${ROOT}/${RUN_DIR}/effective_config.yaml"
 MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
 LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
 SHADOW_PATH="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
+CHECKPOINT_PATH="${ROOT}/checkpoints/smoke/${RUN_ID}"
 RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
 RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
 LOCK_PATH="/tmp/blind_gains_${NODE}_pilot_reward_smoke.lock"
-COMMAND="python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.max_steps=5 trainer.val_before_train=false trainer.val_freq=-1 trainer.save_freq=-1 trainer.experiment_name=${RUN_ID} trainer.find_last_checkpoint=false"
 
 for GPU in "${GPUS[@]}"; do
   USED_MIB="$(ssh "${NODE}" "nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits -i '${GPU}'" | tr -d '[:space:]')"
@@ -46,14 +47,19 @@ if [[ ! "${SHM_FREE_KIB}" =~ ^[0-9]+$ || "${SHM_FREE_KIB}" -lt $((40 * 1024 * 10
   echo "Refusing pilot reward smoke: ${NODE} /dev/shm has less than 40 GiB free" >&2
   exit 75
 fi
-if ssh "${NODE}" "pgrep -af '[p]ython.*verl.trainer.main.*mech_a1_real_3b_geo3k.yaml'"; then
+if ssh "${NODE}" "pgrep -af '[p]ython.*verl.trainer.main.*pilot_reward_smoke_'"; then
   echo "Refusing duplicate pilot reward smoke on ${NODE}" >&2
   exit 73
 fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
+install -m 0444 "${SOURCE_CONFIG_PATH}" "${CONFIG_PATH}"
+PLACEMENT_JSON="$("${ROOT}/.venv/bin/python" "${ROOT}/scripts/resolve_easyr1_rollout_placement.py" --config "${CONFIG_PATH}" --gpu-list "${GPU_LIST}" --require-tp 1)"
+TP_WIDTH="$(jq -er '.tensor_parallel_width' <<< "${PLACEMENT_JSON}")"
+REPLICA_COUNT="$(jq -er '.replica_count' <<< "${PLACEMENT_JSON}")"
+COMMAND="python -u -m verl.trainer.main config=${CONFIG_PATH} trainer.max_steps=5 trainer.val_before_train=false trainer.val_freq=-1 trainer.save_freq=-1 trainer.save_checkpoint_path=${CHECKPOINT_PATH} trainer.experiment_name=${RUN_ID} trainer.find_last_checkpoint=false"
 BASE_CONFIG_HASH="$(sha256sum "${CONFIG_PATH}" | awk '{print $1}')"
-CONFIG_HASH="$({ cat "${CONFIG_PATH}"; printf '\n%s\n' "trainer.max_steps=5" "trainer.val_before_train=false" "trainer.val_freq=-1" "trainer.save_freq=-1" "trainer.experiment_name=${RUN_ID}" "trainer.find_last_checkpoint=false"; } | sha256sum | awk '{print $1}')"
+CONFIG_HASH="$({ cat "${CONFIG_PATH}"; printf '\n%s\n' "trainer.max_steps=5" "trainer.val_before_train=false" "trainer.val_freq=-1" "trainer.save_freq=-1" "trainer.save_checkpoint_path=${CHECKPOINT_PATH}" "trainer.experiment_name=${RUN_ID}" "trainer.find_last_checkpoint=false"; } | sha256sum | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${DATA_PATH}" | awk '{print $1}')"
 GPU_IDS_JSON="$(printf '%s\n' "${GPUS[@]}" | jq -sc 'map(tonumber)')"
 jq -n \
@@ -63,6 +69,7 @@ jq -n \
   --argjson gpu_ids "${GPU_IDS_JSON}" \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_path "${CONFIG_PATH}" \
+  --arg source_config_path "${SOURCE_CONFIG_PATH}" \
   --arg config_hash "${CONFIG_HASH}" \
   --arg base_config_hash "${BASE_CONFIG_HASH}" \
   --arg data_hash "${DATA_HASH}" \
@@ -71,18 +78,22 @@ jq -n \
   --arg shadow_path "${RUN_DIR}/reward_shadow.jsonl" \
   --arg log_path "${LOG_PATH}" \
   --arg ray_tmp_dir "${RAY_TMP_DIR}" \
+  --arg checkpoint_path "${CHECKPOINT_PATH}" \
+  --argjson tensor_parallel_width "${TP_WIDTH}" \
+  --argjson replica_count "${REPLICA_COUNT}" \
   '{
     run_id: $run_id,
     job_type: "l3_pilot_reward_plumbing_smoke",
     node: $node,
     gpu_allocation: $gpu_allocation,
     gpu_ids: $gpu_ids,
-    tensor_parallel_width: 1,
-    replica_count: 1,
-    placement_justification: "One synchronous EasyR1/GRPO smoke is colocated on four GPUs of one node; model workers use TP1 and rollout is not disaggregated across nodes.",
+    tensor_parallel_width: $tensor_parallel_width,
+    replica_count: $replica_count,
+    placement_justification: "One synchronous EasyR1/GRPO smoke is colocated on four GPUs of one node; four independent TP1 rollout replicas serve request shards while training and rollout remain colocated.",
     placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_path: $config_path,
+    source_config_path: $source_config_path,
     config_hash: $config_hash,
     base_config_hash: $base_config_hash,
     data_manifest: "data/geo3k_pilot_filtered.jsonl",
@@ -96,8 +107,9 @@ jq -n \
     expected_artifacts: [$shadow_path],
     stdout_stderr_log: $log_path,
     ray_tmp_dir: $ray_tmp_dir,
+    checkpoint_path: $checkpoint_path,
     deviations: [
-      "Five-step plumbing smoke disables validation and checkpoint saves; all rollout, group, reward, optimizer, and image-condition settings remain the A1 pilot settings."
+      "Five-step plumbing smoke disables scheduled validation and checkpoint saves; EasyR1 may still perform an unconditional final save in the isolated smoke checkpoint namespace. All rollout, group, reward, optimizer, and image-condition settings remain the A1 pilot settings."
     ]
   }' > "${MANIFEST_PATH}"
 
