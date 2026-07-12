@@ -1,5 +1,5 @@
 M0 | blocked | reports/m0_preregistration_readiness.md: all ten content items are applied in v3; Richard's final-path merge plus provenance follow-up are absent, so M2/M3 remain fail-closed
-M1 | blocked | all five 4,096-row ViRL39K condition runs completed; aggregation and independent consistency audit started, while fork ruling waits for merged M0
+M1 | blocked | reports/m1_virl_audit_readiness.md: all five 4,096-row conditions and 15-check audit pass with zero score mismatches; fork ruling remains intentionally absent until M0 merges
 M2 | blocked | requires reports/preregistration_pilot_v1.md merged and unchanged at HEAD
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | blocked | registered extension transcription has not been merged and computed M3/M1 fields are unavailable

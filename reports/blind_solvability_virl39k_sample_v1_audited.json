@@ -1,0 +1,151 @@
+{
+  "checks": {
+    "all_run_manifests_complete_and_registered": true,
+    "caption_store_question_blind_contract_pinned": true,
+    "decoding_parameters_locked": true,
+    "multi_image_distribution_exact": true,
+    "output_hashes_recorded": true,
+    "recomputed_scores_match": true,
+    "row_count_exact_4096": true,
+    "row_identity_equal_to_frozen_sample": true,
+    "row_identity_unique": true,
+    "row_version_contract_valid": true,
+    "sample_spec_recomputes_exactly": true,
+    "scientific_item_contract_equal": true,
+    "source_images_present_and_hash_verified": true,
+    "source_manifest_and_sample_spec_hashes_exact": true,
+    "symbolic_grader_guard_locked": true
+  },
+  "conditions": [
+    "real",
+    "gray",
+    "noise",
+    "none",
+    "caption"
+  ],
+  "decoding_parameters": {
+    "greedy": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "max_tokens": 2048,
+    "sampled": {
+      "n": 16,
+      "temperature": 1.0,
+      "top_p": 1.0
+    },
+    "seed": 20260710
+  },
+  "expected_row_count": 4096,
+  "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+  "frozen_sample_statistics": {
+    "answer_type_counts": {
+      "multiple_choice": 1307,
+      "numeric": 1982,
+      "text_or_expression": 807
+    },
+    "category_counts": {
+      "(GradeSchool) Geometric": 1123,
+      "(GradeSchool) Non-Geo Math": 1574,
+      "(GradeSchool) Science": 365,
+      "Broader STEM Topics": 99,
+      "Commonsense": 12,
+      "Social Science": 68,
+      "Spatial Reasoning": 205,
+      "Tables/Diagrams/Charts": 650
+    },
+    "image_count_counts": {
+      "1": 3856,
+      "2": 137,
+      "3": 43,
+      "4": 39,
+      "5": 19,
+      "6": 1,
+      "8": 1
+    },
+    "image_references": 4524,
+    "max_images_per_item": 8,
+    "sample_size": 4096,
+    "source_counts": {
+      "DeepScaleR": 146,
+      "K12": 117,
+      "M3CoT": 146,
+      "M3CoTConverted": 11,
+      "MMK12": 1357,
+      "MMK12Converted": 20,
+      "MMMath": 372,
+      "Processed": 1369,
+      "R1OneVision": 71,
+      "R1OneVisionConverted": 10,
+      "ScienceQA": 98,
+      "ScienceQAConverted": 2,
+      "ai2d": 77,
+      "chartqa": 14,
+      "dvqa": 115,
+      "geoqa_plus": 127,
+      "geoqa_plusConverted": 44
+    },
+    "unique_images": 4297
+  },
+  "missing_source_images": 0,
+  "parser_version": "canonical-v2",
+  "per_item_output_sha256": {
+    "caption": "fe73a27a3af8bdeb986a102cba2c3f2f913522767a27159998b5fb4dc1ef3935",
+    "gray": "363054a698893f2077f8e58af043baa974bb65de0112b9ce4d7bc7725e92d29c",
+    "noise": "3d5db29b06e769060f1b4e5942f066154d37217f8a123f145d72f1f7dbd74538",
+    "none": "60502e904979bcff95c3f6ebcf01f763cc700a5fca0f5a978e18173432e5c0dd",
+    "real": "4753397788dcda601e08f27d08fb8d3bb3a2aa5247bd91eb2a4e5917b623ca07"
+  },
+  "pilot_reward_version": "pilot-reward-v1",
+  "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+  "recomputed_score_mismatch_count": 0,
+  "recomputed_score_mismatch_fields": {},
+  "recomputed_score_mismatch_rows_by_condition": {
+    "caption": 0,
+    "gray": 0,
+    "noise": 0,
+    "none": 0,
+    "real": 0
+  },
+  "row_counts": {
+    "caption": 4096,
+    "gray": 4096,
+    "noise": 4096,
+    "none": 4096,
+    "real": 4096
+  },
+  "run_manifest_sha256": {
+    "caption": "1c9bdb77db864d390f75593ccc48fb017d79bdc7cef2ee7cdec6941cf2d361ac",
+    "gray": "61085edb47e43870ccf378f47e546716f9eeedcc88c4cf90034ebed3722794b9",
+    "noise": "c80b44189912b0796fe176dd3ccd82e5fc45e4e8fec262cd46cd468082226a61",
+    "none": "803221da952af9f9b754df546c21340fe7e5043cec889c08dde11b552a3a28b4",
+    "real": "a8016de006bbbe2a56602d9d8abfd830f82f7dcd69078c5492c21a32e7ce87cb"
+  },
+  "runs": {
+    "caption": "experiments/runs/blind_solvability_virl39k_v1_pilot_contract_guarded_caption_an12_20260712T052054Z",
+    "gray": "experiments/runs/blind_solvability_virl39k_v1_pilot_contract_guarded_gray_an12_20260712T052044Z",
+    "noise": "experiments/runs/blind_solvability_virl39k_v1_pilot_contract_guarded_noise_an12_20260712T052048Z",
+    "none": "experiments/runs/blind_solvability_virl39k_v1_pilot_contract_guarded_none_an12_20260712T052051Z",
+    "real": "experiments/runs/blind_solvability_virl39k_v1_pilot_contract_guarded_real_an12_20260712T052034Z"
+  },
+  "sample_spec": "reports/virl39k_blind_sample_4096.json",
+  "sample_spec_fields_checked": [
+    "sample_size",
+    "source_counts",
+    "category_counts",
+    "answer_type_counts",
+    "image_count_counts",
+    "image_references",
+    "unique_images",
+    "max_images_per_item"
+  ],
+  "sample_spec_sha256": "8cff4e1a3d701470072109649eadab07976e3b0daebb612b0ee7ae23ec3dd61a",
+  "schema_version": "blind-gains.virl39k-blind-audit.v1",
+  "source_image_hash_mismatches": 0,
+  "source_manifest": "data/virl39k_blind_sample_4096.jsonl",
+  "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5",
+  "status": "pass",
+  "symbolic_grader_guard_version": "posix-itimer-v1",
+  "symbolic_grader_timeout_seconds": 5.0
+}
