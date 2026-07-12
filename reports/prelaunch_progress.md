@@ -1,7 +1,7 @@
 L0 | pass | reports/storage_preflight.md: PI-approved shared save to login-archive sweep passed all nine dry-cycle checks with exact read-back hashes
 L1 | pass | reports/parser_agreement_audit_v2.md: canonical-v2 fixtures pass; repeated agreement is 0.915625, below 0.95 and explicitly retained for PI review
 L2 | pass | reports/scorer_v2_spec.md: per-run extractor_valid/contract_valid split and exact StrictGain identity fixtures pass
-L3 | blocked | reports/pilot_reward_smoke_tp_mismatch_v3.md: v6 re-audit rejects historical placement and missing stack snapshots; replacement five-step TP1 smoke is required before L13
+L3 | pass | reports/pilot_reward_spec_v3.md and pilot_reward_smoke_audit_v4.json: exact five-step TP1/4-replica smoke passed all v6 checks; 40,970,272,505-byte retention-expired checkpoint was hash-listed then deleted
 L4 | pass | reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload
 L5 | pass | required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1
 L6 | pass | named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests

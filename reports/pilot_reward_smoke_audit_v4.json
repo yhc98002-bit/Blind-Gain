@@ -1,0 +1,176 @@
+{
+  "checks": {
+    "all_numeric_shadows_finite": true,
+    "all_required_fields_present": true,
+    "native_shadows_valid": true,
+    "parser_and_reward_versions_exact": true,
+    "reason_codes_valid": true,
+    "row_count_matches_contract": true,
+    "symbolic_grader_guard_exact": true,
+    "training_reward_identity_exact": true,
+    "training_reward_non_degenerate": true
+  },
+  "errors": [],
+  "expected_minimum_rows": 13401,
+  "expected_steps": 5,
+  "group_size": 5,
+  "identity_mismatches": 0,
+  "invalid_native_shadow_rows": 0,
+  "missing_field_counts": {},
+  "n_rows": 13401,
+  "n_training_shadow_rows": 12800,
+  "n_validation_shadow_rows": 601,
+  "nonfinite_rows": 0,
+  "partition_audit": {
+    "checks": {
+      "total_count_matches_training_plus_validation": true,
+      "training_partition_count_exact": true,
+      "validation_ground_truth_sequence_exact": true,
+      "validation_partition_count_exact": true
+    },
+    "expected_training_rows": 12800,
+    "expected_validation_rows": 601,
+    "n_training_rows": 12800,
+    "n_validation_rows": 601,
+    "status": "pass",
+    "training_audit": {
+      "checks": {
+        "all_numeric_shadows_finite": true,
+        "all_required_fields_present": true,
+        "native_shadows_valid": true,
+        "parser_and_reward_versions_exact": true,
+        "reason_codes_valid": true,
+        "row_count_matches_contract": true,
+        "symbolic_grader_guard_exact": true,
+        "training_reward_identity_exact": true,
+        "training_reward_non_degenerate": true
+      },
+      "errors": [],
+      "expected_minimum_rows": 12800,
+      "identity_mismatches": 0,
+      "invalid_native_shadow_rows": 0,
+      "missing_field_counts": {},
+      "n_rows": 12800,
+      "nonfinite_rows": 0,
+      "reward_disagreement_reason_counts": {
+        "canonical_correct_mathruler_incorrect": 173,
+        "mathruler_correct_canonical_incorrect": 72,
+        "none": 12555
+      },
+      "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
+      "status": "pass",
+      "symbolic_grader_guard_mismatches": 0,
+      "symbolic_timeout_counts": {},
+      "training_reward_counts": {
+        "0.0": 4402,
+        "0.5": 7627,
+        "1.0": 771
+      },
+      "version_mismatches": 0
+    },
+    "validation_audit": {
+      "checks": {
+        "all_numeric_shadows_finite": true,
+        "all_required_fields_present": true,
+        "native_shadows_valid": true,
+        "parser_and_reward_versions_exact": true,
+        "reason_codes_valid": true,
+        "row_count_matches_contract": true,
+        "symbolic_grader_guard_exact": true,
+        "training_reward_identity_exact": true,
+        "training_reward_non_degenerate": true
+      },
+      "errors": [],
+      "expected_minimum_rows": 601,
+      "identity_mismatches": 0,
+      "invalid_native_shadow_rows": 0,
+      "missing_field_counts": {},
+      "n_rows": 601,
+      "nonfinite_rows": 0,
+      "reward_disagreement_reason_counts": {
+        "canonical_correct_mathruler_incorrect": 14,
+        "mathruler_correct_canonical_incorrect": 2,
+        "none": 585
+      },
+      "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
+      "status": "pass",
+      "symbolic_grader_guard_mismatches": 0,
+      "symbolic_timeout_counts": {},
+      "training_reward_counts": {
+        "0.0": 52,
+        "0.5": 426,
+        "1.0": 123
+      },
+      "version_mismatches": 0
+    }
+  },
+  "placement_audit": {
+    "checks": {
+      "checkpoint_namespace_isolated": true,
+      "command_uses_effective_config_snapshot": true,
+      "easyr1_logger_hash_matches_manifest": true,
+      "easyr1_logger_is_immutable_run_snapshot": true,
+      "easyr1_patch_hash_matches_manifest": true,
+      "easyr1_patch_is_immutable_run_snapshot": true,
+      "easyr1_resume_safe_logger_present": true,
+      "easyr1_revision_pinned": true,
+      "effective_config_exists_and_parses": true,
+      "effective_config_hash_matches_manifest": true,
+      "effective_config_is_immutable_run_snapshot": true,
+      "effective_config_requires_tp1": true,
+      "manifest_gpu_ids_exact": true,
+      "manifest_replica_count_derived": true,
+      "manifest_tp_matches_effective_config": true,
+      "placement_policy_pinned": true,
+      "runtime_log_tp_matches_effective_config": true,
+      "single_node_four_gpu_config": true
+    },
+    "configured_gpu_count": 4,
+    "configured_tensor_parallel_width": 1,
+    "easyr1_logger_sha256": "a96854c3a84e94c9397413c73e0dd69854871bf28f22c4523a920b6b197e8912",
+    "easyr1_logger_snapshot": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/easyr1_logger.py",
+    "easyr1_worktree_patch": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/easyr1_worktree.patch",
+    "easyr1_worktree_patch_sha256": "2d96ccfdd3b15b747525661d7576a6c6b080f9465395f721c0fd846d4400f4f8",
+    "effective_config_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/effective_config.yaml",
+    "effective_config_sha256": "abf9e9d9a48e35dd5f29e86a51dd674d1a666a088f9ced9f7acc86338a53560e",
+    "errors": [],
+    "expected_rollout_replica_count": 4,
+    "runtime_log_tensor_parallel_values": [
+      1
+    ],
+    "schema_version": "blind-gains.pilot-reward-smoke-placement-audit.v2",
+    "status": "pass"
+  },
+  "reward_disagreement_reason_counts": {
+    "canonical_correct_mathruler_incorrect": 187,
+    "mathruler_correct_canonical_incorrect": 74,
+    "none": 13140
+  },
+  "rollout_batch_size": 512,
+  "run_manifest": "experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/run_manifest.json",
+  "schema_version": "blind-gains.pilot-reward-smoke-audit.v6",
+  "shadow_jsonl": "experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/reward_shadow.jsonl",
+  "status": "pass",
+  "symbolic_grader_guard_mismatches": 0,
+  "symbolic_timeout_counts": {},
+  "training_contract_checks": {
+    "command_registers_expected_steps": true,
+    "final_validation_finish_marker_present": true,
+    "final_validation_marker_present": true,
+    "manifest_exit_zero": true,
+    "manifest_job_type_exact": true,
+    "training_log_has_no_image_grid_mismatch": true,
+    "training_log_has_no_traceback": true,
+    "training_progress_reaches_expected_steps": true
+  },
+  "training_log": "experiments/runs/pilot_reward_smoke_an29_20260712T075418Z/logs/an29.log",
+  "training_reward_counts": {
+    "0.0": 4454,
+    "0.5": 8053,
+    "1.0": 894
+  },
+  "validation_answer_key": "answer",
+  "validation_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+  "validation_split": "test",
+  "version_mismatches": 0
+}
