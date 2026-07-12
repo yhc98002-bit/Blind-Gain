@@ -58,7 +58,8 @@ PREREG="reports/preregistration_pilot_v1.md"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 AUTHORIZATION="reports/pilot_launch_authorization_${ARM}_${STAMP}.json"
 
-# This is the first executable gate. A blocked L3/L4/L5/L12 state exits before
+# This is the first executable gate. A blocked historical L3/L4/L5 or main M0
+# state exits before
 # any run directory, checkpoint namespace, SSH process, or GPU allocation exists.
 PYTHONPATH=. .venv/bin/python scripts/check_pilot_launch_authorization.py \
   --root . \

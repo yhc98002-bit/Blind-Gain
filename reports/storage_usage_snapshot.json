@@ -1,17 +1,17 @@
 {
   "components": {
     "/XYFS02/HDD_POOL/paratera_xy/pxy1289/.uv_cache": 38179536896,
-    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe": 361843302912,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe": 492942819328,
     "/XYFS02/HDD_POOL/paratera_xy/pxy1289/musiccql": 794624,
     "/XYFS02/HDD_POOL/paratera_xy/pxy1289/source": 1776070656
   },
-  "duration_seconds": 345.559,
-  "free_bytes": 135071206912,
-  "measured_at_utc": "2026-07-12T05:18:46Z",
+  "duration_seconds": 338.985,
+  "free_bytes": 3971690496,
+  "measured_at_utc": "2026-07-12T20:02:07Z",
   "measurement": "parallel GNU du -sx --block-size=1 over every direct quota-root child",
   "quota_bytes": 536870912000,
   "quota_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289",
   "schema_version": 1,
   "status": "pass",
-  "used_bytes": 401799705088
+  "used_bytes": 532899221504
 }

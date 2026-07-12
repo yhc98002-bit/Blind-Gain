@@ -1,8 +1,16 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
-from scripts.build_pilot_reward_spec import PRECEDENCE_RULE, build_report
+from scripts.build_pilot_reward_spec import (
+    NATIVE_WEIGHT_COMPOSITION,
+    NATIVE_WEIGHT_DECLARATION,
+    PRECEDENCE_RULE,
+    build_report,
+)
 
 
 def _audit(status: str = "pass") -> dict:
@@ -61,6 +69,31 @@ def test_pilot_reward_report_contains_exact_precedence_and_evidence(tmp_path) ->
     assert "Machine status JSON" in report
     assert "TP`1` with `4` rollout replicas" in report
     assert "worktree patch SHA256" in report
+    assert NATIVE_WEIGHT_DECLARATION in report
+    assert NATIVE_WEIGHT_COMPOSITION in report
+    assert "accuracy weight `1 - 0.5 = 0.5`" in report
+
+
+def test_native_weight_quote_matches_source_and_anchor_has_no_override() -> None:
+    root = Path(__file__).resolve().parents[1]
+    source = (
+        root / "artifacts/repos/EasyR1/examples/reward_function/r1v.py"
+    ).read_text(encoding="utf-8")
+    resolved = json.loads(
+        (
+            root
+            / "checkpoints/anchor_a0_recipe_3b_geo3k"
+            / "anchor_a0_recipe_3b_geo3k_20260709T224852Z"
+            / "experiment_config.json"
+        ).read_text(encoding="utf-8")
+    )
+    report = (root / "reports/pilot_reward_spec_v3.md").read_text(encoding="utf-8")
+
+    assert NATIVE_WEIGHT_DECLARATION in source
+    assert NATIVE_WEIGHT_COMPOSITION in source
+    assert NATIVE_WEIGHT_DECLARATION in report
+    assert NATIVE_WEIGHT_COMPOSITION in report
+    assert resolved["worker"]["reward"]["reward_function_kwargs"] == {}
 
 
 def test_pilot_reward_report_rejects_nonpass_audit(tmp_path) -> None:

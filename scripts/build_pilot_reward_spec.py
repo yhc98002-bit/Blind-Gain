@@ -11,6 +11,13 @@ PRECEDENCE_RULE = (
     "if mathruler and canonical numeric-equivalence disagree, mathruler's verdict is the reward "
     "and the disagreement is logged with a reason code."
 )
+NATIVE_WEIGHT_DECLARATION = (
+    "def compute_score(reward_input: dict[str, Any], format_weight: float = 0.5) "
+    "-> dict[str, float]:"
+)
+NATIVE_WEIGHT_COMPOSITION = (
+    '        "overall": (1 - format_weight) * accuracy_score + format_weight * format_score,'
+)
 
 
 def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Path) -> str:
@@ -67,6 +74,12 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         f"- Git/config/data hashes: `{manifest['git_hash']}` / `{manifest['config_hash']}` / `{manifest['data_manifest_hash']}`.",
         f"- Placement: TP`{manifest['tensor_parallel_width']}` with `{manifest['replica_count']}` rollout replicas; runtime log values `{placement_audit['runtime_log_tensor_parallel_values']}`.",
         f"- EasyR1 revision: `{manifest['easyr1_revision']}`; worktree patch SHA256 `{manifest['easyr1_worktree_patch_sha256']}`; logger SHA256 `{manifest['easyr1_logger_sha256']}`.",
+        "- Native weight evidence from `artifacts/repos/EasyR1/examples/reward_function/r1v.py` lines 45 and 49:",
+        "```python",
+        NATIVE_WEIGHT_DECLARATION,
+        NATIVE_WEIGHT_COMPOSITION,
+        "```",
+        "- With the native default `format_weight=0.5`, line 49 assigns accuracy weight `1 - 0.5 = 0.5` and format weight `0.5`.",
         "- Exact training shadow rows: `12800` = 5 steps x 512 rollout prompts x group size 5.",
         "- Exact final-validation shadow rows: `601`, matching the frozen Geometry3K test answers in sequence.",
         f"- Training-partition reward counts: `{reward_counts}`.",
@@ -81,7 +94,7 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "1. Extract the final answer span with canonical-v2.",
         "2. Grade that extracted span with mathruler.",
         "3. Compute `contract_valid` independently from exact `<answer>...</answer>` compliance.",
-        "4. Set accuracy weight to 0.5 and format weight to 0.5, matching the reference recipe split.",
+        "4. Set accuracy weight to 0.5 and format weight to 0.5, exactly matching the native r1v default and composition above.",
         f"5. Precedence rule: {PRECEDENCE_RULE}",
         "6. Log `training_reward`, `native_r1v_shadow_reward`, `canonical_eval_reward`, and `reward_disagreement_reason` per rollout.",
         "7. Bound both MathRuler grading and the native-r1v shadow with POSIX `ITIMER_REAL` at 5.0 seconds; a native-shadow failure is logged and cannot change the optimized reward.",

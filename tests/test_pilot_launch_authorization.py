@@ -7,7 +7,12 @@ from pathlib import Path
 import yaml
 
 from scripts.audit_prelaunch_objective import EXPECTED_TASK_IDS
-from scripts.check_pilot_launch_authorization import build_authorization
+from scripts.build_preregistration_pilot_draft import (
+    CHART_CONSTRUCT,
+    PRIOR_OBSERVATION_DISCLOSURE,
+    R20_CAVEAT,
+)
+from scripts.check_pilot_launch_authorization import MAIN_TASK_IDS, build_authorization
 
 
 CONFIGS = {
@@ -25,10 +30,17 @@ def _fixture(tmp_path: Path) -> Path:
     config_dir.mkdir(parents=True)
     ledger = []
     for task in EXPECTED_TASK_IDS:
-        status = "pass" if task in {"L3", "L4", "L5", "L12"} else "blocked"
+        status = "pass" if task in {"L3", "L4", "L5"} else "blocked"
         ledger.append(f"{task} | {status} | fixture {task}")
     (tmp_path / "reports" / "prelaunch_progress.md").write_text(
         "\n".join(ledger) + "\n", encoding="utf-8"
+    )
+    main_ledger = [
+        f"{task} | {'pass' if task == 'M0' else 'blocked'} | fixture {task}"
+        for task in MAIN_TASK_IDS
+    ]
+    (tmp_path / "reports" / "main_progress.md").write_text(
+        "\n".join(main_ledger) + "\n", encoding="utf-8"
     )
     base = {
         "data": {"image_condition": "real"},
@@ -59,8 +71,11 @@ def _fixture(tmp_path: Path) -> Path:
     prereg = (
         "# Approved preregistration\n"
         "- R19 human contact-sheet audit: approved.\n"
-        "- PI 1 approval: approved.\n"
-        "- PI 2 approval: approved.\n"
+        "- Registration state: merged-at-HEAD; merge is sign-off.\n"
+        "- no pilot optimizer step has run\n"
+        f"{PRIOR_OBSERVATION_DISCLOSURE}\n"
+        f"{R20_CAVEAT}\n"
+        f"{CHART_CONSTRUCT}\n"
         + "\n".join(config_hashes)
         + f"\n{ids_hash}\n"
     )
@@ -83,7 +98,7 @@ def _fixture(tmp_path: Path) -> Path:
     return tmp_path
 
 
-def test_authorization_accepts_only_fully_approved_clean_arm(tmp_path: Path) -> None:
+def test_authorization_accepts_only_merged_main_registration(tmp_path: Path) -> None:
     root = _fixture(tmp_path)
 
     result = build_authorization(root, "a1_real")
@@ -93,12 +108,12 @@ def test_authorization_accepts_only_fully_approved_clean_arm(tmp_path: Path) -> 
     assert result["preregistration_sha256"]
 
 
-def test_authorization_rejects_blocked_l12_before_optimizer_launch(tmp_path: Path) -> None:
+def test_authorization_rejects_blocked_m0_before_optimizer_launch(tmp_path: Path) -> None:
     root = _fixture(tmp_path)
-    ledger = root / "reports" / "prelaunch_progress.md"
+    ledger = root / "reports" / "main_progress.md"
     ledger.write_text(
         ledger.read_text(encoding="utf-8").replace(
-            "L12 | pass | fixture L12", "L12 | blocked | human audit pending"
+            "M0 | pass | fixture M0", "M0 | blocked | merge pending"
         ),
         encoding="utf-8",
     )
@@ -106,7 +121,26 @@ def test_authorization_rejects_blocked_l12_before_optimizer_launch(tmp_path: Pat
     result = build_authorization(root, "a1_real")
 
     assert result["status"] == "blocked"
-    assert result["checks"]["required_dependencies_pass"] is False
+    assert result["checks"]["M0_registration_pass"] is False
+
+
+def test_authorization_rejects_superseded_signature_markers_without_merge_marker(
+    tmp_path: Path,
+) -> None:
+    root = _fixture(tmp_path)
+    prereg = root / "reports" / "preregistration_pilot_v1.md"
+    prereg.write_text(
+        prereg.read_text(encoding="utf-8").replace(
+            "- Registration state: merged-at-HEAD; merge is sign-off.\n",
+            "- PI 1 approval: approved.\n- PI 2 approval: approved.\n",
+        ),
+        encoding="utf-8",
+    )
+
+    result = build_authorization(root, "a1_real")
+
+    assert result["status"] == "blocked"
+    assert result["checks"]["merge_signoff_and_registration_content_exact"] is False
 
 
 def test_authorization_rejects_nonempty_checkpoint_namespace(tmp_path: Path) -> None:
@@ -127,5 +161,5 @@ def test_current_repository_remains_blocked_before_l12() -> None:
     result = build_authorization(root, "a1_real")
 
     assert result["status"] == "blocked"
-    assert result["checks"]["required_dependencies_pass"] is False
+    assert result["checks"]["M0_registration_pass"] is False
     assert result["checks"]["final_preregistration_exists"] is False

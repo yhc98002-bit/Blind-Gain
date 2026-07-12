@@ -8,7 +8,7 @@ L6 | pass | named reports repaired; four consistency classes and non-gating GPU-
 L7 | pass | reports/blind_solvability_geo3k_v2.md and audited artifacts: all five conditions have 1,889 rows, 160,565 response scores recompute with zero mismatches, and all 13 audit checks pass
 L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | pass | reports/strong_caption_stress.md plus integrity audit: exact 4,800-row store, R19=0.0533 and R20=0.0617 pair accuracy, and 146,833,336,607 ephemeral bytes hash-deleted
-L10 | blocked | MathVerse/MMMU are complete; five guarded ViRL TP1 conditions are active on an12 GPUs0-4 under the 2,048-token pilot contract
+L10 | blocked | all five ViRL TP1 conditions completed with 4,096 rows each; aggregation, consistency audit, and framing-fork application remain
 L11 | pass | reports/document_v_next_calibration.md: one-shot 100-pair batch complete; 3B real=0.69, 7B real=1.00, 7B caption=0.04, verdict too-easy with no iteration
-L12 | blocked | reports/preregistration_pilot_v1_DRAFT_20260712T0608Z.md is generated from audited L7 inputs; final merge still requires human R19 audit and both PI signatures
-L13 | blocked | reports/pilot_launch_plumbing_v2.md: launcher, retention watcher, and checkpoint-bound step-60 marker are tested; execution still depends on L3 and merged L12
+L12 | blocked | superseded by main-phase M0 after R19 human acceptance and interim draft v2; the final preregistration remains absent
+L13 | blocked | superseded by main-phase M2/M3; launcher, retention watcher, and step-60 marker remain tested and fail-closed

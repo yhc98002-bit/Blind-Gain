@@ -12,6 +12,9 @@ from scripts.audit_prelaunch_objective import EXPECTED_TASK_IDS, parse_prelaunch
 from scripts.build_preregistration_pilot_draft import (
     ARM_CONDITIONS,
     ARM_CONFIGS,
+    CHART_CONSTRUCT,
+    PRIOR_OBSERVATION_DISCLOSURE,
+    R20_CAVEAT,
     audit_arm_configs,
 )
 
@@ -28,10 +31,14 @@ CHECKPOINT_NAMES = {
     "a2b_noimage": "mech_a2b_noimage",
     "a3_caption": "mech_a3_caption",
 }
-APPROVAL_MARKERS = (
+MAIN_TASK_IDS = tuple(f"M{index}" for index in range(15))
+REGISTRATION_MARKERS = (
     "- R19 human contact-sheet audit: approved.",
-    "- PI 1 approval: approved.",
-    "- PI 2 approval: approved.",
+    "- Registration state: merged-at-HEAD; merge is sign-off.",
+    "- no pilot optimizer step has run",
+    PRIOR_OBSERVATION_DISCLOSURE,
+    R20_CAVEAT,
+    CHART_CONSTRUCT,
 )
 
 
@@ -43,17 +50,40 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def parse_main_ledger(path: Path) -> dict[str, dict[str, str]]:
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line]
+    if len(lines) != len(MAIN_TASK_IDS):
+        raise ValueError("main ledger must contain exactly one line for M0 through M14")
+    ledger: dict[str, dict[str, str]] = {}
+    for line in lines:
+        parts = line.split(" | ", maxsplit=2)
+        if len(parts) != 3 or parts[1] not in {"pass", "fail", "blocked"} or not parts[2]:
+            raise ValueError(f"invalid main ledger line: {line}")
+        task, status, note = parts
+        if task in ledger:
+            raise ValueError(f"duplicate main ledger task: {task}")
+        ledger[task] = {"status": status, "note": note}
+    if tuple(ledger) != MAIN_TASK_IDS:
+        raise ValueError("main ledger task order must be exactly M0 through M14")
+    return ledger
+
+
 def build_authorization(root: Path, arm: str) -> dict[str, Any]:
     root = root.resolve()
     if arm not in ARM_KEYS:
         raise ValueError(f"unknown pilot arm: {arm}")
     errors: list[str] = []
     try:
-        ledger = parse_prelaunch_ledger(
+        prelaunch_ledger = parse_prelaunch_ledger(
             root / "reports" / "prelaunch_progress.md", EXPECTED_TASK_IDS
         )
     except (OSError, ValueError) as error:
-        ledger = {}
+        prelaunch_ledger = {}
+        errors.append(str(error))
+    try:
+        main_ledger = parse_main_ledger(root / "reports" / "main_progress.md")
+    except (OSError, ValueError) as error:
+        main_ledger = {}
         errors.append(str(error))
 
     prereg_path = root / "reports" / "preregistration_pilot_v1.md"
@@ -77,17 +107,25 @@ def build_authorization(root: Path, arm: str) -> dict[str, Any]:
     checkpoint_path = root / "checkpoints" / "pilot" / CHECKPOINT_NAMES[arm]
     config_hash = config_audit.get("hashes", {}).get(arm_label)
     filtered_hash = _sha256(filtered_ids) if filtered_ids.is_file() else None
-    required_ledger = ("L3", "L4", "L5", "L12")
+    historical_dependencies = ("L3", "L4", "L5")
     checks = {
-        "ledger_parses_exact_L0_through_L13": bool(ledger),
-        "required_dependencies_pass": bool(ledger)
-        and all(ledger[task]["status"] == "pass" for task in required_ledger),
-        "L13_not_predeclared": bool(ledger) and ledger["L13"]["status"] == "blocked",
+        "prelaunch_ledger_parses_exact_L0_through_L13": bool(prelaunch_ledger),
+        "historical_dependencies_pass": bool(prelaunch_ledger)
+        and all(
+            prelaunch_ledger[task]["status"] == "pass"
+            for task in historical_dependencies
+        ),
+        "main_ledger_parses_exact_M0_through_M14": bool(main_ledger),
+        "M0_registration_pass": bool(main_ledger)
+        and main_ledger["M0"]["status"] == "pass",
+        "M2_not_predeclared": bool(main_ledger)
+        and main_ledger["M2"]["status"] == "blocked",
         "final_preregistration_exists": prereg_path.is_file()
         and prereg_path.stat().st_size > 0,
-        "human_and_pi_approvals_exact": all(
-            marker in prereg_text for marker in APPROVAL_MARKERS
+        "merge_signoff_and_registration_content_exact": all(
+            marker in prereg_text for marker in REGISTRATION_MARKERS
         ),
+        "registration_placeholder_absent": "PENDING_RICHARD_MERGE" not in prereg_text,
         "l3_v6_audit_pass": l3_audit.get("schema_version")
         == "blind-gains.pilot-reward-smoke-audit.v6"
         and l3_audit.get("status") == "pass"
@@ -108,14 +146,19 @@ def build_authorization(root: Path, arm: str) -> dict[str, Any]:
     failed = [name for name, passed in checks.items() if not passed]
     errors.extend(failed)
     return {
-        "schema_version": "blind-gains.pilot-launch-authorization.v1",
+        "schema_version": "blind-gains.pilot-launch-authorization.v2",
         "status": "authorized" if all(checks.values()) and not errors else "blocked",
         "arm": arm,
         "arm_label": arm_label,
         "image_condition": ARM_CONDITIONS[arm_label],
         "checks": checks,
         "ledger_dependencies": {
-            task: ledger.get(task) for task in (*required_ledger, "L13")
+            **{
+                task: prelaunch_ledger.get(task)
+                for task in historical_dependencies
+            },
+            "M0": main_ledger.get("M0"),
+            "M2": main_ledger.get("M2"),
         },
         "preregistration": str(prereg_path),
         "preregistration_sha256": _sha256(prereg_path)
