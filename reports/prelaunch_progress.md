@@ -11,4 +11,4 @@ L9 | pass | reports/strong_caption_stress.md plus integrity audit: exact 4,800-r
 L10 | blocked | MathVerse/MMMU are complete; five guarded ViRL TP1 conditions are active on an12 GPUs0-4 under the 2,048-token pilot contract
 L11 | pass | reports/document_v_next_calibration.md: one-shot 100-pair batch complete; 3B real=0.69, 7B real=1.00, 7B caption=0.04, verdict too-easy with no iteration
 L12 | blocked | reports/preregistration_pilot_v1_DRAFT_20260712T0608Z.md is generated from audited L7 inputs; final merge still requires human R19 audit and both PI signatures
-L13 | blocked | pilot launch depends on L3, L4, L5, and merged L12 preregistration
+L13 | blocked | reports/pilot_launch_plumbing_v1.md: fail-closed arm launcher and retention watcher are tested; execution still depends on L3 and merged L12
