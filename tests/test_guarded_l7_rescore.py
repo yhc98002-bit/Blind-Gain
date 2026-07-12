@@ -72,3 +72,4 @@ def test_guarded_rescore_launcher_records_immutable_source_hashes() -> None:
     assert "scripts/storage_guard.py --tier S" in launcher
     assert "gpu_ids: []" in launcher
     assert "one direct immutable run directory" in launcher
+    assert "nohup setsid .venv/bin/python scripts/run_manifest_job.py" in launcher
