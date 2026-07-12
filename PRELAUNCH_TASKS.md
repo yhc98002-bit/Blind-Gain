@@ -9,7 +9,7 @@ PI-authored source: `docs/PRELAUNCH_BRIEF.md`. The registry only indexes named r
 - `L0` reports: `reports/storage_preflight.md`
 - `L1` reports: `reports/parser_agreement_audit_v2.md`
 - `L2` reports: `reports/scorer_v2_spec.md`
-- `L3` reports: `reports/pilot_reward_spec.md`
+- `L3` reports: `reports/pilot_reward_spec_v2.md`
 - `L4` reports: `reports/a3_caption_path.md`
 - `L5` reports: `reports/decon_geo3k_train_vs_test.md`, `reports/geo3k_filtered_subset.md`
 - `L6` reports: `reports/eval_harness_version.md`, `reports/mech_pilot_3arm_geo3k.md`, `reports/base_external_benchmarks.md`, `reports/gpu_hours_utilization.md`

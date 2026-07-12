@@ -81,6 +81,24 @@ def test_rejects_pass_with_missing_or_empty_named_report(tmp_path: Path) -> None
     assert payload["pass_report_checks"]["L1"]["reports/l1.md"]["nonempty"] is False
 
 
+def test_rejects_pass_with_unresolved_status_in_named_report(tmp_path: Path) -> None:
+    root = _fixture_root(tmp_path)
+    ledger = root / "reports/prelaunch_progress.md"
+    lines = ledger.read_text(encoding="utf-8").splitlines()
+    lines[1] = "L1 | pass | incorrectly asserted"
+    ledger.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (root / "reports/l1.md").write_text(
+        "Status:\n- incomplete: evidence is still pending.\n",
+        encoding="utf-8",
+    )
+
+    payload = build_prelaunch_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["checks"]["scientific_consistency_audit_passes"] is False
+    assert any("unresolved Status lines" in error for error in payload["errors"])
+
+
 def test_rejects_L13_pass_without_L12_and_preregistration(tmp_path: Path) -> None:
     root = _fixture_root(tmp_path)
     ledger = root / "reports/prelaunch_progress.md"

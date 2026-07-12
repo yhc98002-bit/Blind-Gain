@@ -163,6 +163,13 @@ def build_prelaunch_objective_audit(root: Path) -> dict[str, Any]:
     except OSError as error:
         errors.append(str(error))
 
+    consistency_audit: dict[str, Any] = {}
+    if ledger and registry:
+        from scripts.audit_consistency import build_consistency_audit
+
+        consistency_audit = build_consistency_audit(root, ledger, registry)
+        errors.extend(consistency_audit["errors"])
+
     checks = {
         "task_registry_has_exact_L0_through_L13": bool(registry),
         "ledger_has_exact_one_valid_line_per_registered_task": bool(ledger),
@@ -175,6 +182,8 @@ def build_prelaunch_objective_audit(root: Path) -> dict[str, Any]:
         "audited_reports_are_not_byte_identical_to_counterparts": not any(
             record["byte_identical"] is True for record in audited_checks.values()
         ),
+        "scientific_consistency_audit_passes": consistency_audit.get("status")
+        == "pass",
     }
     return {
         "schema_version": "blind-gains.prelaunch-objective-audit.v1",
@@ -185,6 +194,7 @@ def build_prelaunch_objective_audit(root: Path) -> dict[str, Any]:
         "ledger": ledger,
         "pass_report_checks": pass_report_checks,
         "audited_file_checks": audited_checks,
+        "scientific_consistency_audit": consistency_audit,
         "errors": errors,
     }
 
