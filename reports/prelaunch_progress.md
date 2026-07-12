@@ -8,7 +8,7 @@ L6 | pass | named reports repaired; four consistency classes and non-gating GPU-
 L7 | blocked | real/gray/noise/caption are complete; guarded none is active on an12 GPU6 from the validated 1,104-row resume prefix
 L8 | pass | reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria
 L9 | blocked | combined R19+R20 72B question-blind caption generation is active as one TP4 replica on an29 GPUs1,5,6,7; QA, aggregation, and weight deletion remain
-L10 | blocked | MathVerse/MMMU are complete; five guarded ViRL TP1 conditions are queued because the currently available an12 GPU is occupied by L7 and other research jobs use the remaining GPUs
+L10 | blocked | MathVerse/MMMU are complete; five guarded ViRL TP1 conditions are active on an12 GPUs0-4 under the 2,048-token pilot contract
 L11 | pass | reports/document_v_next_calibration.md: one-shot 100-pair batch complete; 3B real=0.69, 7B real=1.00, 7B caption=0.04, verdict too-easy with no iteration
 L12 | blocked | preregistration depends on L7 plus PI sign-off and the human R19 audit
 L13 | blocked | pilot launch depends on L3, L4, L5, and merged L12 preregistration
