@@ -61,7 +61,7 @@ def test_image_eval_launcher_rejects_mapping_that_launches_zero_workers(tmp_path
             "bash",
             "scripts/launch_fliptrack_eval_shards.sh",
             "an29",
-            "0",
+            "1",
             "1",
             "model",
             str(manifest),
@@ -87,7 +87,7 @@ def test_image_eval_launcher_rejects_negative_shard_mapping_before_ssh(tmp_path:
             "bash",
             "scripts/launch_fliptrack_eval_shards.sh",
             "host-that-must-not-be-contacted",
-            "-2",
+            "-1",
             "1",
             "model",
             str(manifest),
@@ -157,6 +157,19 @@ def test_image_eval_launcher_pins_seed_model_revision_and_atomic_outputs() -> No
     assert 'partial_out.open("x"' in evaluator
     assert "os.replace(partial_out, out_path)" in evaluator
     assert "os.replace(partial_metrics, metrics_path)" in evaluator
+
+
+def test_image_eval_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
+    source = (ROOT / "scripts" / "launch_fliptrack_eval_shards.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'read -r -a GPU_IDS <<< "${GPU_LIST}"' in source
+    assert 'for POSITION in "${!GPU_IDS[@]}"' in source
+    assert 'GPU="${GPU_IDS[${POSITION}]}"' in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + POSITION))" in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + GPU))" not in source
+    assert "shards assigned by replica ordinal" in source
 
 
 def test_caption_qa_maps_noncontiguous_gpus_by_replica_ordinal() -> None:

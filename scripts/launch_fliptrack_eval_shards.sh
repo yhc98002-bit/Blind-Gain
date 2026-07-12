@@ -50,7 +50,7 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "gpu_ids": ${GPU_IDS_JSON},
   "tensor_parallel_width": 1,
   "replica_count": ${REPLICA_COUNT},
-  "placement_justification": "Independent TP1 replicas evaluate disjoint FlipTrack shards on one node; the model is at or below 7B.",
+  "placement_justification": "Independent TP1 replicas evaluate disjoint FlipTrack shards on one node, with shards assigned by replica ordinal; the model is at or below 7B.",
   "placement_policy_version": "pi-2026-07-11",
   "git_hash": "${GIT_HASH}",
   "config_hash": "${CONFIG_HASH}",
@@ -72,9 +72,11 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
 }
 JSON
 
+read -r -a GPU_IDS <<< "${GPU_LIST}"
 LAUNCHED=0
-for GPU in ${GPU_LIST}; do
-  SHARD_INDEX=$((SHARD_OFFSET + GPU))
+for POSITION in "${!GPU_IDS[@]}"; do
+  GPU="${GPU_IDS[${POSITION}]}"
+  SHARD_INDEX=$((SHARD_OFFSET + POSITION))
   if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
     continue
   fi
