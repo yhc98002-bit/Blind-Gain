@@ -200,6 +200,12 @@ def test_pilot_reward_smoke_uses_dev_shm_for_ray_runtime() -> None:
     assert "easyr1_logger_sha256" in launcher
     assert "resume-safe logger patch is absent" in launcher
     assert "checkpoints/smoke/${RUN_ID}" in launcher
+    assert "BLIND_GAINS_STORAGE_GUARD_ENABLED=1" in launcher
+    assert "BLIND_GAINS_CHECKPOINT_TIER=S" in launcher
+    assert "BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000" in launcher
+    assert "BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_GUARD_LOG}'" in launcher
+    assert "BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300" in launcher
+    assert "storage_guard_log: $storage_guard_log" in launcher
     assert "synchronous EasyR1/GRPO smoke" in launcher
     assert "four independent TP1 rollout replicas" in launcher
 

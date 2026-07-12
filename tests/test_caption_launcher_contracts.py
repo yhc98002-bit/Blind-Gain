@@ -141,6 +141,24 @@ def test_eval_manifests_record_all_behavior_changing_launcher_arguments() -> Non
     assert '"run_id": "$(basename' in caption_source
 
 
+def test_image_eval_launcher_pins_seed_model_revision_and_atomic_outputs() -> None:
+    launcher = (ROOT / "scripts" / "launch_fliptrack_eval_shards.sh").read_text(
+        encoding="utf-8"
+    )
+    evaluator = (ROOT / "scripts" / "eval_qwen_vl_fliptrack.py").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'EVAL_SEED="${BLIND_GAINS_EVAL_SEED:-0}"' in launcher
+    assert '"model_revision": "${MODEL_PATH}"' in launcher
+    assert '"seed": ${EVAL_SEED}' in launcher
+    assert "--seed ${EVAL_SEED} --noise-seed ${EVAL_SEED}" in launcher
+    assert 'raise FileExistsError(f"refusing to overwrite FlipTrack predictions:' in evaluator
+    assert 'partial_out.open("x"' in evaluator
+    assert "os.replace(partial_out, out_path)" in evaluator
+    assert "os.replace(partial_metrics, metrics_path)" in evaluator
+
+
 def test_caption_qa_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
     source = (ROOT / "scripts" / "launch_caption_qa_shards.sh").read_text(
         encoding="utf-8"

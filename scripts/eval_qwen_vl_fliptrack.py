@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
 import torch
 from qwen_vl_utils import process_vision_info
-from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
+from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration, set_seed
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -47,6 +48,7 @@ def main() -> None:
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--image-mode", choices=IMAGE_MODES, default="real")
     parser.add_argument("--image-cache-dir", default=None)
+    parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--noise-seed", type=int, default=0)
     parser.add_argument("--max-new-tokens", type=int, default=32)
     args = parser.parse_args()
@@ -54,6 +56,16 @@ def main() -> None:
         raise ValueError("--num-shards must be >= 1")
     if not 0 <= args.shard_index < args.num_shards:
         raise ValueError("--shard-index must be in [0, --num-shards)")
+    set_seed(args.seed)
+
+    out_path = Path(args.output)
+    partial_out = Path(f"{out_path}.partial")
+    if out_path.exists() or partial_out.exists():
+        raise FileExistsError(f"refusing to overwrite FlipTrack predictions: {out_path}")
+    metrics_path = Path(args.metrics_output) if args.metrics_output else None
+    partial_metrics = Path(f"{metrics_path}.partial") if metrics_path else None
+    if metrics_path and (metrics_path.exists() or partial_metrics.exists()):
+        raise FileExistsError(f"refusing to overwrite FlipTrack metrics: {metrics_path}")
 
     rows = []
     with Path(args.manifest).open("r", encoding="utf-8") as handle:
@@ -72,11 +84,10 @@ def main() -> None:
     )
     processor = AutoProcessor.from_pretrained(args.model_path, trust_remote_code=True)
 
-    out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     cache_dir = Path(args.image_cache_dir) if args.image_cache_dir else out_path.parent.parent / f"{args.image_mode}_image_cache"
     scored = []
-    with out_path.open("w", encoding="utf-8") as out:
+    with partial_out.open("x", encoding="utf-8") as out:
         for row in rows:
             row = dict(row)
             row["eval_image_mode"] = args.image_mode
@@ -96,18 +107,25 @@ def main() -> None:
             scored.append(row)
             out.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             out.flush()
+    os.replace(partial_out, out_path)
     metrics = aggregate_pair_metrics(scored)
     metrics.update(
         {
             "image_mode": args.image_mode,
             "num_shards": float(args.num_shards),
             "shard_index": float(args.shard_index),
+            "seed": args.seed,
+            "noise_seed": args.noise_seed,
+            "max_new_tokens": args.max_new_tokens,
         }
     )
-    if args.metrics_output:
-        metrics_path = Path(args.metrics_output)
+    if metrics_path:
         metrics_path.parent.mkdir(parents=True, exist_ok=True)
-        metrics_path.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        assert partial_metrics is not None
+        partial_metrics.write_text(
+            json.dumps(metrics, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        os.replace(partial_metrics, metrics_path)
     print(json.dumps(metrics, sort_keys=True))
 
 

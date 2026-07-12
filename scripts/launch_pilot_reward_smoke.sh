@@ -33,6 +33,7 @@ MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
 LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
 SHADOW_PATH="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
+STORAGE_GUARD_LOG="${ROOT}/${RUN_DIR}/storage_guard.jsonl"
 CHECKPOINT_PATH="${ROOT}/checkpoints/smoke/${RUN_ID}"
 RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
 RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
@@ -91,6 +92,7 @@ jq -n \
   --arg command "PYTHONPATH=${ROOT}/artifacts/repos/EasyR1:${ROOT} ${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg shadow_path "${RUN_DIR}/reward_shadow.jsonl" \
+  --arg storage_guard_log "${RUN_DIR}/storage_guard.jsonl" \
   --arg log_path "${LOG_PATH}" \
   --arg ray_tmp_dir "${RAY_TMP_DIR}" \
   --arg checkpoint_path "${CHECKPOINT_PATH}" \
@@ -124,8 +126,9 @@ jq -n \
     start_time_utc: $start_time_utc,
     end_time_utc: null,
     status: "running",
-    expected_artifacts: [$shadow_path, $config_path, $easyr1_patch_path, $easyr1_logger_path],
+    expected_artifacts: [$shadow_path, $storage_guard_log, $config_path, $easyr1_patch_path, $easyr1_logger_path],
     stdout_stderr_log: $log_path,
+    storage_guard_log: $storage_guard_log,
     ray_tmp_dir: $ray_tmp_dir,
     checkpoint_path: $checkpoint_path,
     deviations: [
@@ -133,7 +136,7 @@ jq -n \
     ]
   }' > "${MANIFEST_PATH}"
 
-ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK_PATH}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW_PATH}' HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST_PATH}' '${ROOT}/${LOG_PATH}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_PATH}')"
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK_PATH}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW_PATH}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_GUARD_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST_PATH}' '${ROOT}/${LOG_PATH}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_PATH}')"
 
 sleep 20
 REMOTE_PID="$(cat "${PID_PATH}")"

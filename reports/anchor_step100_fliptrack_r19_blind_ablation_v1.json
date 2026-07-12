@@ -1,0 +1,108 @@
+{
+  "checks": {
+    "anchor_gray_aggregate_canonical_v2": true,
+    "anchor_gray_aggregate_complete": true,
+    "anchor_gray_evaluation_complete": true,
+    "anchor_gray_pair_count_exact": true,
+    "anchor_gray_prompt_contract_exact": true,
+    "anchor_real_gray_checkpoint_identity_exact": true,
+    "base_anchor_gray_pair_identity_exact": true,
+    "base_gray_aggregate_canonical_v2": true,
+    "base_gray_aggregate_complete": true,
+    "paired_comparison_schema_v2": true,
+    "real_gray_pair_identity_exact": true
+  },
+  "metrics": {
+    "anchor_gray": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.041666666666666664,
+      "pair_accuracy": 0.0,
+      "pair_accuracy_ci95": [
+        0.0,
+        0.0
+      ],
+      "strict_pair_accuracy": 0.0
+    },
+    "base_gray": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.08541666666666667,
+      "pair_accuracy": 0.0,
+      "strict_pair_accuracy": 0.0
+    },
+    "base_gray_to_anchor_gray": {
+      "pair_accuracy_delta": 0.0,
+      "pair_accuracy_delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "strict_pair_accuracy_delta": 0.0,
+      "strict_pair_accuracy_delta_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "anchor_gray_to_anchor_real": {
+      "pair_accuracy_delta": 0.5633333333333334,
+      "pair_accuracy_delta_ci95": [
+        0.5358333333333334,
+        0.5916666666666667
+      ],
+      "pair_mcnemar_p": 6.379004768702443e-204,
+      "strict_pair_accuracy_delta": 0.37,
+      "strict_pair_accuracy_delta_ci95": [
+        0.3433333333333333,
+        0.39666666666666667
+      ],
+      "strict_mcnemar_p": 4.4026272858551673e-134
+    },
+    "anchor_gray_to_anchor_real_by_template": {
+      "chart_starred_series_value_nine_v07": {
+        "n_pairs": 300,
+        "pair_accuracy_delta": 0.43666666666666665,
+        "pair_accuracy_delta_ci95": [
+          0.38333333333333336,
+          0.49333333333333335
+        ]
+      },
+      "document_header_cued_table_code_v02": {
+        "n_pairs": 300,
+        "pair_accuracy_delta": 0.8566666666666667,
+        "pair_accuracy_delta_ci95": [
+          0.8166666666666667,
+          0.8933333333333333
+        ]
+      },
+      "geometry_coordinate_register_twenty_point_x_v02": {
+        "n_pairs": 600,
+        "pair_accuracy_delta": 0.48,
+        "pair_accuracy_delta_ci95": [
+          0.43995833333333334,
+          0.52
+        ]
+      }
+    }
+  },
+  "scope": "engineering-anchor real-versus-gray ablation on the R19-selected instrument; human R19 audit pending; not a pilot result or PI gate",
+  "source_artifacts": {
+    "anchor_gray_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_anchor_step100_gray_20260712T094005Z/metrics.json",
+      "sha256": "20168087af7d6a4ec3cbdd057a7442b12feb997176b7ce0b81ecd9ff7bde0601"
+    },
+    "anchor_gray_evaluation": "experiments/runs/fliptrack_v02r19_anchor_step100_gray_an12_20260712T091721Z",
+    "base_gray_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_base3b_gray_canonicalv2_20260712T094005Z/metrics.json",
+      "sha256": "b4f12b695445645f8813e7eb8ac0444b7e1912fbfe147081fd94fbeed1eca40e"
+    },
+    "base_gray_to_anchor_gray_comparison": {
+      "path": "experiments/runs/fliptrack_compare_base_vs_anchor_gray_r19_v1_20260712T094021Z/comparison.json",
+      "sha256": "7a0bef4bcf0e36f11849b318e59e64e515fad4c4f0171cf20933fab6c9527644"
+    },
+    "gray_to_real_comparison": {
+      "path": "experiments/runs/fliptrack_compare_anchor_gray_vs_real_r19_v1_20260712T094021Z/comparison.json",
+      "sha256": "632ba578568fa3564c12c4f9dbc4ce5e6d3fc759f3b4340343d4373f84640764"
+    }
+  },
+  "status": "pass"
+}
