@@ -4,10 +4,12 @@ Status:
 - Complete. `tools/human_audit_viewer.html` is a single-file, offline viewer for packaged FlipTrack human audits.
 - It supports both R19 and R20 because it joins the shared release-manifest and private-key schemas by `pair_id` and `member_id`.
 - It does not load, accept, display, or export evaluation results.
+- The unloaded state now gives explicit R19 paths and selection status. The package-folder picker automatically finds the packaged `manifest.jsonl`, reducing setup from three local selections to two.
+- After validation, the setup panel collapses so the first pair occupies the viewport; **Change package** restores it.
 
 Evidence:
-- Viewer: `tools/human_audit_viewer.html`, SHA256 `cb72acd1db7fbe727be5f60e0255890cd5add682d9787af3b27144b90622e861`.
-- Tests: `tests/test_human_audit_viewer.py`, SHA256 `ade9d9f69a2b898bdad8f90e2206bb7fadf0a64e24a8d168b0e31c7c9a86fdb1`; six focused tests pass.
+- Viewer: `tools/human_audit_viewer.html`, SHA256 `1d5de22b4612218bd80085a0e08504b85a89973e23222ca1699a8b1d8e07fce3`.
+- Tests: `tests/test_human_audit_viewer.py`, SHA256 `e7117b86f93dcb1f60a88529e20ff4d6ec3a2b04f4423bb8cac04213c953349e`; six focused tests pass.
 - The tests verify single-file/local-only operation, all six registered checks, failure-only export fields, member-ID answer joining under randomized member order, path-traversal rejection, absence of result-related vocabulary, and JavaScript syntax.
 - The HTML pins a Content Security Policy with `connect-src 'none'`, contains no external scripts or styles, and calls no network API.
 - Selected image bytes are SHA256-checked against the release manifest before each pair is marked verified in the UI.
@@ -16,15 +18,14 @@ Evidence:
 ## Usage
 
 1. Open `tools/human_audit_viewer.html` directly in a current Chromium or Firefox browser. No server is required.
-2. Choose the packaged release `manifest.jsonl` under **Release manifest**.
-3. Choose its private JSONL key under **Private answer key**.
-4. Choose the release package directory under **Release package directory**. Select the package root containing `images/`, not the project root.
-5. Select **Load audit**. Loading fails closed on duplicate IDs, missing key rows, member mismatches, unsafe paths, missing images, or ambiguous image resolution.
-6. Keep **First 20 per template** for the representative contact-sheet audit. This deterministically selects the same first 20 rows per template as the generator, for 60 pairs across the current three templates. Select **All pairs** for the full 1,200-pair package.
-7. Inspect both full-resolution members, the question, and the member-aligned answers. Use **Fit**, the zoom slider, or the open-original icon on either member.
-8. Record an explicit **Pass** or **Fail** for each of the six checks. A pair is complete only after all six have a value.
-9. Record a concrete failure note when useful. Navigation, template filtering, and pair-ID search preserve decisions locally.
-10. Select **Export failures**. Before sign-off, require `unreviewed_pair_ids` to be empty in the exported JSON for the chosen audit scope.
+2. Under **Choose the R19 package folder**, select `data/fliptrack_v02r19_artifact_expanded/`. Select that package root, which contains both `manifest.jsonl` and `images/`; do not select `images/` or the project root. The page reports the package name, detected manifest, and image count when accepted.
+3. Under **Choose the R19 private answer key**, select `.private/fliptrack_v02r19_key.jsonl`. If the `.private` directory is hidden in the chooser, press `Ctrl+H` to reveal hidden files.
+4. Select **Open human audit** after the status reads **Ready to open**. Loading fails closed on duplicate IDs, missing key rows, member mismatches, unsafe paths, missing images, or ambiguous image resolution. The setup panel then collapses and the first pair appears; use **Change package** in the header to reopen it.
+5. Keep **First 20 per template** for the representative contact-sheet audit. This deterministically selects the same first 20 rows per template as the generator, for 60 pairs across the current three templates. Select **All pairs** for the full 1,200-pair package.
+6. Inspect both full-resolution members, the question, and the member-aligned answers. Use **Fit**, the zoom slider, or the open-original icon on either member.
+7. Record an explicit **Pass** or **Fail** for each of the six checks. A pair is complete only after all six have a value.
+8. Record a concrete failure note when useful. Navigation, template filtering, and pair-ID search preserve decisions locally.
+9. Select **Export failures**. Before sign-off, require `unreviewed_pair_ids` to be empty in the exported JSON for the chosen audit scope.
 
 ## Package Paths
 
@@ -68,7 +69,7 @@ The downloaded JSON uses schema `blind-gains.human-audit-failures.v1` and includ
 Answers and image paths are intentionally omitted from the export. The viewer never reads arbitrary fields from evaluation JSONL and has no input for such files.
 
 Problems:
-- The login node has no runnable graphical/headless browser: `/usr/bin/firefox` is an uninstalled snap shim. Verification here therefore covers HTML structure, JavaScript syntax, local-only policy, schema logic, and adversarial core behavior, but not a screenshot of the interactive loaded state.
+- The initial unloaded state was visually checked from the user-provided screenshot. The login node still has no runnable automated graphical/headless browser, so loaded-state verification covers HTML structure, JavaScript syntax, local-only policy, schema logic, and adversarial core behavior rather than an automated screenshot.
 - Browser-local progress is specific to the browser profile and exact manifest/key hashes. Export the JSON before changing browser profiles or clearing site data.
 - `.private/` keys are intentionally git-ignored and must remain private.
 

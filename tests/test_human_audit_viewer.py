@@ -58,9 +58,14 @@ def test_viewer_is_single_file_local_only_and_has_required_controls() -> None:
         assert network_api not in source
 
     required_ids = {
-        "manifestFile",
         "answerKeyFile",
         "imageDirectory",
+        "packageSelection",
+        "keySelection",
+        "loadReadiness",
+        "emptyState",
+        "loaderBand",
+        "changePackageButton",
         "loadButton",
         "previousButton",
         "nextButton",
@@ -73,6 +78,13 @@ def test_viewer_is_single_file_local_only_and_has_required_controls() -> None:
     }
     assert required_ids <= shape.ids
     assert "webkitdirectory" in source
+    assert 'id="manifestFile"' not in source
+    assert "The package manifest is detected automatically." in source
+    assert "data/fliptrack_v02r19_artifact_expanded/" in source
+    assert ".private/fliptrack_v02r19_key.jsonl" in source
+    assert "press Ctrl+H" in source
+    assert 'dom.loaderBand.classList.add("hidden")' in source
+    assert 'dom.changePackageButton.classList.remove("hidden")' in source
 
 
 def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:
@@ -115,6 +127,7 @@ def test_viewer_joins_answers_by_member_id_and_rejects_unsafe_inputs() -> None:
     assert "found === member.imageSha256" in source
     assert "count < 20" in source
     assert "localStorage.setItem" in source
+    assert "findPackageManifest(dom.imageDirectory.files)" in source
 
 
 def test_viewer_contains_no_model_result_vocabulary() -> None:
@@ -171,6 +184,25 @@ const key = [{
     {member_id: "member-b", answer: "BETA", source_side: "b"}
   ]
 }];
+const packageFiles = [
+  {name: "manifest.jsonl", webkitRelativePath: "r19/manifest.jsonl", type: "application/json"},
+  {name: "a.png", webkitRelativePath: "r19/images/a.png", type: "image/png"}
+];
+assert.equal(findPackageManifest(packageFiles).name, "manifest.jsonl");
+assert.equal(packageName(packageFiles), "r19");
+assert.equal(imageFileCount(packageFiles), 1);
+assert.throws(
+  () => findPackageManifest([
+    {name: "a.png", webkitRelativePath: "images/a.png", type: "image/png"}
+  ]),
+  /no root manifest\.jsonl/
+);
+assert.throws(
+  () => findPackageManifest([
+    {name: "manifest.jsonl", webkitRelativePath: "repo/data/r19/manifest.jsonl", type: "application/json"}
+  ]),
+  /package folder itself/
+);
 const parsed = parseRecords(manifest.map(JSON.stringify).join("\n"), "manifest");
 const pairs = buildPairs(parsed, key);
 assert.equal(pairs[0].members[0].memberId, "member-b");

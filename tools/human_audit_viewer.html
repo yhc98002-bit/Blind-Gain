@@ -131,15 +131,90 @@
       overflow-wrap: anywhere;
     }
 
-    .loader-band {
-      padding: 14px clamp(16px, 3vw, 38px);
-      display: grid;
-      grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr)
-        minmax(220px, 1.25fr) auto;
-      align-items: end;
+    .session-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
       gap: 12px;
+    }
+
+    .header-action {
+      min-height: 30px;
+      padding: 0 10px;
+      border-color: #617169;
+      background: transparent;
+      color: #ffffff;
+      font-size: 12px;
+    }
+
+    .header-action:hover:not(:disabled) {
+      border-color: #a9bbb2;
+      background: #25342e;
+    }
+
+    .loader-band {
+      padding: 22px clamp(16px, 3vw, 38px) 24px;
       background: #e9eeeb;
       border-bottom: 1px solid var(--line);
+    }
+
+    .setup-inner {
+      width: min(1320px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr) minmax(180px, auto);
+      align-items: end;
+      gap: 16px;
+    }
+
+    .setup-heading {
+      grid-column: 1 / -1;
+      max-width: 760px;
+    }
+
+    .setup-heading h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .setup-heading p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .step-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-number {
+      width: 23px;
+      height: 23px;
+      display: inline-grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--header);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .path-hint {
+      min-width: 0;
+      padding: 7px 9px;
+      border: 1px solid #d7c997;
+      border-radius: var(--radius);
+      background: #fffbed;
+      color: #5f4b09;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      user-select: all;
     }
 
     .file-field,
@@ -157,11 +232,69 @@
       font-weight: 700;
     }
 
+    .file-state {
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .file-state.ready {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .file-state.invalid {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
     input[type="file"] {
       width: 100%;
       min-height: 38px;
       padding: 6px;
       overflow: hidden;
+    }
+
+    .load-actions {
+      min-width: 180px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .load-actions button {
+      min-height: 48px;
+    }
+
+    #loadReadiness {
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .alternate-package {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .alternate-package summary {
+      width: fit-content;
+      cursor: pointer;
+      color: #405049;
+      font-weight: 700;
+    }
+
+    .alternate-package p {
+      margin: 7px 0 0;
+      line-height: 1.45;
+    }
+
+    .alternate-package code {
+      color: #41534b;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      overflow-wrap: anywhere;
     }
 
     .load-error {
@@ -173,6 +306,39 @@
       color: #7a1b13;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+      min-height: 430px;
+      padding: 64px clamp(16px, 3vw, 38px);
+      display: grid;
+      place-items: start center;
+      background: var(--canvas);
+    }
+
+    .empty-state-inner {
+      width: min(760px, 100%);
+      padding-top: 26px;
+      border-top: 3px solid #d7c997;
+      text-align: center;
+    }
+
+    .empty-state strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .empty-state p {
+      margin: 8px auto 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .empty-state .privacy-note {
+      margin-top: 18px;
+      color: #405049;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .hidden {
@@ -532,8 +698,18 @@
     }
 
     @media (max-width: 1120px) {
-      .loader-band {
+      .setup-inner {
         grid-template-columns: 1fr 1fr;
+      }
+
+      .load-actions {
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(180px, 260px) 1fr;
+        align-items: center;
+      }
+
+      #loadReadiness {
+        text-align: left;
       }
 
       .control-band {
@@ -556,9 +732,27 @@
         text-align: left;
       }
 
-      .loader-band,
+      .session-actions {
+        justify-content: flex-start;
+      }
+
+      .setup-inner,
       .control-band {
         grid-template-columns: 1fr 1fr;
+      }
+
+      .setup-inner .file-field,
+      .load-actions,
+      .alternate-package {
+        grid-column: span 2;
+      }
+
+      .load-actions {
+        grid-template-columns: 1fr;
+      }
+
+      #loadReadiness {
+        text-align: center;
       }
 
       .control-band {
@@ -596,24 +790,68 @@
       <strong>Blind Gains</strong>
       <span>Human Pair Audit</span>
     </div>
-    <div id="sessionStatus">No package loaded</div>
+    <div class="session-actions">
+      <div id="sessionStatus">No package loaded</div>
+      <button id="changePackageButton" class="header-action hidden" type="button">
+        Change package
+      </button>
+    </div>
   </header>
 
-  <section class="loader-band" aria-label="Local audit package">
-    <div class="file-field">
-      <label for="manifestFile">Release manifest</label>
-      <input id="manifestFile" type="file" accept=".json,.jsonl,application/json">
+  <section id="loaderBand" class="loader-band" aria-label="Local audit package">
+    <div class="setup-inner">
+      <div class="setup-heading">
+        <h1>Open an audit package</h1>
+        <p>
+          Local browser security requires you to grant access to the package and its private
+          answer key. The package manifest is detected automatically.
+        </p>
+      </div>
+      <div class="file-field">
+        <div class="step-label">
+          <span class="step-number" aria-hidden="true">1</span>
+          <label for="imageDirectory">Choose the R19 package folder</label>
+        </div>
+        <div class="path-hint">data/fliptrack_v02r19_artifact_expanded/</div>
+        <input id="imageDirectory" type="file" webkitdirectory directory multiple>
+        <span id="packageSelection" class="file-state">No package folder selected</span>
+      </div>
+      <div class="file-field">
+        <div class="step-label">
+          <span class="step-number" aria-hidden="true">2</span>
+          <label for="answerKeyFile">Choose the R19 private answer key</label>
+        </div>
+        <div class="path-hint">.private/fliptrack_v02r19_key.jsonl</div>
+        <input id="answerKeyFile" type="file" accept=".json,.jsonl,application/json">
+        <span id="keySelection" class="file-state">No answer key selected</span>
+      </div>
+      <div class="load-actions">
+        <button id="loadButton" class="primary" type="button" disabled>Open human audit</button>
+        <span id="loadReadiness">Select both local inputs</span>
+      </div>
+      <details class="alternate-package">
+        <summary>Auditing R20 instead?</summary>
+        <p>
+          Package: <code>data/fliptrack_r20/</code><br>
+          Private key: <code>.private/fliptrack_r20_key.jsonl</code>
+        </p>
+      </details>
+      <p id="loadError" class="load-error hidden" role="alert"></p>
     </div>
-    <div class="file-field">
-      <label for="answerKeyFile">Private answer key</label>
-      <input id="answerKeyFile" type="file" accept=".json,.jsonl,application/json">
+  </section>
+
+  <section id="emptyState" class="empty-state" aria-live="polite">
+    <div class="empty-state-inner">
+      <strong>No audit package is open</strong>
+      <p>
+        Select the R19 package folder and private key above. The first pair will appear here
+        after both inputs are accepted.
+      </p>
+      <p class="privacy-note">
+        If the <code>.private</code> folder is hidden in the file chooser, press Ctrl+H.
+        All selected files remain in this browser.
+      </p>
     </div>
-    <div class="file-field">
-      <label for="imageDirectory">Release package directory</label>
-      <input id="imageDirectory" type="file" accept="image/*" webkitdirectory directory multiple>
-    </div>
-    <button id="loadButton" class="primary" type="button" disabled>Load audit</button>
-    <p id="loadError" class="load-error hidden" role="alert"></p>
   </section>
 
   <main id="auditApp" class="audit-shell hidden">
@@ -761,13 +999,16 @@
       keyName: "",
       manifestSha256: "",
       keySha256: "",
+      packageName: "",
       storageKey: "",
       renderToken: 0
     };
 
     const dom = Object.fromEntries([
-      "manifestFile", "answerKeyFile", "imageDirectory", "loadButton", "loadError",
-      "auditApp", "sessionStatus", "previousButton", "nextButton", "previousBottomButton",
+      "answerKeyFile", "imageDirectory", "packageSelection", "keySelection", "loadButton",
+      "loadReadiness", "loadError", "emptyState", "auditApp", "loaderBand",
+      "sessionStatus", "changePackageButton",
+      "previousButton", "nextButton", "previousBottomButton",
       "nextBottomButton", "positionLabel", "progressLabel", "scopeSelect", "templateSelect",
       "pairSearch", "exportButton", "resetButton", "pairId", "templateId", "categoryId",
       "questionText", "fitButton", "zoomRange", "zoomValue", "integritySummary", "checkList",
@@ -809,6 +1050,48 @@
         throw new Error(`${context} is missing.`);
       }
       return requireString(String(value), context);
+    }
+
+    function packagePathParts(file) {
+      return (file.webkitRelativePath || file.name)
+        .replaceAll("\\", "/")
+        .split("/")
+        .filter(Boolean);
+    }
+
+    function findPackageManifest(fileList) {
+      const files = Array.from(fileList);
+      const namedManifests = files.filter((file) => file.name.toLowerCase() === "manifest.jsonl");
+      const rootManifests = namedManifests.filter((file) => packagePathParts(file).length <= 2);
+      if (rootManifests.length === 1) {
+        return rootManifests[0];
+      }
+      if (rootManifests.length > 1) {
+        throw new Error("The selected folder contains multiple root manifest.jsonl files.");
+      }
+      if (namedManifests.length > 0) {
+        throw new Error(
+          "Select the release package folder itself, not a parent folder containing several releases."
+        );
+      }
+      throw new Error(
+        "The selected folder has no root manifest.jsonl. Select the package folder containing images/."
+      );
+    }
+
+    function packageName(fileList) {
+      const firstFile = Array.from(fileList)[0];
+      if (!firstFile) {
+        return "";
+      }
+      const parts = packagePathParts(firstFile);
+      return parts.length > 1 ? parts[0] : "selected package";
+    }
+
+    function imageFileCount(fileList) {
+      return Array.from(fileList).filter((file) =>
+        file.type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|tiff?)$/i.test(file.name)
+      ).length;
     }
 
     function normalizeManifestPath(value, context) {
@@ -1291,19 +1574,55 @@
     }
 
     function updateLoadButton() {
-      dom.loadButton.disabled = !(
-        dom.manifestFile.files.length === 1 &&
-        dom.answerKeyFile.files.length === 1 &&
-        dom.imageDirectory.files.length > 0
-      );
+      let packageReady = false;
+      let keyReady = false;
+
+      dom.packageSelection.className = "file-state";
+      if (dom.imageDirectory.files.length === 0) {
+        dom.packageSelection.textContent = "No package folder selected";
+      } else {
+        try {
+          const manifest = findPackageManifest(dom.imageDirectory.files);
+          const imageCount = imageFileCount(dom.imageDirectory.files);
+          if (imageCount === 0) {
+            throw new Error("The selected package contains no images.");
+          }
+          packageReady = true;
+          dom.packageSelection.textContent =
+            `${packageName(dom.imageDirectory.files)} | ${manifest.name} | ${imageCount} images`;
+          dom.packageSelection.classList.add("ready");
+        } catch (error) {
+          dom.packageSelection.textContent = error instanceof Error ? error.message : String(error);
+          dom.packageSelection.classList.add("invalid");
+        }
+      }
+
+      dom.keySelection.className = "file-state";
+      if (dom.answerKeyFile.files.length === 1) {
+        keyReady = true;
+        dom.keySelection.textContent = dom.answerKeyFile.files[0].name;
+        dom.keySelection.classList.add("ready");
+      } else {
+        dom.keySelection.textContent = "No answer key selected";
+      }
+
+      dom.loadButton.disabled = !(packageReady && keyReady);
+      if (packageReady && keyReady) {
+        dom.loadReadiness.textContent = "Ready to open";
+      } else if (packageReady || keyReady) {
+        dom.loadReadiness.textContent = "One local input remains";
+      } else {
+        dom.loadReadiness.textContent = "Select both local inputs";
+      }
     }
 
     async function loadAudit() {
       dom.loadButton.disabled = true;
+      dom.loadReadiness.textContent = "Checking local package";
       dom.loadError.classList.add("hidden");
       dom.loadError.textContent = "";
       try {
-        const manifestFile = dom.manifestFile.files[0];
+        const manifestFile = findPackageManifest(dom.imageDirectory.files);
         const keyFile = dom.answerKeyFile.files[0];
         const [manifestText, keyText] = await Promise.all([
           manifestFile.text(),
@@ -1329,6 +1648,7 @@
         state.keyName = keyFile.name;
         state.manifestSha256 = manifestSha256;
         state.keySha256 = keySha256;
+        state.packageName = packageName(dom.imageDirectory.files);
         state.storageKey = `blind-gains-human-audit-v1:${manifestSha256}:${keySha256}`;
         state.currentIndex = 0;
         state.fitImages = true;
@@ -1338,8 +1658,11 @@
         dom.pairSearch.value = "";
         restoreProgress();
         populateTemplateFilter();
+        dom.emptyState.classList.add("hidden");
+        dom.loaderBand.classList.add("hidden");
+        dom.changePackageButton.classList.remove("hidden");
         dom.auditApp.classList.remove("hidden");
-        dom.sessionStatus.textContent = `${manifestFile.name} | ${pairs.length} pairs | local only`;
+        dom.sessionStatus.textContent = `${state.packageName} | ${pairs.length} pairs | local only`;
         applyFilters();
       } catch (error) {
         dom.loadError.textContent = error instanceof Error ? error.message : String(error);
@@ -1421,10 +1744,15 @@
     buildCheckControls();
     updateLoadButton();
 
-    for (const input of [dom.manifestFile, dom.answerKeyFile, dom.imageDirectory]) {
+    for (const input of [dom.answerKeyFile, dom.imageDirectory]) {
       input.addEventListener("change", updateLoadButton);
     }
     dom.loadButton.addEventListener("click", loadAudit);
+    dom.changePackageButton.addEventListener("click", () => {
+      dom.loaderBand.classList.remove("hidden");
+      dom.changePackageButton.classList.add("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
     dom.previousButton.addEventListener("click", () => navigate(-1));
     dom.previousBottomButton.addEventListener("click", () => navigate(-1));
     dom.nextButton.addEventListener("click", () => navigate(1));
