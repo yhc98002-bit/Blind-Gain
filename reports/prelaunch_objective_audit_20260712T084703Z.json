@@ -1,0 +1,450 @@
+{
+  "audited_file_checks": {
+    "reports/blind_solvability_geo3k_v2_audited.json": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.json",
+      "audited_sha256": "131e441f27e1099bcd87855591f6896773b3fcc079b44c3849fd7197bdb96ee7",
+      "audited_size_bytes": 3634,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.json",
+      "counterpart_sha256": "44c21263c72279cfecf29eb7b154a939df7bbcd5099bc8d10a495d080f15a6a0",
+      "counterpart_size_bytes": 51970
+    },
+    "reports/blind_solvability_geo3k_v2_audited.md": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.md",
+      "audited_sha256": "0bd458a1c319e97bdac1f455428d37070aa9951ff76f70cd227335b02b8eaa9e",
+      "audited_size_bytes": 1404,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.md",
+      "counterpart_sha256": "ef40376f128391fcc1cd99add9f9691a9601b122854d4f5d7e96b5b3e7dedf7d",
+      "counterpart_size_bytes": 5460
+    },
+    "reports/blind_solvability_geo3k_v3_audited.json": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.json",
+      "audited_sha256": "3af83d4503096ad55a3ba7435d6f10c54f2b0f93ce8761a71ed53e244c779b01",
+      "audited_size_bytes": 33192,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.json",
+      "counterpart_sha256": "c6bd96d847fb1ab21ea6056e49ee9556b7807c14c8cbd2cb7aa4305f112651db",
+      "counterpart_size_bytes": 32664
+    },
+    "reports/blind_solvability_geo3k_v3_audited.md": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.md",
+      "audited_sha256": "65c747d7e3cd45992499203b66fed0de3f19685d9053224e8f7d901596d7b990",
+      "audited_size_bytes": 5603,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.md",
+      "counterpart_sha256": "a8a138a96180fcae1174810418a47a32ceb92b41e704fdb965e814266a7321b6",
+      "counterpart_size_bytes": 5035
+    }
+  },
+  "checks": {
+    "L13_pass_implies_L12_pass_and_preregistration": true,
+    "audited_reports_are_not_byte_identical_to_counterparts": true,
+    "every_pass_has_nonempty_named_reports": true,
+    "ledger_has_exact_one_valid_line_per_registered_task": true,
+    "scientific_consistency_audit_passes": true,
+    "task_registry_has_exact_L0_through_L13": true
+  },
+  "errors": [],
+  "expected_task_ids": [
+    "L0",
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L5",
+    "L6",
+    "L7",
+    "L8",
+    "L9",
+    "L10",
+    "L11",
+    "L12",
+    "L13"
+  ],
+  "ledger": {
+    "L0": {
+      "note": "reports/storage_preflight.md: PI-approved shared save to login-archive sweep passed all nine dry-cycle checks with exact read-back hashes",
+      "status": "pass"
+    },
+    "L1": {
+      "note": "reports/parser_agreement_audit_v2.md: canonical-v2 fixtures pass; repeated agreement is 0.915625, below 0.95 and explicitly retained for PI review",
+      "status": "pass"
+    },
+    "L10": {
+      "note": "MathVerse/MMMU are complete; five guarded ViRL TP1 conditions are active on an12 GPUs0-4 under the 2,048-token pilot contract",
+      "status": "blocked"
+    },
+    "L11": {
+      "note": "reports/document_v_next_calibration.md: one-shot 100-pair batch complete; 3B real=0.69, 7B real=1.00, 7B caption=0.04, verdict too-easy with no iteration",
+      "status": "pass"
+    },
+    "L12": {
+      "note": "reports/preregistration_pilot_v1_DRAFT_20260712T0608Z.md is generated from audited L7 inputs; final merge still requires human R19 audit and both PI signatures",
+      "status": "blocked"
+    },
+    "L13": {
+      "note": "reports/pilot_launch_plumbing_v1.md: fail-closed arm launcher and retention watcher are tested; execution still depends on L3 and merged L12",
+      "status": "blocked"
+    },
+    "L2": {
+      "note": "reports/scorer_v2_spec.md: per-run extractor_valid/contract_valid split and exact StrictGain identity fixtures pass",
+      "status": "pass"
+    },
+    "L3": {
+      "note": "reports/pilot_reward_smoke_tp_mismatch_v3.md: v6 re-audit rejects historical placement and missing stack snapshots; replacement five-step TP1 smoke is required before L13",
+      "status": "blocked"
+    },
+    "L4": {
+      "note": "reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload",
+      "status": "pass"
+    },
+    "L5": {
+      "note": "required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+      "status": "pass"
+    },
+    "L6": {
+      "note": "named reports repaired; four consistency classes and non-gating GPU-hours accounting pass 28 focused tests",
+      "status": "pass"
+    },
+    "L7": {
+      "note": "reports/blind_solvability_geo3k_v2.md and audited artifacts: all five conditions have 1,889 rows, 160,565 response scores recompute with zero mismatches, and all 13 audit checks pass",
+      "status": "pass"
+    },
+    "L8": {
+      "note": "reports/fliptrack_r20_confirmatory.md and .json: 1,200 one-shot pairs and all 11 cells complete; document passes while geometry/chart are downgraded to R19-selected under frozen criteria",
+      "status": "pass"
+    },
+    "L9": {
+      "note": "reports/strong_caption_stress.md plus integrity audit: exact 4,800-row store, R19=0.0533 and R20=0.0617 pair accuracy, and 146,833,336,607 ephemeral bytes hash-deleted",
+      "status": "pass"
+    }
+  },
+  "pass_report_checks": {
+    "L0": {
+      "reports/storage_preflight.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 10987
+      }
+    },
+    "L1": {
+      "reports/parser_agreement_audit_v2.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 4230
+      }
+    },
+    "L11": {
+      "reports/document_v_next_calibration.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 1337
+      }
+    },
+    "L2": {
+      "reports/scorer_v2_spec.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 5192
+      }
+    },
+    "L4": {
+      "reports/a3_caption_path.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 3813
+      }
+    },
+    "L5": {
+      "reports/decon_geo3k_train_vs_test.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 3744
+      },
+      "reports/geo3k_filtered_subset.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 3816
+      }
+    },
+    "L6": {
+      "reports/base_external_benchmarks.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 9515
+      },
+      "reports/eval_harness_version.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 3366
+      },
+      "reports/gpu_hours_utilization.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 1483
+      },
+      "reports/mech_pilot_3arm_geo3k.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 739
+      }
+    },
+    "L7": {
+      "reports/blind_solvability_geo3k_v2.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 5460
+      },
+      "reports/blind_solvability_geo3k_v2_audited.json": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 3634
+      },
+      "reports/blind_solvability_geo3k_v2_audited.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 1404
+      }
+    },
+    "L8": {
+      "reports/fliptrack_r20_confirmatory.json": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 57838
+      },
+      "reports/fliptrack_r20_confirmatory.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 2434
+      }
+    },
+    "L9": {
+      "reports/strong_caption_stress.md": {
+        "nonempty": true,
+        "present": true,
+        "size_bytes": 1895
+      }
+    }
+  },
+  "registry": {
+    "L0": [
+      "reports/storage_preflight.md"
+    ],
+    "L1": [
+      "reports/parser_agreement_audit_v2.md"
+    ],
+    "L10": [
+      "reports/base_external_benchmarks.md",
+      "reports/blind_solvability_virl39k_sample_v1.md",
+      "reports/blind_solvability_virl39k_sample_v1_audited.json"
+    ],
+    "L11": [
+      "reports/document_v_next_calibration.md"
+    ],
+    "L12": [
+      "reports/preregistration_pilot_v1.md"
+    ],
+    "L13": [
+      "reports/pilot_4arm_results_v1.md"
+    ],
+    "L2": [
+      "reports/scorer_v2_spec.md"
+    ],
+    "L3": [
+      "reports/pilot_reward_spec_v2.md"
+    ],
+    "L4": [
+      "reports/a3_caption_path.md"
+    ],
+    "L5": [
+      "reports/decon_geo3k_train_vs_test.md",
+      "reports/geo3k_filtered_subset.md"
+    ],
+    "L6": [
+      "reports/eval_harness_version.md",
+      "reports/mech_pilot_3arm_geo3k.md",
+      "reports/base_external_benchmarks.md",
+      "reports/gpu_hours_utilization.md"
+    ],
+    "L7": [
+      "reports/blind_solvability_geo3k_v2.md",
+      "reports/blind_solvability_geo3k_v2_audited.md",
+      "reports/blind_solvability_geo3k_v2_audited.json"
+    ],
+    "L8": [
+      "reports/fliptrack_r20_confirmatory.md",
+      "reports/fliptrack_r20_confirmatory.json"
+    ],
+    "L9": [
+      "reports/strong_caption_stress.md"
+    ]
+  },
+  "schema_version": "blind-gains.prelaunch-objective-audit.v1",
+  "scientific_consistency_audit": {
+    "audited_file_checks": {
+      "reports/blind_solvability_geo3k_v2_audited.json": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.json",
+        "audited_sha256": "131e441f27e1099bcd87855591f6896773b3fcc079b44c3849fd7197bdb96ee7",
+        "audited_size_bytes": 3634,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.json",
+        "counterpart_sha256": "44c21263c72279cfecf29eb7b154a939df7bbcd5099bc8d10a495d080f15a6a0",
+        "counterpart_size_bytes": 51970
+      },
+      "reports/blind_solvability_geo3k_v2_audited.md": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.md",
+        "audited_sha256": "0bd458a1c319e97bdac1f455428d37070aa9951ff76f70cd227335b02b8eaa9e",
+        "audited_size_bytes": 1404,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.md",
+        "counterpart_sha256": "ef40376f128391fcc1cd99add9f9691a9601b122854d4f5d7e96b5b3e7dedf7d",
+        "counterpart_size_bytes": 5460
+      },
+      "reports/blind_solvability_geo3k_v3_audited.json": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.json",
+        "audited_sha256": "3af83d4503096ad55a3ba7435d6f10c54f2b0f93ce8761a71ed53e244c779b01",
+        "audited_size_bytes": 33192,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.json",
+        "counterpart_sha256": "c6bd96d847fb1ab21ea6056e49ee9556b7807c14c8cbd2cb7aa4305f112651db",
+        "counterpart_size_bytes": 32664
+      },
+      "reports/blind_solvability_geo3k_v3_audited.md": {
+        "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.md",
+        "audited_sha256": "65c747d7e3cd45992499203b66fed0de3f19685d9053224e8f7d901596d7b990",
+        "audited_size_bytes": 5603,
+        "byte_identical": false,
+        "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.md",
+        "counterpart_sha256": "a8a138a96180fcae1174810418a47a32ceb92b41e704fdb965e814266a7321b6",
+        "counterpart_size_bytes": 5035
+      }
+    },
+    "checks": {
+      "audited_files_are_distinct": true,
+      "full_claims_include_registered_members": true,
+      "pass_report_status_lines_are_resolved": true,
+      "referenced_machine_statuses_pass": true
+    },
+    "errors": [],
+    "pass_reports": {
+      "reports/a3_caption_path.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L4"
+      },
+      "reports/base_external_benchmarks.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L6"
+      },
+      "reports/blind_solvability_geo3k_v2.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L7"
+      },
+      "reports/blind_solvability_geo3k_v2_audited.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [
+          {
+            "pass": true,
+            "path": "reports/blind_solvability_geo3k_v2_audited.json",
+            "pointer": "status",
+            "present": true,
+            "status_value": "pass"
+          }
+        ],
+        "task_id": "L7"
+      },
+      "reports/decon_geo3k_train_vs_test.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L5"
+      },
+      "reports/document_v_next_calibration.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L11"
+      },
+      "reports/eval_harness_version.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L6"
+      },
+      "reports/fliptrack_r20_confirmatory.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [
+          {
+            "pass": true,
+            "path": "reports/fliptrack_r20_confirmatory.json",
+            "pointer": "status",
+            "present": true,
+            "status_value": "pass"
+          }
+        ],
+        "task_id": "L8"
+      },
+      "reports/geo3k_filtered_subset.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L5"
+      },
+      "reports/gpu_hours_utilization.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [
+          {
+            "pass": true,
+            "path": "reports/gpu_hours_utilization.json",
+            "pointer": "status",
+            "present": true,
+            "status_value": "pass"
+          }
+        ],
+        "task_id": "L6"
+      },
+      "reports/mech_pilot_3arm_geo3k.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L6"
+      },
+      "reports/parser_agreement_audit_v2.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L1"
+      },
+      "reports/scorer_v2_spec.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L2"
+      },
+      "reports/storage_preflight.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L0"
+      },
+      "reports/strong_caption_stress.md": {
+        "bad_status_lines": [],
+        "full_claim_errors": [],
+        "machine_status_checks": [],
+        "task_id": "L9"
+      }
+    },
+    "schema_version": "blind-gains.scientific-consistency-audit.v1",
+    "status": "pass"
+  },
+  "status": "pass"
+}
