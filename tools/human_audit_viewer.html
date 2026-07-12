@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; img-src blob: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Blind Gains Human Pair Audit</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1f2925;
+      --muted: #5f6b66;
+      --line: #cbd2ce;
+      --surface: #ffffff;
+      --canvas: #f3f5f3;
+      --header: #18231f;
+      --accent: #087f5b;
+      --accent-dark: #056044;
+      --danger: #b42318;
+      --danger-soft: #fff1f0;
+      --success: #157347;
+      --success-soft: #edf8f2;
+      --warning: #9a6700;
+      --warning-soft: #fff8e6;
+      --focus: #0b69a3;
+      --radius: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      letter-spacing: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      font-size: 15px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    select,
+    input[type="file"],
+    input[type="search"],
+    textarea {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    button {
+      min-height: 38px;
+      padding: 0 14px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: #7b8982;
+      background: #f8faf9;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    button.primary:hover:not(:disabled) {
+      border-color: var(--accent-dark);
+      background: var(--accent-dark);
+    }
+
+    button.danger {
+      color: var(--danger);
+    }
+
+    :focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--focus) 35%, transparent);
+      outline-offset: 2px;
+    }
+
+    .app-header {
+      min-height: 58px;
+      padding: 10px clamp(16px, 3vw, 38px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: var(--header);
+      color: #ffffff;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .brand strong {
+      font-size: 18px;
+    }
+
+    .brand span,
+    #sessionStatus {
+      color: #cbd8d2;
+      font-size: 13px;
+    }
+
+    #sessionStatus {
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .loader-band {
+      padding: 14px clamp(16px, 3vw, 38px);
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr)
+        minmax(220px, 1.25fr) auto;
+      align-items: end;
+      gap: 12px;
+      background: #e9eeeb;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .file-field,
+    .control-field {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .file-field label,
+    .control-field label,
+    .field-label {
+      color: #405049;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      min-height: 38px;
+      padding: 6px;
+      overflow: hidden;
+    }
+
+    .load-error {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 9px 11px;
+      border-left: 4px solid var(--danger);
+      background: var(--danger-soft);
+      color: #7a1b13;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .audit-shell {
+      min-width: 0;
+    }
+
+    .control-band {
+      min-height: 62px;
+      padding: 10px clamp(16px, 3vw, 38px);
+      display: grid;
+      grid-template-columns: auto auto minmax(100px, auto) minmax(155px, 210px)
+        minmax(190px, 1fr) minmax(170px, 230px) auto auto;
+      align-items: end;
+      gap: 10px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .control-band select,
+    .control-band input[type="search"] {
+      width: 100%;
+      min-height: 38px;
+      padding: 0 10px;
+    }
+
+    .position-block {
+      min-width: 108px;
+      min-height: 38px;
+      display: grid;
+      align-content: center;
+      text-align: center;
+    }
+
+    #positionLabel {
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #progressLabel {
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .question-band {
+      padding: 14px clamp(16px, 3vw, 38px) 12px;
+      background: #fbfcfb;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pair-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .pair-meta strong {
+      color: #34423c;
+    }
+
+    #questionText {
+      max-width: 1500px;
+      margin: 8px 0 0;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.32;
+      font-weight: 720;
+      overflow-wrap: anywhere;
+    }
+
+    .image-toolbar {
+      min-height: 50px;
+      padding: 8px clamp(16px, 3vw, 38px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    #zoomRange {
+      width: min(250px, 38vw);
+    }
+
+    #zoomValue {
+      min-width: 44px;
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #integritySummary {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .image-grid {
+      padding: 0 clamp(10px, 2vw, 26px) 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+      background: #dfe5e1;
+    }
+
+    .member-panel {
+      min-width: 0;
+      border: 1px solid #aeb9b3;
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .member-header,
+    .member-footer {
+      min-height: 46px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .member-header {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .member-footer {
+      border-top: 1px solid var(--line);
+      align-items: baseline;
+    }
+
+    .member-title {
+      font-weight: 750;
+    }
+
+    .member-detail,
+    .image-detail {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .answer-value {
+      color: #17211d;
+      font-size: 20px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    .icon-link {
+      width: 36px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .icon-link:hover {
+      border-color: #7b8982;
+      background: #f5f7f6;
+    }
+
+    .image-stage {
+      width: 100%;
+      min-height: 330px;
+      height: min(58vh, 690px);
+      overflow: auto;
+      background: #eef1ef;
+      position: relative;
+    }
+
+    .image-stage img {
+      display: block;
+      margin: 0;
+      image-rendering: auto;
+    }
+
+    .image-stage img.fit-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .image-stage img.zoom-image {
+      max-width: none;
+      max-height: none;
+    }
+
+    .checks-band {
+      padding: 16px clamp(16px, 3vw, 38px) 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--line);
+    }
+
+    .checks-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .checks-heading h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    #pairReviewStatus {
+      padding: 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--warning);
+      background: var(--warning-soft);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    #pairReviewStatus.complete {
+      color: var(--success);
+      background: var(--success-soft);
+    }
+
+    #pairReviewStatus.failed {
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .check-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .check-row {
+      min-width: 0;
+      min-height: 58px;
+      margin: 0;
+      padding: 8px 0;
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 190px;
+      align-items: center;
+      gap: 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .check-label {
+      padding: 0;
+      color: #293630;
+      font-weight: 620;
+      line-height: 1.35;
+    }
+
+    .check-row.pass .check-label {
+      color: var(--success);
+    }
+
+    .check-row.fail .check-label {
+      color: var(--danger);
+    }
+
+    .segmented {
+      width: 190px;
+      height: 38px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .segmented label {
+      min-width: 0;
+      position: relative;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .segmented label + label {
+      border-left: 1px solid var(--line);
+    }
+
+    .segmented input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .segmented input:focus-visible + span {
+      outline: 3px solid color-mix(in srgb, var(--focus) 35%, transparent);
+      outline-offset: -3px;
+    }
+
+    .segmented input[value="pass"]:checked + span {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .segmented input[value="fail"]:checked + span {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .note-field {
+      margin-top: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    #failureNote {
+      width: 100%;
+      min-height: 74px;
+      padding: 9px 10px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
+    .bottom-navigation {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    @media (max-width: 1120px) {
+      .loader-band {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .control-band {
+        grid-template-columns: auto auto minmax(96px, auto) 1fr 1fr auto;
+      }
+
+      .control-band .search-field {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      #sessionStatus {
+        text-align: left;
+      }
+
+      .loader-band,
+      .control-band {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .control-band {
+        position: static;
+      }
+
+      .control-band .control-field,
+      .control-band .search-field {
+        grid-column: span 2;
+      }
+
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-stage {
+        min-height: 280px;
+        height: min(52vh, 560px);
+      }
+
+      .check-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .segmented {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <strong>Blind Gains</strong>
+      <span>Human Pair Audit</span>
+    </div>
+    <div id="sessionStatus">No package loaded</div>
+  </header>
+
+  <section class="loader-band" aria-label="Local audit package">
+    <div class="file-field">
+      <label for="manifestFile">Release manifest</label>
+      <input id="manifestFile" type="file" accept=".json,.jsonl,application/json">
+    </div>
+    <div class="file-field">
+      <label for="answerKeyFile">Private answer key</label>
+      <input id="answerKeyFile" type="file" accept=".json,.jsonl,application/json">
+    </div>
+    <div class="file-field">
+      <label for="imageDirectory">Release package directory</label>
+      <input id="imageDirectory" type="file" accept="image/*" webkitdirectory directory multiple>
+    </div>
+    <button id="loadButton" class="primary" type="button" disabled>Load audit</button>
+    <p id="loadError" class="load-error hidden" role="alert"></p>
+  </section>
+
+  <main id="auditApp" class="audit-shell hidden">
+    <nav class="control-band" aria-label="Audit navigation">
+      <button id="previousButton" type="button">Previous</button>
+      <button id="nextButton" type="button">Next</button>
+      <div class="position-block" aria-live="polite">
+        <span id="positionLabel">0 / 0</span>
+        <span id="progressLabel">0 reviewed</span>
+      </div>
+      <div class="control-field">
+        <label for="scopeSelect">Audit scope</label>
+        <select id="scopeSelect">
+          <option value="representative">First 20 per template</option>
+          <option value="all">All pairs</option>
+        </select>
+      </div>
+      <div class="control-field">
+        <label for="templateSelect">Template</label>
+        <select id="templateSelect"></select>
+      </div>
+      <div class="control-field search-field">
+        <label for="pairSearch">Pair ID</label>
+        <input id="pairSearch" type="search" autocomplete="off" spellcheck="false">
+      </div>
+      <button id="exportButton" class="primary" type="button">Export failures</button>
+      <button id="resetButton" class="danger" type="button">Reset local progress</button>
+    </nav>
+
+    <section class="question-band">
+      <div class="pair-meta">
+        <span><strong>Pair:</strong> <span id="pairId"></span></span>
+        <span><strong>Template:</strong> <span id="templateId"></span></span>
+        <span><strong>Category:</strong> <span id="categoryId"></span></span>
+      </div>
+      <h1 id="questionText"></h1>
+    </section>
+
+    <div class="image-toolbar">
+      <div class="zoom-controls">
+        <button id="fitButton" type="button">Fit</button>
+        <label class="field-label" for="zoomRange">Zoom</label>
+        <input id="zoomRange" type="range" min="50" max="250" value="100" step="10">
+        <output id="zoomValue" for="zoomRange">Fit</output>
+      </div>
+      <div id="integritySummary" aria-live="polite">Image integrity pending</div>
+    </div>
+
+    <section class="image-grid" aria-label="Counterfactual pair">
+      <article class="member-panel">
+        <header class="member-header">
+          <div>
+            <div class="member-title">Member 1</div>
+            <div id="memberId1" class="member-detail"></div>
+          </div>
+          <a id="openImage1" class="icon-link" href="#" target="_blank" rel="noopener"
+             title="Open full-resolution member 1 image" aria-label="Open full-resolution member 1 image">&#8599;</a>
+        </header>
+        <div class="image-stage">
+          <img id="memberImage1" class="fit-image" alt="Counterfactual member 1">
+        </div>
+        <footer class="member-footer">
+          <span id="imageDetail1" class="image-detail">Loading image</span>
+          <span id="memberAnswer1" class="answer-value"></span>
+        </footer>
+      </article>
+
+      <article class="member-panel">
+        <header class="member-header">
+          <div>
+            <div class="member-title">Member 2</div>
+            <div id="memberId2" class="member-detail"></div>
+          </div>
+          <a id="openImage2" class="icon-link" href="#" target="_blank" rel="noopener"
+             title="Open full-resolution member 2 image" aria-label="Open full-resolution member 2 image">&#8599;</a>
+        </header>
+        <div class="image-stage">
+          <img id="memberImage2" class="fit-image" alt="Counterfactual member 2">
+        </div>
+        <footer class="member-footer">
+          <span id="imageDetail2" class="image-detail">Loading image</span>
+          <span id="memberAnswer2" class="answer-value"></span>
+        </footer>
+      </article>
+    </section>
+
+    <section class="checks-band">
+      <div class="checks-heading">
+        <h2>Registered pair checks</h2>
+        <span id="pairReviewStatus">6 checks remaining</span>
+      </div>
+      <div id="checkList" class="check-list"></div>
+      <div class="note-field">
+        <label class="field-label" for="failureNote">Failure note</label>
+        <textarea id="failureNote" placeholder="Record the concrete visual or semantic issue and affected member."></textarea>
+      </div>
+      <div class="bottom-navigation">
+        <button id="previousBottomButton" type="button">Previous pair</button>
+        <button id="nextBottomButton" class="primary" type="button">Next pair</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const CHECKS = Object.freeze([
+      Object.freeze({
+        id: "visual_necessity",
+        label: "1. Visual necessity: the question cannot be answered without seeing the image."
+      }),
+      Object.freeze({
+        id: "single_answer_changing_difference",
+        label: "2. Single change: only the required visual fact changes the answer."
+      }),
+      Object.freeze({
+        id: "legible_without_popout",
+        label: "3. Legibility: the change is readable without an artificial pop-out cue."
+      }),
+      Object.freeze({
+        id: "unambiguous_labels_and_wording",
+        label: "4. Clarity: labels, legends, axes, headers, and wording are unambiguous."
+      }),
+      Object.freeze({
+        id: "artifact_parity",
+        label: "5. Artifact parity: neither member is uniquely compressed, clipped, or crowded."
+      }),
+      Object.freeze({
+        id: "answer_key_exact",
+        label: "6. Answer key: both displayed answers match their image members exactly."
+      })
+    ]);
+
+    const state = {
+      allPairs: [],
+      imageIndex: new Map(),
+      imageUrls: new Map(),
+      imageHashes: new Map(),
+      reviews: {},
+      visiblePairs: [],
+      currentIndex: 0,
+      fitImages: true,
+      zoom: 1,
+      manifestName: "",
+      keyName: "",
+      manifestSha256: "",
+      keySha256: "",
+      storageKey: "",
+      renderToken: 0
+    };
+
+    const dom = Object.fromEntries([
+      "manifestFile", "answerKeyFile", "imageDirectory", "loadButton", "loadError",
+      "auditApp", "sessionStatus", "previousButton", "nextButton", "previousBottomButton",
+      "nextBottomButton", "positionLabel", "progressLabel", "scopeSelect", "templateSelect",
+      "pairSearch", "exportButton", "resetButton", "pairId", "templateId", "categoryId",
+      "questionText", "fitButton", "zoomRange", "zoomValue", "integritySummary", "checkList",
+      "failureNote", "pairReviewStatus", "memberId1", "memberId2", "memberImage1",
+      "memberImage2", "memberAnswer1", "memberAnswer2", "imageDetail1", "imageDetail2",
+      "openImage1", "openImage2"
+    ].map((id) => [id, document.getElementById(id)]));
+
+    function parseRecords(text, label) {
+      const trimmed = text.trim();
+      if (!trimmed) {
+        throw new Error(`${label} is empty.`);
+      }
+      if (trimmed.startsWith("[")) {
+        const value = JSON.parse(trimmed);
+        if (!Array.isArray(value) || value.length === 0) {
+          throw new Error(`${label} JSON must be a nonempty array.`);
+        }
+        return value;
+      }
+      return trimmed.split(/\r?\n/).filter(Boolean).map((line, index) => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new Error(`${label} line ${index + 1} is invalid JSON: ${error.message}`);
+        }
+      });
+    }
+
+    function requireString(value, context) {
+      if (typeof value !== "string" || value.trim() === "") {
+        throw new Error(`${context} must be a nonempty string.`);
+      }
+      return value;
+    }
+
+    function requireAnswer(value, context) {
+      if (value === null || value === undefined) {
+        throw new Error(`${context} is missing.`);
+      }
+      return requireString(String(value), context);
+    }
+
+    function normalizeManifestPath(value, context) {
+      const raw = requireString(value, context).replaceAll("\\", "/");
+      const normalized = raw.replace(/^\.\//, "");
+      const parts = normalized.split("/");
+      if (
+        normalized.startsWith("/") ||
+        /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(normalized) ||
+        parts.some((part) => part === ".." || part === "")
+      ) {
+        throw new Error(`${context} must be a safe relative path.`);
+      }
+      return normalized;
+    }
+
+    function buildPairs(manifestRows, keyRows) {
+      const keyByPair = new Map();
+      for (const row of keyRows) {
+        const pairId = requireString(row.pair_id, "Answer-key pair_id");
+        if (keyByPair.has(pairId)) {
+          throw new Error(`Duplicate answer-key pair_id: ${pairId}`);
+        }
+        if (!Array.isArray(row.members) || row.members.length !== 2) {
+          throw new Error(`Answer-key pair ${pairId} must contain exactly two members.`);
+        }
+        const memberAnswers = new Map();
+        for (const member of row.members) {
+          const memberId = requireString(member.member_id, `Answer-key member_id for ${pairId}`);
+          if (memberAnswers.has(memberId)) {
+            throw new Error(`Duplicate answer-key member_id ${memberId} in pair ${pairId}.`);
+          }
+          memberAnswers.set(memberId, requireAnswer(member.answer, `Answer for ${memberId}`));
+        }
+        keyByPair.set(pairId, {
+          memberAnswers,
+          templateId: requireString(row.template_id, `template_id for ${pairId}`),
+          category: requireString(row.category, `category for ${pairId}`)
+        });
+      }
+
+      const seenPairs = new Set();
+      return manifestRows.map((row, rowIndex) => {
+        const pairId = requireString(row.pair_id, `Manifest pair_id at row ${rowIndex + 1}`);
+        if (seenPairs.has(pairId)) {
+          throw new Error(`Duplicate manifest pair_id: ${pairId}`);
+        }
+        seenPairs.add(pairId);
+        const key = keyByPair.get(pairId);
+        if (!key) {
+          throw new Error(`Answer key is missing manifest pair_id: ${pairId}`);
+        }
+        if (!Array.isArray(row.members) || row.members.length !== 2) {
+          throw new Error(`Manifest pair ${pairId} must contain exactly two members.`);
+        }
+        const members = row.members.map((member) => {
+          const memberId = requireString(member.member_id, `Manifest member_id for ${pairId}`);
+          if (!key.memberAnswers.has(memberId)) {
+            throw new Error(`Answer key does not match member_id ${memberId} in pair ${pairId}.`);
+          }
+          const imageSha256 = requireString(
+            member.image_sha256,
+            `image_sha256 for member ${memberId}`
+          ).toLowerCase();
+          if (!/^[0-9a-f]{64}$/.test(imageSha256)) {
+            throw new Error(`image_sha256 for member ${memberId} is not a SHA256 digest.`);
+          }
+          return {
+            memberId,
+            imagePath: normalizeManifestPath(
+              member.image_path,
+              `image_path for member ${memberId}`
+            ),
+            imageSha256,
+            answer: key.memberAnswers.get(memberId)
+          };
+        });
+        if (members[0].memberId === members[1].memberId) {
+          throw new Error(`Manifest pair ${pairId} repeats one member_id.`);
+        }
+        return {
+          pairId,
+          question: requireString(row.question, `Question for pair ${pairId}`),
+          templateId: key.templateId,
+          category: key.category,
+          members
+        };
+      });
+    }
+
+    function addImageIndexEntry(index, key, file) {
+      if (!index.has(key)) {
+        index.set(key, []);
+      }
+      const entries = index.get(key);
+      if (!entries.includes(file)) {
+        entries.push(file);
+      }
+    }
+
+    function buildImageIndex(fileList) {
+      const index = new Map();
+      const imageFiles = Array.from(fileList).filter((file) =>
+        file.type.startsWith("image/") || /\.(png|jpe?g|webp|bmp|tiff?)$/i.test(file.name)
+      );
+      if (imageFiles.length === 0) {
+        throw new Error("The selected package directory contains no image files.");
+      }
+      for (const file of imageFiles) {
+        const relative = (file.webkitRelativePath || file.name).replaceAll("\\", "/");
+        const parts = relative.split("/").filter(Boolean);
+        for (let indexOffset = 0; indexOffset < parts.length; indexOffset += 1) {
+          addImageIndexEntry(index, parts.slice(indexOffset).join("/"), file);
+        }
+      }
+      return index;
+    }
+
+    function resolveImageFile(imagePath, imageIndex = state.imageIndex) {
+      const entries = imageIndex.get(imagePath) || [];
+      if (entries.length === 0) {
+        throw new Error(`Package directory is missing image: ${imagePath}`);
+      }
+      if (entries.length > 1) {
+        throw new Error(`Package directory resolves image path ambiguously: ${imagePath}`);
+      }
+      return entries[0];
+    }
+
+    function validateImageCoverage(pairs, imageIndex) {
+      for (const pair of pairs) {
+        for (const member of pair.members) {
+          resolveImageFile(member.imagePath, imageIndex);
+        }
+      }
+    }
+
+    async function sha256Bytes(bytes) {
+      if (!window.crypto || !window.crypto.subtle) {
+        throw new Error("This browser does not provide local SHA256 support.");
+      }
+      const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function sha256Text(text) {
+      return sha256Bytes(new TextEncoder().encode(text));
+    }
+
+    async function sha256File(file) {
+      if (!state.imageHashes.has(file)) {
+        state.imageHashes.set(file, sha256Bytes(await file.arrayBuffer()));
+      }
+      return state.imageHashes.get(file);
+    }
+
+    function revokeImageUrls() {
+      for (const url of state.imageUrls.values()) {
+        URL.revokeObjectURL(url);
+      }
+      state.imageUrls.clear();
+      state.imageHashes.clear();
+    }
+
+    function imageUrl(file) {
+      if (!state.imageUrls.has(file)) {
+        state.imageUrls.set(file, URL.createObjectURL(file));
+      }
+      return state.imageUrls.get(file);
+    }
+
+    function defaultReview() {
+      return {
+        checks: Object.fromEntries(CHECKS.map((check) => [check.id, null])),
+        note: ""
+      };
+    }
+
+    function reviewFor(pairId) {
+      if (!state.reviews[pairId]) {
+        state.reviews[pairId] = defaultReview();
+      }
+      const review = state.reviews[pairId];
+      if (!review.checks || typeof review.checks !== "object") {
+        review.checks = defaultReview().checks;
+      }
+      for (const check of CHECKS) {
+        if (![true, false, null].includes(review.checks[check.id])) {
+          review.checks[check.id] = null;
+        }
+      }
+      if (typeof review.note !== "string") {
+        review.note = "";
+      }
+      return review;
+    }
+
+    function isReviewed(review) {
+      return CHECKS.every((check) => typeof review.checks[check.id] === "boolean");
+    }
+
+    function hasFailure(review) {
+      return CHECKS.some((check) => review.checks[check.id] === false);
+    }
+
+    function saveProgress() {
+      if (!state.storageKey) {
+        return;
+      }
+      try {
+        localStorage.setItem(state.storageKey, JSON.stringify({ reviews: state.reviews }));
+      } catch (error) {
+        dom.sessionStatus.textContent = `${state.manifestName} | local progress unavailable`;
+      }
+    }
+
+    function restoreProgress() {
+      state.reviews = {};
+      try {
+        const saved = localStorage.getItem(state.storageKey);
+        if (!saved) {
+          return;
+        }
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.reviews && typeof parsed.reviews === "object") {
+          state.reviews = parsed.reviews;
+        }
+      } catch (error) {
+        state.reviews = {};
+      }
+    }
+
+    function representativePairs() {
+      const counts = new Map();
+      return state.allPairs.filter((pair) => {
+        const count = counts.get(pair.templateId) || 0;
+        counts.set(pair.templateId, count + 1);
+        return count < 20;
+      });
+    }
+
+    function scopedPairs() {
+      return dom.scopeSelect.value === "all" ? state.allPairs : representativePairs();
+    }
+
+    function applyFilters(preservePairId = null) {
+      const template = dom.templateSelect.value;
+      const search = dom.pairSearch.value.trim().toLowerCase();
+      const pairs = scopedPairs();
+      state.visiblePairs = pairs.filter((pair) => {
+        const templateMatch = template === "all" || pair.templateId === template;
+        const searchMatch = !search || pair.pairId.toLowerCase().includes(search);
+        return templateMatch && searchMatch;
+      });
+      let nextIndex = 0;
+      if (preservePairId) {
+        const preserved = state.visiblePairs.findIndex((pair) => pair.pairId === preservePairId);
+        if (preserved >= 0) {
+          nextIndex = preserved;
+        }
+      }
+      state.currentIndex = Math.min(nextIndex, Math.max(0, state.visiblePairs.length - 1));
+      renderCurrentPair();
+    }
+
+    function currentPair() {
+      return state.visiblePairs[state.currentIndex] || null;
+    }
+
+    function navigate(delta) {
+      if (state.visiblePairs.length === 0) {
+        return;
+      }
+      const next = Math.max(0, Math.min(state.visiblePairs.length - 1, state.currentIndex + delta));
+      if (next !== state.currentIndex) {
+        state.currentIndex = next;
+        renderCurrentPair();
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+    }
+
+    function applyZoom() {
+      for (const image of [dom.memberImage1, dom.memberImage2]) {
+        if (state.fitImages) {
+          image.className = "fit-image";
+          image.style.width = "";
+          image.style.height = "";
+        } else {
+          image.className = "zoom-image";
+          if (image.naturalWidth > 0) {
+            image.style.width = `${Math.round(image.naturalWidth * state.zoom)}px`;
+            image.style.height = "auto";
+          }
+        }
+      }
+      dom.zoomValue.value = state.fitImages ? "Fit" : `${Math.round(state.zoom * 100)}%`;
+    }
+
+    async function renderMember(pair, member, memberNumber, renderToken) {
+      const image = dom[`memberImage${memberNumber}`];
+      const memberId = dom[`memberId${memberNumber}`];
+      const answer = dom[`memberAnswer${memberNumber}`];
+      const detail = dom[`imageDetail${memberNumber}`];
+      const openLink = dom[`openImage${memberNumber}`];
+      const file = resolveImageFile(member.imagePath);
+      const url = imageUrl(file);
+
+      memberId.textContent = member.memberId;
+      answer.textContent = `Answer: ${member.answer}`;
+      detail.textContent = "Verifying SHA256";
+      detail.style.color = "var(--muted)";
+      image.alt = `Member ${memberNumber} image for pair ${pair.pairId}`;
+      openLink.href = url;
+
+      try {
+        const loaded = new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = () => reject(new Error(`Browser could not decode ${member.imagePath}`));
+          image.src = url;
+        });
+        const [found] = await Promise.all([sha256File(file), loaded]);
+        if (renderToken !== state.renderToken) {
+          return false;
+        }
+        applyZoom();
+        const matched = found === member.imageSha256;
+        detail.textContent = `${image.naturalWidth} x ${image.naturalHeight} | ${
+          matched ? "SHA256 verified" : "SHA256 mismatch"
+        }`;
+        detail.style.color = matched ? "var(--success)" : "var(--danger)";
+        return matched;
+      } catch (error) {
+        if (renderToken === state.renderToken) {
+          detail.textContent = `SHA256 unavailable: ${error.message}`;
+          detail.style.color = "var(--danger)";
+        }
+        return false;
+      }
+    }
+
+    function renderChecks(pair) {
+      const review = reviewFor(pair.pairId);
+      for (const check of CHECKS) {
+        const row = dom.checkList.querySelector(`[data-check-id="${check.id}"]`);
+        const value = review.checks[check.id];
+        row.classList.toggle("pass", value === true);
+        row.classList.toggle("fail", value === false);
+        for (const input of row.querySelectorAll("input[type=radio]")) {
+          input.checked = (input.value === "pass" && value === true) ||
+            (input.value === "fail" && value === false);
+        }
+      }
+      dom.failureNote.value = review.note;
+      const remaining = CHECKS.filter((check) => review.checks[check.id] === null).length;
+      dom.pairReviewStatus.className = "";
+      if (remaining > 0) {
+        dom.pairReviewStatus.textContent = `${remaining} checks remaining`;
+      } else if (hasFailure(review)) {
+        dom.pairReviewStatus.textContent = "Failure recorded";
+        dom.pairReviewStatus.classList.add("failed");
+      } else {
+        dom.pairReviewStatus.textContent = "Review complete";
+        dom.pairReviewStatus.classList.add("complete");
+      }
+    }
+
+    function updateProgress() {
+      const scope = scopedPairs();
+      const reviewed = scope.filter((pair) => isReviewed(reviewFor(pair.pairId))).length;
+      const failures = scope.filter((pair) => hasFailure(reviewFor(pair.pairId))).length;
+      dom.progressLabel.textContent = `${reviewed}/${scope.length} reviewed | ${failures} failures`;
+      dom.positionLabel.textContent = state.visiblePairs.length === 0
+        ? "0 / 0"
+        : `${state.currentIndex + 1} / ${state.visiblePairs.length}`;
+    }
+
+    async function renderCurrentPair() {
+      const pair = currentPair();
+      const noPair = pair === null;
+      for (const button of [
+        dom.previousButton, dom.nextButton, dom.previousBottomButton, dom.nextBottomButton
+      ]) {
+        button.disabled = noPair;
+      }
+      if (noPair) {
+        dom.pairId.textContent = "No matching pair";
+        dom.templateId.textContent = "";
+        dom.categoryId.textContent = "";
+        dom.questionText.textContent = "";
+        dom.integritySummary.textContent = "No images selected by the current filters";
+        updateProgress();
+        return;
+      }
+
+      dom.previousButton.disabled = state.currentIndex === 0;
+      dom.previousBottomButton.disabled = state.currentIndex === 0;
+      dom.nextButton.disabled = state.currentIndex >= state.visiblePairs.length - 1;
+      dom.nextBottomButton.disabled = state.currentIndex >= state.visiblePairs.length - 1;
+      dom.pairId.textContent = pair.pairId;
+      dom.templateId.textContent = pair.templateId;
+      dom.categoryId.textContent = pair.category;
+      dom.questionText.textContent = pair.question;
+      dom.integritySummary.textContent = "Verifying both image hashes";
+      renderChecks(pair);
+      updateProgress();
+
+      state.renderToken += 1;
+      const token = state.renderToken;
+      const results = await Promise.all([
+        renderMember(pair, pair.members[0], 1, token),
+        renderMember(pair, pair.members[1], 2, token)
+      ]);
+      if (token === state.renderToken) {
+        const verified = results.filter(Boolean).length;
+        dom.integritySummary.textContent = verified === 2
+          ? "Both image hashes verified"
+          : `${verified}/2 image hashes verified`;
+        dom.integritySummary.style.color = verified === 2 ? "var(--success)" : "var(--danger)";
+      }
+    }
+
+    function buildCheckControls() {
+      const fragment = document.createDocumentFragment();
+      for (const check of CHECKS) {
+        const row = document.createElement("div");
+        row.className = "check-row";
+        row.dataset.checkId = check.id;
+        row.setAttribute("role", "group");
+
+        const checkLabel = document.createElement("div");
+        checkLabel.className = "check-label";
+        checkLabel.id = `check-label-${check.id}`;
+        checkLabel.textContent = check.label;
+        row.appendChild(checkLabel);
+
+        const segmented = document.createElement("div");
+        segmented.className = "segmented";
+        segmented.setAttribute("role", "radiogroup");
+        segmented.setAttribute("aria-labelledby", checkLabel.id);
+        for (const value of ["pass", "fail"]) {
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          const span = document.createElement("span");
+          input.type = "radio";
+          input.name = `check-${check.id}`;
+          input.value = value;
+          span.textContent = value === "pass" ? "Pass" : "Fail";
+          input.addEventListener("change", () => {
+            const pair = currentPair();
+            if (!pair) {
+              return;
+            }
+            reviewFor(pair.pairId).checks[check.id] = input.value === "pass";
+            saveProgress();
+            renderChecks(pair);
+            updateProgress();
+          });
+          label.append(input, span);
+          segmented.appendChild(label);
+        }
+        row.appendChild(segmented);
+        fragment.appendChild(row);
+      }
+      dom.checkList.appendChild(fragment);
+    }
+
+    function populateTemplateFilter() {
+      dom.templateSelect.replaceChildren();
+      const allOption = document.createElement("option");
+      allOption.value = "all";
+      allOption.textContent = "All templates";
+      dom.templateSelect.appendChild(allOption);
+      const templates = [...new Set(state.allPairs.map((pair) => pair.templateId))].sort();
+      for (const template of templates) {
+        const option = document.createElement("option");
+        option.value = template;
+        option.textContent = template;
+        dom.templateSelect.appendChild(option);
+      }
+    }
+
+    function updateLoadButton() {
+      dom.loadButton.disabled = !(
+        dom.manifestFile.files.length === 1 &&
+        dom.answerKeyFile.files.length === 1 &&
+        dom.imageDirectory.files.length > 0
+      );
+    }
+
+    async function loadAudit() {
+      dom.loadButton.disabled = true;
+      dom.loadError.classList.add("hidden");
+      dom.loadError.textContent = "";
+      try {
+        const manifestFile = dom.manifestFile.files[0];
+        const keyFile = dom.answerKeyFile.files[0];
+        const [manifestText, keyText] = await Promise.all([
+          manifestFile.text(),
+          keyFile.text()
+        ]);
+        const [manifestSha256, keySha256] = await Promise.all([
+          sha256Text(manifestText),
+          sha256Text(keyText)
+        ]);
+        const manifestRows = parseRecords(manifestText, "Release manifest");
+        const keyRows = parseRecords(keyText, "Answer key");
+        const pairs = buildPairs(manifestRows, keyRows);
+        if (pairs.length === 0) {
+          throw new Error("Release manifest contains no pairs.");
+        }
+
+        const nextImageIndex = buildImageIndex(dom.imageDirectory.files);
+        validateImageCoverage(pairs, nextImageIndex);
+        revokeImageUrls();
+        state.imageIndex = nextImageIndex;
+        state.allPairs = pairs;
+        state.manifestName = manifestFile.name;
+        state.keyName = keyFile.name;
+        state.manifestSha256 = manifestSha256;
+        state.keySha256 = keySha256;
+        state.storageKey = `blind-gains-human-audit-v1:${manifestSha256}:${keySha256}`;
+        state.currentIndex = 0;
+        state.fitImages = true;
+        state.zoom = 1;
+        dom.zoomRange.value = "100";
+        dom.scopeSelect.value = "representative";
+        dom.pairSearch.value = "";
+        restoreProgress();
+        populateTemplateFilter();
+        dom.auditApp.classList.remove("hidden");
+        dom.sessionStatus.textContent = `${manifestFile.name} | ${pairs.length} pairs | local only`;
+        applyFilters();
+      } catch (error) {
+        dom.loadError.textContent = error instanceof Error ? error.message : String(error);
+        dom.loadError.classList.remove("hidden");
+      } finally {
+        updateLoadButton();
+      }
+    }
+
+    function exportFailures() {
+      const pairs = scopedPairs();
+      const failures = [];
+      const unreviewedPairIds = [];
+      for (const pair of pairs) {
+        const review = reviewFor(pair.pairId);
+        if (!isReviewed(review)) {
+          unreviewedPairIds.push(pair.pairId);
+        }
+        const failedChecks = CHECKS
+          .filter((check) => review.checks[check.id] === false)
+          .map((check) => check.id);
+        if (failedChecks.length > 0) {
+          failures.push({
+            pair_id: pair.pairId,
+            template_id: pair.templateId,
+            failed_checks: failedChecks,
+            check_results: Object.fromEntries(
+              CHECKS.map((check) => [check.id, review.checks[check.id]])
+            ),
+            note: review.note
+          });
+        }
+      }
+      const payload = {
+        schema_version: "blind-gains.human-audit-failures.v1",
+        generated_at_utc: new Date().toISOString(),
+        audit_scope: dom.scopeSelect.value === "all" ? "all_pairs" : "first_20_per_template",
+        source: {
+          manifest_file: state.manifestName,
+          manifest_sha256: state.manifestSha256,
+          answer_key_file: state.keyName,
+          answer_key_sha256: state.keySha256,
+          loaded_pair_count: state.allPairs.length,
+          scoped_pair_count: pairs.length
+        },
+        check_definitions: Object.fromEntries(CHECKS.map((check) => [check.id, check.label])),
+        reviewed_pair_count: pairs.length - unreviewedPairIds.length,
+        failure_count: failures.length,
+        failures,
+        unreviewed_pair_ids: unreviewedPairIds
+      };
+      const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const stem = state.manifestName.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9._-]+/g, "_");
+      link.href = url;
+      link.download = `${stem}_human_audit_failures.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    function resetProgress() {
+      if (!state.storageKey || !window.confirm("Delete all local audit decisions for this package?")) {
+        return;
+      }
+      try {
+        localStorage.removeItem(state.storageKey);
+      } catch (error) {
+        // The in-memory reset remains valid when storage is unavailable.
+      }
+      state.reviews = {};
+      renderCurrentPair();
+    }
+
+    buildCheckControls();
+    updateLoadButton();
+
+    for (const input of [dom.manifestFile, dom.answerKeyFile, dom.imageDirectory]) {
+      input.addEventListener("change", updateLoadButton);
+    }
+    dom.loadButton.addEventListener("click", loadAudit);
+    dom.previousButton.addEventListener("click", () => navigate(-1));
+    dom.previousBottomButton.addEventListener("click", () => navigate(-1));
+    dom.nextButton.addEventListener("click", () => navigate(1));
+    dom.nextBottomButton.addEventListener("click", () => navigate(1));
+    dom.exportButton.addEventListener("click", exportFailures);
+    dom.resetButton.addEventListener("click", resetProgress);
+    dom.scopeSelect.addEventListener("change", () => applyFilters(currentPair()?.pairId));
+    dom.templateSelect.addEventListener("change", () => applyFilters(currentPair()?.pairId));
+    dom.pairSearch.addEventListener("input", () => applyFilters(currentPair()?.pairId));
+    dom.failureNote.addEventListener("input", () => {
+      const pair = currentPair();
+      if (!pair) {
+        return;
+      }
+      reviewFor(pair.pairId).note = dom.failureNote.value;
+      saveProgress();
+    });
+    dom.fitButton.addEventListener("click", () => {
+      state.fitImages = true;
+      applyZoom();
+    });
+    dom.zoomRange.addEventListener("input", () => {
+      state.fitImages = false;
+      state.zoom = Number(dom.zoomRange.value) / 100;
+      applyZoom();
+    });
+    document.addEventListener("keydown", (event) => {
+      const target = event.target;
+      const editing = target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement;
+      if (editing || event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      if (event.key === "ArrowLeft") {
+        navigate(-1);
+      } else if (event.key === "ArrowRight") {
+        navigate(1);
+      }
+    });
+  </script>
+</body>
+</html>
