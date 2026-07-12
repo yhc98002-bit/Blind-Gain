@@ -28,11 +28,18 @@ def test_mechanical_pilot_configs_are_matched_except_arm_identity() -> None:
     reference = _normalized(loaded["real"])
     assert _normalized(loaded["gray"]) == reference
     assert _normalized(loaded["none"]) == reference
+    assert _normalized(loaded["caption"]) == reference
 
     for condition, config in loaded.items():
         assert config["data"]["image_condition"] == condition
         assert config["data"]["image_condition_seed"] == 20260710
         assert config["worker"]["actor"]["model"]["freeze_vision_tower"] is True
+        assert config["worker"]["rollout"]["tensor_parallel_size"] == 1
+        assert config["trainer"]["n_gpus_per_node"] == 4
+        assert config["worker"]["rollout"]["n"] == 5
+        assert config["worker"]["reward"]["reward_function_kwargs"][
+            "symbolic_grader_timeout_seconds"
+        ] == 5.0
         assert config["trainer"]["max_steps"] == 100
         assert "/checkpoints/pilot/" in config["trainer"]["save_checkpoint_path"]
         assert len(config["data"]["caption_store_paths"]) == 3
