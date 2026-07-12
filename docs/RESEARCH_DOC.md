@@ -43,7 +43,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 ## 5. In flight
 
 - M1: all five ViRL39K 4,096-item pilot-contract conditions completed with 4,096 rows each; aggregation and independent consistency audit are active, and the fork ruling follows merged M0.
-- M0: the main-phase preregistration revision is active. The final merged-at-HEAD registration is absent, so every pilot launcher remains fail-closed; the main phase removes the superseded signature-round requirement.
+- M0: all ten content requirements are applied in v3 (`143d2b48...`). The final merged-at-HEAD registration and provenance follow-up are absent, so every pilot launcher remains fail-closed; the main phase removes the superseded signature-round requirement.
 - M12: the pre-main chart-v08 point-value prototype was never launched. Main-phase v08 now requires separately reported legend-target and point-value subfamilies plus a two-hop necessity diagnostic before any freeze.
 - Storage: the 2026-07-12 quota-aware refresh measured only 3.70 GiB conservative Tier-S headroom; all bulky writes remain guard-blocked while retention-eligible caches are inventoried for relocation.
 
