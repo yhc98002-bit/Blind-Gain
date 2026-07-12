@@ -203,6 +203,7 @@ def build_bundle(
     answer_key: Path,
     package_dir: Path,
     viewer: Path,
+    guide: Path,
     output_zip: Path,
     bundle_name: str,
     pairs_per_template: int = 20,
@@ -213,7 +214,7 @@ def build_bundle(
         raise FileExistsError(f"refusing to overwrite bundle: {output_zip}")
     if output_zip.suffix.lower() != ".zip":
         raise ValueError("output_zip must end in .zip")
-    for path in (source_manifest, release_manifest, answer_key, viewer):
+    for path in (source_manifest, release_manifest, answer_key, viewer, guide):
         if not path.is_file():
             raise FileNotFoundError(path)
     if not package_dir.is_dir():
@@ -232,17 +233,19 @@ def build_bundle(
         _write_bytes(root, PurePosixPath("package/manifest.jsonl"), _jsonl_bytes(selected_release))
         _write_bytes(root, PurePosixPath("private/answer_key.jsonl"), _jsonl_bytes(selected_keys))
         _write_bytes(root, PurePosixPath("human_audit_viewer.html"), viewer.read_bytes())
+        _write_bytes(root, PurePosixPath("REVIEWER_GUIDE.md"), guide.read_bytes())
         copied_images = _copy_selected_images(selected_release, package_dir, root)
 
         readme = f"""Blind Gains portable human audit: {bundle_name}
 
 1. Extract this ZIP on the reviewing computer.
-2. Open human_audit_viewer.html in Chromium or Firefox.
-3. For the package folder, choose: package
-4. For the private answer key, choose: private/answer_key.jsonl
-5. Select Open human audit. The portable 60-pair package defaults to All loaded pairs.
-6. Complete all six checks for every loaded pair.
-7. Export failures JSON when all pairs are reviewed.
+2. Read REVIEWER_GUIDE.md, or use Reviewer guide inside the viewer.
+3. Open human_audit_viewer.html in Chromium or Firefox.
+4. For the package folder, choose: package
+5. For the private answer key, choose: private/answer_key.jsonl
+6. Select Open human audit. The portable 60-pair package defaults to All loaded pairs.
+7. Complete all six checks for every loaded pair.
+8. Export failures JSON when all pairs are reviewed.
 
 This bundle contains the first {pairs_per_template} source-order pairs from each frozen template.
 Keep the private answer key and exported audit record within the research team.
@@ -268,6 +271,7 @@ Keep the private answer key and exported audit record within the research team.
                 "release_manifest": sha256_file(release_manifest),
                 "answer_key": sha256_file(answer_key),
                 "viewer": sha256_file(viewer),
+                "reviewer_guide": sha256_file(guide),
             },
             "copied_image_count": len(copied_images),
             "bundled_file_sha256": file_hashes,
@@ -296,6 +300,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--answer-key", type=Path, required=True)
     parser.add_argument("--package-dir", type=Path, required=True)
     parser.add_argument("--viewer", type=Path, required=True)
+    parser.add_argument("--guide", type=Path, required=True)
     parser.add_argument("--output-zip", type=Path, required=True)
     parser.add_argument("--bundle-name", required=True)
     parser.add_argument("--pairs-per-template", type=int, default=20)
@@ -310,6 +315,7 @@ def main() -> None:
         answer_key=args.answer_key,
         package_dir=args.package_dir,
         viewer=args.viewer,
+        guide=args.guide,
         output_zip=args.output_zip,
         bundle_name=args.bundle_name,
         pairs_per_template=args.pairs_per_template,

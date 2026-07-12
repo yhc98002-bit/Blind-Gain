@@ -11,6 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 VIEWER = ROOT / "tools" / "human_audit_viewer.html"
+GUIDE = ROOT / "docs" / "HUMAN_AUDIT_GUIDE.md"
 
 
 class _DocumentShape(HTMLParser):
@@ -65,6 +66,9 @@ def test_viewer_is_single_file_local_only_and_has_required_controls() -> None:
         "loadReadiness",
         "emptyState",
         "loaderBand",
+        "guideButton",
+        "guideDialog",
+        "closeGuideButton",
         "changePackageButton",
         "loadButton",
         "previousButton",
@@ -86,6 +90,30 @@ def test_viewer_is_single_file_local_only_and_has_required_controls() -> None:
     assert "press Ctrl+H" in source
     assert 'dom.loaderBand.classList.add("hidden")' in source
     assert 'dom.changePackageButton.classList.remove("hidden")' in source
+    assert "You are not evaluating a person." in source
+    assert 'dom.guideDialog.showModal()' in source
+
+
+def test_reviewer_guide_explains_scope_checks_and_completion() -> None:
+    guide = GUIDE.read_text(encoding="utf-8")
+
+    assert "You are **not evaluating a person**" in guide
+    assert "auditing a dataset" in guide
+    for heading in (
+        "### 1. Visual Necessity",
+        "### 2. Single Answer-Changing Difference",
+        "### 3. Legibility Without Pop-Out",
+        "### 4. Unambiguous Labels and Wording",
+        "### 5. Artifact Parity",
+        "### 6. Answer-Key Exactness",
+        "### Geometry",
+        "### Document/Table",
+        "### Chart",
+    ):
+        assert heading in guide
+    assert "Use **Fail**" in guide
+    assert "60/60 reviewed" in guide
+    assert "empty `unreviewed_pair_ids`" in guide
 
 
 def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:

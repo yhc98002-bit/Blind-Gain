@@ -6,12 +6,14 @@ Status:
 - It does not load, accept, display, or export evaluation results.
 - The unloaded state now gives explicit R19 paths and selection status. The package-folder picker automatically finds the packaged `manifest.jsonl`, reducing setup from three local selections to two.
 - After validation, the setup panel collapses so the first pair occupies the viewport; **Change package** restores it.
+- **Reviewer guide** opens the six-check rubric, template-specific reading instructions, and completion rule without leaving the offline viewer.
 
 Evidence:
-- Viewer: `tools/human_audit_viewer.html`, SHA256 `0ffc01c17a59e54732e13a269b2428f7f3ffc38513d40eb2c5728e37a5dcc595`.
-- Tests: `tests/test_human_audit_viewer.py`, SHA256 `1f02388470b335f82836f5dd47d3a1280bc3e8eb916240be64a932c426494d21`; six focused tests pass.
-- Portable-bundle builder: `scripts/build_human_audit_bundle.py`, SHA256 `19a4b1e90fc1719ab4cf9325606fa6450e09544451b4d3b9607429d72c37e731`.
-- Builder tests: `tests/test_human_audit_bundle.py`, SHA256 `ffcc82a18a32afa6eb4ac8164122f61bfe2aa48c4df3523ebbc209b920c8c55b`; four focused tests pass.
+- Viewer: `tools/human_audit_viewer.html`, SHA256 `3f46f8826d9b67f0eb0e5a0a5ebd0a20eac415e53f08ef090a7f206f5481239a`.
+- Guidebook: `docs/HUMAN_AUDIT_GUIDE.md`, SHA256 `ea8e760b34ddd28b7a02b0cc335400469a93116f4648221068aa62d309af9fa3`.
+- Tests: `tests/test_human_audit_viewer.py`, SHA256 `cee91bf79f65808134058554b25ffff6306a914a965b7d113fa5cb08ed687b0d`; seven focused tests pass.
+- Portable-bundle builder: `scripts/build_human_audit_bundle.py`, SHA256 `a786533a4333126142ec49d31d6ab372e0e46ffd0cb73bf5110bb5de2db4854e`.
+- Builder tests: `tests/test_human_audit_bundle.py`, SHA256 `3952b02c70df7afb0254c34ac420f0bdc07c5dcc7f91b95ed8dcf97b740162fa`; four focused tests pass.
 - The tests verify single-file/local-only operation, all six registered checks, failure-only export fields, member-ID answer joining under randomized member order, path-traversal rejection, absence of result-related vocabulary, and JavaScript syntax.
 - The HTML pins a Content Security Policy with `connect-src 'none'`, contains no external scripts or styles, and calls no network API.
 - Selected image bytes are SHA256-checked against the release manifest before each pair is marked verified in the UI.
@@ -21,8 +23,8 @@ Evidence:
 
 For a reviewer whose browser runs on another computer, use the portable bundle in `reports/review_packages/`; a browser file picker can only access files on the browser's computer.
 
-1. Download and extract `blind_gains_r19_human_audit_20260712_v2.zip` on the reviewing computer.
-2. Open the extracted `human_audit_viewer.html` directly in a current Chromium or Firefox browser. No server is required.
+1. Download and extract `blind_gains_r19_human_audit_20260712_v3.zip` on the reviewing computer.
+2. Read the extracted `REVIEWER_GUIDE.md`, then open `human_audit_viewer.html` directly in a current Chromium or Firefox browser. The concise rubric is also available from **Reviewer guide** in the header. No server is required.
 3. Under **Choose the R19 package folder**, select the extracted `package/` directory.
 4. Under **Choose the R19 private answer key**, select the extracted `private/answer_key.jsonl`.
 5. Select **Open human audit** after the status reads **Ready to open**. The exact 60-pair bundle defaults to **All loaded pairs**. Loading fails closed on duplicate IDs, missing key rows, member mismatches, unsafe paths, missing images, or ambiguous image resolution.
@@ -42,7 +44,7 @@ R19:
 | Manifest | `data/fliptrack_v02r19_artifact_expanded/manifest.jsonl` | `62553d701eb3e949910110057b65ab4e1146c602d21936268818fd1725b1b427` |
 | Answer key | `.private/fliptrack_v02r19_key.jsonl` | `c7da389436d705218aaa494de649beb1ce973e227e5db3b3b5facd3eb3d42cfe` |
 | Package directory | `data/fliptrack_v02r19_artifact_expanded/` | selected locally |
-| Portable registered sample | `reports/review_packages/blind_gains_r19_human_audit_20260712_v2.zip` | `0d2df5810120789a4bb6f74ad9325ea268f4c30e63e0dff99505f4a359a30236` |
+| Portable registered sample | `reports/review_packages/blind_gains_r19_human_audit_20260712_v3.zip` | `e455de54c4d00d024cc8eea18c98141ff326ba4188844e3661dc1025e0fcd25a` |
 
 R20:
 

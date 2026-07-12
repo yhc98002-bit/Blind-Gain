@@ -43,6 +43,7 @@ def _fixture(tmp_path: Path) -> dict[str, Path]:
     release = package / "manifest.jsonl"
     key = tmp_path / "key.jsonl"
     viewer = tmp_path / "viewer.html"
+    guide = tmp_path / "guide.md"
     _jsonl(
         source,
         [
@@ -96,12 +97,14 @@ def _fixture(tmp_path: Path) -> dict[str, Path]:
         ],
     )
     viewer.write_text("<!doctype html><title>fixture</title>", encoding="utf-8")
+    guide.write_text("# Reviewer fixture\n", encoding="utf-8")
     return {
         "source": source,
         "release": release,
         "key": key,
         "package": package,
         "viewer": viewer,
+        "guide": guide,
     }
 
 
@@ -112,6 +115,7 @@ def _build(paths: dict[str, Path], output: Path) -> dict:
         answer_key=paths["key"],
         package_dir=paths["package"],
         viewer=paths["viewer"],
+        guide=paths["guide"],
         output_zip=output,
         bundle_name="audit_fixture",
         pairs_per_template=1,
@@ -144,6 +148,7 @@ def test_bundle_uses_source_order_not_randomized_release_order(tmp_path: Path) -
     assert metadata["selection"]["strategy"] == "first_n_per_template_in_source_manifest_order"
     assert metadata["selection"]["opaque_pair_ids"] == ["opaque-a-first", "opaque-b-first"]
     assert "audit_fixture/human_audit_viewer.html" in names
+    assert "audit_fixture/REVIEWER_GUIDE.md" in names
     assert "audit_fixture/README.txt" in names
     assert not any("a-second" in name for name in names if name.endswith(".png"))
 

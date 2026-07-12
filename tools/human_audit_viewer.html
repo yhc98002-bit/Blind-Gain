@@ -152,6 +152,118 @@
       background: #25342e;
     }
 
+    .guide-dialog {
+      width: min(900px, calc(100% - 32px));
+      max-height: min(90vh, 900px);
+      margin: auto;
+      padding: 0;
+      border: 1px solid #8d9b94;
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 20px 60px rgb(17 30 24 / 28%);
+    }
+
+    .guide-dialog::backdrop {
+      background: rgb(13 24 19 / 62%);
+    }
+
+    .guide-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .guide-header h2 {
+      margin: 2px 0 0;
+      font-size: 22px;
+    }
+
+    .guide-kicker {
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .guide-body {
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    .guide-lead {
+      margin: 0;
+      padding: 13px 15px;
+      border-left: 4px solid var(--accent);
+      background: var(--success-soft);
+      font-size: 16px;
+    }
+
+    .guide-body h3 {
+      margin: 24px 0 8px;
+      font-size: 17px;
+    }
+
+    .guide-body ol,
+    .guide-body ul {
+      margin: 8px 0;
+      padding-left: 24px;
+    }
+
+    .guide-body li + li {
+      margin-top: 5px;
+    }
+
+    .guide-checks {
+      border-top: 1px solid var(--line);
+    }
+
+    .guide-check {
+      padding: 12px 0;
+      display: grid;
+      grid-template-columns: minmax(190px, 0.7fr) minmax(260px, 1.3fr);
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .guide-check strong {
+      color: #2b3a33;
+    }
+
+    .guide-check p {
+      margin: 0;
+    }
+
+    .guide-template-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .guide-template-list section {
+      padding-top: 9px;
+      border-top: 3px solid #d7c997;
+    }
+
+    .guide-template-list h4 {
+      margin: 0 0 5px;
+      font-size: 14px;
+    }
+
+    .guide-template-list p,
+    .guide-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .loader-band {
       padding: 22px clamp(16px, 3vw, 38px) 24px;
       background: #e9eeeb;
@@ -734,6 +846,7 @@
 
       .session-actions {
         justify-content: flex-start;
+        flex-wrap: wrap;
       }
 
       .setup-inner,
@@ -781,6 +894,11 @@
       .segmented {
         width: 100%;
       }
+
+      .guide-check,
+      .guide-template-list {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -792,11 +910,91 @@
     </div>
     <div class="session-actions">
       <div id="sessionStatus">No package loaded</div>
+      <button id="guideButton" class="header-action" type="button">
+        Reviewer guide
+      </button>
       <button id="changePackageButton" class="header-action hidden" type="button">
         Change package
       </button>
     </div>
   </header>
+
+  <dialog id="guideDialog" class="guide-dialog" aria-labelledby="guideTitle">
+    <header class="guide-header">
+      <div>
+        <div class="guide-kicker">Human audit guide</div>
+        <h2 id="guideTitle">What you are deciding</h2>
+      </div>
+      <button id="closeGuideButton" type="button">Close</button>
+    </header>
+    <div class="guide-body">
+      <p class="guide-lead">
+        You are not evaluating a person. You are auditing whether each two-image pair is a
+        valid measurement item: the question must require vision, one relevant fact must
+        change, and both member-specific answers must be exact.
+      </p>
+
+      <h3>For every pair</h3>
+      <ol>
+        <li>Read the question and inspect both images.</li>
+        <li>Independently solve the question for each image.</li>
+        <li>Compare the images and decide all six checks below.</li>
+        <li>Use Fail for a violation or material unresolved ambiguity, and add a concrete note.</li>
+        <li>Continue only after all six checks have a value.</li>
+      </ol>
+
+      <h3>The six checks</h3>
+      <div class="guide-checks">
+        <div class="guide-check">
+          <strong>1. Visual necessity</strong>
+          <p>Pass only if the question cannot be answered without seeing the image. Ignore the audit answers shown below the images when making this judgment.</p>
+        </div>
+        <div class="guide-check">
+          <strong>2. Single change</strong>
+          <p>Pass only if the queried fact is the sole answer-changing semantic difference. Consequences of that fact, such as adjacent line segments moving with a chart point, are not extra changes.</p>
+        </div>
+        <div class="guide-check">
+          <strong>3. Legibility</strong>
+          <p>Pass only if the target is readable at full resolution or modest zoom without a unique cue that gives away the changed content.</p>
+        </div>
+        <div class="guide-check">
+          <strong>4. Clarity</strong>
+          <p>Pass only if labels, axes, legends, headers, and wording identify one unambiguous target and reading.</p>
+        </div>
+        <div class="guide-check">
+          <strong>5. Artifact parity</strong>
+          <p>Pass only if both members are comparably sharp, complete, aligned, and naturally rendered. Fail member-specific clipping, blur, corruption, or edit seams.</p>
+        </div>
+        <div class="guide-check">
+          <strong>6. Answer key</strong>
+          <p>Manually read both targets. Pass only if each displayed answer exactly matches its own image, including signs and every code character.</p>
+        </div>
+      </div>
+
+      <h3>How to read each template</h3>
+      <div class="guide-template-list">
+        <section>
+          <h4>Geometry</h4>
+          <p>Find the named point and read its x-coordinate. Check that unrelated points and labels stay fixed.</p>
+        </section>
+        <section>
+          <h4>Document</h4>
+          <p>Find the named row and column, then read their exact two-character intersection. Check confusable letters and digits.</p>
+        </section>
+        <section>
+          <h4>Chart</h4>
+          <p>Identify the starred series, follow it to the requested x-value, and read the y-value. Other series must stay fixed.</p>
+        </section>
+      </div>
+
+      <h3>Finish</h3>
+      <p class="guide-note">
+        Review all 60 loaded pairs. Export only when progress shows 60/60 reviewed and
+        <code>unreviewed_pair_ids</code> will be empty. Return the exported JSON unchanged;
+        the PI makes the dataset-level decision.
+      </p>
+    </div>
+  </dialog>
 
   <section id="loaderBand" class="loader-band" aria-label="Local audit package">
     <div class="setup-inner">
@@ -1007,7 +1205,8 @@
     const dom = Object.fromEntries([
       "answerKeyFile", "imageDirectory", "packageSelection", "keySelection", "loadButton",
       "loadReadiness", "loadError", "emptyState", "auditApp", "loaderBand",
-      "sessionStatus", "changePackageButton",
+      "sessionStatus", "guideButton", "guideDialog", "closeGuideButton",
+      "changePackageButton",
       "previousButton", "nextButton", "previousBottomButton",
       "nextBottomButton", "positionLabel", "progressLabel", "scopeSelect", "templateSelect",
       "pairSearch", "exportButton", "resetButton", "pairId", "templateId", "categoryId",
@@ -1758,6 +1957,13 @@
       input.addEventListener("change", updateLoadButton);
     }
     dom.loadButton.addEventListener("click", loadAudit);
+    dom.guideButton.addEventListener("click", () => dom.guideDialog.showModal());
+    dom.closeGuideButton.addEventListener("click", () => dom.guideDialog.close());
+    dom.guideDialog.addEventListener("click", (event) => {
+      if (event.target === dom.guideDialog) {
+        dom.guideDialog.close();
+      }
+    });
     dom.changePackageButton.addEventListener("click", () => {
       dom.loaderBand.classList.remove("hidden");
       dom.changePackageButton.classList.add("hidden");
