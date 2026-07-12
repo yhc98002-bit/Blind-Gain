@@ -1,0 +1,61 @@
+{
+  "arm": "a1_real",
+  "arm_label": "A1 real",
+  "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real",
+  "checks": {
+    "L13_not_predeclared": true,
+    "all_arm_configs_match_registered_structure": true,
+    "filtered_ids_hash_pinned_in_preregistration": false,
+    "final_preregistration_exists": false,
+    "human_and_pi_approvals_exact": false,
+    "l3_v6_audit_pass": false,
+    "ledger_parses_exact_L0_through_L13": true,
+    "required_dependencies_pass": false,
+    "reward_spec_v3_exists": false,
+    "selected_checkpoint_namespace_absent": true,
+    "selected_config_hash_pinned_in_preregistration": false
+  },
+  "config": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/configs/train/mech_a1_real_3b_geo3k.yaml",
+  "config_sha256": "abf9e9d9a48e35dd5f29e86a51dd674d1a666a088f9ced9f7acc86338a53560e",
+  "errors": [
+    "required_dependencies_pass",
+    "final_preregistration_exists",
+    "human_and_pi_approvals_exact",
+    "l3_v6_audit_pass",
+    "reward_spec_v3_exists",
+    "selected_config_hash_pinned_in_preregistration",
+    "filtered_ids_hash_pinned_in_preregistration"
+  ],
+  "filtered_ids": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/geo3k_pilot_filtered_ids.json",
+  "filtered_ids_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+  "image_condition": "real",
+  "l3_audit": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/pilot_reward_smoke_audit_v4.json",
+  "l3_audit_sha256": null,
+  "ledger_dependencies": {
+    "L12": {
+      "note": "reports/preregistration_pilot_v1_DRAFT_20260712T0608Z.md is generated from audited L7 inputs; final merge still requires human R19 audit and both PI signatures",
+      "status": "blocked"
+    },
+    "L13": {
+      "note": "pilot launch depends on L3, L4, L5, and merged L12 preregistration",
+      "status": "blocked"
+    },
+    "L3": {
+      "note": "reports/pilot_reward_smoke_tp_mismatch_v3.md: v6 re-audit rejects historical placement and missing stack snapshots; replacement five-step TP1 smoke is required before L13",
+      "status": "blocked"
+    },
+    "L4": {
+      "note": "reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload",
+      "status": "pass"
+    },
+    "L5": {
+      "note": "required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+      "status": "pass"
+    }
+  },
+  "preregistration": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/preregistration_pilot_v1.md",
+  "preregistration_sha256": null,
+  "reward_spec": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/pilot_reward_spec_v3.md",
+  "schema_version": "blind-gains.pilot-launch-authorization.v1",
+  "status": "blocked"
+}
