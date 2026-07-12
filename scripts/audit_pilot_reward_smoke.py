@@ -88,6 +88,25 @@ def audit_runtime_placement(
     command = str(manifest.get("command", ""))
     run_dir = run_manifest_path.resolve().parent
     config_resolved = config_path.resolve() if config_value and config_path.exists() else None
+    easyr1_patch_value = manifest.get("easyr1_worktree_patch")
+    easyr1_patch_path = Path(str(easyr1_patch_value)) if easyr1_patch_value else Path()
+    easyr1_patch_resolved = (
+        easyr1_patch_path.resolve()
+        if easyr1_patch_value and easyr1_patch_path.is_file()
+        else None
+    )
+    easyr1_logger_value = manifest.get("easyr1_logger_snapshot")
+    easyr1_logger_path = Path(str(easyr1_logger_value)) if easyr1_logger_value else Path()
+    easyr1_logger_resolved = (
+        easyr1_logger_path.resolve()
+        if easyr1_logger_value and easyr1_logger_path.is_file()
+        else None
+    )
+    easyr1_logger_text = (
+        easyr1_logger_resolved.read_text(encoding="utf-8")
+        if easyr1_logger_resolved
+        else ""
+    )
 
     checks = {
         "effective_config_exists_and_parses": bool(config),
@@ -125,11 +144,38 @@ def audit_runtime_placement(
             and "/checkpoints/smoke/" in checkpoint_path
             and f"trainer.save_checkpoint_path={checkpoint_path}" in command
         ),
+        "easyr1_revision_pinned": manifest.get("easyr1_revision")
+        == "dd71bbd252694f5f850213eec15795b6b88d9fea",
+        "easyr1_patch_is_immutable_run_snapshot": bool(
+            easyr1_patch_resolved
+            and easyr1_patch_resolved.parent == run_dir
+            and easyr1_patch_resolved.name == "easyr1_worktree.patch"
+        ),
+        "easyr1_patch_hash_matches_manifest": bool(
+            easyr1_patch_resolved
+            and manifest.get("easyr1_worktree_patch_sha256")
+            == _sha256(easyr1_patch_resolved)
+        ),
+        "easyr1_logger_is_immutable_run_snapshot": bool(
+            easyr1_logger_resolved
+            and easyr1_logger_resolved.parent == run_dir
+            and easyr1_logger_resolved.name == "easyr1_logger.py"
+        ),
+        "easyr1_logger_hash_matches_manifest": bool(
+            easyr1_logger_resolved
+            and manifest.get("easyr1_logger_sha256")
+            == _sha256(easyr1_logger_resolved)
+        ),
+        "easyr1_resume_safe_logger_present": (
+            "Preserving existing EasyR1 file logger artifact during resume"
+            in easyr1_logger_text
+            and "existing and not resume_requested" in easyr1_logger_text
+        ),
     }
     if not all(checks.values()):
         errors.extend(name for name, passed in checks.items() if not passed)
     return {
-        "schema_version": "blind-gains.pilot-reward-smoke-placement-audit.v1",
+        "schema_version": "blind-gains.pilot-reward-smoke-placement-audit.v2",
         "status": "pass" if all(checks.values()) and not errors else "fail",
         "checks": checks,
         "effective_config_path": str(config_path) if config_value else None,
@@ -140,6 +186,18 @@ def audit_runtime_placement(
         "configured_gpu_count": configured_gpus,
         "expected_rollout_replica_count": expected_replicas,
         "runtime_log_tensor_parallel_values": runtime_tp_values,
+        "easyr1_worktree_patch": str(easyr1_patch_path)
+        if easyr1_patch_value
+        else None,
+        "easyr1_worktree_patch_sha256": _sha256(easyr1_patch_path)
+        if easyr1_patch_value and easyr1_patch_path.is_file()
+        else None,
+        "easyr1_logger_snapshot": str(easyr1_logger_path)
+        if easyr1_logger_value
+        else None,
+        "easyr1_logger_sha256": _sha256(easyr1_logger_path)
+        if easyr1_logger_value and easyr1_logger_path.is_file()
+        else None,
         "errors": errors,
     }
 
@@ -406,7 +464,7 @@ def main() -> None:
     )
     payload.update(
         {
-            "schema_version": "blind-gains.pilot-reward-smoke-audit.v5",
+            "schema_version": "blind-gains.pilot-reward-smoke-audit.v6",
             "run_manifest": str(args.run_manifest),
             "shadow_jsonl": str(args.shadow_jsonl),
             "training_log": str(training_log_path),

@@ -194,6 +194,11 @@ def test_pilot_reward_smoke_uses_dev_shm_for_ray_runtime() -> None:
     assert "tensor_parallel_width: 1," not in launcher
     assert "replica_count: 1," not in launcher
     assert "effective_config.yaml" in launcher
+    assert "easyr1_worktree.patch" in launcher
+    assert "easyr1_logger.py" in launcher
+    assert "easyr1_worktree_patch_sha256" in launcher
+    assert "easyr1_logger_sha256" in launcher
+    assert "resume-safe logger patch is absent" in launcher
     assert "checkpoints/smoke/${RUN_ID}" in launcher
     assert "synchronous EasyR1/GRPO smoke" in launcher
     assert "four independent TP1 rollout replicas" in launcher

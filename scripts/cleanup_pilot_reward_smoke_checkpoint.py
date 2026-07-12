@@ -69,8 +69,8 @@ def validate_cleanup_contract(
         "run_type_exact": manifest.get("job_type") == "l3_pilot_reward_plumbing_smoke",
         "run_id_matches_directory": run_id == run_manifest_path.parent.name,
         "checkpoint_namespace_exact": checkpoint_path == expected_checkpoint,
-        "audit_v5_pass": audit.get("schema_version")
-        == "blind-gains.pilot-reward-smoke-audit.v5"
+        "audit_v6_pass": audit.get("schema_version")
+        == "blind-gains.pilot-reward-smoke-audit.v6"
         and audit.get("status") == "pass",
         "audit_targets_run_manifest": audited_manifest == run_manifest_path.resolve(),
         "placement_audit_pass": audit.get("placement_audit", {}).get("status") == "pass"

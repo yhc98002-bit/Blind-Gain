@@ -21,11 +21,14 @@ fi
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 SOURCE_CONFIG_PATH="${ROOT}/configs/train/mech_a1_real_3b_geo3k.yaml"
+EASYR1_DIR="${ROOT}/artifacts/repos/EasyR1"
 DATA_PATH="data/geo3k_pilot_filtered.jsonl"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="pilot_reward_smoke_${NODE}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 CONFIG_PATH="${ROOT}/${RUN_DIR}/effective_config.yaml"
+EASYR1_PATCH_PATH="${ROOT}/${RUN_DIR}/easyr1_worktree.patch"
+EASYR1_LOGGER_PATH="${ROOT}/${RUN_DIR}/easyr1_logger.py"
 MANIFEST_PATH="${RUN_DIR}/run_manifest.json"
 LOG_PATH="${RUN_DIR}/logs/${NODE}.log"
 PID_PATH="${RUN_DIR}/pids/${NODE}.pid"
@@ -54,6 +57,13 @@ fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 install -m 0444 "${SOURCE_CONFIG_PATH}" "${CONFIG_PATH}"
+git -C "${EASYR1_DIR}" diff --binary --no-ext-diff > "${EASYR1_PATCH_PATH}"
+install -m 0444 "${EASYR1_DIR}/verl/utils/logger/logger.py" "${EASYR1_LOGGER_PATH}"
+chmod 0444 "${EASYR1_PATCH_PATH}"
+if ! grep -q "Preserving existing EasyR1 file logger artifact during resume" "${EASYR1_LOGGER_PATH}"; then
+  echo "Refusing pilot reward smoke: EasyR1 resume-safe logger patch is absent" >&2
+  exit 2
+fi
 PLACEMENT_JSON="$("${ROOT}/.venv/bin/python" "${ROOT}/scripts/resolve_easyr1_rollout_placement.py" --config "${CONFIG_PATH}" --gpu-list "${GPU_LIST}" --require-tp 1)"
 TP_WIDTH="$(jq -er '.tensor_parallel_width' <<< "${PLACEMENT_JSON}")"
 REPLICA_COUNT="$(jq -er '.replica_count' <<< "${PLACEMENT_JSON}")"
@@ -70,6 +80,11 @@ jq -n \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_path "${CONFIG_PATH}" \
   --arg source_config_path "${SOURCE_CONFIG_PATH}" \
+  --arg easyr1_revision "$(git -C "${EASYR1_DIR}" rev-parse HEAD)" \
+  --arg easyr1_patch_path "${EASYR1_PATCH_PATH}" \
+  --arg easyr1_patch_sha256 "$(sha256sum "${EASYR1_PATCH_PATH}" | awk '{print $1}')" \
+  --arg easyr1_logger_path "${EASYR1_LOGGER_PATH}" \
+  --arg easyr1_logger_sha256 "$(sha256sum "${EASYR1_LOGGER_PATH}" | awk '{print $1}')" \
   --arg config_hash "${CONFIG_HASH}" \
   --arg base_config_hash "${BASE_CONFIG_HASH}" \
   --arg data_hash "${DATA_HASH}" \
@@ -94,6 +109,11 @@ jq -n \
     git_hash: $git_hash,
     config_path: $config_path,
     source_config_path: $source_config_path,
+    easyr1_revision: $easyr1_revision,
+    easyr1_worktree_patch: $easyr1_patch_path,
+    easyr1_worktree_patch_sha256: $easyr1_patch_sha256,
+    easyr1_logger_snapshot: $easyr1_logger_path,
+    easyr1_logger_sha256: $easyr1_logger_sha256,
     config_hash: $config_hash,
     base_config_hash: $base_config_hash,
     data_manifest: "data/geo3k_pilot_filtered.jsonl",
@@ -104,7 +124,7 @@ jq -n \
     start_time_utc: $start_time_utc,
     end_time_utc: null,
     status: "running",
-    expected_artifacts: [$shadow_path],
+    expected_artifacts: [$shadow_path, $config_path, $easyr1_patch_path, $easyr1_logger_path],
     stdout_stderr_log: $log_path,
     ray_tmp_dir: $ray_tmp_dir,
     checkpoint_path: $checkpoint_path,

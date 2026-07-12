@@ -34,7 +34,7 @@ def _fixture(tmp_path: Path) -> tuple[Path, Path, Path]:
     audit_path.write_text(
         json.dumps(
             {
-                "schema_version": "blind-gains.pilot-reward-smoke-audit.v5",
+                "schema_version": "blind-gains.pilot-reward-smoke-audit.v6",
                 "status": "pass",
                 "run_manifest": str(manifest_path),
                 "placement_audit": {"status": "pass", "checks": {"tp1": True}},
@@ -102,7 +102,7 @@ def test_cleanup_rejects_failed_audit(tmp_path: Path) -> None:
     audit["status"] = "fail"
     audit_path.write_text(json.dumps(audit), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="audit_v5_pass"):
+    with pytest.raises(ValueError, match="audit_v6_pass"):
         cleanup_checkpoint(
             manifest_path,
             audit_path,

@@ -147,6 +147,14 @@ def _placement_fixture(tmp_path: Path, *, tensor_parallel_width: int) -> tuple[d
     import hashlib
 
     config_hash = hashlib.sha256(config_path.read_bytes()).hexdigest()
+    patch_path = run_dir / "easyr1_worktree.patch"
+    patch_path.write_text("patched EasyR1 worktree\n", encoding="utf-8")
+    logger_path = run_dir / "easyr1_logger.py"
+    logger_path.write_text(
+        "existing and not resume_requested\n"
+        "Preserving existing EasyR1 file logger artifact during resume\n",
+        encoding="utf-8",
+    )
     checkpoint_path = str(tmp_path / "checkpoints" / "smoke" / "smoke")
     manifest = {
         "config_path": str(config_path),
@@ -155,6 +163,13 @@ def _placement_fixture(tmp_path: Path, *, tensor_parallel_width: int) -> tuple[d
         "tensor_parallel_width": tensor_parallel_width,
         "replica_count": 4 // tensor_parallel_width,
         "placement_policy_version": "pi-2026-07-11",
+        "easyr1_revision": "dd71bbd252694f5f850213eec15795b6b88d9fea",
+        "easyr1_worktree_patch": str(patch_path),
+        "easyr1_worktree_patch_sha256": hashlib.sha256(
+            patch_path.read_bytes()
+        ).hexdigest(),
+        "easyr1_logger_snapshot": str(logger_path),
+        "easyr1_logger_sha256": hashlib.sha256(logger_path.read_bytes()).hexdigest(),
         "checkpoint_path": checkpoint_path,
         "command": (
             f"python -m verl.trainer.main config={config_path} "
@@ -201,3 +216,22 @@ def test_runtime_placement_audit_rejects_historical_tp2_manifest_pattern(
     assert result["checks"]["manifest_tp_matches_effective_config"] is False
     assert result["checks"]["manifest_replica_count_derived"] is False
     assert result["checks"]["runtime_log_tp_matches_effective_config"] is False
+
+
+def test_runtime_placement_audit_rejects_mutated_easyr1_snapshot(tmp_path: Path) -> None:
+    manifest, manifest_path, training_log = _placement_fixture(
+        tmp_path, tensor_parallel_width=1
+    )
+    Path(manifest["easyr1_logger_snapshot"]).write_text(
+        "mutated after manifest creation\n", encoding="utf-8"
+    )
+
+    result = audit_runtime_placement(
+        manifest,
+        training_log,
+        run_manifest_path=manifest_path,
+    )
+
+    assert result["status"] == "fail"
+    assert result["checks"]["easyr1_logger_hash_matches_manifest"] is False
+    assert result["checks"]["easyr1_resume_safe_logger_present"] is False
