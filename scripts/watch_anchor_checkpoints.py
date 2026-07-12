@@ -60,11 +60,14 @@ def code_bundle_hash(paths: tuple[Path, ...] = CODE_BUNDLE_PATHS) -> str:
     return digest.hexdigest()
 
 
-def require_code_bundle(expected_hash: str) -> None:
-    actual = code_bundle_hash()
+def require_code_bundle(
+    expected_hash: str,
+    paths: tuple[Path, ...] = CODE_BUNDLE_PATHS,
+) -> None:
+    actual = code_bundle_hash(paths)
     if actual != expected_hash:
         raise RuntimeError(
-            f"anchor watcher code bundle changed: expected {expected_hash}, found {actual}; relaunch required"
+            f"checkpoint watcher code bundle changed: expected {expected_hash}, found {actual}; relaunch required"
         )
 
 
@@ -232,11 +235,11 @@ def run_subjob(
     )
     _atomic_json(manifest_path, payload)
     if payload["status"] != "complete":
-        raise RuntimeError(f"anchor checkpoint subjob failed: {run_dir}")
+        raise RuntimeError(f"checkpoint subjob failed: {run_dir}")
     return run_dir
 
 
-def refresh_usage_snapshot(step: int, phase: str) -> Path:
+def refresh_usage_snapshot(step: int, phase: str, *, scope: str = "anchor") -> Path:
     stamp = _stamp()
     versioned = ROOT / "reports" / f"storage_usage_snapshot_{stamp}.json"
     command = " && ".join(
@@ -253,8 +256,8 @@ def refresh_usage_snapshot(step: int, phase: str) -> Path:
         ]
     )
     return run_subjob(
-        tag=f"storage_usage_anchor_step{step}_{phase}",
-        job_type="anchor_storage_usage_refresh",
+        tag=f"storage_usage_{scope}_step{step}_{phase}",
+        job_type=f"{scope}_storage_usage_refresh",
         node="login",
         command=command,
         data_manifest=str(SHARED_QUOTA_ROOT),
@@ -263,7 +266,7 @@ def refresh_usage_snapshot(step: int, phase: str) -> Path:
     )
 
 
-def guard_merge(actor_dir: Path, step: int) -> None:
+def guard_merge(actor_dir: Path, step: int, *, scope: str = "anchor") -> None:
     from src.ops.storage_guard import (
         StorageGuardRefusal,
         allocated_bytes_from_snapshot,
@@ -278,7 +281,7 @@ def guard_merge(actor_dir: Path, step: int) -> None:
     result = check_storage(
         tier="S",
         path=actor_dir / "huggingface",
-        operation=f"anchor_checkpoint_merge_step_{step}",
+        operation=f"{scope}_checkpoint_merge_step_{step}",
         required_bytes=required_bytes,
         shared_quota_root=SHARED_QUOTA_ROOT,
         usage_probe=functools.partial(
@@ -292,7 +295,14 @@ def guard_merge(actor_dir: Path, step: int) -> None:
         raise StorageGuardRefusal(result)
 
 
-def merge_checkpoint(actor_dir: Path, step: int, node: str) -> Path | None:
+def merge_checkpoint(
+    actor_dir: Path,
+    step: int,
+    node: str,
+    *,
+    scope: str = "anchor",
+    run_label: str = "anchor_a0",
+) -> Path | None:
     huggingface = actor_dir / "huggingface"
     if valid_relocation_marker(actor_dir, "MERGED_CHECKPOINT_RELOCATED.json"):
         return None
@@ -300,7 +310,7 @@ def merge_checkpoint(actor_dir: Path, step: int, node: str) -> Path | None:
         return None
     if any(huggingface.glob("*.safetensors")):
         raise RuntimeError(f"partial merged checkpoint requires manual audit: {huggingface}")
-    guard_merge(actor_dir, step)
+    guard_merge(actor_dir, step, scope=scope)
     relative_actor = actor_dir.relative_to(ROOT)
     remote = " && ".join(
         [
@@ -329,8 +339,8 @@ def merge_checkpoint(actor_dir: Path, step: int, node: str) -> Path | None:
     if raw_signature(actor_dir) != signature:
         raise RuntimeError(f"raw checkpoint changed while hashing merge inputs: {actor_dir}")
     return run_subjob(
-        tag=f"easyr1_checkpoint_merge_anchor_a0_step{step}_{node}",
-        job_type="anchor_checkpoint_merge",
+        tag=f"easyr1_checkpoint_merge_{run_label}_step{step}_{node}",
+        job_type=f"{scope}_checkpoint_merge",
         node=node,
         command=command,
         data_manifest=str(actor_dir),
@@ -345,6 +355,9 @@ def relocate_raw(
     archive_root: Path,
     anchor_manifest: Path,
     step: int,
+    scope: str = "anchor",
+    run_label: str = "anchor_a0",
+    retention_report: Path = ROOT / "reports/raw_checkpoint_retention.md",
 ) -> Path | None:
     marker = actor_dir / "RAW_STATE_RELOCATED.json"
     if valid_relocation_marker(actor_dir, marker.name):
@@ -363,15 +376,15 @@ def relocate_raw(
             "--run-manifest",
             str(anchor_manifest),
             "--retention-report",
-            str(ROOT / "reports/raw_checkpoint_retention.md"),
+            str(retention_report),
             "--guard-log",
             str(ROOT / "logs/storage_guard.jsonl"),
         ]
     )
     index = actor_dir / "huggingface/model.safetensors.index.json"
     return run_subjob(
-        tag=f"easyr1_raw_relocation_anchor_a0_step{step}_login",
-        job_type="anchor_raw_checkpoint_relocation",
+        tag=f"easyr1_raw_relocation_{run_label}_step{step}_login",
+        job_type=f"{scope}_raw_checkpoint_relocation",
         node="login",
         command=command,
         data_manifest=str(actor_dir),
@@ -380,7 +393,14 @@ def relocate_raw(
     )
 
 
-def relocate_merged(actor_dir: Path, archive_root: Path, step: int) -> Path | None:
+def relocate_merged(
+    actor_dir: Path,
+    archive_root: Path,
+    step: int,
+    *,
+    scope: str = "anchor",
+    run_label: str = "anchor_a0",
+) -> Path | None:
     marker = actor_dir / "MERGED_CHECKPOINT_RELOCATED.json"
     if valid_relocation_marker(actor_dir, marker.name):
         return None
@@ -400,14 +420,49 @@ def relocate_merged(actor_dir: Path, archive_root: Path, step: int) -> Path | No
     )
     index = source / "model.safetensors.index.json"
     return run_subjob(
-        tag=f"easyr1_merged_relocation_anchor_a0_step{step}_login",
-        job_type="anchor_merged_checkpoint_relocation",
+        tag=f"easyr1_merged_relocation_{run_label}_step{step}_login",
+        job_type=f"{scope}_merged_checkpoint_relocation",
         node="login",
         command=command,
         data_manifest=str(source),
         data_manifest_hash=_sha256(index),
         expected_artifacts=[str(archive / "merged_checkpoint.source.sha256"), str(marker)],
     )
+
+
+def valid_evaluation_marker(marker: Path, *, step: int, actor_dir: Path) -> bool:
+    if not marker.is_file():
+        return False
+    try:
+        payload = json.loads(marker.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    index = actor_dir / "huggingface" / "model.safetensors.index.json"
+    if not index.is_file():
+        return False
+    return bool(
+        payload.get("schema_version") == "blind-gains.pilot-step-eval-marker.v1"
+        and payload.get("status") == "complete"
+        and payload.get("global_step") == step
+        and Path(str(payload.get("checkpoint_path", ""))).resolve()
+        == (actor_dir / "huggingface").resolve()
+        and payload.get("checkpoint_index_sha256") == _sha256(index)
+        and isinstance(payload.get("evaluation_run"), str)
+        and bool(payload["evaluation_run"])
+        and isinstance(payload.get("evaluation_output_sha256"), str)
+        and len(payload["evaluation_output_sha256"]) == 64
+    )
+
+
+def wait_for_evaluation_marker(
+    marker: Path,
+    *,
+    step: int,
+    actor_dir: Path,
+    poll_seconds: int = 60,
+) -> None:
+    while not valid_evaluation_marker(marker, step=step, actor_dir=actor_dir):
+        time.sleep(poll_seconds)
 
 
 def process_step(
@@ -419,24 +474,44 @@ def process_step(
     node: str,
     relocate_merged_output: bool,
     expected_code_hash: str,
+    scope: str = "anchor",
+    run_label: str = "anchor_a0",
+    retention_report: Path = ROOT / "reports/raw_checkpoint_retention.md",
+    evaluation_marker: Path | None = None,
+    code_bundle_paths: tuple[Path, ...] = CODE_BUNDLE_PATHS,
 ) -> None:
     actor_dir = wait_for_stable_checkpoint(run_root, step, poll_seconds=60)
-    require_code_bundle(expected_code_hash)
-    refresh_usage_snapshot(step, "premerge")
-    require_code_bundle(expected_code_hash)
-    merge_checkpoint(actor_dir, step, node)
-    refresh_usage_snapshot(step, "postmerge")
-    require_code_bundle(expected_code_hash)
+    require_code_bundle(expected_code_hash, code_bundle_paths)
+    refresh_usage_snapshot(step, "premerge", scope=scope)
+    require_code_bundle(expected_code_hash, code_bundle_paths)
+    merge_checkpoint(actor_dir, step, node, scope=scope, run_label=run_label)
+    refresh_usage_snapshot(step, "postmerge", scope=scope)
+    require_code_bundle(expected_code_hash, code_bundle_paths)
     relocate_raw(
         actor_dir=actor_dir,
         archive_root=archive_root,
         anchor_manifest=anchor_manifest,
         step=step,
+        scope=scope,
+        run_label=run_label,
+        retention_report=retention_report,
     )
     if relocate_merged_output:
-        require_code_bundle(expected_code_hash)
-        relocate_merged(actor_dir, archive_root, step)
-    refresh_usage_snapshot(step, "postrelocation")
+        if evaluation_marker is not None:
+            wait_for_evaluation_marker(
+                evaluation_marker,
+                step=step,
+                actor_dir=actor_dir,
+            )
+        require_code_bundle(expected_code_hash, code_bundle_paths)
+        relocate_merged(
+            actor_dir,
+            archive_root,
+            step,
+            scope=scope,
+            run_label=run_label,
+        )
+    refresh_usage_snapshot(step, "postrelocation", scope=scope)
 
 
 def main() -> None:
