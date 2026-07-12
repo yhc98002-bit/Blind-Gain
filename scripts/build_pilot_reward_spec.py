@@ -47,6 +47,7 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
     validation_partition = partition_audit["validation_audit"]
     reward_counts = training_partition["training_reward_counts"]
     reason_counts = training_partition["reward_disagreement_reason_counts"]
+    timeout_counts = audit.get("symbolic_timeout_counts", {})
     lines = [
         "# Pilot Reward Specification",
         "",
@@ -64,6 +65,8 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         f"- Training-partition disagreement reason counts: `{reason_counts}`.",
         f"- Validation-partition reward counts: `{validation_partition['training_reward_counts']}`.",
         "- All shadow values are finite; every training-reward identity recomputes exactly; parser/reward versions are canonical-v2/pilot-reward-v1.",
+        "- Every row pins symbolic-grader guard `posix-itimer-v1` with a 5.0-second timeout; native shadows are valid on all rows.",
+        f"- Symbolic timeout counts: `{timeout_counts}`.",
         "- Image-grid regression evidence: `reports/easyr1_image_grid_audit_v1.md` (0/1,288 mismatches after the payload fix).",
         "",
         "Reward contract:",
@@ -73,10 +76,12 @@ def build_report(audit: dict[str, Any], manifest: dict[str, Any], audit_path: Pa
         "4. Set accuracy weight to 0.5 and format weight to 0.5, matching the reference recipe split.",
         f"5. Precedence rule: {PRECEDENCE_RULE}",
         "6. Log `training_reward`, `native_r1v_shadow_reward`, `canonical_eval_reward`, and `reward_disagreement_reason` per rollout.",
+        "7. Bound both MathRuler grading and the native-r1v shadow with POSIX `ITIMER_REAL` at 5.0 seconds; a native-shadow failure is logged and cannot change the optimized reward.",
         "",
         "Problems:",
         "- The first full-path smoke exposed double-resized visual-grid drift before optimizer step 1. That run remains preserved in `reports/pilot_reward_smoke_failure_20260711.md`; the repaired run is the evidence above.",
         "- EasyR1 always performs a final validation pass and calls the same reward function. The failed v1 audit expected only training rows; v2 partitions the append-only shadow log using the exact 601-row test-answer sequence.",
+        "- An unbounded symbolic grader later stalled L7 no-image scoring. The guarded replacement smoke recorded zero guard mismatches and zero invalid native shadows; finite-call reward semantics remain unchanged.",
         "- A five-step smoke certifies reward plumbing and nondegeneracy, not training stability or scientific efficacy.",
         "",
         "Decision:",

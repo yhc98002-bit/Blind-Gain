@@ -1,0 +1,139 @@
+{
+  "checks": {
+    "all_numeric_shadows_finite": true,
+    "all_required_fields_present": true,
+    "native_shadows_valid": true,
+    "parser_and_reward_versions_exact": true,
+    "reason_codes_valid": true,
+    "row_count_matches_contract": true,
+    "symbolic_grader_guard_exact": true,
+    "training_reward_identity_exact": true,
+    "training_reward_non_degenerate": true
+  },
+  "errors": [],
+  "expected_minimum_rows": 13401,
+  "expected_steps": 5,
+  "group_size": 5,
+  "identity_mismatches": 0,
+  "invalid_native_shadow_rows": 0,
+  "missing_field_counts": {},
+  "n_rows": 13401,
+  "n_training_shadow_rows": 12800,
+  "n_validation_shadow_rows": 601,
+  "nonfinite_rows": 0,
+  "partition_audit": {
+    "checks": {
+      "total_count_matches_training_plus_validation": true,
+      "training_partition_count_exact": true,
+      "validation_ground_truth_sequence_exact": true,
+      "validation_partition_count_exact": true
+    },
+    "expected_training_rows": 12800,
+    "expected_validation_rows": 601,
+    "n_training_rows": 12800,
+    "n_validation_rows": 601,
+    "status": "pass",
+    "training_audit": {
+      "checks": {
+        "all_numeric_shadows_finite": true,
+        "all_required_fields_present": true,
+        "native_shadows_valid": true,
+        "parser_and_reward_versions_exact": true,
+        "reason_codes_valid": true,
+        "row_count_matches_contract": true,
+        "symbolic_grader_guard_exact": true,
+        "training_reward_identity_exact": true,
+        "training_reward_non_degenerate": true
+      },
+      "errors": [],
+      "expected_minimum_rows": 12800,
+      "identity_mismatches": 0,
+      "invalid_native_shadow_rows": 0,
+      "missing_field_counts": {},
+      "n_rows": 12800,
+      "nonfinite_rows": 0,
+      "reward_disagreement_reason_counts": {
+        "canonical_correct_mathruler_incorrect": 179,
+        "mathruler_correct_canonical_incorrect": 74,
+        "none": 12547
+      },
+      "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
+      "status": "pass",
+      "symbolic_grader_guard_mismatches": 0,
+      "symbolic_timeout_counts": {},
+      "training_reward_counts": {
+        "0.0": 4338,
+        "0.5": 7723,
+        "1.0": 739
+      },
+      "version_mismatches": 0
+    },
+    "validation_audit": {
+      "checks": {
+        "all_numeric_shadows_finite": true,
+        "all_required_fields_present": true,
+        "native_shadows_valid": true,
+        "parser_and_reward_versions_exact": true,
+        "reason_codes_valid": true,
+        "row_count_matches_contract": true,
+        "symbolic_grader_guard_exact": true,
+        "training_reward_identity_exact": true,
+        "training_reward_non_degenerate": true
+      },
+      "errors": [],
+      "expected_minimum_rows": 601,
+      "identity_mismatches": 0,
+      "invalid_native_shadow_rows": 0,
+      "missing_field_counts": {},
+      "n_rows": 601,
+      "nonfinite_rows": 0,
+      "reward_disagreement_reason_counts": {
+        "canonical_correct_mathruler_incorrect": 16,
+        "mathruler_correct_canonical_incorrect": 1,
+        "none": 584
+      },
+      "schema_version": "blind-gains.pilot-reward-smoke-audit.v2",
+      "status": "pass",
+      "symbolic_grader_guard_mismatches": 0,
+      "symbolic_timeout_counts": {},
+      "training_reward_counts": {
+        "0.0": 39,
+        "0.5": 440,
+        "1.0": 122
+      },
+      "version_mismatches": 0
+    }
+  },
+  "reward_disagreement_reason_counts": {
+    "canonical_correct_mathruler_incorrect": 195,
+    "mathruler_correct_canonical_incorrect": 75,
+    "none": 13131
+  },
+  "rollout_batch_size": 512,
+  "run_manifest": "experiments/runs/pilot_reward_smoke_an29_20260711T165700Z/run_manifest.json",
+  "schema_version": "blind-gains.pilot-reward-smoke-audit.v4",
+  "shadow_jsonl": "experiments/runs/pilot_reward_smoke_an29_20260711T165700Z/reward_shadow.jsonl",
+  "status": "pass",
+  "symbolic_grader_guard_mismatches": 0,
+  "symbolic_timeout_counts": {},
+  "training_contract_checks": {
+    "command_registers_expected_steps": true,
+    "final_validation_finish_marker_present": true,
+    "final_validation_marker_present": true,
+    "manifest_exit_zero": true,
+    "manifest_job_type_exact": true,
+    "training_log_has_no_image_grid_mismatch": true,
+    "training_log_has_no_traceback": true,
+    "training_progress_reaches_expected_steps": true
+  },
+  "training_log": "experiments/runs/pilot_reward_smoke_an29_20260711T165700Z/logs/an29.log",
+  "training_reward_counts": {
+    "0.0": 4377,
+    "0.5": 8163,
+    "1.0": 861
+  },
+  "validation_answer_key": "answer",
+  "validation_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+  "validation_split": "test",
+  "version_mismatches": 0
+}
