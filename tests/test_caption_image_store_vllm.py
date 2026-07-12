@@ -87,3 +87,15 @@ def test_strong_caption_launcher_cannot_use_tp1_or_cross_node() -> None:
     assert "Qwen2.5-VL-72B cannot fit on one A800" in launcher
     assert "an12|an29" in launcher
     assert "torchrun" not in launcher
+
+
+def test_strong_caption_launcher_locks_before_expensive_input_hashing() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_strong_caption_72b.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'exec 9>"${LOCK_PATH}"' in launcher
+    assert "flock -n 9" in launcher
+    assert launcher.index("flock -n 9") < launcher.index('R19_HASH="$(find -L')

@@ -44,6 +44,12 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
 fi
 
 cd "${ROOT}"
+LOCK_PATH="/tmp/blind_gains_${NODE}_strong_caption_launch.lock"
+exec 9>"${LOCK_PATH}"
+if ! flock -n 9; then
+  echo "Another strong-caption launch preflight is active for ${NODE}" >&2
+  exit 3
+fi
 DOWNLOAD_MANIFEST="${MODEL_DOWNLOAD_RUN}/run_manifest.json"
 CHECKOUT_MANIFEST="${MODEL_DOWNLOAD_RUN}/model_checkout.json"
 if [[ ! -s "${DOWNLOAD_MANIFEST}" || ! -s "${CHECKOUT_MANIFEST}" ]]; then
