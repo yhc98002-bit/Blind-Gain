@@ -1,0 +1,118 @@
+{
+  "checks": {
+    "anchor_gray_aggregate_canonical_v2": true,
+    "anchor_gray_aggregate_complete": true,
+    "anchor_gray_pair_count_exact": true,
+    "anchor_noise_aggregate_canonical_v2": true,
+    "anchor_noise_aggregate_complete": true,
+    "anchor_noise_evaluation_complete": true,
+    "anchor_noise_pair_count_exact": true,
+    "anchor_real_gray_checkpoint_identity_exact": true,
+    "anchor_real_noise_checkpoint_identity_exact": true,
+    "base_gray_aggregate_canonical_v2": true,
+    "base_noise_aggregate_canonical_v2": true,
+    "base_to_anchor_gray_pair_identity_exact": true,
+    "base_to_anchor_noise_pair_identity_exact": true,
+    "gray_to_real_pair_identity_exact": true,
+    "noise_to_real_pair_identity_exact": true,
+    "paired_comparison_schema_v2": true,
+    "prompt_contract_exact_all_conditions": true,
+    "r19_pair_count_exact_all_conditions": true
+  },
+  "endpoints": {
+    "anchor_gray": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.041666666666666664,
+      "pair_accuracy": 0.0,
+      "pair_accuracy_ci95": [0.0, 0.0],
+      "strict_pair_accuracy": 0.0
+    },
+    "anchor_noise": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.01625,
+      "pair_accuracy": 0.0,
+      "pair_accuracy_ci95": [0.0, 0.0],
+      "strict_pair_accuracy": 0.0
+    },
+    "anchor_real": {
+      "collapse_rate": 0.08333333333333333,
+      "contract_valid_rate": 0.82,
+      "member_accuracy": 0.7191666666666666,
+      "pair_accuracy": 0.5633333333333334,
+      "strict_pair_accuracy": 0.37
+    },
+    "base_gray": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.08541666666666667,
+      "pair_accuracy": 0.0,
+      "strict_pair_accuracy": 0.0
+    },
+    "base_noise": {
+      "collapse_rate": 1.0,
+      "contract_valid_rate": 1.0,
+      "member_accuracy": 0.09,
+      "pair_accuracy": 0.0,
+      "strict_pair_accuracy": 0.0
+    }
+  },
+  "paired_contrasts": {
+    "base_gray_to_anchor_gray": {
+      "pair_accuracy_delta": 0.0,
+      "pair_accuracy_delta_ci95": [0.0, 0.0],
+      "strict_pair_accuracy_delta": 0.0,
+      "strict_pair_accuracy_delta_ci95": [0.0, 0.0]
+    },
+    "base_noise_to_anchor_noise": {
+      "pair_accuracy_delta": 0.0,
+      "pair_accuracy_delta_ci95": [0.0, 0.0],
+      "strict_pair_accuracy_delta": 0.0,
+      "strict_pair_accuracy_delta_ci95": [0.0, 0.0]
+    },
+    "anchor_gray_to_anchor_real": {
+      "pair_accuracy_delta": 0.5633333333333334,
+      "pair_accuracy_delta_ci95": [0.5358333333333334, 0.5916666666666667],
+      "pair_mcnemar_p": 6.379004768702443e-204,
+      "strict_pair_accuracy_delta": 0.37,
+      "strict_pair_accuracy_delta_ci95": [0.3433333333333333, 0.39666666666666667]
+    },
+    "anchor_noise_to_anchor_real": {
+      "pair_accuracy_delta": 0.5633333333333334,
+      "pair_accuracy_delta_ci95": [0.5358333333333334, 0.5916666666666667],
+      "pair_mcnemar_p": 6.379004768702443e-204,
+      "strict_pair_accuracy_delta": 0.37,
+      "strict_pair_accuracy_delta_ci95": [0.3433333333333333, 0.39666666666666667]
+    }
+  },
+  "scope": "engineering-anchor real-versus-gray/noise ablation on the R19-selected instrument; human R19 audit pending; not a pilot result or PI gate",
+  "source_artifacts": {
+    "anchor_gray_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_anchor_step100_gray_20260712T094005Z/metrics.json",
+      "sha256": "20168087af7d6a4ec3cbdd057a7442b12feb997176b7ce0b81ecd9ff7bde0601"
+    },
+    "anchor_noise_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_anchor_step100_noise_20260712T100845Z/metrics.json",
+      "sha256": "db8c0787a92ed49455189b9f3ae96aea843a162e55d6b3a650b6861d655d309d"
+    },
+    "base_gray_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_base3b_gray_canonicalv2_20260712T094005Z/metrics.json",
+      "sha256": "b4f12b695445645f8813e7eb8ac0444b7e1912fbfe147081fd94fbeed1eca40e"
+    },
+    "base_noise_aggregate": {
+      "path": "experiments/runs/fliptrack_aggregate_base3b_noise_canonicalv2_20260712T100845Z/metrics.json",
+      "sha256": "c2f837e85c17ed16b3fd333af91d054b64c550506ee4fc150db410411a81a154"
+    },
+    "base_to_anchor_noise_comparison": {
+      "path": "experiments/runs/fliptrack_compare_base_vs_anchor_noise_r19_v1_20260712T100845Z/comparison.json",
+      "sha256": "6f1a180ff7614b2bdc9e8b379e5fecd7859ad92d6e9ba0ab8c681e5dab9a21f7"
+    },
+    "noise_to_real_comparison": {
+      "path": "experiments/runs/fliptrack_compare_anchor_noise_vs_real_r19_v1_20260712T100845Z/comparison.json",
+      "sha256": "c6a621214bd55531c09ac5052085a3ce3929b95c5c2a7466ed2a5434b6b47420"
+    }
+  },
+  "status": "pass",
+  "supersedes_for_scope": "reports/anchor_step100_fliptrack_r19_blind_ablation_v1.json"
+}
