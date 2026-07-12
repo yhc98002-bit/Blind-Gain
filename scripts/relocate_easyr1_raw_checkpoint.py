@@ -28,6 +28,8 @@ from src.ops.storage_guard import (  # noqa: E402
 RAW_SHARD_RE = re.compile(r"^(model|optim)_world_size_(\d+)_rank_(\d+)\.pt$")
 STEP_RE = re.compile(r"^global_step_(\d+)$")
 MARKER_NAME = "RAW_STATE_RELOCATED.json"
+RESTORE_MARKER_NAME = "RAW_STATE_RESTORED_FOR_RESUME.json"
+RESTORE_RETENTION_MARKER_NAME = "RESTORED_RAW_STATE_RETENTION_EXPIRED.json"
 CHECKSUM_NAME = "raw_training_state.source.sha256"
 SHARED_QUOTA_ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289")
 SHARED_USAGE_SNAPSHOT = ROOT / "reports" / "storage_usage_snapshot.json"
@@ -189,6 +191,60 @@ def _verify_raw_archive(actor_archive: Path) -> dict[str, Any]:
         "size_bytes": sum(record["size_bytes"] for record in records),
         "checksum_manifest_sha256": _sha256(checksum_path),
         "files": records,
+        "retention_source": "scratch_archive",
+    }
+
+
+def _verify_restored_shared_raw(actor_dir: Path) -> dict[str, Any]:
+    marker_path = actor_dir / RESTORE_MARKER_NAME
+    if not marker_path.is_file():
+        raise FileNotFoundError(f"restored raw-state marker is missing: {marker_path}")
+    marker = json.loads(marker_path.read_text(encoding="utf-8"))
+    if marker.get("status") != "restored_for_optimizer_resume":
+        raise ValueError(f"restored raw-state marker has invalid status: {marker_path}")
+    expected_records = marker.get("files")
+    if not isinstance(expected_records, list) or not expected_records:
+        raise ValueError(f"restored raw-state marker has no file records: {marker_path}")
+
+    shards = _discover_complete_shards(actor_dir)
+    shard_names = {path.name for path in shards}
+    expected_names: set[str] = set()
+    records: list[dict[str, Any]] = []
+    for item in expected_records:
+        if not isinstance(item, dict):
+            raise ValueError(f"malformed restored raw-state file record: {item!r}")
+        name = item.get("file")
+        digest = item.get("sha256")
+        size = item.get("bytes")
+        if (
+            not isinstance(name, str)
+            or Path(name).name != name
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or not isinstance(size, int)
+            or size < 0
+            or name in expected_names
+        ):
+            raise ValueError(f"malformed restored raw-state file record: {item!r}")
+        expected_names.add(name)
+        path = actor_dir / name
+        if not path.is_file() or path.stat().st_size != size or _sha256(path) != digest:
+            raise RuntimeError(f"restored shared raw-state checksum mismatch: {path}")
+        records.append({"file": name, "sha256": digest, "size_bytes": size})
+    if expected_names != shard_names:
+        raise RuntimeError(
+            "restored shared raw-state marker/file set differs: "
+            f"listed={sorted(expected_names)} files={sorted(shard_names)}"
+        )
+    checksum_digest = marker.get("checksum_manifest_sha256")
+    if not isinstance(checksum_digest, str) or len(checksum_digest) != 64:
+        raise ValueError("restored raw-state marker lacks a checksum-manifest hash")
+    return {
+        "path": str(actor_dir),
+        "size_bytes": sum(record["size_bytes"] for record in records),
+        "checksum_manifest_sha256": checksum_digest,
+        "files": records,
+        "retention_source": "shared_restored_resume_copy",
     }
 
 
@@ -241,6 +297,13 @@ def _set_manifest_retention_event(
     if matching_index is None:
         events.append(event)
     else:
+        existing_records = events[matching_index].get("expired_states", [])
+        merged_records = {
+            str(record.get("path")): record
+            for record in [*existing_records, *records]
+            if isinstance(record, dict)
+        }
+        event["expired_states"] = [merged_records[key] for key in sorted(merged_records)]
         events[matching_index] = event
     _atomic_json(manifest_path, payload)
 
@@ -306,6 +369,76 @@ def enforce_latest_raw_retention(
     return verified
 
 
+def enforce_restored_shared_retention(
+    *,
+    run_shared_root: Path,
+    current_step: int,
+    merged_checkpoint_sha256: str,
+    run_manifest: Path,
+    retention_report: Path,
+) -> list[dict[str, Any]]:
+    run_shared_root = run_shared_root.resolve()
+    candidates: list[tuple[int, Path]] = []
+    if run_shared_root.exists():
+        for step_dir in run_shared_root.glob("global_step_*"):
+            try:
+                step = _parse_step(step_dir)
+            except ValueError:
+                continue
+            actor_dir = step_dir / "actor"
+            if step >= current_step or not actor_dir.is_dir():
+                continue
+            has_raw = any(actor_dir.glob("*_world_size_*_rank_*.pt"))
+            if has_raw and (actor_dir / RESTORE_MARKER_NAME).is_file():
+                candidates.append((step, actor_dir))
+    if not candidates:
+        return []
+
+    verified: list[dict[str, Any]] = []
+    for step, actor_dir in sorted(candidates):
+        record = _verify_restored_shared_raw(actor_dir)
+        record["step"] = step
+        record["retention_reason"] = (
+            "retention-expired restored resume copy after a newer merged checkpoint "
+            "was hash-verified"
+        )
+        verified.append(record)
+
+    _append_retention_report(retention_report, current_step=current_step, records=verified)
+    _set_manifest_retention_event(
+        run_manifest,
+        current_step=current_step,
+        merged_checkpoint_sha256=merged_checkpoint_sha256,
+        records=verified,
+        status="listed_before_deletion",
+    )
+    for record in verified:
+        actor_dir = Path(record["path"])
+        for file_record in record["files"]:
+            (actor_dir / file_record["file"]).unlink()
+        cleanup_marker = actor_dir / RESTORE_RETENTION_MARKER_NAME
+        _atomic_json(
+            cleanup_marker,
+            {
+                "status": "restored_raw_state_deleted_after_verification",
+                "current_step": current_step,
+                "merged_checkpoint_sha256": merged_checkpoint_sha256,
+                "deleted_at_utc": dt.datetime.now(dt.timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                ),
+                "retention_record": record,
+            },
+        )
+    _set_manifest_retention_event(
+        run_manifest,
+        current_step=current_step,
+        merged_checkpoint_sha256=merged_checkpoint_sha256,
+        records=verified,
+        status="deleted_after_verification",
+    )
+    return verified
+
+
 def relocate_raw_checkpoint(
     actor_dir: Path,
     archive_dir: Path,
@@ -354,6 +487,15 @@ def relocate_raw_checkpoint(
             merged_checkpoint_sha256=merged_digest,
             run_manifest=run_manifest,  # type: ignore[arg-type]
             retention_report=retention_report,  # type: ignore[arg-type]
+        )
+        retention_records.extend(
+            enforce_restored_shared_retention(
+                run_shared_root=actor_dir.parent.parent,
+                current_step=current_step,
+                merged_checkpoint_sha256=merged_digest,
+                run_manifest=run_manifest,  # type: ignore[arg-type]
+                retention_report=retention_report,  # type: ignore[arg-type]
+            )
         )
 
     required_bytes = sum(path.stat().st_size for path in shards if not (archive_dir / path.name).exists())

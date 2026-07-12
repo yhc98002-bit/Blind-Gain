@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -84,8 +85,6 @@ def _archived_raw_state(run_root: Path, step: int, *, corrupt: bool = False) -> 
         for rank in range(2):
             path = actor / f"{family}_world_size_2_rank_{rank}.pt"
             path.write_bytes(f"{family}-{rank}-step-{step}".encode("ascii"))
-            import hashlib
-
             lines.append(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n")
     (actor / "raw_training_state.source.sha256").write_text("".join(lines), encoding="ascii")
     if corrupt:
@@ -228,3 +227,91 @@ def test_later_retention_ignores_merged_only_older_step(tmp_path: Path) -> None:
     assert merged_only.is_dir()
     assert not latest_old_raw.exists()
     assert [record["step"] for record in payload["retention_expired_states"]] == [80]
+
+
+def _restored_shared_state(run_root: Path, step: int, *, corrupt: bool = False) -> Path:
+    actor = run_root / f"global_step_{step}" / "actor"
+    actor.mkdir(parents=True)
+    records = []
+    for family in ("model", "optim"):
+        for rank in range(2):
+            path = actor / f"{family}_world_size_2_rank_{rank}.pt"
+            path.write_bytes(f"restored-{family}-{rank}-step-{step}".encode("ascii"))
+            records.append(
+                {
+                    "file": path.name,
+                    "bytes": path.stat().st_size,
+                    "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                }
+            )
+    (actor / "RAW_STATE_RESTORED_FOR_RESUME.json").write_text(
+        json.dumps(
+            {
+                "status": "restored_for_optimizer_resume",
+                "checksum_manifest_sha256": "a" * 64,
+                "files": records,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    if corrupt:
+        (actor / "model_world_size_2_rank_0.pt").write_bytes(b"corrupt")
+    return actor
+
+
+def test_retention_removes_verified_restored_shared_resume_copy(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    restored = _restored_shared_state(shared, 80)
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_100")
+    actor = shared / "global_step_100" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    payload = relocate_raw_checkpoint(
+        actor,
+        run_archive / "global_step_100" / "actor",
+        run_archive_root=run_archive,
+        run_manifest=run_manifest,
+        retention_report=tmp_path / "retention.md",
+    )
+
+    assert not list(restored.glob("*_world_size_*_rank_*.pt"))
+    marker = json.loads(
+        (restored / "RESTORED_RAW_STATE_RETENTION_EXPIRED.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert marker["status"] == "restored_raw_state_deleted_after_verification"
+    assert payload["retention_expired_states"][0]["retention_source"] == (
+        "shared_restored_resume_copy"
+    )
+    event = json.loads(run_manifest.read_text(encoding="utf-8"))[
+        "storage_retention_events"
+    ][0]
+    assert event["status"] == "deleted_after_verification"
+
+
+def test_retention_refuses_corrupt_restored_shared_resume_copy(tmp_path: Path) -> None:
+    shared = tmp_path / "shared"
+    restored = _restored_shared_state(shared, 80, corrupt=True)
+    actor = _actor(shared)
+    (shared / "checkpoint").rename(shared / "global_step_100")
+    actor = shared / "global_step_100" / "actor"
+    run_archive = tmp_path / "archive" / "run"
+    run_manifest = tmp_path / "run_manifest.json"
+    run_manifest.write_text('{"run_id": "test", "status": "running"}\n', encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="restored shared raw-state checksum mismatch"):
+        relocate_raw_checkpoint(
+            actor,
+            run_archive / "global_step_100" / "actor",
+            run_archive_root=run_archive,
+            run_manifest=run_manifest,
+            retention_report=tmp_path / "retention.md",
+        )
+
+    assert list(restored.glob("*_world_size_*_rank_*.pt"))
+    assert list(actor.glob("*_world_size_*_rank_*.pt"))
