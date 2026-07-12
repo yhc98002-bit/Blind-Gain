@@ -1,0 +1,109 @@
+{
+  "checks": {
+    "all_run_manifests_complete_and_registered": true,
+    "decoding_parameters_locked": true,
+    "output_hashes_recorded": true,
+    "prompt_parser_reward_versions_locked": true,
+    "recomputed_scores_match": true,
+    "row_counts_match_filtered_train_plus_untouched_test": true,
+    "row_identity_equal_across_conditions": true,
+    "row_identity_unique": true,
+    "row_version_contract_valid": true,
+    "scientific_item_contract_equal": true,
+    "source_and_filter_contract_shared": true,
+    "source_selection_exact": true,
+    "symbolic_grader_guard_locked": true
+  },
+  "conditions": [
+    "real",
+    "gray",
+    "noise",
+    "none",
+    "caption"
+  ],
+  "decoding_parameters": {
+    "greedy": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "max_tokens": 2048,
+    "sampled": {
+      "n": 16,
+      "temperature": 1.0,
+      "top_p": 1.0
+    },
+    "seed": 20260710
+  },
+  "expected_row_count": 1889,
+  "expected_split_counts": {
+    "test": 601,
+    "train": 1288
+  },
+  "mathruler_error_counts": {
+    "caption": 0,
+    "gray": 0,
+    "noise": 0,
+    "none": 0,
+    "real": 0
+  },
+  "native_r1v_shadow_invalid_counts": {
+    "caption": 0,
+    "gray": 0,
+    "noise": 0,
+    "none": 0,
+    "real": 0
+  },
+  "parser_version": "canonical-v2",
+  "per_item_output_sha256": {
+    "caption": "6c04277cca314dc22396c3a56175336e2ea0d81661ea2d52a96e5873d7746bd2",
+    "gray": "55a215966904306e69fbbe1d2c5be8c7829873d0e653ec7738cd36df8f0b24a8",
+    "noise": "92ca8d921223921a306a317e53148de57380028ee6c64719029890756d3d7ca5",
+    "none": "60db78c675680507f1c3bc28ae7294da4cf5811f5cea75306dfdb70318ea2a6d",
+    "real": "021da42f00eab94bc431ed0e7924110c237f77454b23ded5a8f1064c48fd6aa3"
+  },
+  "pilot_reward_version": "pilot-reward-v1",
+  "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+  "recomputed_score_mismatch_count": 0,
+  "recomputed_score_mismatch_fields": {},
+  "recomputed_score_mismatch_rows_by_condition": {
+    "caption": 0,
+    "gray": 0,
+    "noise": 0,
+    "none": 0,
+    "real": 0
+  },
+  "row_counts": {
+    "caption": 1889,
+    "gray": 1889,
+    "noise": 1889,
+    "none": 1889,
+    "real": 1889
+  },
+  "row_identity_duplicate_checks": {
+    "caption": true,
+    "gray": true,
+    "noise": true,
+    "none": true,
+    "real": true
+  },
+  "run_manifest_sha256": {
+    "caption": "edc7383d2efb2b187c6a15ead8afdb04485f5d167fca70aaa09989a6db7e8586",
+    "gray": "114d31eb947a551b631f761f1f4363d08eeb4886853cf2c3c1b1c211a507820f",
+    "noise": "a67088d0d0bb3a02b59652ce06d9fa1ff1b137b7ee86c98ad28b7c8196115bed",
+    "none": "43d17585688c4cd2d2ffc008174052c581bc6ee2a90b11524f0bfdc2a54e5329",
+    "real": "de09ba5a7d8dd815d4deebe6c98b1640d931870897ce56d1c7ea3f50b482d54a"
+  },
+  "runs": {
+    "caption": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_caption_login_20260712T050913Z",
+    "gray": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_gray_login_20260712T050908Z",
+    "noise": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_noise_login_20260712T050910Z",
+    "none": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z",
+    "real": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z"
+  },
+  "schema_version": "blind-gains.blind-solvability-audit.v2",
+  "scoring_mode": "pilot-reward-v1+canonical-v2",
+  "status": "pass",
+  "symbolic_grader_guard_version": "posix-itimer-v1",
+  "symbolic_grader_timeout_seconds": 5.0
+}
