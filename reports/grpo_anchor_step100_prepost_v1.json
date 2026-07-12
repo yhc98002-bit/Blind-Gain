@@ -1,0 +1,196 @@
+{
+  "after": {
+    "manifest_sha256": "801f65f651f71a21d84e8762f0e97cc8d9c7670b5a2a1a7243efa40e87dc9cf7",
+    "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+    "output_sha256": "22d93ad3f5510c49d9755d82dd0cdb148ea0818f75db77e7363b757b8ed0d8c4",
+    "run": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z"
+  },
+  "before": {
+    "manifest_sha256": "de09ba5a7d8dd815d4deebe6c98b1640d931870897ce56d1c7ea3f50b482d54a",
+    "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "output_sha256": "021da42f00eab94bc431ed0e7924110c237f77454b23ded5a8f1064c48fd6aa3",
+    "run": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z"
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "interval": 0.95,
+    "run_to_run_variance_covered": false,
+    "seed": 20260712,
+    "unit": "paired item"
+  },
+  "checks": {
+    "expected_splits_present": true,
+    "guarded_rescore_contract": true,
+    "item_content_identical": true,
+    "manifest_contract_identical": true,
+    "manifest_output_hashes_match": true,
+    "model_revisions_differ": true,
+    "real_condition": true,
+    "row_identity_sets_identical": true,
+    "run_manifests_complete": true
+  },
+  "known_limitations": [
+    "The step-100 checkpoint was optimized with the anchor's native EasyR1 r1v reward; pilot-reward-v1 and canonical-v2 are evaluation contracts only.",
+    "The EasyR1 file logger was truncated on resume, so a continuous native-reward/KL curve for steps 1-80 is unavailable.",
+    "Paired item-bootstrap intervals quantify evaluation-item uncertainty, not run-to-run RL variance."
+  ],
+  "locked_contract": {
+    "condition": "real",
+    "data_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+    "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+    "decoding": {
+      "greedy": {
+        "n": 1,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "max_tokens": 2048,
+      "sampled": {
+        "n": 16,
+        "temperature": 1.0,
+        "top_p": 1
+      },
+      "seed": 20260710
+    },
+    "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+    "format_weight": 0.5,
+    "group_size": 5,
+    "max_tokens": 2048,
+    "parser_version": "canonical-v2",
+    "pilot_reward_version": "pilot-reward-v1",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+    "sample_count": 16,
+    "sample_temperature": 1.0,
+    "scoring_mode": "pilot-reward-v1+canonical-v2",
+    "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+    "symbolic_grader_guard_version": "posix-itimer-v1",
+    "symbolic_grader_timeout_seconds": 5.0,
+    "train_filter_ids": "data/geo3k_pilot_filtered_ids.json",
+    "train_filter_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1"
+  },
+  "schema_version": "blind-gains.anchor-prepost.v1",
+  "scope": "engineering-anchor evaluation; not a published-reproduction or PI gate verdict",
+  "splits": {
+    "test": {
+      "metrics": {
+        "canonical_accuracy": {
+          "after": 0.43094841930116473,
+          "before": 0.17470881863560733,
+          "delta": 0.2562396006655574,
+          "delta_ci_high": 0.2995008319467554,
+          "delta_ci_low": 0.21630615640599002
+        },
+        "contract_valid": {
+          "after": 0.9683860232945092,
+          "before": 0.43926788685524126,
+          "delta": 0.5291181364392679,
+          "delta_ci_high": 0.5707154742096506,
+          "delta_ci_low": 0.4875207986688852
+        },
+        "pilot_accuracy": {
+          "after": 0.43594009983361065,
+          "before": 0.1497504159733777,
+          "delta": 0.28618968386023297,
+          "delta_ci_high": 0.3277870216306156,
+          "delta_ci_low": 0.24459234608985025
+        },
+        "sampled_format_reward": {
+          "after": 0.9988560732113144,
+          "before": 0.36980033277870217,
+          "delta": 0.6290557404326124,
+          "delta_ci_high": 0.6429908485856906,
+          "delta_ci_low": 0.6146006655574043
+        },
+        "sampled_pilot_accuracy": {
+          "after": 0.399022462562396,
+          "before": 0.09889767054908485,
+          "delta": 0.30012479201331116,
+          "delta_ci_high": 0.3247712146422629,
+          "delta_ci_low": 0.2756837562396006
+        },
+        "sampled_training_reward": {
+          "after": 0.6989392678868552,
+          "before": 0.2343490016638935,
+          "delta": 0.46459026622296173,
+          "delta_ci_high": 0.47784941763727123,
+          "delta_ci_low": 0.4501819883527454
+        },
+        "strict_accuracy": {
+          "after": 0.43594009983361065,
+          "before": 0.059900166389351084,
+          "delta": 0.37603993344425957,
+          "delta_ci_high": 0.415973377703827,
+          "delta_ci_low": 0.33444259567387685
+        }
+      },
+      "n": 601,
+      "pilot_accuracy_transitions": {
+        "after_only": 188,
+        "before_only": 16,
+        "both_correct": 74,
+        "neither_correct": 323
+      }
+    },
+    "train": {
+      "metrics": {
+        "canonical_accuracy": {
+          "after": 0.4169254658385093,
+          "before": 0.1638198757763975,
+          "delta": 0.2531055900621118,
+          "delta_ci_high": 0.28029891304347815,
+          "delta_ci_low": 0.2267080745341615
+        },
+        "contract_valid": {
+          "after": 0.9743788819875776,
+          "before": 0.4635093167701863,
+          "delta": 0.5108695652173914,
+          "delta_ci_high": 0.5388198757763976,
+          "delta_ci_low": 0.483695652173913
+        },
+        "pilot_accuracy": {
+          "after": 0.421583850931677,
+          "before": 0.15527950310559005,
+          "delta": 0.266304347826087,
+          "delta_ci_high": 0.29270186335403725,
+          "delta_ci_low": 0.23990683229813664
+        },
+        "sampled_format_reward": {
+          "after": 0.99902950310559,
+          "before": 0.38388004658385094,
+          "delta": 0.6151494565217391,
+          "delta_ci_high": 0.625584724378882,
+          "delta_ci_low": 0.6050077639751553
+        },
+        "sampled_pilot_accuracy": {
+          "after": 0.39261451863354035,
+          "before": 0.08724767080745342,
+          "delta": 0.305366847826087,
+          "delta_ci_high": 0.3222547069099379,
+          "delta_ci_low": 0.28818783967391304
+        },
+        "sampled_training_reward": {
+          "after": 0.6958220108695652,
+          "before": 0.23556385869565216,
+          "delta": 0.460258152173913,
+          "delta_ci_high": 0.4706916003493789,
+          "delta_ci_low": 0.4499702785326087
+        },
+        "strict_accuracy": {
+          "after": 0.421583850931677,
+          "before": 0.052795031055900624,
+          "delta": 0.3687888198757764,
+          "delta_ci_high": 0.39596273291925466,
+          "delta_ci_low": 0.3408385093167702
+        }
+      },
+      "n": 1288,
+      "pilot_accuracy_transitions": {
+        "after_only": 369,
+        "before_only": 26,
+        "both_correct": 174,
+        "neither_correct": 719
+      }
+    }
+  },
+  "status": "pass"
+}

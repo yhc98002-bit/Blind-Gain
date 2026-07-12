@@ -1,0 +1,15 @@
+{
+  "chat_template_audit": "partial",
+  "checkpoint_discipline": "pass",
+  "cluster_bringup": "pass",
+  "config_diff_audit": "pass",
+  "dataset_acquisition": "partial",
+  "deterministic_eval_audit": "pass",
+  "image_preprocessing_audit": "pass",
+  "license_log": "partial",
+  "model_downloads": "partial",
+  "overall_proposal_stage0": "conditional",
+  "published_grpo_reproduction": "fail",
+  "reproduction_tolerance_defined": "fail",
+  "reward_parser_audit": "pass"
+}
