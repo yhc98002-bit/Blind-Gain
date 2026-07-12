@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import math
+from pathlib import Path
+
+import yaml
 
 from scripts.audit_pilot_reward_smoke import (
+    audit_runtime_placement,
     audit_shadow_partitions,
     audit_shadow_rows,
     audit_training_contract,
@@ -129,3 +133,71 @@ def test_partition_audit_requires_exact_validation_suffix_identity() -> None:
     assert accepted["validation_audit"]["status"] == "pass"
     assert rejected["status"] == "fail"
     assert rejected["checks"]["validation_ground_truth_sequence_exact"] is False
+
+
+def _placement_fixture(tmp_path: Path, *, tensor_parallel_width: int) -> tuple[dict, Path, str]:
+    run_dir = tmp_path / "experiments" / "runs" / "smoke"
+    run_dir.mkdir(parents=True)
+    config_path = run_dir / "effective_config.yaml"
+    config = {
+        "worker": {"rollout": {"tensor_parallel_size": tensor_parallel_width}},
+        "trainer": {"nnodes": 1, "n_gpus_per_node": 4},
+    }
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+    import hashlib
+
+    config_hash = hashlib.sha256(config_path.read_bytes()).hexdigest()
+    checkpoint_path = str(tmp_path / "checkpoints" / "smoke" / "smoke")
+    manifest = {
+        "config_path": str(config_path),
+        "base_config_hash": config_hash,
+        "gpu_ids": [1, 5, 6, 7],
+        "tensor_parallel_width": tensor_parallel_width,
+        "replica_count": 4 // tensor_parallel_width,
+        "placement_policy_version": "pi-2026-07-11",
+        "checkpoint_path": checkpoint_path,
+        "command": (
+            f"python -m verl.trainer.main config={config_path} "
+            f"trainer.save_checkpoint_path={checkpoint_path}"
+        ),
+    }
+    manifest_path = run_dir / "run_manifest.json"
+    return manifest, manifest_path, f'config: {{"tensor_parallel_size": {tensor_parallel_width}}}'
+
+
+def test_runtime_placement_audit_accepts_derived_tp1_snapshot(tmp_path: Path) -> None:
+    manifest, manifest_path, training_log = _placement_fixture(
+        tmp_path, tensor_parallel_width=1
+    )
+
+    result = audit_runtime_placement(
+        manifest,
+        training_log,
+        run_manifest_path=manifest_path,
+    )
+
+    assert result["status"] == "pass"
+    assert result["expected_rollout_replica_count"] == 4
+    assert all(result["checks"].values())
+
+
+def test_runtime_placement_audit_rejects_historical_tp2_manifest_pattern(
+    tmp_path: Path,
+) -> None:
+    manifest, manifest_path, training_log = _placement_fixture(
+        tmp_path, tensor_parallel_width=2
+    )
+    manifest["tensor_parallel_width"] = 1
+    manifest["replica_count"] = 1
+
+    result = audit_runtime_placement(
+        manifest,
+        training_log,
+        run_manifest_path=manifest_path,
+    )
+
+    assert result["status"] == "fail"
+    assert result["checks"]["effective_config_requires_tp1"] is False
+    assert result["checks"]["manifest_tp_matches_effective_config"] is False
+    assert result["checks"]["manifest_replica_count_derived"] is False
+    assert result["checks"]["runtime_log_tp_matches_effective_config"] is False

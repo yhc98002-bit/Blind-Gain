@@ -3,11 +3,15 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import math
 import os
 from pathlib import Path
+import re
 from typing import Any
+
+import yaml
 
 
 REQUIRED_FIELDS = {
@@ -32,6 +36,112 @@ VALID_REASONS = {
     "mathruler_error_canonical_incorrect",
     "mathruler_error_canonical_correct",
 }
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def audit_runtime_placement(
+    manifest: dict[str, Any],
+    training_log: str,
+    *,
+    run_manifest_path: Path,
+) -> dict[str, Any]:
+    errors: list[str] = []
+    config_value = manifest.get("config_path")
+    config_path = Path(str(config_value)) if config_value else Path()
+    config: dict[str, Any] = {}
+    if not config_value or not config_path.is_file():
+        errors.append(f"effective config is absent: {config_value!r}")
+    else:
+        try:
+            loaded = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                config = loaded
+            else:
+                errors.append("effective config is not a mapping")
+        except Exception as error:
+            errors.append(f"effective config could not be parsed: {error}")
+
+    trainer = config.get("trainer", {}) if isinstance(config, dict) else {}
+    rollout = config.get("worker", {}).get("rollout", {}) if isinstance(config, dict) else {}
+    configured_gpus = trainer.get("n_gpus_per_node")
+    configured_tp = rollout.get("tensor_parallel_size")
+    gpu_ids = manifest.get("gpu_ids")
+    expected_replicas = (
+        configured_gpus // configured_tp
+        if isinstance(configured_gpus, int)
+        and isinstance(configured_tp, int)
+        and configured_tp > 0
+        and configured_gpus % configured_tp == 0
+        else None
+    )
+    runtime_tp_values = sorted(
+        {int(value) for value in re.findall(r'"tensor_parallel_size":\s*(\d+)', training_log)}
+    )
+    checkpoint_path = str(manifest.get("checkpoint_path", ""))
+    command = str(manifest.get("command", ""))
+    run_dir = run_manifest_path.resolve().parent
+    config_resolved = config_path.resolve() if config_value and config_path.exists() else None
+
+    checks = {
+        "effective_config_exists_and_parses": bool(config),
+        "effective_config_is_immutable_run_snapshot": bool(
+            config_resolved
+            and config_resolved.parent == run_dir
+            and config_resolved.name == "effective_config.yaml"
+        ),
+        "effective_config_hash_matches_manifest": bool(
+            config_resolved
+            and manifest.get("base_config_hash") == _sha256(config_resolved)
+        ),
+        "single_node_four_gpu_config": trainer.get("nnodes") == 1
+        and configured_gpus == 4,
+        "effective_config_requires_tp1": configured_tp == 1,
+        "manifest_gpu_ids_exact": isinstance(gpu_ids, list)
+        and len(gpu_ids) == 4
+        and len(set(gpu_ids)) == 4
+        and all(isinstance(gpu, int) and 0 <= gpu <= 7 for gpu in gpu_ids),
+        "manifest_tp_matches_effective_config": manifest.get("tensor_parallel_width")
+        == configured_tp
+        == 1,
+        "manifest_replica_count_derived": manifest.get("replica_count")
+        == expected_replicas
+        == 4,
+        "runtime_log_tp_matches_effective_config": runtime_tp_values == [configured_tp]
+        and configured_tp == 1,
+        "placement_policy_pinned": manifest.get("placement_policy_version")
+        == "pi-2026-07-11",
+        "command_uses_effective_config_snapshot": bool(
+            config_value and f"config={config_value}" in command
+        ),
+        "checkpoint_namespace_isolated": bool(
+            checkpoint_path
+            and "/checkpoints/smoke/" in checkpoint_path
+            and f"trainer.save_checkpoint_path={checkpoint_path}" in command
+        ),
+    }
+    if not all(checks.values()):
+        errors.extend(name for name, passed in checks.items() if not passed)
+    return {
+        "schema_version": "blind-gains.pilot-reward-smoke-placement-audit.v1",
+        "status": "pass" if all(checks.values()) and not errors else "fail",
+        "checks": checks,
+        "effective_config_path": str(config_path) if config_value else None,
+        "effective_config_sha256": _sha256(config_path)
+        if config_value and config_path.is_file()
+        else None,
+        "configured_tensor_parallel_width": configured_tp,
+        "configured_gpu_count": configured_gpus,
+        "expected_rollout_replica_count": expected_replicas,
+        "runtime_log_tensor_parallel_values": runtime_tp_values,
+        "errors": errors,
+    }
 
 
 def audit_shadow_rows(
@@ -276,8 +386,14 @@ def main() -> None:
     )
     training_checks["final_validation_marker_present"] = "Start validation..." in training_log
     training_checks["final_validation_finish_marker_present"] = "Finish validation." in training_log
+    placement_audit = audit_runtime_placement(
+        manifest,
+        training_log,
+        run_manifest_path=args.run_manifest,
+    )
     payload["training_contract_checks"] = training_checks
     payload["partition_audit"] = partitions
+    payload["placement_audit"] = placement_audit
     payload["status"] = (
         "pass"
         if payload["status"] == "pass"
@@ -285,11 +401,12 @@ def main() -> None:
         and partitions["training_audit"]["status"] == "pass"
         and partitions["validation_audit"]["status"] == "pass"
         and all(training_checks.values())
+        and placement_audit["status"] == "pass"
         else "fail"
     )
     payload.update(
         {
-            "schema_version": "blind-gains.pilot-reward-smoke-audit.v4",
+            "schema_version": "blind-gains.pilot-reward-smoke-audit.v5",
             "run_manifest": str(args.run_manifest),
             "shadow_jsonl": str(args.shadow_jsonl),
             "training_log": str(training_log_path),
