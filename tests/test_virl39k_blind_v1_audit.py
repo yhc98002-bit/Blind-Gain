@@ -8,7 +8,11 @@ from scripts.summarize_blind_solvability_virl39k_v1 import audit_runs, build_sum
 from src.eval.blind_solvability import CONDITIONS, PILOT_ROW_SCHEMA_VERSION, PILOT_SCORING_MODE, score_item_pilot
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+)
 
 
 def _sha256(path: Path) -> str:
@@ -150,6 +154,8 @@ def _fixture(tmp_path: Path) -> tuple[dict[str, Path], Path, Path, Path]:
             "sample_temperature": 1,
             "max_tokens": 2048,
             "format_weight": 0.5,
+            "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+            "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
             "seed": 20260710,
             "decoding": decoding,
             "caption_source_run": str(caption_run) if condition == "caption" else None,
@@ -184,3 +190,16 @@ def test_virl_audit_rejects_condition_with_missing_frozen_row(tmp_path: Path) ->
     assert audit["status"] == "fail"
     assert audit["checks"]["row_identity_equal_to_frozen_sample"] is False
     assert audit["row_counts"]["gray"] == 1
+
+
+def test_virl_audit_rejects_missing_symbolic_guard_stamp(tmp_path: Path) -> None:
+    runs, source, spec, prompt = _fixture(tmp_path)
+    manifest_path = runs["noise"] / "run_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest.pop("symbolic_grader_timeout_seconds")
+    manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+
+    audit, _ = audit_runs(runs, source, spec, prompt)
+
+    assert audit["status"] == "fail"
+    assert audit["checks"]["symbolic_grader_guard_locked"] is False

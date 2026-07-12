@@ -27,7 +27,11 @@ from src.eval.blind_solvability import (
 )
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT, load_prompt_contract_from_run_manifest
 from src.rewards.answer_reward import PARSER_VERSION
-from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+from src.rewards.pilot_reward import (
+    DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+    PILOT_REWARD_VERSION,
+    SYMBOLIC_GRADER_GUARD_VERSION,
+)
 
 
 def _sha256(path: Path) -> str:
@@ -165,6 +169,10 @@ def audit_runs(
             and manifest.get("sample_temperature") == 1
             and manifest.get("max_tokens") == 2048
             and manifest.get("format_weight") == 0.5
+            and manifest.get("symbolic_grader_guard_version")
+            == SYMBOLIC_GRADER_GUARD_VERSION
+            and manifest.get("symbolic_grader_timeout_seconds")
+            == DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
             and manifest.get("seed") == 20260710
             and manifest.get("decoding") == _expected_decoding(20260710)
         )
@@ -218,6 +226,17 @@ def audit_runs(
                 and row.get("pilot_reward_version") == PILOT_REWARD_VERSION
                 and row.get("scoring_mode") == PILOT_SCORING_MODE
                 and row.get("prompt_contract_sha256") == DEFAULT_PROMPT_CONTRACT.sha256
+                and row.get("symbolic_grader_guard_version")
+                == SYMBOLIC_GRADER_GUARD_VERSION
+                and row.get("symbolic_grader_timeout_seconds")
+                == DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS
+                and isinstance(row.get("greedy_native_r1v_shadow_valid"), bool)
+                and isinstance(row.get("sampled_native_r1v_shadow_valid"), list)
+                and len(row["sampled_native_r1v_shadow_valid"]) == 16
+                and all(
+                    isinstance(value, bool)
+                    for value in row["sampled_native_r1v_shadow_valid"]
+                )
             )
             sampled = row.get("sampled_responses")
             if not fixed or not isinstance(sampled, list) or len(sampled) != 16:
@@ -231,6 +250,7 @@ def audit_runs(
                 group_size=5,
                 prompt_contract=prompt_contract,
                 format_weight=0.5,
+                symbolic_grader_timeout_seconds=DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
             )
             differs = False
             for field in SCORE_FIELDS:
@@ -266,6 +286,8 @@ def audit_runs(
         "row_version_contract_valid": all(row_contract_checks.values()),
         "decoding_parameters_locked": all(decoding_checks.values()),
         "caption_store_question_blind_contract_pinned": caption_contract_ok,
+        "symbolic_grader_guard_locked": all(manifest_checks.values())
+        and all(row_contract_checks.values()),
         "recomputed_scores_match": sum(mismatch_rows.values()) == 0,
         "output_hashes_recorded": len(output_hashes) == len(CONDITIONS)
         and all(len(value) == 64 for value in output_hashes.values()),
@@ -288,6 +310,8 @@ def audit_runs(
         "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
         "parser_version": PARSER_VERSION,
         "pilot_reward_version": PILOT_REWARD_VERSION,
+        "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+        "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
         "source_manifest": str(source_manifest),
         "source_manifest_sha256": source_hash,
         "sample_spec": str(sample_spec_path),
@@ -356,6 +380,8 @@ def build_summary(
             "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
             "parser_version": PARSER_VERSION,
             "pilot_reward_version": PILOT_REWARD_VERSION,
+            "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+            "symbolic_grader_timeout_seconds": DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
             "scoring_mode": PILOT_SCORING_MODE,
         },
         "audit": audit,
@@ -380,6 +406,7 @@ def render_summary(summary: dict[str, Any], audit_json: Path) -> str:
         "",
         "Evidence:",
         "- Decoding: greedy plus n=16 at temperature 1.0, 2,048 maximum tokens, G=5.",
+        f"- Symbolic grading: `{summary['evaluation_contract']['symbolic_grader_guard_version']}` at `{summary['evaluation_contract']['symbolic_grader_timeout_seconds']}` seconds per bounded call.",
         f"- Frozen source SHA256: `{summary['audit']['source_manifest_sha256']}`.",
         f"- Multi-image distribution: `{summary['audit']['frozen_sample_statistics']['image_count_counts']}`; maximum 8 images.",
         "",
