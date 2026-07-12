@@ -14,10 +14,10 @@ CAPTION_RUN_DIR="$5"
 QA_RUN_DIR="$6"
 GPU_LIST="${7:-0 1 2 3 4 5 6 7}"
 MAX_NEW_TOKENS="${8:-32}"
-ROOT="$(pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if [[ ! "${SHARD_OFFSET}" =~ ^-?[0-9]+$ || ! "${NUM_SHARDS}" =~ ^[1-9][0-9]*$ ]]; then
-  echo "SHARD_OFFSET must be an integer and NUM_SHARDS must be positive" >&2
+if [[ "${SHARD_OFFSET}" != "0" || ! "${NUM_SHARDS}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "SHARD_OFFSET must be zero under single-node placement and NUM_SHARDS must be positive" >&2
   exit 2
 fi
 if [[ ! "${GPU_LIST}" =~ ^[0-7](\ [0-7])*$ ]]; then
@@ -28,12 +28,45 @@ if [[ ! "${MAX_NEW_TOKENS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "MAX_NEW_TOKENS must be positive" >&2
   exit 2
 fi
+read -r -a GPU_IDS <<< "${GPU_LIST}"
+if [[ "${#GPU_IDS[@]}" -ne "${NUM_SHARDS}" ]]; then
+  echo "Caption QA requires exactly one TP1 GPU replica per shard" >&2
+  exit 2
+fi
+if [[ "$(printf '%s\n' "${GPU_IDS[@]}" | sort -u | wc -l)" -ne "${NUM_SHARDS}" ]]; then
+  echo "GPU_LIST contains duplicate GPU ids" >&2
+  exit 2
+fi
+if [[ -e "${QA_RUN_DIR}/run_manifest.json" ]]; then
+  echo "Refusing to overwrite an existing caption-QA run manifest" >&2
+  exit 2
+fi
+if [[ ! -s "${CAPTION_RUN_DIR}/run_manifest.json" ]] || ! jq -e \
+  '.status == "complete"' "${CAPTION_RUN_DIR}/run_manifest.json" >/dev/null; then
+  echo "Caption-QA adapter run is not complete" >&2
+  exit 2
+fi
+
+LOCK_PATH="/tmp/blind_gains_${NODE}_caption_qa_launch.lock"
+exec 9>"${LOCK_PATH}"
+if ! flock -n 9; then
+  echo "Another caption-QA launch preflight is active on ${NODE}" >&2
+  exit 3
+fi
+for GPU in "${GPU_IDS[@]}"; do
+  # GPU selection is intentionally resolved by this launcher.
+  # shellcheck disable=SC2029
+  if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${GPU}' --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
+    echo "Caption-QA GPU ${GPU} on ${NODE} is occupied" >&2
+    exit 75
+  fi
+done
 
 mkdir -p "${QA_RUN_DIR}/logs" "${QA_RUN_DIR}/pids" "${QA_RUN_DIR}/shards" "${QA_RUN_DIR}/metrics"
 GIT_HASH="$(git rev-parse HEAD)"
 CAPTION_HASH="$(find "${CAPTION_RUN_DIR}/shards" -type f -name 'captions_shard_*.jsonl' -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')"
 CONFIG_HASH="$(printf 'model=%s\ncaption_hash=%s\nmax_new_tokens=%s\n' "${MODEL_PATH}" "${CAPTION_HASH}" "${MAX_NEW_TOKENS}" | sha256sum | awk '{print $1}')"
-GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
+GPU_IDS_JSON="$(printf '%s\n' "${GPU_IDS[@]}" | jq -sc 'map(tonumber)')"
 REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
 cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
 {
@@ -63,8 +96,9 @@ cat > "${QA_RUN_DIR}/run_manifest.json" <<JSON
 JSON
 
 LAUNCHED=0
-for GPU in ${GPU_LIST}; do
-  SHARD_INDEX=$((SHARD_OFFSET + GPU))
+for POSITION in "${!GPU_IDS[@]}"; do
+  GPU="${GPU_IDS[${POSITION}]}"
+  SHARD_INDEX=$((SHARD_OFFSET + POSITION))
   if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
     continue
   fi
@@ -82,7 +116,9 @@ for GPU in ${GPU_LIST}; do
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=metrics_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${QA_RUN_DIR}/logs' '${QA_RUN_DIR}/pids' '${QA_RUN_DIR}/shards' '${QA_RUN_DIR}/metrics' && source .venv/bin/activate && (nohup env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_caption_qa_fliptrack.py --model-path '${MODEL_PATH}' --input '${INPUT_PATH}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  # Run paths and placement values are intentionally expanded from the local manifest inputs.
+  # shellcheck disable=SC2029
+  ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${QA_RUN_DIR}/logs' '${QA_RUN_DIR}/pids' '${QA_RUN_DIR}/shards' '${QA_RUN_DIR}/metrics' && source .venv/bin/activate && (nohup setsid env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES='${GPU}' python scripts/eval_caption_qa_fliptrack.py --model-path '${MODEL_PATH}' --input '${INPUT_PATH}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
   LAUNCHED=$((LAUNCHED + 1))
 done

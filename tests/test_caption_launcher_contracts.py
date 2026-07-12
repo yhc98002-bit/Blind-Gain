@@ -141,6 +141,21 @@ def test_eval_manifests_record_all_behavior_changing_launcher_arguments() -> Non
     assert '"run_id": "$(basename' in caption_source
 
 
+def test_caption_qa_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
+    source = (ROOT / "scripts" / "launch_caption_qa_shards.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'read -r -a GPU_IDS <<< "${GPU_LIST}"' in source
+    assert 'for POSITION in "${!GPU_IDS[@]}"' in source
+    assert 'GPU="${GPU_IDS[${POSITION}]}"' in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + POSITION))" in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + GPU))" not in source
+    assert "exactly one TP1 GPU replica per shard" in source
+    assert "--query-compute-apps=pid" in source
+    assert "nohup setsid env" in source
+
+
 @pytest.mark.parametrize(
     "launcher",
     [
