@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import math
 import random
 from pathlib import Path
@@ -26,6 +27,28 @@ COLORS = (
 LINESTYLES = ("solid", "dash", "dot", "dashdot", "longdash", "shortdash")
 MARKERS = ("square", "triangle", "diamond", "plus", "x", "circle")
 LABELS = ("Aster", "Birch", "Cobalt", "Delta", "Ember", "Fjord")
+RENDERER_VERSION = "chart-v08-renderer-v2"
+DIAGNOSTIC_CONTRACT_VERSION = "chart-v08-necessity-v2"
+
+# Machado et al. severity-100 matrices, applied in linear RGB. The palette is
+# also dual-coded, so these checks are a lower bound rather than the sole cue.
+CVD_MATRICES = {
+    "protanopia": (
+        (0.152286, 1.052583, -0.204868),
+        (0.114503, 0.786281, 0.099216),
+        (-0.003882, -0.048116, 1.051998),
+    ),
+    "deuteranopia": (
+        (0.367322, 0.860646, -0.227968),
+        (0.280085, 0.672501, 0.047413),
+        (-0.011820, 0.042940, 0.968881),
+    ),
+    "tritanopia": (
+        (1.255528, -0.076749, -0.178779),
+        (-0.078411, 0.930809, 0.147602),
+        (0.004733, 0.691367, 0.303900),
+    ),
+}
 
 
 def _font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -43,6 +66,11 @@ def _font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.I
 
 def _srgb_channel(value: float) -> float:
     return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+
+
+def _linear_to_srgb(value: float) -> float:
+    value = max(0.0, min(1.0, value))
+    return 12.92 * value if value <= 0.0031308 else 1.055 * value ** (1 / 2.4) - 0.055
 
 
 def rgb_to_lab(color: tuple[int, int, int]) -> tuple[float, float, float]:
@@ -66,6 +94,58 @@ def minimum_palette_distance(colors: tuple[tuple[int, int, int], ...] = COLORS) 
         for index, left in enumerate(labs)
         for right in labs[index + 1 :]
     )
+
+
+def simulate_cvd(
+    color: tuple[int, int, int], mode: str
+) -> tuple[int, int, int]:
+    if mode not in CVD_MATRICES:
+        raise ValueError(f"unsupported color-vision mode: {mode}")
+    linear = tuple(_srgb_channel(value / 255.0) for value in color)
+    matrix = CVD_MATRICES[mode]
+    transformed = tuple(
+        sum(matrix[row][column] * linear[column] for column in range(3))
+        for row in range(3)
+    )
+    return tuple(round(_linear_to_srgb(value) * 255) for value in transformed)
+
+
+def palette_distance_report(
+    colors: tuple[tuple[int, int, int], ...] = COLORS,
+) -> dict[str, float]:
+    report = {"normal": minimum_palette_distance(colors)}
+    for mode in CVD_MATRICES:
+        report[mode] = minimum_palette_distance(
+            tuple(simulate_cvd(color, mode) for color in colors)
+        )
+    return report
+
+
+def adjacent_crossing_count(values: list[list[int]], target_x: int) -> int:
+    if not values or not 0 < target_x < len(values[0]) - 1:
+        raise ValueError("target_x must have an adjacent segment on both sides")
+    crossings = 0
+    for left_series in range(len(values)):
+        for right_series in range(left_series + 1, len(values)):
+            for left_x, right_x in ((target_x - 1, target_x), (target_x, target_x + 1)):
+                left_delta = values[left_series][left_x] - values[right_series][left_x]
+                right_delta = values[left_series][right_x] - values[right_series][right_x]
+                if (
+                    left_delta == 0
+                    or right_delta == 0
+                    or (left_delta < 0 < right_delta)
+                    or (left_delta > 0 > right_delta)
+                ):
+                    crossings += 1
+    return crossings
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _draw_styled_segment(
@@ -219,8 +299,14 @@ def _save_pair(
     template_id: str,
     provenance: dict[str, Any],
     verifier: dict[str, Any],
-    diagnostic_no_star: Image.Image,
-    diagnostic_random_star: Image.Image,
+    diagnostic_no_star_a: Image.Image,
+    diagnostic_no_star_b: Image.Image,
+    diagnostic_random_star_a: Image.Image,
+    diagnostic_random_star_b: Image.Image,
+    diagnostic_random_target_a: int,
+    diagnostic_random_target_b: int,
+    diagnostic_random_answer_a: int,
+    diagnostic_random_answer_b: int,
 ) -> dict[str, Any]:
     if answer_a == answer_b:
         raise ValueError("pair answers must differ")
@@ -234,9 +320,17 @@ def _save_pair(
         "image_b": image_dir / f"{pair_id}_b.png",
         "mask_a": mask_dir / f"{pair_id}_a_mask.png",
         "mask_b": mask_dir / f"{pair_id}_b_mask.png",
-        "no_star": diagnostic_dir / f"{pair_id}_no_star.png",
-        "random_star": diagnostic_dir / f"{pair_id}_random_star.png",
+        "no_star_a": diagnostic_dir / f"{pair_id}_a_no_star.png",
+        "no_star_b": diagnostic_dir / f"{pair_id}_b_no_star.png",
+        "random_star_a": diagnostic_dir / f"{pair_id}_a_random_star.png",
+        "random_star_b": diagnostic_dir / f"{pair_id}_b_random_star.png",
     }
+    existing = [path for path in paths.values() if path.exists()]
+    if existing:
+        raise FileExistsError(
+            "refusing to overwrite chart-v08 artifact: "
+            + ", ".join(str(path) for path in existing)
+        )
     image_a.save(paths["image_a"], compress_level=9)
     image_b.save(paths["image_b"], compress_level=9)
     mask = _exact_mask(image_a, image_b)
@@ -244,8 +338,11 @@ def _save_pair(
         raise ValueError("pair images must differ")
     mask.save(paths["mask_a"], compress_level=9)
     mask.save(paths["mask_b"], compress_level=9)
-    diagnostic_no_star.save(paths["no_star"], compress_level=9)
-    diagnostic_random_star.save(paths["random_star"], compress_level=9)
+    diagnostic_no_star_a.save(paths["no_star_a"], compress_level=9)
+    diagnostic_no_star_b.save(paths["no_star_b"], compress_level=9)
+    diagnostic_random_star_a.save(paths["random_star_a"], compress_level=9)
+    diagnostic_random_star_b.save(paths["random_star_b"], compress_level=9)
+    palette_distances = palette_distance_report()
     verifier = dict(verifier)
     verifier.update(
         {
@@ -255,9 +352,26 @@ def _save_pair(
             "target_point_highlighted": False,
             "target_point_arrowed": False,
             "dual_coding": True,
-            "minimum_palette_cie76": round(minimum_palette_distance(), 4),
-            "diagnostic_no_star_path": str(paths["no_star"]),
-            "diagnostic_random_star_path": str(paths["random_star"]),
+            "target_point_annotation_circle": False,
+            "minimum_palette_cie76": round(palette_distances["normal"], 4),
+            "palette_cie76_by_vision_mode": {
+                mode: round(distance, 4)
+                for mode, distance in palette_distances.items()
+            },
+            "diagnostic_contract_version": DIAGNOSTIC_CONTRACT_VERSION,
+            "diagnostic_scoring_rule": "score_each_intervention_against_original_member_answer",
+            "diagnostic_no_star_a_path": str(paths["no_star_a"]),
+            "diagnostic_no_star_b_path": str(paths["no_star_b"]),
+            "diagnostic_random_star_a_path": str(paths["random_star_a"]),
+            "diagnostic_random_star_b_path": str(paths["random_star_b"]),
+            "diagnostic_no_star_a_sha256": _sha256(paths["no_star_a"]),
+            "diagnostic_no_star_b_sha256": _sha256(paths["no_star_b"]),
+            "diagnostic_random_star_a_sha256": _sha256(paths["random_star_a"]),
+            "diagnostic_random_star_b_sha256": _sha256(paths["random_star_b"]),
+            "diagnostic_random_target_a": diagnostic_random_target_a,
+            "diagnostic_random_target_b": diagnostic_random_target_b,
+            "diagnostic_random_implied_answer_a": diagnostic_random_answer_a,
+            "diagnostic_random_implied_answer_b": diagnostic_random_answer_b,
         }
     )
     return pair_record(
@@ -288,6 +402,23 @@ def _base_values(rng: random.Random, series_count: int, x_count: int, target_x: 
     return values
 
 
+def _discordant_series(
+    values: list[list[int]],
+    target_series: int,
+    target_x: int,
+    rng: random.Random,
+) -> int:
+    target_answer = values[target_series][target_x]
+    candidates = [
+        index
+        for index, series in enumerate(values)
+        if index != target_series and series[target_x] != target_answer
+    ]
+    if not candidates:
+        raise ValueError("necessity diagnostic has no answer-discordant target")
+    return rng.choice(candidates)
+
+
 def generate_chart_v08_pairs(
     out_dir: str | Path,
     *,
@@ -295,6 +426,8 @@ def generate_chart_v08_pairs(
     seed: int,
 ) -> list[dict[str, Any]]:
     out_dir = Path(out_dir)
+    if out_dir.exists() and any(out_dir.iterdir()):
+        raise FileExistsError(f"refusing to overwrite nonempty chart-v08 directory: {out_dir}")
     rows: list[dict[str, Any]] = []
     for subfamily_index, subfamily in enumerate(("legend_target", "point_value")):
         for index in range(n_per_subfamily):
@@ -329,7 +462,10 @@ def generate_chart_v08_pairs(
                 answer_b = values_b[target_b][target_x]
                 image_a = _render(values_a, target_a, target_x, series_count=series_count)
                 image_b = _render(values_b, target_b, target_x, series_count=series_count)
-                random_target = rng.choice([value for value in range(series_count) if value != target_a])
+                random_target_a = _discordant_series(values_a, target_a, target_x, rng)
+                random_target_b = _discordant_series(values_b, target_b, target_x, rng)
+                crossing_count = adjacent_crossing_count(values_a, target_x)
+                crossing_slots = math.comb(series_count, 2) * 2
                 row = _save_pair(
                     out_dir=out_dir / subfamily,
                     pair_id="chart_v08_legend_" + stable_id(pair_seed, target_a, target_b, target_x),
@@ -342,6 +478,7 @@ def generate_chart_v08_pairs(
                     template_id="chart_v08_legend_target_flip",
                     provenance={
                         "generator": "src.fliptrack.render_chart_v08",
+                        "renderer_version": RENDERER_VERSION,
                         "pair_seed": pair_seed,
                         "subfamily": subfamily,
                         "difficulty_controls": ["crossing_density", "value_grid_granularity"],
@@ -356,12 +493,21 @@ def generate_chart_v08_pairs(
                         "only_semantic_change": "starred_legend_entry",
                         "mask_semantics": "star_region",
                         "value_grid_granularity": granularity,
+                        "adjacent_crossing_count_a": crossing_count,
+                        "adjacent_crossing_count_b": crossing_count,
+                        "adjacent_crossing_fraction_a": round(crossing_count / crossing_slots, 6),
+                        "adjacent_crossing_fraction_b": round(crossing_count / crossing_slots, 6),
                         "values_a": values_a,
                         "values_b": values_b,
-                        "randomized_star_series": random_target,
                     },
-                    diagnostic_no_star=_render(values_a, None, target_x, series_count=series_count),
-                    diagnostic_random_star=_render(values_a, random_target, target_x, series_count=series_count),
+                    diagnostic_no_star_a=_render(values_a, None, target_x, series_count=series_count),
+                    diagnostic_no_star_b=_render(values_b, None, target_x, series_count=series_count),
+                    diagnostic_random_star_a=_render(values_a, random_target_a, target_x, series_count=series_count),
+                    diagnostic_random_star_b=_render(values_b, random_target_b, target_x, series_count=series_count),
+                    diagnostic_random_target_a=random_target_a,
+                    diagnostic_random_target_b=random_target_b,
+                    diagnostic_random_answer_a=values_a[random_target_a][target_x],
+                    diagnostic_random_answer_b=values_b[random_target_b][target_x],
                 )
             else:
                 target_b = target_a
@@ -370,11 +516,20 @@ def generate_chart_v08_pairs(
                     value
                     for value in range(10, 91, granularity)
                     if value != current and abs(value - current) >= granularity
+                    and any(
+                        series_index != target_a
+                        and values_a[series_index][target_x] != value
+                        for series_index in range(series_count)
+                    )
                 ]
                 values_b[target_a][target_x] = rng.choice(replacements)
                 answer_a = current
                 answer_b = values_b[target_a][target_x]
-                random_target = rng.choice([value for value in range(series_count) if value != target_a])
+                random_target_a = _discordant_series(values_a, target_a, target_x, rng)
+                random_target_b = _discordant_series(values_b, target_b, target_x, rng)
+                crossing_count_a = adjacent_crossing_count(values_a, target_x)
+                crossing_count_b = adjacent_crossing_count(values_b, target_x)
+                crossing_slots = math.comb(series_count, 2) * 2
                 row = _save_pair(
                     out_dir=out_dir / subfamily,
                     pair_id="chart_v08_value_" + stable_id(pair_seed, target_a, target_x, answer_a, answer_b),
@@ -387,6 +542,7 @@ def generate_chart_v08_pairs(
                     template_id="chart_v08_point_value_flip",
                     provenance={
                         "generator": "src.fliptrack.render_chart_v08",
+                        "renderer_version": RENDERER_VERSION,
                         "pair_seed": pair_seed,
                         "subfamily": subfamily,
                         "difficulty_controls": ["crossing_density", "value_grid_granularity"],
@@ -402,12 +558,21 @@ def generate_chart_v08_pairs(
                         "only_semantic_change": "one_target_series_value",
                         "mask_semantics": "marker_and_affected_segments",
                         "value_grid_granularity": granularity,
+                        "adjacent_crossing_count_a": crossing_count_a,
+                        "adjacent_crossing_count_b": crossing_count_b,
+                        "adjacent_crossing_fraction_a": round(crossing_count_a / crossing_slots, 6),
+                        "adjacent_crossing_fraction_b": round(crossing_count_b / crossing_slots, 6),
                         "values_a": values_a,
                         "values_b": values_b,
-                        "randomized_star_series": random_target,
                     },
-                    diagnostic_no_star=_render(values_a, None, target_x, series_count=series_count),
-                    diagnostic_random_star=_render(values_a, random_target, target_x, series_count=series_count),
+                    diagnostic_no_star_a=_render(values_a, None, target_x, series_count=series_count),
+                    diagnostic_no_star_b=_render(values_b, None, target_x, series_count=series_count),
+                    diagnostic_random_star_a=_render(values_a, random_target_a, target_x, series_count=series_count),
+                    diagnostic_random_star_b=_render(values_b, random_target_b, target_x, series_count=series_count),
+                    diagnostic_random_target_a=random_target_a,
+                    diagnostic_random_target_b=random_target_b,
+                    diagnostic_random_answer_a=values_a[random_target_a][target_x],
+                    diagnostic_random_answer_b=values_b[random_target_b][target_x],
                 )
             rows.append(row)
     return rows
