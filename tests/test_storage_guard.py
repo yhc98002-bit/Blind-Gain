@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from src.ops.storage_guard import (
+    DEFAULT_SHARED_QUOTA_BYTES,
     GIB,
     allocated_bytes_from_snapshot,
     append_guard_log,
@@ -14,6 +15,10 @@ from src.ops.storage_guard import (
     evaluate_scratch_guard,
     evaluate_shared_guard,
 )
+
+
+def test_default_shared_quota_matches_pi_allocation_update() -> None:
+    assert DEFAULT_SHARED_QUOTA_BYTES == 1500 * GIB
 
 
 def test_shared_guard_refuses_write_that_crosses_twenty_gib_floor(tmp_path: Path) -> None:
@@ -24,6 +29,7 @@ def test_shared_guard_refuses_write_that_crosses_twenty_gib_floor(tmp_path: Path
         operation="checkpoint_save",
         required_bytes=8 * GIB,
         shared_quota_root=tmp_path,
+        shared_quota_bytes=quota,
         usage_probe=lambda _: quota - 27 * GIB,
     )
 

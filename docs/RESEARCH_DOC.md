@@ -47,7 +47,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M2: four-arm seed-1 launch is authorized only through the merged-at-HEAD launcher checks; storage reclamation and live placement checks precede process creation.
 - M4/M8/M11/M12/M13: extension transcription, 7B preparation, non-Qwen access audit, chart-v08 implementation, and Paper-1 scaffolding are proceeding independently of M2.
 - M12: the pre-main chart-v08 point-value prototype was never launched. Main-phase v08 now requires separately reported legend-target and point-value subfamilies plus a two-hop necessity diagnostic before any freeze.
-- Storage: the 2026-07-12 quota-aware refresh measured only 3.70 GiB conservative Tier-S headroom; all bulky writes remain guard-blocked while retention-eligible caches are inventoried for relocation.
+- Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
 

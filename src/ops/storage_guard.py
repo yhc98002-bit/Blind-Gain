@@ -11,7 +11,9 @@ from typing import Callable, Literal
 
 
 GIB = 1024**3
-DEFAULT_SHARED_QUOTA_BYTES = 500 * GIB
+# PI allocation update, 2026-07-12: 1.5 TiB is conservatively represented as
+# 1,500 GiB so the guard never assumes more than the reported allocation.
+DEFAULT_SHARED_QUOTA_BYTES = 1500 * GIB
 DEFAULT_SHARED_FLOOR_BYTES = 20 * GIB
 DEFAULT_SCRATCH_FLOOR_BYTES = 40 * GIB
 MEMORY_FILESYSTEMS = frozenset({"tmpfs", "ramfs"})

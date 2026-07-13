@@ -10,6 +10,8 @@ import subprocess
 import time
 from pathlib import Path
 
+from src.ops.storage_guard import DEFAULT_SHARED_QUOTA_BYTES
+
 
 DEFAULT_ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289")
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "reports" / "storage_usage_snapshot.json"
@@ -36,7 +38,7 @@ def measure(root: Path, *, workers: int, timeout_seconds: int) -> dict[str, obje
     after = sorted(path for path in root.iterdir())
     if before != after:
         raise RuntimeError("quota-root top-level entries changed during measurement")
-    quota_bytes = 500 * 1024**3
+    quota_bytes = DEFAULT_SHARED_QUOTA_BYTES
     used_bytes = sum(components.values())
     return {
         "schema_version": 1,
