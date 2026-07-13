@@ -1,0 +1,264 @@
+{
+  "audited_file_checks": {
+    "reports/blind_solvability_geo3k_v2_audited.json": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.json",
+      "audited_sha256": "131e441f27e1099bcd87855591f6896773b3fcc079b44c3849fd7197bdb96ee7",
+      "audited_size_bytes": 3634,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.json",
+      "counterpart_sha256": "44c21263c72279cfecf29eb7b154a939df7bbcd5099bc8d10a495d080f15a6a0",
+      "counterpart_size_bytes": 51970
+    },
+    "reports/blind_solvability_geo3k_v2_audited.md": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2_audited.md",
+      "audited_sha256": "0bd458a1c319e97bdac1f455428d37070aa9951ff76f70cd227335b02b8eaa9e",
+      "audited_size_bytes": 1404,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v2.md",
+      "counterpart_sha256": "ef40376f128391fcc1cd99add9f9691a9601b122854d4f5d7e96b5b3e7dedf7d",
+      "counterpart_size_bytes": 5460
+    },
+    "reports/blind_solvability_geo3k_v3_audited.json": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.json",
+      "audited_sha256": "3af83d4503096ad55a3ba7435d6f10c54f2b0f93ce8761a71ed53e244c779b01",
+      "audited_size_bytes": 33192,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.json",
+      "counterpart_sha256": "c6bd96d847fb1ab21ea6056e49ee9556b7807c14c8cbd2cb7aa4305f112651db",
+      "counterpart_size_bytes": 32664
+    },
+    "reports/blind_solvability_geo3k_v3_audited.md": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k_v3_audited.md",
+      "audited_sha256": "65c747d7e3cd45992499203b66fed0de3f19685d9053224e8f7d901596d7b990",
+      "audited_size_bytes": 5603,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_geo3k.md",
+      "counterpart_sha256": "a8a138a96180fcae1174810418a47a32ceb92b41e704fdb965e814266a7321b6",
+      "counterpart_size_bytes": 5035
+    },
+    "reports/blind_solvability_virl39k_sample_v1_audited.json": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_virl39k_sample_v1_audited.json",
+      "audited_sha256": "e0f39f3e45579ba31de18e597c3861abac382a67676becc32c5bb2cec6442620",
+      "audited_size_bytes": 5032,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_virl39k_sample_v1.json",
+      "counterpart_sha256": "55d9b585cce52962b1db07da7da75186e3bbf3544d4fbc04f5fc68997a6873dc",
+      "counterpart_size_bytes": 103831
+    },
+    "reports/blind_solvability_virl39k_sample_v1_audited.md": {
+      "audited": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_virl39k_sample_v1_audited.md",
+      "audited_sha256": "cc8ba63acdbb43c728a32fea90b1371d6fdd7011e56b76c21d18127ab1b0206b",
+      "audited_size_bytes": 1348,
+      "byte_identical": false,
+      "counterpart": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/blind_solvability_virl39k_sample_v1.md",
+      "counterpart_sha256": "90889962d5927f7c1de4c53a8971963ebd22b1bc6eaf2224e73b3807a9fd25ab",
+      "counterpart_size_bytes": 5899
+    }
+  },
+  "checks": {
+    "M2_or_M3_pass_requires_preregistration": true,
+    "M5_M6_M7_or_M9_pass_requires_registered_extensions": true,
+    "audited_files_are_not_byte_identical_to_counterparts": true,
+    "every_pass_has_all_nonempty_named_reports": true,
+    "progress_has_exactly_one_valid_line_per_registry_task": true,
+    "registry_defines_exact_M0_through_M14": true
+  },
+  "errors": [],
+  "expected_task_ids": [
+    "M0",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14"
+  ],
+  "ledger": {
+    "M0": {
+      "note": "reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step",
+      "status": "pass"
+    },
+    "M1": {
+      "note": "reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify",
+      "status": "pass"
+    },
+    "M10": {
+      "note": "support-sharpening protocol registry and applicable post-training readouts do not yet exist",
+      "status": "blocked"
+    },
+    "M11": {
+      "note": "reports/m11_model_access_readiness_v3.md: both ModelScope downloads and per-file verified an29 /dev/shm stages are complete; adapters, smoke tests, and registered inference remain",
+      "status": "blocked"
+    },
+    "M12": {
+      "note": "reports/chart_v08_generation_status.md: declared 100-pair two-subfamily batch and necessity diagnostics are generated with no answer-pointing cues; scoring, human legibility, attackers, and freeze remain",
+      "status": "blocked"
+    },
+    "M13": {
+      "note": "reports/paper1_pipeline_status_v2.md: Paper-1 skeleton and fail-closed hash-pinned figure builder exist; all scientific result slots remain pending",
+      "status": "blocked"
+    },
+    "M14": {
+      "note": "requires M6, M9 seed 1, and a merged M4 addendum",
+      "status": "blocked"
+    },
+    "M2": {
+      "note": "reports/m2_seed1_launch_status_v2.md: all four authorized arms are running as single-node four-GPU jobs with one active watcher each; no registered result is yet reported",
+      "status": "blocked"
+    },
+    "M3": {
+      "note": "requires merged M0 and pilot seed-1 launch validation",
+      "status": "blocked"
+    },
+    "M4": {
+      "note": "reports/registered_extensions_audit_v1.md: faithful transcription is prepared with PI-requested computed-pending fields; Richard confirmation and merge-state follow-up are still required",
+      "status": "blocked"
+    },
+    "M5": {
+      "note": "requires merged M4 and restore-and-resume integrity evidence",
+      "status": "blocked"
+    },
+    "M6": {
+      "note": "requires merged M4, advantage-tensor equivalence, and disjoint pair-corpus evidence",
+      "status": "blocked"
+    },
+    "M7": {
+      "note": "requires merged M4 and confirmed M1 fork ruling",
+      "status": "blocked"
+    },
+    "M8": {
+      "note": "reports/m8_7b_prep_launch_status_v2.md: four batch-aligned condition prefixes were preserved and marked resume-required after priority preemption for M2 A2-gray; noise, completion, and audit remain",
+      "status": "blocked"
+    },
+    "M9": {
+      "note": "requires merged M4 and completed M8",
+      "status": "blocked"
+    }
+  },
+  "pass_report_checks": {
+    "M0": {
+      "reports/fliptrack_v02r19_human_audit.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "3e0dcabdcf8c1764a3158fb0805c6fe385c4afcff27298db7d65ba12e244bd5b",
+        "size_bytes": 4541
+      },
+      "reports/m0_preregistration_finalization.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "972759266831fd1006e103e8bfe4f8cee3c702e16ebdbe764a10bcd0e6aba9d1",
+        "size_bytes": 1618
+      },
+      "reports/pilot_reward_spec_v3.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "b4c85133cb9684e2f215e473a191c7e8af1ec2b8750423ccf77cd9e631e7d3a7",
+        "size_bytes": 4900
+      },
+      "reports/preregistration_pilot_v1.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "fb7e220f1dee62a01a0ce9ee8c4a9f1f1543f189239eb0e83466ed64ad1c1edb",
+        "size_bytes": 13669
+      }
+    },
+    "M1": {
+      "reports/blind_solvability_virl39k_sample_v1.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "90889962d5927f7c1de4c53a8971963ebd22b1bc6eaf2224e73b3807a9fd25ab",
+        "size_bytes": 5899
+      },
+      "reports/blind_solvability_virl39k_sample_v1_audited.json": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "e0f39f3e45579ba31de18e597c3861abac382a67676becc32c5bb2cec6442620",
+        "size_bytes": 5032
+      },
+      "reports/virl_fork_ruling.md": {
+        "nonempty": true,
+        "present": true,
+        "sha256": "28c7cac92a276385dbeda5d1b7c499e12d822f652260456347cefd65dba584a1",
+        "size_bytes": 1960
+      }
+    }
+  },
+  "preregistration_dependency": {
+    "path": "reports/preregistration_pilot_v1.md",
+    "present_nonempty": true,
+    "required_by": [],
+    "satisfied": true
+  },
+  "registered_extensions_dependency": {
+    "path": "docs/registered_extensions_v1.md",
+    "present_nonempty": true,
+    "required_by": [],
+    "satisfied": true
+  },
+  "registry": {
+    "M0": [
+      "reports/m0_preregistration_finalization.md",
+      "reports/preregistration_pilot_v1.md",
+      "reports/pilot_reward_spec_v3.md",
+      "reports/fliptrack_v02r19_human_audit.md"
+    ],
+    "M1": [
+      "reports/blind_solvability_virl39k_sample_v1.md",
+      "reports/blind_solvability_virl39k_sample_v1_audited.json",
+      "reports/virl_fork_ruling.md"
+    ],
+    "M10": [
+      "reports/support_sharpening_registry_v1.md"
+    ],
+    "M11": [
+      "reports/generalization_audits_v1.md"
+    ],
+    "M12": [
+      "reports/chart_v08_calibration.md",
+      "reports/chart_v08_confirmatory.md"
+    ],
+    "M13": [
+      "reports/paper1_pipeline_status.md"
+    ],
+    "M14": [
+      "reports/mergeback_gate_readouts_v1.md"
+    ],
+    "M2": [
+      "reports/pilot_4arm_seed1_results_v1.md"
+    ],
+    "M3": [
+      "reports/pilot_3seed_summary_v1.md"
+    ],
+    "M4": [
+      "reports/registered_extensions_audit_v1.md"
+    ],
+    "M5": [
+      "reports/anchor_longhorizon_400_results_v1.md"
+    ],
+    "M6": [
+      "reports/mini_a5_control_results_v1.md"
+    ],
+    "M7": [
+      "reports/virl_3b_decomposition_results_v1.md",
+      "reports/virl_3b_data_readiness_v1.md"
+    ],
+    "M8": [
+      "reports/flagship_7b_readiness_v1.md",
+      "reports/blind_solvability_virl39k_7b_sample_v1.md"
+    ],
+    "M9": [
+      "reports/flagship_7b_results_v1.md",
+      "reports/flagship_7b_3seed_v1.md"
+    ]
+  },
+  "schema_version": "blind-gains.main-objective-audit.v1",
+  "status": "pass"
+}
