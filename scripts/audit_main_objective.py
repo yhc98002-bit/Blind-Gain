@@ -13,7 +13,7 @@ from scripts.audit_prelaunch_objective import audited_file_checks
 
 
 EXPECTED_TASK_IDS = tuple(f"M{index}" for index in range(15))
-REQUIRED_PASS_TASKS = ("M0", "M1", "M11", "M13")
+REQUIRED_PASS_TASKS = ("M0", "M1", "M4", "M13")
 REGISTRY_ROW_RE = re.compile(r"^\| (M(?:[0-9]|1[0-4])) \| .+ \| .+ \| (?P<evidence>.+) \|$")
 REPORT_TOKEN_RE = re.compile(r"`(reports/[^`]+)`")
 LEDGER_LINE_RE = re.compile(r"^(M(?:[0-9]|1[0-4])) \| (pass|fail|blocked) \| (\S.*)$")
@@ -187,7 +187,7 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
     checks = {
         "registry_defines_exact_M0_through_M14": bool(registry),
         "progress_has_exactly_one_valid_line_per_registry_task": bool(ledger),
-        "required_M0_M1_M11_M13_tasks_pass": required_tasks_pass,
+        "required_M0_M1_M4_M13_tasks_pass": required_tasks_pass,
         "every_pass_has_all_nonempty_named_reports": bool(ledger)
         and all(
             all(record["present"] and record["nonempty"] for record in reports.values())

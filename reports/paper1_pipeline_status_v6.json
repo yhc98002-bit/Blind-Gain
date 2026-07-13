@@ -1,0 +1,23 @@
+{
+  "schema_version": "blind-gains.paper1-pipeline-status.v6",
+  "status": "pass",
+  "status_scope": "reusable paper artifact pipeline",
+  "checks": {
+    "v5_machine_audit_pass": true,
+    "v5_markdown_retained": true,
+    "v5_machine_artifact_retained": true,
+    "status_wording_consistency_safe": true,
+    "scientific_result_slots_fail_closed": true
+  },
+  "v5_evidence": {
+    "markdown": {
+      "path": "reports/paper1_pipeline_status_v5.md",
+      "sha256": "9a183ccdf3253e3c9498d4cb03dbaca68fc93cf33835df90f359cf80cc9695c8"
+    },
+    "machine": {
+      "path": "reports/paper1_pipeline_status_v5.json",
+      "sha256": "aa2406c1ebcab3c833541630db7a076cab7403f7f8b26762471e82acdcaa7c42",
+      "status": "pass"
+    }
+  }
+}

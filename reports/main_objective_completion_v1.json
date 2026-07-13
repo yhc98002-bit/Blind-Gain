@@ -1,0 +1,55 @@
+{
+  "schema_version": "blind-gains.main-objective-completion.v1",
+  "status": "pass",
+  "checks": {
+    "registry_exact_m0_through_m14": true,
+    "ledger_exact_one_line_per_task": true,
+    "required_m0_m1_m4_m13_pass": true,
+    "all_pass_reports_present_nonempty": true,
+    "training_preregistration_dependency_satisfied": true,
+    "extension_registration_dependency_satisfied": true,
+    "audited_counterparts_distinct": true,
+    "scientific_consistency_audit_pass": true,
+    "full_tests_exit_zero": true
+  },
+  "pass_task_ids": [
+    "M0",
+    "M1",
+    "M4",
+    "M13"
+  ],
+  "objective_audit": {
+    "path": "reports/main_objective_audit_v5.json",
+    "sha256": "89d1546b3e519e3cb4fdb641b5b716f740a824fdd49b8dbe6f0f1b0e0e4ea3d2",
+    "status": "pass",
+    "audited_files_checked": 6,
+    "byte_identical_count": 0
+  },
+  "inputs": {
+    "registry": {
+      "path": "MAIN_TASKS.md",
+      "sha256": "17d8b64f9e2c50e467c2df2f04a47d5e827d8c08d5c93f8353c7d02b4b9497bb"
+    },
+    "ledger": {
+      "path": "reports/main_progress.md",
+      "sha256": "d9055f59007d2f1833f3e4a78500ae1bf42f6fffe9a33cd9a1cfbc60d75f3dfe"
+    },
+    "m4_machine_evidence": {
+      "path": "reports/registered_extensions_audit_v3.json",
+      "sha256": "96502f0e5341d0e520f9d70982c5cde5917a63c85fd97c5ca5aa420ca2054b55"
+    },
+    "m13_machine_evidence": {
+      "path": "reports/paper1_pipeline_status_v6.json",
+      "sha256": "7224fbd7eb194112df0accd574c2fdde76b8e09c9c2b791df6a577d17d25329d"
+    }
+  },
+  "tests": {
+    "command": ".venv/bin/python -m pytest tests/",
+    "equivalent_requested_command": "python -m pytest tests/ after activating .venv",
+    "exit_code": 0,
+    "collected": 564,
+    "passed": 564,
+    "duration_seconds": 586.90
+  },
+  "scope_note": "M4 pass certifies repository transcription and dependency accounting; M5-M7/M9 scientific launch authorization remains fail-closed."
+}

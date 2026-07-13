@@ -8,7 +8,7 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 | M1 | Finish ViRL39K 4,096 audit and fork ruling | audit can run with M0; ruling follows M0 | `reports/blind_solvability_virl39k_sample_v1.md`; `reports/blind_solvability_virl39k_sample_v1_audited.json`; `reports/virl_fork_ruling.md` |
 | M2 | Four-arm pilot seed 1 | merged-at-HEAD M0 | `reports/pilot_4arm_seed1_results_v1.md` |
 | M3 | Pilot seeds 2–3 | M0; follows M2 launch validation | `reports/pilot_3seed_summary_v1.md` |
-| M4 | Register extensions | M1 fork resolved; M3/M7/M8-dependent fields remain `{computed-pending}`; flat/rising rule and exact merge marker block M5–M7/M9 | `docs/registered_extensions_v1.md`; `reports/registered_extensions_audit_v2.md` |
+| M4 | Register extensions | M1 fork resolved; M3/M7/M8-dependent fields remain `{computed-pending}`; flat/rising rule and exact merge marker block M5–M7/M9 | `docs/registered_extensions_v1.md`; `reports/registered_extensions_audit_v3.md`; `reports/registered_extensions_audit_v3.json` |
 | M5 | Anchor long horizon to step 400 | M4; resume integrity | `reports/anchor_longhorizon_400_results_v1.md` |
 | M6 | Mini-A5 matched control | M4; reward/grouping audits | `reports/mini_a5_control_results_v1.md` |
 | M7 | ViRL 3B decomposition | M4 and M1 fork ruling | `reports/virl_3b_decomposition_results_v1.md`; `reports/virl_3b_data_readiness_v1.md` |
@@ -17,7 +17,7 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 | M10 | Support-sharpening resampling | folded into each applicable readout | `reports/support_sharpening_registry_v1.md` plus per-readout 64-sample artifacts |
 | M11 | Non-Qwen inference audits | gap-filler; Gemma access may block | `reports/generalization_audits_v1.md` |
 | M12 | Chart v08 two-subfamily instrument | gap-filler; R19 immutable | `reports/chart_v08_generation_status_v2.md`; `reports/chart_v08_mechanical_audit_v2.md`; `reports/chart_v08_calibration.md`; `reports/chart_v08_confirmatory.md` |
-| M13 | Paper 1 pipeline | continuous | `docs/paper1/`; `reports/paper1_pipeline_status_v5.md`; `reports/paper1_pipeline_status_v5.json` |
+| M13 | Paper 1 pipeline | continuous | `docs/paper1/`; `reports/paper1_pipeline_status_v6.md`; `reports/paper1_pipeline_status_v6.json` |
 | M14 | Merge-back readouts | M6 and M9 seed 1; registered M4 addendum | `reports/mergeback_gate_readouts_v1.md` |
 
 Global completion checks:

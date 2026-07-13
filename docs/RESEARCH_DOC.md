@@ -41,6 +41,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 | E10 | Ops/governance | storage guards+retention+quota tooling; goal-loop caught 3 Goodhart patterns (gate-status conjunction, duplicate audited file, registry authorship) — all structurally patched | Methodology section material |
 | E11 | ViRL39K blind-solvability, 4,096 items, five conditions | mean q_i: real 0.5115, caption 0.4355, gray 0.4188, noise 0.4251, no-image 0.4151; all 15 independent audit checks pass | Registered fork selects strong source/category heterogeneity; H-mixed headline and stratified readouts |
 | E12 | Paper-1 artifact pipeline | section/result/data-card/nonoverlap registries plus immutable builders for decomposition bars, hurdle intervals, dissociation scatter, and audit tables | V5 audit passes after registered methods, corpus manifests, and landed audit hashes were populated; future scientific result slots remain explicit and fail closed |
+| E13 | M4 extension repository handoff | long-horizon, mini-A5, ViRL-3B, and 7B designs transcribed; audited M1 fork filled; all later computed fields remain explicit | Repository-deliverable V3 passes; M5-M7/M9 scientific launch authorization remains fail-closed until the PI flat/rising rule and exact merge marker land |
 
 ## 5. In flight
 
@@ -49,8 +50,8 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
 - M11: the full matrix stayed closed after four historical failed smoke attempts. Isolated `.venv-m11` passes exact Torch 2.6/cu118, Transformers 4.56.2, mask-combinator, and Gemma-import checks. The live queue is waiting for successful completion of A2b retry4 and A3, with zero capacity polls and all 24 cells pending. The EasyR1 environment is unchanged.
 - M12: the declared 100-pair v08 calibration batch remains immutable. A V2 CPU audit reconstructs every image, verifies exact masks/mechanics and CVD-aware dual coding, and adds 400 answer-discordant member-level no-star/randomized-star interventions; human/model/caption/attacker gates remain.
-- M4: the audited M1 heterogeneity fork is filled into the extension transcription. Registration remains fail-closed because the PI source does not operationalize the required flat/rising verdict and the canonical merged-at-HEAD line is absent.
-- M13: pipeline delivery is complete and machine-audited at V5; the methods appendix and data card pin landed contracts/manifests while future values remain explicit pending slots.
+- M4: the repository transcription and dependency-accounting task is complete at V3. Scientific authorization remains fail-closed because the PI source does not operationalize the flat/rising verdict and the canonical merged-at-HEAD line is absent.
+- M13: pipeline delivery is complete and machine-audited; V6 preserves V5 evidence while making the pass-status scope explicit and consistency-safe. The methods appendix and data card pin landed contracts/manifests while future values remain fail-closed slots.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)

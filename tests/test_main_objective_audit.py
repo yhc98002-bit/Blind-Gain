@@ -56,7 +56,7 @@ def test_required_objective_tasks_cannot_remain_blocked(tmp_path: Path) -> None:
     payload = build_main_objective_audit(root)
 
     assert payload["status"] == "fail"
-    assert payload["checks"]["required_M0_M1_M11_M13_tasks_pass"] is False
+    assert payload["checks"]["required_M0_M1_M4_M13_tasks_pass"] is False
     assert "required objective tasks are not pass" in "\n".join(payload["errors"])
 
 
@@ -72,6 +72,21 @@ def test_required_objective_tasks_pass_with_nonempty_evidence(tmp_path: Path) ->
 
     assert payload["status"] == "pass"
     assert all(payload["checks"].values())
+
+
+def test_m11_pass_cannot_substitute_for_required_m4(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    for task_id in ("M0", "M1", "M11", "M13"):
+        _mark_pass(root, task_id)
+        (root / f"reports/{task_id.lower()}_report.md").write_text(
+            f"{task_id} evidence\n", encoding="utf-8"
+        )
+
+    payload = build_main_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["checks"]["required_M0_M1_M4_M13_tasks_pass"] is False
+    assert "M4" in "\n".join(payload["errors"])
 
 
 def test_pass_task_requires_every_named_report_nonempty(tmp_path: Path) -> None:

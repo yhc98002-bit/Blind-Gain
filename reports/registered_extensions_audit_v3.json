@@ -1,0 +1,52 @@
+{
+  "schema_version": "blind-gains.registered-extensions-audit.v3",
+  "status": "pass",
+  "status_scope": "M4 repository transcription, dependency resolution, and fail-closed handoff",
+  "completion_checks": {
+    "pi_source_transcribed_without_silent_design_substitution": true,
+    "m1_fork_resolved_from_audited_ruling": true,
+    "m3_m7_m8_dependent_fields_explicit": true,
+    "long_horizon_missing_rule_disclosed": true,
+    "canonical_merge_marker_absence_disclosed": true,
+    "downstream_training_remains_fail_closed": true,
+    "superseded_v2_retained": true
+  },
+  "scientific_launch_authorization": {
+    "status": "not_authorized",
+    "flat_rising_operational_rule_resolved": false,
+    "exact_merged_at_head_marker": false,
+    "affected_tasks": [
+      "M5",
+      "M6",
+      "M7",
+      "M9"
+    ]
+  },
+  "artifacts": {
+    "pi_source": {
+      "path": "docs/MAIN_PHASE_BRIEF.md",
+      "sha256": "2a426299dfef487b67d708982222bf4a110225840c876f97ad27a1ae235c109f"
+    },
+    "candidate": {
+      "path": "docs/registered_extensions_v1.md",
+      "sha256": "5d9e629add21468ff114bcd57aa04d1f19d8b01568bb9ec93cef19596f27f07d"
+    },
+    "m1_ruling": {
+      "path": "reports/virl_fork_ruling.md",
+      "sha256": "28c7cac92a276385dbeda5d1b7c499e12d822f652260456347cefd65dba584a1"
+    },
+    "v2_markdown": {
+      "path": "reports/registered_extensions_audit_v2.md",
+      "sha256": "384149066a9056429c1143739341b57613f17bde63cd71db778f0e8bb783b0ae"
+    },
+    "v2_machine": {
+      "path": "reports/registered_extensions_audit_v2.json",
+      "sha256": "b326b11c523751da529633242578307f44f9a1473ce9df80d3bc1a263228a85f"
+    }
+  },
+  "unresolved_inputs": [
+    "PI-defined operational flat/rising rule",
+    "canonical merged-at-HEAD authorization marker",
+    "M3/M7/M8 computed fields"
+  ]
+}
