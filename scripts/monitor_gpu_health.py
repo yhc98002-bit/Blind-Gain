@@ -178,6 +178,14 @@ def classify_run_sample(
     return {"health": status, "reasons": reasons}
 
 
+def cadence_sleep_seconds(
+    *, sample_started: float, collection_finished: float, interval_seconds: float, deadline: float
+) -> float:
+    """Return sleep needed for start-to-start cadence without accumulating collection time."""
+    next_start = min(sample_started + interval_seconds, deadline)
+    return max(0.0, next_start - collection_finished)
+
+
 def _atomic_write(path: Path, text: str) -> None:
     if path.exists():
         raise FileExistsError(f"refusing to overwrite monitor output: {path}")
@@ -270,6 +278,7 @@ def main() -> None:
     previous_runs: dict[str, dict[str, Any]] = {}
     with raw_path.open("x", encoding="utf-8", buffering=1) as handle:
         while True:
+            sample_started = time.monotonic()
             nodes = {node: collect_node(node) for node in NODES}
             runs = []
             for specification in config["runs"]:
@@ -282,10 +291,18 @@ def main() -> None:
             sample = {"schema_version": "blind-gains.gpu-health-sample.v1", "observed_at_utc": _now(), "nodes": nodes, "runs": runs}
             handle.write(json.dumps(sample, sort_keys=True) + "\n")
             samples.append(sample)
-            remaining = deadline - time.monotonic()
+            collection_finished = time.monotonic()
+            remaining = deadline - collection_finished
             if remaining <= 0:
                 break
-            time.sleep(min(config["interval_seconds"], remaining))
+            time.sleep(
+                cadence_sleep_seconds(
+                    sample_started=sample_started,
+                    collection_finished=collection_finished,
+                    interval_seconds=config["interval_seconds"],
+                    deadline=deadline,
+                )
+            )
     summary = summarize(samples, config)
     summary["samples_jsonl"] = str(raw_path.relative_to(ROOT))
     summary["samples_sha256"] = _sha256(raw_path)

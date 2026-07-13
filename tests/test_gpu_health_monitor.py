@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from scripts.monitor_gpu_health import classify_run_sample
+from scripts.monitor_gpu_health import cadence_sleep_seconds, classify_run_sample
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +39,21 @@ def test_old_failure_signature_is_unhealthy_even_when_pid_lives() -> None:
 def test_running_manifest_with_missing_wrapper_is_unhealthy() -> None:
     result = classify_run_sample(_run(wrapper_alive=False), _run(), assigned_gpu_util=90.0)
     assert result == {"health": "unhealthy", "reasons": ["running_manifest_wrapper_missing"]}
+
+
+def test_cadence_does_not_add_collection_time_to_interval() -> None:
+    assert cadence_sleep_seconds(
+        sample_started=100.0,
+        collection_finished=124.0,
+        interval_seconds=30.0,
+        deadline=1000.0,
+    ) == 6.0
+    assert cadence_sleep_seconds(
+        sample_started=100.0,
+        collection_finished=135.0,
+        interval_seconds=30.0,
+        deadline=1000.0,
+    ) == 0.0
 
 
 def test_monitor_launcher_is_valid_and_read_only_by_contract() -> None:
