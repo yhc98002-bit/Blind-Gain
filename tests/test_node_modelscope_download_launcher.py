@@ -18,3 +18,5 @@ def test_modelscope_download_is_node_local_guarded_and_proxy_free() -> None:
     assert "refusing to overwrite node-local model" in launcher
     assert "artifact_manifest.tsv" in launcher
     assert '"m11_modelscope_node_local_download"' in launcher
+    assert "nohup setsid" in launcher
+    assert "logs/wrapper.log" in launcher

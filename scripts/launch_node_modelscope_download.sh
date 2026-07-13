@@ -105,7 +105,8 @@ jq -n \
   }' > "${MANIFEST}"
 
 if [[ "${NODE}" == "login" ]]; then
-  (nohup "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > /dev/null 2>&1 < /dev/null & echo $! > "${ROOT}/${PID_FILE}")
+  nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > "${ROOT}/${RUN_DIR}/logs/wrapper.log" 2>&1 < /dev/null &
+  echo $! > "${ROOT}/${PID_FILE}"
 else
   ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 fi
