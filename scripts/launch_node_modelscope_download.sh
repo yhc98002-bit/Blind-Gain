@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -ne 4 ]]; then
-  echo "usage: $0 <an12|an29> <model-id> <declared-bytes> <destination-name>" >&2
+  echo "usage: $0 <login|an12|an29> <model-id> <declared-bytes> <destination-name>" >&2
   exit 2
 fi
 
@@ -12,8 +12,8 @@ DECLARED_BYTES="$3"
 DESTINATION_NAME="$4"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-if [[ ! "${NODE}" =~ ^(an12|an29)$ ]]; then
-  echo "download node must be an12 or an29" >&2
+if [[ ! "${NODE}" =~ ^(login|an12|an29)$ ]]; then
+  echo "download node must be login, an12, or an29" >&2
   exit 2
 fi
 if [[ ! "${DECLARED_BYTES}" =~ ^[1-9][0-9]*$ ]]; then
@@ -33,22 +33,35 @@ LOG="${RUN_DIR}/logs/${NODE}.log"
 PID_FILE="${RUN_DIR}/pids/${NODE}.pid"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 ARTIFACT_MANIFEST="${RUN_DIR}/artifact_manifest.tsv"
-DESTINATION="/dev/shm/blind-gains/models/${DESTINATION_NAME}"
+if [[ "${NODE}" == "login" ]]; then
+  DESTINATION="/tmp/blind-gains/models/${DESTINATION_NAME}"
+  CACHE_ROOT="/tmp/blind-gains/modelscope-cache"
+else
+  DESTINATION="/dev/shm/blind-gains/models/${DESTINATION_NAME}"
+  CACHE_ROOT="/dev/shm/blind-gains/modelscope-cache"
+fi
 PARTIAL="${DESTINATION}.partial"
 CONFIG_HASH="$(printf 'model=%s\nbytes=%s\ndestination=%s\nsource=modelscope\n' "${MODEL_ID}" "${DECLARED_BYTES}" "${DESTINATION}" | sha256sum | awk '{print $1}')"
 
-if ssh "${NODE}" "test -e '${DESTINATION}'"; then
+if [[ "${NODE}" == "login" && -e "${DESTINATION}" ]]; then
+  echo "refusing to overwrite node-local model: ${NODE}:${DESTINATION}" >&2
+  exit 73
+elif [[ "${NODE}" != "login" ]] && ssh "${NODE}" "test -e '${DESTINATION}'"; then
   echo "refusing to overwrite node-local model: ${NODE}:${DESTINATION}" >&2
   exit 73
 fi
-FREE_BYTES="$(ssh "${NODE}" "df -PB1 /dev/shm | awk 'NR==2 {print \$4}'")"
+if [[ "${NODE}" == "login" ]]; then
+  FREE_BYTES="$(df -PB1 /tmp | awk 'NR==2 {print $4}')"
+else
+  FREE_BYTES="$(ssh "${NODE}" "df -PB1 /dev/shm | awk 'NR==2 {print \$4}'")"
+fi
 if [[ ! "${FREE_BYTES}" =~ ^[0-9]+$ ]] || (( FREE_BYTES - DECLARED_BYTES < 40 * 1024 * 1024 * 1024 )); then
   echo "storage_guard: node-local download would leave less than 40 GiB free" >&2
   exit 75
 fi
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
-COMMAND="env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY MODELSCOPE_CACHE=/dev/shm/blind-gains/modelscope-cache .venv/bin/modelscope download --model ${MODEL_ID} --local_dir ${PARTIAL} && mv ${PARTIAL} ${DESTINATION} && find ${DESTINATION} -type f -print0 | sort -z | xargs -0 sha256sum > ${ROOT}/${ARTIFACT_MANIFEST}"
+COMMAND="env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY MODELSCOPE_CACHE=${CACHE_ROOT} .venv/bin/modelscope download --model ${MODEL_ID} --local_dir ${PARTIAL} && mv ${PARTIAL} ${DESTINATION} && find ${DESTINATION} -type f -print0 | sort -z | xargs -0 sha256sum > ${ROOT}/${ARTIFACT_MANIFEST}"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg node "${NODE}" \
@@ -71,7 +84,7 @@ jq -n \
     gpu_ids: [],
     tensor_parallel_width: null,
     replica_count: 0,
-    placement_justification: "CPU/network-only ModelScope-first download to re-derivable node-local memory storage; no GPU is allocated.",
+    placement_justification: "CPU/network-only ModelScope-first download to re-derivable local scratch; no GPU is allocated.",
     git_hash: $git_hash,
     config_hash: $config_hash,
     data_manifest_hash: null,
@@ -91,5 +104,9 @@ jq -n \
     deviations: []
   }' > "${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+if [[ "${NODE}" == "login" ]]; then
+  (nohup "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > /dev/null 2>&1 < /dev/null & echo $! > "${ROOT}/${PID_FILE}")
+else
+  ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+fi
 printf '%s\n' "${RUN_DIR}"

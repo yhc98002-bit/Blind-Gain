@@ -11,6 +11,8 @@ def test_modelscope_download_is_node_local_guarded_and_proxy_free() -> None:
 
     assert "modelscope download --model" in launcher
     assert "/dev/shm/blind-gains/models/" in launcher
+    assert "/tmp/blind-gains/models/" in launcher
+    assert "login|an12|an29" in launcher
     assert "env -u HTTP_PROXY -u HTTPS_PROXY -u ALL_PROXY" in launcher
     assert "40 * 1024 * 1024 * 1024" in launcher
     assert "refusing to overwrite node-local model" in launcher
