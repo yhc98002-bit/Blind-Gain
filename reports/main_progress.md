@@ -9,7 +9,7 @@ M7 | blocked | requires merged M4 and confirmed M1 fork ruling
 M8 | blocked | reports/m8_7b_prep_launch_status_v2.md: four batch-aligned condition prefixes were preserved and marked resume-required after priority preemption for M2 A2-gray; noise, completion, and audit remain
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | support-sharpening protocol registry and applicable post-training readouts do not yet exist
-M11 | blocked | reports/m11_model_access_readiness_v3.md + reports/m11_adapter_readiness_v1.md: verified an29 stages and deterministic TP1 R19/R20 adapters are ready; GPU smoke, blind-sample wiring, and registered inference remain
+M11 | blocked | reports/m11_execution_queue_status_v1.md: immutable commit-pinned queue is active with 24 pending cells; it waits for all four M2 manifests, then enforces six smoke cells before the 18-cell registered matrix
 M12 | blocked | reports/chart_v08_generation_status.md: declared 100-pair two-subfamily batch and necessity diagnostics are generated with no answer-pointing cues; scoring, human legibility, attackers, and freeze remain
 M13 | pass | reports/paper1_pipeline_status_v3.md + reports/paper1_pipeline_status_v3.json: reusable paper workspace and all four fail-closed figure paths pass the machine audit; scientific result slots remain explicitly pending
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum
