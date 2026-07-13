@@ -44,9 +44,11 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 ## 5. In flight
 
 - M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
-- M2: four-arm seed-1 launch is authorized only through the merged-at-HEAD launcher checks; storage reclamation and live placement checks precede process creation.
-- M4/M8/M11/M12/M13: extension transcription, 7B preparation, non-Qwen access audit, chart-v08 implementation, and Paper-1 scaffolding are proceeding independently of M2.
-- M12: the pre-main chart-v08 point-value prototype was never launched. Main-phase v08 now requires separately reported legend-target and point-value subfamilies plus a two-hop necessity diagnostic before any freeze.
+- M2: A1 real, A2b no-image, and the fixed A3 retry are active under merged-at-HEAD authorization; A2 gray is queued behind M8. The first A3 attempt failed before model allocation on in-memory validation image hashing; commit `8c904154...` fixed all 601 validation rows with zero caption misses.
+- M8: four 7B pilot-contract conditions are active on an12 GPUs 4-7 from a node-local model and an exact-coverage own-caption store; noise remains queued.
+- M11: ModelScope access is public for both requested models. Compute-node DNS attempts failed at zero bytes, so resumable login-`/tmp` downloads are active for later an29 staging.
+- M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
+- M13: the Paper-1 skeleton, result registry, audit/data-card scaffolds, and contribution boundary are present; figure builders and registered values remain pending.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
