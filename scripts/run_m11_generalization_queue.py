@@ -85,9 +85,10 @@ def expand_cells(config: dict[str, Any], phase: str) -> list[dict[str, Any]]:
 def initial_state(config: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema_version": "blind-gains.m11-queue-state.v1",
-        "status": "waiting_prerequisites",
+        "status": "waiting_capacity",
         "created_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "updated_utc": None,
+        "gpu_free_streaks": {str(index): 0 for index in range(8)},
         "cells": {
             cell["id"]: {**cell, "status": "pending", "gpu": None, "run_dir": None}
             for phase in ("smoke", "full")
@@ -101,18 +102,6 @@ def _record(state: dict[str, Any], event: str, **fields: Any) -> None:
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     state["updated_utc"] = now
     state["events"].append({"time_utc": now, "event": event, **fields})
-
-
-def prerequisite_state(config: dict[str, Any]) -> str:
-    statuses = []
-    for value in config["prerequisite_run_manifests"]:
-        path = ROOT / value
-        if not path.is_file():
-            return "waiting"
-        statuses.append(str(_load(path).get("status")))
-    if any(status == "fail" for status in statuses):
-        return "fail"
-    return "complete" if all(status == "complete" for status in statuses) else "waiting"
 
 
 def free_gpus(config: dict[str, Any], reserved: set[int]) -> list[int]:
@@ -137,6 +126,25 @@ def free_gpus(config: dict[str, Any], reserved: set[int]) -> list[int]:
         ):
             free.append(index)
     return free
+
+
+def update_free_gpu_streaks(
+    config: dict[str, Any], state: dict[str, Any], observed_free: list[int]
+) -> list[int]:
+    required_polls = int(config["gpu_free_stability_polls"])
+    if required_polls < 1:
+        raise ValueError("gpu_free_stability_polls must be positive")
+    observed = set(observed_free)
+    streaks = state.setdefault(
+        "gpu_free_streaks", {str(index): 0 for index in range(8)}
+    )
+    stable = []
+    for index in range(8):
+        key = str(index)
+        streaks[key] = int(streaks.get(key, 0)) + 1 if index in observed else 0
+        if index in observed and streaks[key] >= required_polls:
+            stable.append(index)
+    return stable
 
 
 def launch_cell(config: dict[str, Any], cell: dict[str, Any], gpu: int) -> Path:
@@ -235,13 +243,15 @@ def run_phase(config: dict[str, Any], state: dict[str, Any], state_path: Path, p
             for cell in state["cells"].values()
             if cell["status"] == "running" and cell["gpu"] is not None
         }
-        available = free_gpus(config, reserved)
+        observed_free = free_gpus(config, reserved)
+        available = update_free_gpu_streaks(config, state, observed_free)
         pending = [cell for cell in selected if cell["status"] == "pending"]
         for cell, gpu in zip(pending, available):
             run_dir = launch_cell(config, cell, gpu)
             cell["status"] = "running"
             cell["gpu"] = gpu
             cell["run_dir"] = str(run_dir)
+            state["gpu_free_streaks"][str(gpu)] = 0
             _record(state, "cell_launched", cell=cell["id"], gpu=gpu, run_dir=str(run_dir))
             _atomic_json(state_path, state)
         time.sleep(int(config["poll_seconds"]))
@@ -291,19 +301,12 @@ def main() -> None:
         _record(state, "queue_initialized")
         _atomic_json(state_path, state)
 
-    while True:
-        prerequisite = prerequisite_state(config)
-        if prerequisite == "fail":
-            state["status"] = "fail"
-            _record(state, "prerequisite_failed")
-            _atomic_json(state_path, state)
-            raise RuntimeError("an M2 prerequisite failed; M11 launch is closed")
-        if prerequisite == "complete":
-            break
-        time.sleep(int(config["poll_seconds"]))
-
     state["status"] = "smoke"
-    _record(state, "prerequisites_complete")
+    _record(
+        state,
+        "smoke_phase_opened",
+        free_gpu_stability_polls=int(config["gpu_free_stability_polls"]),
+    )
     _atomic_json(state_path, state)
     run_phase(config, state, state_path, "smoke")
     state["status"] = "full"

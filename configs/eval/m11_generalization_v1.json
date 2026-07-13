@@ -4,7 +4,8 @@
   "poll_seconds": 300,
   "gpu_free_memory_mib_ceiling": 1024,
   "gpu_free_utilization_ceiling": 10,
-  "prerequisite_run_manifests": [
+  "gpu_free_stability_polls": 2,
+  "neighbor_run_manifests": [
     "experiments/runs/mech_a1_real_an12_20260713T031454Z/run_manifest.json",
     "experiments/runs/mech_a2_gray_an12_20260713T033946Z/run_manifest.json",
     "experiments/runs/mech_a2b_noimage_an29_20260713T031525Z/run_manifest.json",

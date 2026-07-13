@@ -8,6 +8,13 @@ if [[ ! -s "${CONFIG}" ]]; then
   echo "M11 queue config is absent" >&2
   exit 2
 fi
+while IFS= read -r ACTIVE_MANIFEST; do
+  if jq -e '(.job_type == "m11_generalization_queue") and (.status == "running")' \
+    "${ACTIVE_MANIFEST}" >/dev/null; then
+    echo "active M11 queue already exists: ${ACTIVE_MANIFEST}" >&2
+    exit 73
+  fi
+done < <(find experiments/runs -mindepth 2 -maxdepth 2 -type f -name run_manifest.json | sort)
 MACHINE="$(jq -r '.outputs.machine' "${CONFIG}")"
 MARKDOWN="$(jq -r '.outputs.markdown' "${CONFIG}")"
 if [[ -e "${MACHINE}" || -e "${MARKDOWN}" ]]; then
@@ -43,7 +50,7 @@ jq -n \
     gpu_ids: [],
     tensor_parallel_width: null,
     replica_count: 0,
-    placement_justification: "Login-only scheduler waits for M2 and launches child TP1 jobs on free GPUs of one configured node.",
+    placement_justification: "Login-only scheduler launches child TP1 jobs only after a GPU is below the registered memory/utilization ceilings for two consecutive polls.",
     git_hash: $git_hash,
     config_hash: $config_hash,
     data_manifest_hash: $config_hash,

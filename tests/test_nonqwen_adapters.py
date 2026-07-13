@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import sys
+import types
 from pathlib import Path
 
 import pytest
 
 from src.eval.nonqwen_adapters import (
+    Gemma3Adapter,
     caption_qa_prompt,
     fliptrack_content,
     gemma_messages,
@@ -117,3 +120,37 @@ def test_nonqwen_launcher_pins_single_node_tp1_and_greedy_contract() -> None:
     assert 'refusing to overwrite immutable non-Qwen run' in launcher
     assert 'LIMIT_ARGS="--limit ${LIMIT}"' in launcher
     assert '--dataset-id' in launcher
+
+
+def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
+    processor_kwargs = {}
+
+    class FakeModel:
+        device = "cpu"
+
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            return cls()
+
+        def eval(self):
+            return self
+
+    class FakeProcessor:
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            processor_kwargs.update(kwargs)
+            return cls()
+
+    fake_torch = types.ModuleType("torch")
+    fake_torch.bfloat16 = object()
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.Gemma3ForConditionalGeneration = FakeModel
+    fake_transformers.AutoProcessor = FakeProcessor
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
+    adapter = Gemma3Adapter("/models/gemma", device="cpu")
+    adapter.load()
+
+    assert processor_kwargs["local_files_only"] is True
+    assert processor_kwargs["use_fast"] is False

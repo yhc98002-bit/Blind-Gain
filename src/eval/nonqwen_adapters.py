@@ -248,7 +248,9 @@ class Gemma3Adapter:
             local_files_only=True,
         ).eval()
         self._processor = AutoProcessor.from_pretrained(
-            self.model_path, local_files_only=True
+            self.model_path,
+            local_files_only=True,
+            use_fast=False,
         )
 
     def generate(self, content: Iterable[dict[str, Any]]) -> str:
