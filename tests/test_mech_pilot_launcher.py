@@ -57,16 +57,24 @@ def test_launcher_does_not_override_registered_training_budget() -> None:
     assert "trainer.val_freq" not in command_line
 
 
-def test_recovery_oom_uses_expandable_segments_without_config_mutation() -> None:
+def test_every_recovery_uses_expandable_segments_without_config_mutation() -> None:
     source = LAUNCHER.read_text(encoding="utf-8")
     recovery = (ROOT / "scripts" / "launch_mech_pilot_recovery.sh").read_text(
         encoding="utf-8"
     )
 
-    assert '"cuda_allocator_fragmentation_oom_before_first_checkpoint"' in source
     assert 'PYTORCH_CUDA_ALLOC_CONF_VALUE="expandable_segments:True"' in source
     assert "PYTORCH_CUDA_ALLOC_CONF='${PYTORCH_CUDA_ALLOC_CONF_VALUE}'" in source
     assert "pytorch_cuda_alloc_conf:" in source
     assert 'scientific_config_change: false' in source
     assert "[reason-code]" in recovery
     assert 'BLIND_GAINS_PILOT_RECOVERY_REASON="${RECOVERY_REASON}"' in recovery
+
+
+def test_launcher_routes_python_tempfiles_away_from_compute_node_tmp() -> None:
+    source = LAUNCHER.read_text(encoding="utf-8")
+
+    assert 'JOB_TMP_DIR="${RAY_TMP_DIR}/tmp"' in source
+    assert "mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}'" in source
+    assert "TMPDIR='${JOB_TMP_DIR}' TMP='${JOB_TMP_DIR}' TEMP='${JOB_TMP_DIR}'" in source
+    assert "runtime_tmp_dir: $job_tmp" in source

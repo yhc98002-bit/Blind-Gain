@@ -64,9 +64,7 @@ if [[ -n "${RUN_SUFFIX}" ]]; then
     exit 2
   fi
   ARM_RUN_NAME="${ARM_RUN_NAME}_${RUN_SUFFIX}"
-  if [[ "${RECOVERY_REASON}" == "cuda_allocator_fragmentation_oom_before_first_checkpoint" ]]; then
-    PYTORCH_CUDA_ALLOC_CONF_VALUE="expandable_segments:True"
-  fi
+  PYTORCH_CUDA_ALLOC_CONF_VALUE="expandable_segments:True"
 elif [[ -n "${RECOVERY_OF}" || -n "${RECOVERY_REASON}" ]]; then
   echo "pilot recovery metadata requires a retry suffix" >&2
   exit 2
@@ -149,6 +147,7 @@ SHADOW="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
 STORAGE_LOG="${ROOT}/${RUN_DIR}/storage_guard.jsonl"
 RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
 RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
+JOB_TMP_DIR="${RAY_TMP_DIR}/tmp"
 LOCK="/tmp/blind_gains_${NODE}_${ARM_RUN_NAME}.lock"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
@@ -237,6 +236,7 @@ jq -n \
   --arg shadow "${RUN_DIR}/reward_shadow.jsonl" \
   --arg log "${LOG}" \
   --arg ray_tmp "${RAY_TMP_DIR}" \
+  --arg job_tmp "${JOB_TMP_DIR}" \
   --arg caption_model "${CAPTION_MODEL}" \
   --arg caption_prompt_hash "${CAPTION_PROMPT_SHA256}" \
   --arg caption_store_hash "${CAPTION_STORE_SHA256}" \
@@ -295,6 +295,7 @@ jq -n \
     raw_retention: "latest raw state only after verified merge",
     stdout_stderr_log: $log,
     ray_tmp_dir: $ray_tmp,
+    runtime_tmp_dir: $job_tmp,
     expected_artifacts: [$shadow, ($checkpoint_path + "/experiment_log.jsonl"), ($checkpoint_path + "/checkpoint_tracker.json")],
     deviations: (if $recovery_of == "" then [] else [{
       code: "fresh_restart_after_precheckpoint_operational_failure",
@@ -302,11 +303,12 @@ jq -n \
       reason: $recovery_reason,
       scientific_config_change: false,
       operational_changes: (["experiment_name", "save_checkpoint_path"] +
-        (if $allocator_conf == "" then [] else ["PYTORCH_CUDA_ALLOC_CONF=" + $allocator_conf] end))
+        (if $allocator_conf == "" then [] else ["PYTORCH_CUDA_ALLOC_CONF=" + $allocator_conf] end) +
+        ["TMPDIR/TMP/TEMP=" + $job_tmp])
     }] end)
   }' > "${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF='${PYTORCH_CUDA_ALLOC_CONF_VALUE}' RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF='${PYTORCH_CUDA_ALLOC_CONF_VALUE}' TMPDIR='${JOB_TMP_DIR}' TMP='${JOB_TMP_DIR}' TEMP='${JOB_TMP_DIR}' RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 
 sleep 20
 REMOTE_PID="$(cat "${PID_FILE}")"
