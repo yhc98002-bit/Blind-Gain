@@ -47,7 +47,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
 - M2: all four arms are active under merged-at-HEAD authorization as single-node four-GPU jobs: A1/A2-gray on disjoint an12 GPUs and A2b/A3 on disjoint an29 GPUs. The first A3 attempt failed before model allocation on in-memory validation image hashing; commit `8c904154...` fixed all 601 validation rows with zero caption misses.
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
-- M11: ModelScope-first, per-file-verified stages for InternVL3-9B and Gemma-3-12B-IT remain in an29 `/dev/shm`. Both processor/config stacks pass a no-GPU local-files-only preflight, with Gemma's slow processor now explicitly pinned; immutable queue `m11_generalization_queue_login_20260713T044555Z` waits on all four M2 manifests, then fails closed through six smoke cells before the 18-cell matrix.
+- M11: ModelScope-first, per-file-verified stages for InternVL3-9B and Gemma-3-12B-IT remain in an29 `/dev/shm`. Both processor/config stacks pass no-GPU local-files-only preflight and Gemma's slow processor is explicitly pinned. Capacity-driven queue `m11_generalization_queue_login_20260713T050649Z` requires two stable free-GPU polls, then fails closed through six smoke cells before the 18-cell matrix; its zero-cell M2-gated predecessor is preserved as superseded.
 - M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
 - M13: pipeline delivery is complete and machine-audited; registered values remain explicit pending slots and are populated continuously only from hash-pinned readouts.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
@@ -60,7 +60,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.
 5. **M7/M8/M9** — ViRL 3B decomposition, 7B own-caption readiness, and three-seed 7B flagship.
 6. **M10** — fold 64-sample support-sharpening checks into every applicable readout.
-7. **M11/M12** — the non-Qwen queue starts its smoke/full matrix only after M2 releases an29 capacity; two-subfamily chart v08 fills later safe capacity, and M13 maintenance consumes only landed, hash-pinned readouts.
+7. **M11/M12** — the non-Qwen queue starts smoke/full cells whenever an29 capacity remains free for two polls, without requiring all M2 manifests to finish; chart v08 fills later safe capacity, and M13 maintenance consumes only landed, hash-pinned readouts.
 8. **M14** — 7B CP merge-back readouts only after mini-A5 and flagship seed 1.
 
 ## 7. Open decisions and pre-committed forks
