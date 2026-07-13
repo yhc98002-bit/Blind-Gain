@@ -1,12 +1,10 @@
 # Four-Arm Mechanical Pilot Preregistration V1
 
 Status:
-- Final registration path introduced after both PI approvals; the provenance
-  follow-up must pin this commit before any pilot optimizer step.
+- Registered after approval by both PIs; merge is sign-off.
 - Richard accepted the frozen R19 human audit at 60/60 pairs. Under the
   main-phase rule, merge is sign-off; there are no signature or sealing rounds.
-- M2/M3 remain fail-closed until the provenance hash and exact merged-at-HEAD
-  marker are committed.
+- No pilot optimizer step ran before this registration was merged.
 
 Frozen inputs:
 - Filtered Geometry3K IDs: `data/geo3k_pilot_filtered_ids.json`, SHA256 `8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1`.
@@ -139,7 +137,7 @@ ViRL39K interpretation fork:
 - M1 records the obtaining row after this registration merges; PIs confirm through Richard.
 
 Registration provenance and no-peeking:
-- Registration commit hash: `PENDING_RICHARD_MERGE`; the final file must replace this token with the merged commit recorded by the launcher before M0 can pass.
+- Registration commit hash: `2782815cc057d85a302af8bac232cac2b0e1ec75`, the first commit introducing this approved final path.
 - Exact planned launch commands:
   - `scripts/launch_mech_pilot_arm.sh a1_real an12 0,1,2,3`
   - `scripts/launch_mech_pilot_arm.sh a2_gray an12 4,5,6,7`
@@ -157,5 +155,5 @@ Deviations log:
 
 Registration state:
 - R19 human contact-sheet audit: approved. Richard accepted all three templates, 60/60 pairs across all six checks.
-- Merge state: pending Richard merge; merge is sign-off and no separate signature round exists.
-- Final M0 path `reports/preregistration_pilot_v1.md`: intentionally absent.
+- Registration state: merged-at-HEAD; merge is sign-off.
+- Final M0 path: `reports/preregistration_pilot_v1.md`.

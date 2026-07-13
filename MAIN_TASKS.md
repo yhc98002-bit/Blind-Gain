@@ -4,11 +4,11 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 
 | ID | Task | Dependencies | Required evidence |
 | --- | --- | --- | --- |
-| M0 | Finalize pilot preregistration | none; blocks M2/M3 | `reports/m0_preregistration_readiness.md`; `reports/preregistration_pilot_v1.md`; `reports/pilot_reward_spec_v3.md`; `reports/fliptrack_v02r19_human_audit.md` |
-| M1 | Finish ViRL39K 4,096 audit and fork ruling | audit can run with M0; ruling follows M0 | `reports/m1_virl_audit_readiness.md`; `reports/blind_solvability_virl39k_sample_v1.md`; `reports/blind_solvability_virl39k_sample_v1_audited.json`; `reports/virl_fork_ruling.md` |
+| M0 | Finalize pilot preregistration | none; blocks M2/M3 | `reports/m0_preregistration_finalization.md`; `reports/preregistration_pilot_v1.md`; `reports/pilot_reward_spec_v3.md`; `reports/fliptrack_v02r19_human_audit.md` |
+| M1 | Finish ViRL39K 4,096 audit and fork ruling | audit can run with M0; ruling follows M0 | `reports/blind_solvability_virl39k_sample_v1.md`; `reports/blind_solvability_virl39k_sample_v1_audited.json`; `reports/virl_fork_ruling.md` |
 | M2 | Four-arm pilot seed 1 | merged-at-HEAD M0 | `reports/pilot_4arm_seed1_results_v1.md` |
 | M3 | Pilot seeds 2–3 | M0; follows M2 launch validation | `reports/pilot_3seed_summary_v1.md` |
-| M4 | Register extensions | M3 fields where specified; blocks M5–M7/M9 | `docs/registered_extensions_v1.md`; `reports/registered_extensions_audit_v1.md` |
+| M4 | Register extensions | transcription starts immediately; M1/M3-dependent fields remain `{computed-pending}`; blocks M5–M7/M9 | `docs/registered_extensions_v1.md`; `reports/registered_extensions_audit_v1.md` |
 | M5 | Anchor long horizon to step 400 | M4; resume integrity | `reports/anchor_longhorizon_400_results_v1.md` |
 | M6 | Mini-A5 matched control | M4; reward/grouping audits | `reports/mini_a5_control_results_v1.md` |
 | M7 | ViRL 3B decomposition | M4 and M1 fork ruling | `reports/virl_3b_decomposition_results_v1.md`; `reports/virl_3b_data_readiness_v1.md` |

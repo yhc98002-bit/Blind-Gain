@@ -39,19 +39,21 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 | E8 | Parser/reward infrastructure | agreement audit v2 = 0.9156, all 27 residuals canonical-favorable (native defects); pilot-reward 5-step smoke: 13,401 rows, shadows valid, no NaN; disagreements ~2% under mathruler precedence | Native r1v lines 45/49 establish 0.5 accuracy + 0.5 format; launched anchor has no kwargs override; pilot matches native |
 | E9 | Doc v-next calibration (one-shot 100 pairs) | 3B real 0.69; 7B real 1.00 → too easy | No iteration; harder family = Paper-2/later |
 | E10 | Ops/governance | storage guards+retention+quota tooling; goal-loop caught 3 Goodhart patterns (gate-status conjunction, duplicate audited file, registry authorship) — all structurally patched | Methodology section material |
+| E11 | ViRL39K blind-solvability, 4,096 items, five conditions | mean q_i: real 0.5115, caption 0.4355, gray 0.4188, noise 0.4251, no-image 0.4151; all 15 independent audit checks pass | Registered fork selects strong source/category heterogeneity; H-mixed headline and stratified readouts |
 
 ## 5. In flight
 
-- M1: all five ViRL39K 4,096-item conditions and the 15-check independent audit pass with zero score mismatches. Mean q_i is real 0.5115, caption 0.4355, gray 0.4188, noise 0.4251, and no-image 0.4151; category heterogeneity is substantial. The fork ruling remains after merged M0.
-- M0: all ten content requirements are applied in v3 (`143d2b48...`). The final merged-at-HEAD registration and provenance follow-up are absent, so every pilot launcher remains fail-closed; the main phase removes the superseded signature-round requirement.
+- M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
+- M2: four-arm seed-1 launch is authorized only through the merged-at-HEAD launcher checks; storage reclamation and live placement checks precede process creation.
+- M4/M8/M11/M12/M13: extension transcription, 7B preparation, non-Qwen access audit, chart-v08 implementation, and Paper-1 scaffolding are proceeding independently of M2.
 - M12: the pre-main chart-v08 point-value prototype was never launched. Main-phase v08 now requires separately reported legend-target and point-value subfamilies plus a two-hop necessity diagnostic before any freeze.
 - Storage: the 2026-07-12 quota-aware refresh measured only 3.70 GiB conservative Tier-S headroom; all bulky writes remain guard-blocked while retention-eligible caches are inventoried for relocation.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
 
-1. **M0/M1** — merge the main-phase pilot registration; complete the ViRL audit and record the fork ruling.
-2. **M2/M3** — four-arm 3B pilot at three seeds, with registered hurdle mechanism analysis and checkpointed FlipTrack readouts.
-3. **M4** — merge the long-horizon, mini-A5, ViRL 3B, and 7B flagship extension registry before those training units launch.
+1. **M2/M3** — launch the four-arm 3B pilot at three seeds, with registered hurdle mechanism analysis and checkpointed FlipTrack readouts.
+2. **M4** — transcribe and merge the long-horizon, mini-A5, ViRL 3B, and 7B flagship extension registry before those training units launch.
+3. **M8** — build the 7B own-caption store and run the 4,096-item pilot-contract blind-solvability preparation.
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.
 5. **M7/M8/M9** — ViRL 3B decomposition, 7B own-caption readiness, and three-seed 7B flagship.
 6. **M10** — fold 64-sample support-sharpening checks into every applicable readout.
