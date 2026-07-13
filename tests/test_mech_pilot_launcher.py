@@ -78,3 +78,5 @@ def test_launcher_routes_python_tempfiles_away_from_compute_node_tmp() -> None:
     assert "mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}'" in source
     assert "TMPDIR='${JOB_TMP_DIR}' TMP='${JOB_TMP_DIR}' TEMP='${JOB_TMP_DIR}'" in source
     assert "runtime_tmp_dir: $job_tmp" in source
+    assert 'LOCK="/dev/shm/blind_gains_${NODE}_${ARM_RUN_NAME}.lock"' in source
+    assert 'LOCK="/tmp/' not in source

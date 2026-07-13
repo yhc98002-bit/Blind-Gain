@@ -1,6 +1,6 @@
 M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
-M2 | blocked | reports/m2_seed1_launch_status_v7.md + reports/pilot_a2b_retry2_failure_v1.md: retry2 deadlocked pre-checkpoint on compute-/tmp inode exhaustion and was stopped after a seven-sample liveness audit; retry3 awaits launch with job-local /dev/shm temp routing
+M2 | blocked | reports/m2_seed1_launch_status_v8.md + reports/pilot_a2b_retry3_startup_failure_v1.md: retry3 failed closed before process startup because its flock path still used full compute-/tmp; retry4 awaits the committed /dev/shm lock-path fix
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | blocked | reports/registered_extensions_audit_v2.md: audited M1 fork value is filled; the source brief omits the flat/rising decision rule and the exact merged-at-HEAD authorization line is not yet present
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence

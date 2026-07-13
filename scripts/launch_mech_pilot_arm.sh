@@ -148,7 +148,7 @@ STORAGE_LOG="${ROOT}/${RUN_DIR}/storage_guard.jsonl"
 RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
 RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
 JOB_TMP_DIR="${RAY_TMP_DIR}/tmp"
-LOCK="/tmp/blind_gains_${NODE}_${ARM_RUN_NAME}.lock"
+LOCK="/dev/shm/blind_gains_${NODE}_${ARM_RUN_NAME}.lock"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 if [[ -n "${RUN_SUFFIX}" ]]; then
