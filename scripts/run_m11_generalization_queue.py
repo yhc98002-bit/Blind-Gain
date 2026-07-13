@@ -17,6 +17,10 @@ DATASETS = ("r19", "r20")
 CONDITIONS = ("real", "none", "caption")
 
 
+def _now_utc() -> str:
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def _load(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -86,8 +90,12 @@ def initial_state(config: dict[str, Any]) -> dict[str, Any]:
     return {
         "schema_version": "blind-gains.m11-queue-state.v1",
         "status": "waiting_capacity",
-        "created_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "created_utc": _now_utc(),
         "updated_utc": None,
+        "capacity_poll_count": 0,
+        "last_capacity_poll_utc": None,
+        "last_observed_free_gpus": [],
+        "last_stable_free_gpus": [],
         "gpu_free_streaks": {str(index): 0 for index in range(8)},
         "cells": {
             cell["id"]: {**cell, "status": "pending", "gpu": None, "run_dir": None}
@@ -99,9 +107,20 @@ def initial_state(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _record(state: dict[str, Any], event: str, **fields: Any) -> None:
-    now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = _now_utc()
     state["updated_utc"] = now
     state["events"].append({"time_utc": now, "event": event, **fields})
+
+
+def record_capacity_poll(
+    state: dict[str, Any], observed_free: list[int], stable_free: list[int]
+) -> None:
+    now = _now_utc()
+    state["updated_utc"] = now
+    state["capacity_poll_count"] = int(state.get("capacity_poll_count", 0)) + 1
+    state["last_capacity_poll_utc"] = now
+    state["last_observed_free_gpus"] = list(observed_free)
+    state["last_stable_free_gpus"] = list(stable_free)
 
 
 def free_gpus(config: dict[str, Any], reserved: set[int]) -> list[int]:
@@ -245,6 +264,8 @@ def run_phase(config: dict[str, Any], state: dict[str, Any], state_path: Path, p
         }
         observed_free = free_gpus(config, reserved)
         available = update_free_gpu_streaks(config, state, observed_free)
+        record_capacity_poll(state, observed_free, available)
+        _atomic_json(state_path, state)
         pending = [cell for cell in selected if cell["status"] == "pending"]
         for cell, gpu in zip(pending, available):
             run_dir = launch_cell(config, cell, gpu)

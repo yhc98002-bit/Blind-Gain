@@ -6,6 +6,7 @@ from pathlib import Path
 from scripts.run_m11_generalization_queue import (
     expand_cells,
     initial_state,
+    record_capacity_poll,
     update_free_gpu_streaks,
 )
 
@@ -46,6 +47,22 @@ def test_free_gpu_requires_two_consecutive_capacity_polls() -> None:
     assert update_free_gpu_streaks(config, state, [2]) == [2]
     assert update_free_gpu_streaks(config, state, []) == []
     assert state["gpu_free_streaks"]["2"] == 0
+
+
+def test_capacity_poll_heartbeat_persists_without_event_growth() -> None:
+    state = initial_state(_config())
+    event_count = len(state["events"])
+
+    record_capacity_poll(state, [1, 3], [1])
+    first_time = state["last_capacity_poll_utc"]
+    record_capacity_poll(state, [], [])
+
+    assert state["capacity_poll_count"] == 2
+    assert first_time is not None
+    assert state["last_capacity_poll_utc"] is not None
+    assert state["last_observed_free_gpus"] == []
+    assert state["last_stable_free_gpus"] == []
+    assert len(state["events"]) == event_count
 
 
 def test_m11_is_capacity_gated_not_training_completion_gated() -> None:
