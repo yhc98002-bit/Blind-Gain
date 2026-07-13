@@ -78,7 +78,7 @@ jq -n \
     gpu_ids: [],
     tensor_parallel_width: null,
     replica_count: 0,
-    placement_justification: "Login-only scheduler launches child TP1 jobs only after a GPU is below the registered memory/utilization ceilings for two consecutive polls.",
+    placement_justification: "Login-only scheduler launches child TP1 jobs only after both registered an29 blind arms complete and a GPU is below the registered memory/utilization ceilings for two consecutive polls.",
     git_hash: $git_hash,
     config_hash: $config_hash,
     runtime_audit: $runtime_audit,

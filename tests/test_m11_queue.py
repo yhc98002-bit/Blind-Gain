@@ -6,6 +6,7 @@ from pathlib import Path
 from scripts.run_m11_generalization_queue import (
     expand_cells,
     initial_state,
+    pilot_release_status,
     record_capacity_poll,
     update_free_gpu_streaks,
 )
@@ -65,15 +66,96 @@ def test_capacity_poll_heartbeat_persists_without_event_growth() -> None:
     assert len(state["events"]) == event_count
 
 
-def test_m11_is_capacity_gated_not_training_completion_gated() -> None:
+def test_m11_requires_blind_arm_completion_and_stable_capacity() -> None:
     config = _config()
 
-    assert "prerequisite_run_manifests" not in config
-    assert len(config["neighbor_run_manifests"]) == 4
+    assert config["pilot_release_gate"]["mode"] == "all_complete"
+    assert {item["arm"] for item in config["pilot_release_gate"]["required_arms"]} == {
+        "a2b_noimage",
+        "a3_caption",
+    }
     assert config["gpu_free_stability_polls"] == 2
     assert {model["python"] for model in config["models"].values()} == {
         ".venv-m11/bin/python"
     }
+
+
+def test_failed_pilot_vacancy_does_not_open_m11_release_gate(tmp_path: Path) -> None:
+    config = _config()
+    config["pilot_release_gate"] = {
+        "mode": "all_complete",
+        "required_arms": [
+            {
+                "arm": "a2b_noimage",
+                "node": "an29",
+                "manifest_glob": "runs/a2b/*.json",
+            },
+            {
+                "arm": "a3_caption",
+                "node": "an29",
+                "manifest_glob": "runs/a3/*.json",
+            },
+        ],
+    }
+    for directory, arm, status, exit_code in (
+        ("a2b", "a2b_noimage", "fail", 1),
+        ("a3", "a3_caption", "complete", 0),
+    ):
+        path = tmp_path / "runs" / directory / "run_manifest.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            json.dumps(
+                {
+                    "job_type": "l13_mechanical_pilot_arm",
+                    "arm": arm,
+                    "node": "an29",
+                    "status": status,
+                    "exit_code": exit_code,
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    ready, evidence = pilot_release_status(config, tmp_path)
+
+    assert ready is False
+    assert evidence["a2b_noimage"]["complete"] is False
+    assert evidence["a3_caption"]["complete"] is True
+
+
+def test_all_completed_blind_arms_open_m11_release_gate(tmp_path: Path) -> None:
+    config = _config()
+    config["pilot_release_gate"] = {
+        "mode": "all_complete",
+        "required_arms": [
+            {
+                "arm": arm,
+                "node": "an29",
+                "manifest_glob": f"runs/{arm}/*.json",
+            }
+            for arm in ("a2b_noimage", "a3_caption")
+        ],
+    }
+    for arm in ("a2b_noimage", "a3_caption"):
+        path = tmp_path / "runs" / arm / "run_manifest.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            json.dumps(
+                {
+                    "job_type": "l13_mechanical_pilot_arm",
+                    "arm": arm,
+                    "node": "an29",
+                    "status": "complete",
+                    "exit_code": 0,
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    ready, evidence = pilot_release_status(config, tmp_path)
+
+    assert ready is True
+    assert all(item["complete"] for item in evidence.values())
 
 
 def test_queue_launcher_is_login_only_and_fail_closed() -> None:
@@ -91,3 +173,4 @@ def test_queue_launcher_is_login_only_and_fail_closed() -> None:
     assert 'runtime_audit_sha256: $runtime_audit_hash' in launcher
     assert 'runtime_freeze_sha256: $runtime_freeze_hash' in launcher
     assert 'critical M11 queue code or config differs from HEAD' in launcher
+    assert 'both registered an29 blind arms complete' in launcher

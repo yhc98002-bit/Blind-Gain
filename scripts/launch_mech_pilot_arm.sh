@@ -12,6 +12,7 @@ GPU_LIST="$3"
 RUN_SUFFIX="${BLIND_GAINS_PILOT_RUN_SUFFIX:-}"
 RECOVERY_OF="${BLIND_GAINS_PILOT_RECOVERY_OF:-}"
 RECOVERY_REASON="${BLIND_GAINS_PILOT_RECOVERY_REASON:-}"
+PYTORCH_CUDA_ALLOC_CONF_VALUE=""
 if [[ "${NODE}" != "an12" && "${NODE}" != "an29" ]]; then
   echo "pilot arm must run wholly on an12 or an29" >&2
   exit 2
@@ -63,6 +64,9 @@ if [[ -n "${RUN_SUFFIX}" ]]; then
     exit 2
   fi
   ARM_RUN_NAME="${ARM_RUN_NAME}_${RUN_SUFFIX}"
+  if [[ "${RECOVERY_REASON}" == "cuda_allocator_fragmentation_oom_before_first_checkpoint" ]]; then
+    PYTORCH_CUDA_ALLOC_CONF_VALUE="expandable_segments:True"
+  fi
 elif [[ -n "${RECOVERY_OF}" || -n "${RECOVERY_REASON}" ]]; then
   echo "pilot recovery metadata requires a retry suffix" >&2
   exit 2
@@ -239,6 +243,7 @@ jq -n \
   --arg caption_files_hash "${CAPTION_STORE_FILES_SHA256}" \
   --arg recovery_of "${RECOVERY_OF}" \
   --arg recovery_reason "${RECOVERY_REASON}" \
+  --arg allocator_conf "${PYTORCH_CUDA_ALLOC_CONF_VALUE}" \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
@@ -279,6 +284,7 @@ jq -n \
     caption_store_files_sha256: (if $caption_files_hash == "" then null else $caption_files_hash end),
     recovery_of_run: (if $recovery_of == "" then null else $recovery_of end),
     recovery_reason: (if $recovery_reason == "" then null else $recovery_reason end),
+    pytorch_cuda_alloc_conf: (if $allocator_conf == "" then null else $allocator_conf end),
     command: $command,
     start_time_utc: $started,
     end_time_utc: null,
@@ -295,11 +301,12 @@ jq -n \
       source_run: $recovery_of,
       reason: $recovery_reason,
       scientific_config_change: false,
-      operational_changes: ["experiment_name", "save_checkpoint_path"]
+      operational_changes: (["experiment_name", "save_checkpoint_path"] +
+        (if $allocator_conf == "" then [] else ["PYTORCH_CUDA_ALLOC_CONF=" + $allocator_conf] end))
     }] end)
   }' > "${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF='${PYTORCH_CUDA_ALLOC_CONF_VALUE}' RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 
 sleep 20
 REMOTE_PID="$(cat "${PID_FILE}")"

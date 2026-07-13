@@ -125,6 +125,65 @@ def record_capacity_poll(
     state["last_stable_free_gpus"] = list(stable_free)
 
 
+def pilot_release_status(
+    config: dict[str, Any], root: Path = ROOT
+) -> tuple[bool, dict[str, Any]]:
+    gate = config.get("pilot_release_gate")
+    if not isinstance(gate, dict) or gate.get("mode") != "all_complete":
+        raise ValueError("M11 queue requires an all_complete pilot_release_gate")
+    required = gate.get("required_arms")
+    if not isinstance(required, list) or not required:
+        raise ValueError("pilot_release_gate.required_arms must be non-empty")
+
+    evidence: dict[str, Any] = {}
+    all_complete = True
+    for specification in required:
+        arm = str(specification["arm"])
+        node = str(specification["node"])
+        pattern = str(specification["manifest_glob"])
+        candidates = []
+        for path in sorted(root.glob(pattern)):
+            try:
+                manifest = _load(path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                continue
+            if (
+                manifest.get("job_type") != "l13_mechanical_pilot_arm"
+                or manifest.get("arm") != arm
+                or manifest.get("node") != node
+            ):
+                continue
+            candidates.append(
+                {
+                    "path": str(path.relative_to(root)),
+                    "status": manifest.get("status"),
+                    "exit_code": manifest.get("exit_code"),
+                }
+            )
+        complete = any(
+            item["status"] == "complete" and item["exit_code"] == 0
+            for item in candidates
+        )
+        evidence[arm] = {
+            "node": node,
+            "manifest_glob": pattern,
+            "complete": complete,
+            "candidates": candidates,
+        }
+        all_complete = all_complete and complete
+    return all_complete, evidence
+
+
+def record_release_check(
+    state: dict[str, Any], ready: bool, evidence: dict[str, Any]
+) -> None:
+    now = _now_utc()
+    state["updated_utc"] = now
+    state["last_pilot_release_check_utc"] = now
+    state["pilot_release_ready"] = ready
+    state["pilot_release_evidence"] = evidence
+
+
 def free_gpus(config: dict[str, Any], reserved: set[int]) -> list[int]:
     command = [
         "ssh",
@@ -268,6 +327,20 @@ def run_phase(config: dict[str, Any], state: dict[str, Any], state_path: Path, p
             _record(state, f"{phase}_phase_complete")
             _atomic_json(state_path, state)
             return
+        release_ready, release_evidence = pilot_release_status(config)
+        record_release_check(state, release_ready, release_evidence)
+        if not release_ready:
+            state["status"] = "waiting_pilot_release"
+            state["last_observed_free_gpus"] = []
+            state["last_stable_free_gpus"] = []
+            state["gpu_free_streaks"] = {str(index): 0 for index in range(8)}
+            _atomic_json(state_path, state)
+            time.sleep(int(config["poll_seconds"]))
+            continue
+        if not state.get("pilot_release_gate_opened"):
+            state["pilot_release_gate_opened"] = True
+            _record(state, "pilot_release_gate_opened", evidence=release_evidence)
+        state["status"] = phase
         reserved = {
             int(cell["gpu"])
             for cell in state["cells"].values()

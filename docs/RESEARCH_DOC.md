@@ -45,9 +45,9 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 ## 5. In flight
 
 - M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
-- M2: all four arms are active again. A2b retry1 (`mech_a2b_noimage_retry1_an29_20260713T100420Z`) runs on an29 GPUs 0-3 from the registered base; parsed config differs only in experiment/checkpoint identity, and its source failure has no checkpoint. No pilot performance metric was inspected.
+- M2: A1, A2-gray, and A3 remain active. A2b retry1 (`mech_a2b_noimage_retry1_an29_20260713T100420Z`) failed before any checkpoint from CUDA allocator fragmentation; retry2 is prepared from the registered base with unchanged scientific config and the operational `expandable_segments:True` allocator setting. No pilot performance metric was inspected.
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
-- M11: the full matrix stayed closed after four failed smoke attempts. Isolated `.venv-m11` now passes exact Torch 2.6/cu118, Transformers 4.56.2, mask-combinator, and Gemma-import checks; audit/freeze hashes are pinned before a fresh queue waits behind pilot ownership. The EasyR1 environment is unchanged.
+- M11: the full matrix stayed closed after four historical failed smoke attempts. Isolated `.venv-m11` passes exact Torch 2.6/cu118, Transformers 4.56.2, mask-combinator, and Gemma-import checks. A queue opened by A2b failure was stopped before any cell launch; the replacement requires both an29 blind arms to complete before stable free capacity is considered. The EasyR1 environment is unchanged.
 - M12: the declared 100-pair v08 calibration batch remains immutable. A V2 CPU audit reconstructs every image, verifies exact masks/mechanics and CVD-aware dual coding, and adds 400 answer-discordant member-level no-star/randomized-star interventions; human/model/caption/attacker gates remain.
 - M4: the audited M1 heterogeneity fork is filled into the extension transcription. Registration remains fail-closed because the PI source does not operationalize the required flat/rising verdict and the canonical merged-at-HEAD line is absent.
 - M13: pipeline delivery is complete and machine-audited at V5; the methods appendix and data card pin landed contracts/manifests while future values remain explicit pending slots.
@@ -61,7 +61,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.
 5. **M7/M8/M9** — ViRL 3B decomposition, 7B own-caption readiness, and three-seed 7B flagship.
 6. **M10** — fold 64-sample support-sharpening checks into every applicable readout.
-7. **M11/M12** — the non-Qwen queue starts smoke/full cells whenever an29 capacity remains free for two polls, without requiring all M2 manifests to finish; chart v08 fills later safe capacity, and M13 maintenance consumes only landed, hash-pinned readouts.
+7. **M11/M12** — the non-Qwen queue starts smoke/full cells only after both an29 blind arms complete and capacity remains free for two polls; chart v08 fills later safe capacity, and M13 maintenance consumes only landed, hash-pinned readouts.
 8. **M14** — 7B CP merge-back readouts only after mini-A5 and flagship seed 1.
 
 ## 7. Open decisions and pre-committed forks

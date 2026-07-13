@@ -5,12 +5,21 @@
   "gpu_free_memory_mib_ceiling": 1024,
   "gpu_free_utilization_ceiling": 10,
   "gpu_free_stability_polls": 2,
-  "neighbor_run_manifests": [
-    "experiments/runs/mech_a1_real_an12_20260713T031454Z/run_manifest.json",
-    "experiments/runs/mech_a2_gray_an12_20260713T033946Z/run_manifest.json",
-    "experiments/runs/mech_a2b_noimage_retry1_an29_20260713T100420Z/run_manifest.json",
-    "experiments/runs/mech_a3_caption_an29_20260713T033039Z/run_manifest.json"
-  ],
+  "pilot_release_gate": {
+    "mode": "all_complete",
+    "required_arms": [
+      {
+        "arm": "a2b_noimage",
+        "node": "an29",
+        "manifest_glob": "experiments/runs/mech_a2b_noimage*_an29_*/run_manifest.json"
+      },
+      {
+        "arm": "a3_caption",
+        "node": "an29",
+        "manifest_glob": "experiments/runs/mech_a3_caption*_an29_*/run_manifest.json"
+      }
+    ]
+  },
   "models": {
     "internvl3": {
       "path": "/dev/shm/blind-gains/models/InternVL3-9B",
