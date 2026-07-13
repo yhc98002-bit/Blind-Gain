@@ -43,6 +43,8 @@ def test_m11_setup_is_isolated_guarded_and_proxy_explicit() -> None:
     assert "torch==2.6.0+cu118" in setup
     assert "torchvision==0.21.0+cu118" in setup
     assert "http://127.0.0.1:7890" in setup
+    assert '"${VIRTUALENV_BIN}" --python python3 "${ENV_DIR}"' in setup
+    assert "python3 -m venv" not in setup
     assert "scripts/storage_guard.py" in launcher
     assert "--tier S" in launcher and "--tier T" in launcher
     assert 'job_type: "m11_isolated_runtime_setup"' in launcher

@@ -8,6 +8,7 @@ FREEZE="${ROOT}/reports/m11_runtime_freeze_v1.txt"
 AUDIT="${ROOT}/reports/m11_runtime_audit_v1.json"
 CACHE_DIR="/tmp/blind-gains-m11-pip-cache"
 PROXY="http://127.0.0.1:7890"
+VIRTUALENV_BIN="${VIRTUALENV_BIN:-/HOME/paratera_xy/pxy1289/.local/bin/virtualenv}"
 
 cd "${ROOT}"
 for path in "${ENV_DIR}" "${FREEZE}" "${AUDIT}"; do
@@ -17,7 +18,11 @@ for path in "${ENV_DIR}" "${FREEZE}" "${AUDIT}"; do
   fi
 done
 mkdir -p "${CACHE_DIR}"
-python3 -m venv "${ENV_DIR}"
+if [[ ! -x "${VIRTUALENV_BIN}" ]]; then
+  echo "virtualenv executable is absent: ${VIRTUALENV_BIN}" >&2
+  exit 2
+fi
+"${VIRTUALENV_BIN}" --python python3 "${ENV_DIR}"
 
 export HTTP_PROXY="${PROXY}"
 export HTTPS_PROXY="${PROXY}"
