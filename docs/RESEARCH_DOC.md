@@ -40,6 +40,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 | E9 | Doc v-next calibration (one-shot 100 pairs) | 3B real 0.69; 7B real 1.00 → too easy | No iteration; harder family = Paper-2/later |
 | E10 | Ops/governance | storage guards+retention+quota tooling; goal-loop caught 3 Goodhart patterns (gate-status conjunction, duplicate audited file, registry authorship) — all structurally patched | Methodology section material |
 | E11 | ViRL39K blind-solvability, 4,096 items, five conditions | mean q_i: real 0.5115, caption 0.4355, gray 0.4188, noise 0.4251, no-image 0.4151; all 15 independent audit checks pass | Registered fork selects strong source/category heterogeneity; H-mixed headline and stratified readouts |
+| E12 | Paper-1 artifact pipeline | section/result/data-card/nonoverlap registries plus immutable builders for decomposition bars, hurdle intervals, dissociation scatter, and audit tables | Pipeline-delivery audit passes; scientific result slots remain explicit and fail closed |
 
 ## 5. In flight
 
@@ -48,7 +49,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
 - M11: ModelScope-first downloads and per-file SHA256-verified staging are complete for InternVL3-9B and Gemma-3-12B-IT at an29 `/dev/shm`; deterministic TP1 R19/R20 adapters and launch manifests are ready, while GPU smoke, blind-sample wiring, and registered inference remain.
 - M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
-- M13: the Paper-1 skeleton, result registry, audit/data-card scaffolds, contribution boundary, and fail-closed hash-pinned figure builder are present; registered values remain pending.
+- M13: pipeline delivery is complete and machine-audited; registered values remain explicit pending slots and are populated continuously only from hash-pinned readouts.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
@@ -59,7 +60,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.
 5. **M7/M8/M9** — ViRL 3B decomposition, 7B own-caption readiness, and three-seed 7B flagship.
 6. **M10** — fold 64-sample support-sharpening checks into every applicable readout.
-7. **M11/M12/M13** — non-Qwen audits, two-subfamily chart v08, and the continuous Paper-1 artifact pipeline fill safe idle capacity.
+7. **M11/M12** — non-Qwen audits and two-subfamily chart v08 fill safe idle capacity; M13 maintenance consumes only landed, hash-pinned readouts.
 8. **M14** — 7B CP merge-back readouts only after mini-A5 and flagship seed 1.
 
 ## 7. Open decisions and pre-committed forks

@@ -60,3 +60,52 @@ def test_ready_grouped_bar_writes_nonempty_png(tmp_path: Path) -> None:
 
     assert output.is_file()
     assert output.stat().st_size > 1000
+
+
+def test_ready_audit_table_writes_nonempty_png(tmp_path: Path) -> None:
+    source = tmp_path / "audit.json"
+    source.write_text('{"status":"pass"}\n', encoding="utf-8")
+    spec = {
+        "status": "ready",
+        "inputs": [
+            {
+                "path": "audit.json",
+                "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            }
+        ],
+        "plot": {
+            "type": "table",
+            "title": "Audit evidence",
+            "columns": ["Audit", "Result"],
+            "rows": [["parser", "pass"], ["human", "60/60"]],
+        },
+    }
+    output = tmp_path / "audit-table.png"
+
+    build_figure(tmp_path, "audits", spec, output)
+
+    assert output.is_file()
+    assert output.stat().st_size > 1000
+
+
+def test_audit_table_rejects_ragged_rows(tmp_path: Path) -> None:
+    source = tmp_path / "audit.json"
+    source.write_text('{"status":"pass"}\n', encoding="utf-8")
+    spec = {
+        "status": "ready",
+        "inputs": [
+            {
+                "path": "audit.json",
+                "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            }
+        ],
+        "plot": {
+            "type": "table",
+            "title": "Invalid",
+            "columns": ["Audit", "Result"],
+            "rows": [["parser"]],
+        },
+    }
+
+    with pytest.raises(ValueError, match="row length"):
+        build_figure(tmp_path, "audits", spec, tmp_path / "invalid.png")

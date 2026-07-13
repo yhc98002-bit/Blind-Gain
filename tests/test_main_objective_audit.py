@@ -6,6 +6,7 @@ import pytest
 
 from scripts.audit_main_objective import (
     EXPECTED_TASK_IDS,
+    REQUIRED_PASS_TASKS,
     build_main_objective_audit,
     parse_main_progress,
     parse_main_registry,
@@ -49,14 +50,28 @@ def _mark_pass(root: Path, task_id: str) -> None:
     )
 
 
-def test_current_blocked_registry_satisfies_repository_invariants(tmp_path: Path) -> None:
+def test_required_objective_tasks_cannot_remain_blocked(tmp_path: Path) -> None:
     root = _fixture(tmp_path)
+
+    payload = build_main_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["checks"]["required_M0_M1_M11_M13_tasks_pass"] is False
+    assert "required objective tasks are not pass" in "\n".join(payload["errors"])
+
+
+def test_required_objective_tasks_pass_with_nonempty_evidence(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    for task_id in REQUIRED_PASS_TASKS:
+        _mark_pass(root, task_id)
+        (root / f"reports/{task_id.lower()}_report.md").write_text(
+            f"{task_id} evidence\n", encoding="utf-8"
+        )
 
     payload = build_main_objective_audit(root)
 
     assert payload["status"] == "pass"
     assert all(payload["checks"].values())
-    assert payload["pass_report_checks"] == {}
 
 
 def test_pass_task_requires_every_named_report_nonempty(tmp_path: Path) -> None:

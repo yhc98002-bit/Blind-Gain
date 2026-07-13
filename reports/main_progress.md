@@ -11,5 +11,5 @@ M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | support-sharpening protocol registry and applicable post-training readouts do not yet exist
 M11 | blocked | reports/m11_model_access_readiness_v3.md + reports/m11_adapter_readiness_v1.md: verified an29 stages and deterministic TP1 R19/R20 adapters are ready; GPU smoke, blind-sample wiring, and registered inference remain
 M12 | blocked | reports/chart_v08_generation_status.md: declared 100-pair two-subfamily batch and necessity diagnostics are generated with no answer-pointing cues; scoring, human legibility, attackers, and freeze remain
-M13 | blocked | reports/paper1_pipeline_status_v2.md: Paper-1 skeleton and fail-closed hash-pinned figure builder exist; all scientific result slots remain pending
+M13 | pass | reports/paper1_pipeline_status_v3.md + reports/paper1_pipeline_status_v3.json: reusable paper workspace and all four fail-closed figure paths pass the machine audit; scientific result slots remain explicitly pending
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum

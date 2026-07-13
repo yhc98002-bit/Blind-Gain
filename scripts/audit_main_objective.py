@@ -13,6 +13,7 @@ from scripts.audit_prelaunch_objective import audited_file_checks
 
 
 EXPECTED_TASK_IDS = tuple(f"M{index}" for index in range(15))
+REQUIRED_PASS_TASKS = ("M0", "M1", "M11", "M13")
 REGISTRY_ROW_RE = re.compile(r"^\| (M(?:[0-9]|1[0-4])) \| .+ \| .+ \| (?P<evidence>.+) \|$")
 REPORT_TOKEN_RE = re.compile(r"`(reports/[^`]+)`")
 LEDGER_LINE_RE = re.compile(r"^(M(?:[0-9]|1[0-4])) \| (pass|fail|blocked) \| (\S.*)$")
@@ -164,10 +165,22 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
     audited_distinct = not any(
         record.get("byte_identical") is True for record in audited_checks.values()
     )
+    required_tasks_pass = bool(ledger) and all(
+        ledger.get(task_id, {}).get("status") == "pass"
+        for task_id in REQUIRED_PASS_TASKS
+    )
+    if ledger and not required_tasks_pass:
+        missing = [
+            task_id
+            for task_id in REQUIRED_PASS_TASKS
+            if ledger.get(task_id, {}).get("status") != "pass"
+        ]
+        errors.append(f"required objective tasks are not pass: {missing}")
 
     checks = {
         "registry_defines_exact_M0_through_M14": bool(registry),
         "progress_has_exactly_one_valid_line_per_registry_task": bool(ledger),
+        "required_M0_M1_M11_M13_tasks_pass": required_tasks_pass,
         "every_pass_has_all_nonempty_named_reports": bool(ledger)
         and all(
             all(record["present"] and record["nonempty"] for record in reports.values())
@@ -184,6 +197,7 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
         "status": "pass" if all(checks.values()) and not errors else "fail",
         "checks": checks,
         "expected_task_ids": list(EXPECTED_TASK_IDS),
+        "required_pass_task_ids": list(REQUIRED_PASS_TASKS),
         "registry": {task_id: list(paths) for task_id, paths in registry.items()},
         "ledger": ledger,
         "pass_report_checks": pass_report_checks,

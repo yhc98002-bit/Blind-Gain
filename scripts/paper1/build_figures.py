@@ -92,10 +92,31 @@ def _hurdle(ax: Any, plot: dict[str, Any]) -> None:
     ax.set_yticks(y, labels)
 
 
+def _table(ax: Any, plot: dict[str, Any]) -> None:
+    columns = [str(value) for value in plot["columns"]]
+    rows = [[str(value) for value in row] for row in plot["rows"]]
+    if not columns or not rows:
+        raise ValueError("table requires nonempty columns and rows")
+    if any(len(row) != len(columns) for row in rows):
+        raise ValueError("table row length does not match columns")
+    ax.axis("off")
+    table = ax.table(
+        cellText=rows,
+        colLabels=columns,
+        cellLoc="left",
+        colLoc="left",
+        loc="center",
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    table.scale(1.0, 1.35)
+
+
 PLOTTERS = {
     "grouped_bar": _grouped_bar,
     "scatter": _scatter,
     "hurdle": _hurdle,
+    "table": _table,
 }
 
 
@@ -107,9 +128,10 @@ def build_figure(root: Path, figure: str, spec: dict[str, Any], output: Path) ->
     fig, ax = plt.subplots(figsize=(7.2, 4.4), constrained_layout=True)
     PLOTTERS[str(plot["type"])](ax, plot)
     ax.set_title(str(plot["title"]))
-    ax.set_xlabel(str(plot.get("xlabel", "")))
-    ax.set_ylabel(str(plot.get("ylabel", "")))
-    ax.grid(axis="y", alpha=0.2)
+    if plot["type"] != "table":
+        ax.set_xlabel(str(plot.get("xlabel", "")))
+        ax.set_ylabel(str(plot.get("ylabel", "")))
+        ax.grid(axis="y", alpha=0.2)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, dpi=220)
     plt.close(fig)

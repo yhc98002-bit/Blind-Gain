@@ -1,0 +1,95 @@
+{
+  "checks": {
+    "all_expected_documents_nonempty": true,
+    "all_required_plotters_implemented": true,
+    "exact_registered_figure_set": true,
+    "figure_builder_and_tests_present": true,
+    "pending_figures_fail_closed": true,
+    "prohibited_claims_absent": true,
+    "required_terminology_present": true,
+    "result_registry_has_only_explicit_pending_rows": true
+  },
+  "errors": [],
+  "figures": {
+    "audits": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "table",
+      "status_pending": true
+    },
+    "decomposition": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "grouped_bar",
+      "status_pending": true
+    },
+    "dissociation": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "scatter",
+      "status_pending": true
+    },
+    "hurdle": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "hurdle",
+      "status_pending": true
+    }
+  },
+  "files": {
+    "README.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "8b4e6f5ffd3fd5fd22b91a91f0e88f882314584ce8972a5e9df76e7c4be8267b",
+      "size_bytes": 687
+    },
+    "contribution_nonoverlap.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "84983be53e742d43eeb6a524bec23c409276a17965bd237f5d45dda867bfe90e",
+      "size_bytes": 645
+    },
+    "data_card.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "d4a633edfcc6f557e2a3c0be5ee0ee729f25ef7df61c78b99384ca39153b0e36",
+      "size_bytes": 479
+    },
+    "figure_registry.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "b70bcd3b5c9f16d06314dbe514dcc781946c5f5e977c272d6307e828698d43dd",
+      "size_bytes": 624
+    },
+    "figure_specs.json": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "038a4d4f1f93cb5728b19a6962dd454363c4a571a01a0ff4aee055b9ad9fcd14",
+      "size_bytes": 1116
+    },
+    "master_result_table.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "f6b0cf658280cf42d9fb33fc3ad7296a402706e2e420324740c46dc2098ec14b",
+      "size_bytes": 852
+    },
+    "methods_appendix.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "5efec3745e27d9d64bb719dcd4726dd13e2c884db10be4aabd3cf5357990fee0",
+      "size_bytes": 373
+    },
+    "outline.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "989531e1fb59c096c529b7d877122b2708768856faf4f1cda5bb5846f6b700bc",
+      "size_bytes": 821
+    }
+  },
+  "schema_version": "blind-gains.paper1-pipeline-audit.v1",
+  "status": "pass"
+}
