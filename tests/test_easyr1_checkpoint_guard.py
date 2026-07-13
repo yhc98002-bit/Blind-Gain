@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import datetime as dt
+import json
 from pathlib import Path
 
 import pytest
@@ -95,3 +97,87 @@ def test_retrying_guard_waits_after_refusal_and_rechecks_quota(tmp_path: Path) -
     assert len(rows) == 2
     assert '"status": "refused"' in rows[0]
     assert '"status": "pass"' in rows[1]
+
+
+def test_shared_checkpoint_guard_uses_quota_snapshot_not_recursive_du(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "usage.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "status": "pass",
+                "quota_root": str(tmp_path.resolve()),
+                "used_bytes": 476 * GIB,
+                "measured_at_utc": dt.datetime.now(dt.timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                ),
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(StorageGuardRefusal, match="quota headroom"):
+        guard_easyr1_checkpoint_save(
+            tmp_path / "pilot",
+            20,
+            environment={
+                "BLIND_GAINS_STORAGE_GUARD_ENABLED": "1",
+                "BLIND_GAINS_CHECKPOINT_TIER": "S",
+                "BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES": str(5 * GIB),
+                "BLIND_GAINS_SHARED_QUOTA_ROOT": str(tmp_path),
+                "BLIND_GAINS_SHARED_QUOTA_BYTES": str(500 * GIB),
+                "BLIND_GAINS_SHARED_USAGE_SNAPSHOT": str(snapshot),
+                "BLIND_GAINS_STORAGE_GUARD_LOG": str(tmp_path / "guard.jsonl"),
+            },
+        )
+
+
+def test_stale_snapshot_refuses_then_retries_after_refresh(tmp_path: Path) -> None:
+    snapshot = tmp_path / "usage.json"
+    log = tmp_path / "guard.jsonl"
+    environment = {
+        "BLIND_GAINS_STORAGE_GUARD_ENABLED": "1",
+        "BLIND_GAINS_CHECKPOINT_TIER": "S",
+        "BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES": str(5 * GIB),
+        "BLIND_GAINS_SHARED_QUOTA_ROOT": str(tmp_path),
+        "BLIND_GAINS_SHARED_QUOTA_BYTES": str(500 * GIB),
+        "BLIND_GAINS_SHARED_USAGE_SNAPSHOT": str(snapshot),
+        "BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS": "60",
+        "BLIND_GAINS_STORAGE_GUARD_LOG": str(log),
+        "BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS": "7",
+        "BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS": "2",
+    }
+
+    def write_snapshot(measured_at: dt.datetime) -> None:
+        snapshot.write_text(
+            json.dumps(
+                {
+                    "status": "pass",
+                    "quota_root": str(tmp_path.resolve()),
+                    "used_bytes": 100 * GIB,
+                    "measured_at_utc": measured_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    write_snapshot(dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1))
+    sleeps: list[float] = []
+
+    def refresh_during_wait(seconds: float) -> None:
+        sleeps.append(seconds)
+        write_snapshot(dt.datetime.now(dt.timezone.utc))
+
+    result = wait_for_easyr1_checkpoint_storage(
+        tmp_path / "pilot",
+        20,
+        environment=environment,
+        sleep=refresh_during_wait,
+    )
+
+    assert result is not None and result.allowed
+    assert sleeps == [7.0]
+    rows = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
+    assert [row["status"] for row in rows] == ["refused", "pass"]
+    assert "snapshot is stale" in rows[0]["reason"]

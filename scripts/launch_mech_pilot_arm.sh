@@ -9,6 +9,9 @@ fi
 ARM="$1"
 NODE="$2"
 GPU_LIST="$3"
+RUN_SUFFIX="${BLIND_GAINS_PILOT_RUN_SUFFIX:-}"
+RECOVERY_OF="${BLIND_GAINS_PILOT_RECOVERY_OF:-}"
+RECOVERY_REASON="${BLIND_GAINS_PILOT_RECOVERY_REASON:-}"
 if [[ "${NODE}" != "an12" && "${NODE}" != "an29" ]]; then
   echo "pilot arm must run wholly on an12 or an29" >&2
   exit 2
@@ -50,6 +53,21 @@ case "${ARM}" in
     ;;
 esac
 
+if [[ -n "${RUN_SUFFIX}" ]]; then
+  if [[ ! "${RUN_SUFFIX}" =~ ^retry[1-9][0-9]*$ ]]; then
+    echo "pilot run suffix must match retryN" >&2
+    exit 2
+  fi
+  if [[ -z "${RECOVERY_OF}" || -z "${RECOVERY_REASON}" ]]; then
+    echo "pilot retry requires recovery source and reason" >&2
+    exit 2
+  fi
+  ARM_RUN_NAME="${ARM_RUN_NAME}_${RUN_SUFFIX}"
+elif [[ -n "${RECOVERY_OF}" || -n "${RECOVERY_REASON}" ]]; then
+  echo "pilot recovery metadata requires a retry suffix" >&2
+  exit 2
+fi
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 SOURCE_CONFIG="${ROOT}/${CONFIG_REL}"
@@ -77,6 +95,8 @@ fi
 if ! git diff --quiet HEAD -- \
   "${CONFIG_REL}" \
   scripts/launch_mech_pilot_arm.sh \
+  scripts/launch_mech_pilot_recovery.sh \
+  scripts/prepare_pilot_recovery_config.py \
   scripts/check_pilot_launch_authorization.py \
   scripts/watch_anchor_checkpoints.py \
   scripts/watch_pilot_checkpoints.py \
@@ -127,7 +147,16 @@ RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
 LOCK="/tmp/blind_gains_${NODE}_${ARM_RUN_NAME}.lock"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
-install -m 0444 "${SOURCE_CONFIG}" "${CONFIG_SNAPSHOT}"
+if [[ -n "${RUN_SUFFIX}" ]]; then
+  PYTHONPATH=. .venv/bin/python scripts/prepare_pilot_recovery_config.py \
+    --source "${SOURCE_CONFIG}" \
+    --output "${CONFIG_SNAPSHOT}" \
+    --experiment-name "${ARM_RUN_NAME}" \
+    --checkpoint-path "${CHECKPOINT_PATH}"
+  chmod 0444 "${CONFIG_SNAPSHOT}"
+else
+  install -m 0444 "${SOURCE_CONFIG}" "${CONFIG_SNAPSHOT}"
+fi
 install -m 0444 "${PREREG}" "${PREREG_SNAPSHOT}"
 git -C "${EASYR1_DIR}" diff --binary --no-ext-diff > "${EASYR1_PATCH}"
 chmod 0444 "${EASYR1_PATCH}"
@@ -207,6 +236,8 @@ jq -n \
   --arg caption_prompt_hash "${CAPTION_PROMPT_SHA256}" \
   --arg caption_store_hash "${CAPTION_STORE_SHA256}" \
   --arg caption_files_hash "${CAPTION_STORE_FILES_SHA256}" \
+  --arg recovery_of "${RECOVERY_OF}" \
+  --arg recovery_reason "${RECOVERY_REASON}" \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
@@ -245,6 +276,8 @@ jq -n \
     caption_prompt_sha256: (if $caption_prompt_hash == "" then null else $caption_prompt_hash end),
     caption_store_sha256: (if $caption_store_hash == "" then null else $caption_store_hash end),
     caption_store_files_sha256: (if $caption_files_hash == "" then null else $caption_files_hash end),
+    recovery_of_run: (if $recovery_of == "" then null else $recovery_of end),
+    recovery_reason: (if $recovery_reason == "" then null else $recovery_reason end),
     command: $command,
     start_time_utc: $started,
     end_time_utc: null,
@@ -256,10 +289,16 @@ jq -n \
     stdout_stderr_log: $log,
     ray_tmp_dir: $ray_tmp,
     expected_artifacts: [$shadow, ($checkpoint_path + "/experiment_log.jsonl"), ($checkpoint_path + "/checkpoint_tracker.json")],
-    deviations: []
+    deviations: (if $recovery_of == "" then [] else [{
+      code: "fresh_restart_after_precheckpoint_operational_failure",
+      source_run: $recovery_of,
+      reason: $recovery_reason,
+      scientific_config_change: false,
+      operational_changes: ["experiment_name", "save_checkpoint_path"]
+    }] end)
   }' > "${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 
 sleep 20
 REMOTE_PID="$(cat "${PID_FILE}")"

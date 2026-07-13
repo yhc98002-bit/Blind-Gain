@@ -16,7 +16,7 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 | M9 | 7B flagship, seeds 1–3 | M4 and M8 | `reports/flagship_7b_results_v1.md`; `reports/flagship_7b_3seed_v1.md` |
 | M10 | Support-sharpening resampling | folded into each applicable readout | `reports/support_sharpening_registry_v1.md` plus per-readout 64-sample artifacts |
 | M11 | Non-Qwen inference audits | gap-filler; Gemma access may block | `reports/generalization_audits_v1.md` |
-| M12 | Chart v08 two-subfamily instrument | gap-filler; R19 immutable | `reports/chart_v08_calibration.md`; `reports/chart_v08_confirmatory.md` |
+| M12 | Chart v08 two-subfamily instrument | gap-filler; R19 immutable | `reports/chart_v08_generation_status_v2.md`; `reports/chart_v08_mechanical_audit_v2.md`; `reports/chart_v08_calibration.md`; `reports/chart_v08_confirmatory.md` |
 | M13 | Paper 1 pipeline | continuous | `docs/paper1/`; `reports/paper1_pipeline_status_v5.md`; `reports/paper1_pipeline_status_v5.json` |
 | M14 | Merge-back readouts | M6 and M9 seed 1; registered M4 addendum | `reports/mergeback_gate_readouts_v1.md` |
 

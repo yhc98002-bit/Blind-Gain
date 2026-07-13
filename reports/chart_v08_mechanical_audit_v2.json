@@ -1,0 +1,42 @@
+{
+  "checks": {
+    "answers_and_pair_mechanics_exact": true,
+    "changed_region_masks_exact": true,
+    "difficulty_controls_only_crossings_and_granularity": true,
+    "dual_coding_distinct": true,
+    "member_specific_no_star_and_random_star_sidecars": true,
+    "no_answer_pointing_cues": true,
+    "normal_palette_cie76_at_least_25": true,
+    "random_star_is_answer_discordant": true,
+    "severe_cvd_palette_cie76_at_least_15": true,
+    "source_images_hash_and_metadata_reconstruct": true,
+    "source_manifest_exact_expected_unique_pairs": true,
+    "two_subfamilies_exact_expected_count": true
+  },
+  "crossing_density": {
+    "a_max": 0.95,
+    "a_mean": 0.6818333333333335,
+    "a_min": 0.4,
+    "b_max": 0.9333333333333333,
+    "b_mean": 0.6738333333333333,
+    "b_min": 0.4
+  },
+  "diagnostic_directory": "data/fliptrack_chart_v08_calibration_v1_diagnostics_v2",
+  "pair_count": 100,
+  "palette_cie76_by_vision_mode": {
+    "deuteranopia": 18.0853,
+    "normal": 26.4339,
+    "protanopia": 20.7071,
+    "tritanopia": 16.175
+  },
+  "schema_version": "blind-gains.chart-v08-mechanical-audit.v2",
+  "sidecar": "data/fliptrack_chart_v08_calibration_v1_diagnostics_v2.jsonl",
+  "sidecar_sha256": "18ccefd2be6efc0d10ff6c710e25e56c67fd2b65818872aa398f68941f12f800",
+  "source_manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+  "source_manifest_sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+  "status": "pass",
+  "template_counts": {
+    "chart_v08_legend_target_flip": 50,
+    "chart_v08_point_value_flip": 50
+  }
+}
