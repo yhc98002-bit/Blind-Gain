@@ -57,6 +57,11 @@ def test_resume_prefix_rejects_backend_drift(tmp_path: Path) -> None:
                     "max_new_tokens": 2048,
                 },
                 "parser_version": PARSER_VERSION,
+                "runtime": {
+                    "backend": "gemma3",
+                    "generation_callable": True,
+                    "processor_use_fast": False,
+                },
             }
         )
         + "\n",
@@ -93,6 +98,13 @@ def test_resume_prefix_accepts_exact_contract(tmp_path: Path) -> None:
             "max_new_tokens": 2048,
         },
         "parser_version": PARSER_VERSION,
+        "runtime": {
+            "backend": "internvl3",
+            "generation_callable": True,
+            "generation_shim_applied": True,
+            "timm_version": "0.9.12",
+            "use_flash_attn": False,
+        },
     }
     resume.write_text(json.dumps(payload) + "\n", encoding="utf-8")
 

@@ -12,6 +12,7 @@ from typing import Any, Iterable
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
+from src.eval.nonqwen_adapters import nonqwen_runtime_metadata_valid
 from src.rewards.answer_reward import PARSER_VERSION
 
 
@@ -113,6 +114,7 @@ def build_payload(
             == {"temperature": 0.0, "top_p": 1.0, "n": 1, "max_new_tokens": 384},
             "templates": isinstance(metric.get("per_template"), dict)
             and bool(metric["per_template"]),
+            "runtime": nonqwen_runtime_metadata_valid(metric.get("runtime"), key[0]),
             "run_key": (
                 manifest.get("model_backend"),
                 manifest.get("dataset_id"),
@@ -151,6 +153,7 @@ def build_payload(
             == {"temperature": 0.0, "top_p": 1.0, "n": 1, "max_new_tokens": 2048},
             "strata": isinstance(metric.get("per_source_category"), dict)
             and bool(metric["per_source_category"]),
+            "runtime": nonqwen_runtime_metadata_valid(metric.get("runtime"), key[0]),
             "run_key": (manifest.get("model_backend"), manifest.get("condition"))
             == key,
         }

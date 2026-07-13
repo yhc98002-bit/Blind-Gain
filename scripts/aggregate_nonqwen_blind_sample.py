@@ -45,6 +45,7 @@ def summarize(rows: list[dict[str, Any]], *, bootstrap: int = 2000) -> dict[str,
         "parser_version",
         "prompt_contract_sha256",
         "decoding",
+        "runtime",
     )
     constants = {field: rows[0].get(field) for field in constant_fields}
     for field, expected in constants.items():

@@ -13,6 +13,46 @@ NONQWEN_BACKENDS = ("internvl3", "gemma3")
 FLIPTRACK_CONDITIONS = ("real", "none", "caption")
 
 
+def nonqwen_runtime_metadata_valid(metadata: Any, backend: str) -> bool:
+    if not isinstance(metadata, dict) or metadata.get("backend") != backend:
+        return False
+    if metadata.get("generation_callable") is not True:
+        return False
+    if backend == "internvl3":
+        return (
+            isinstance(metadata.get("generation_shim_applied"), bool)
+            and metadata.get("timm_version") == "0.9.12"
+            and metadata.get("use_flash_attn") is False
+        )
+    if backend == "gemma3":
+        return metadata.get("processor_use_fast") is False
+    return False
+
+
+def ensure_internvl_generation_compatibility(
+    model: Any, *, generation_mixin_class: type[Any] | None = None
+) -> bool:
+    language_model = getattr(model, "language_model", None)
+    if language_model is None:
+        raise ValueError("InternVL model lacks the registered language_model")
+    if callable(getattr(language_model, "generate", None)):
+        return False
+    if generation_mixin_class is None:
+        from transformers.generation import GenerationMixin
+
+        generation_mixin_class = GenerationMixin
+    original_class = type(language_model)
+    compatible_class = type(
+        f"{original_class.__name__}WithGeneration",
+        (original_class, generation_mixin_class),
+        {"__module__": original_class.__module__},
+    )
+    language_model.__class__ = compatible_class
+    if not callable(getattr(language_model, "generate", None)):
+        raise RuntimeError("InternVL generation compatibility repair did not expose generate")
+    return True
+
+
 def validate_content(content: Iterable[dict[str, Any]]) -> list[dict[str, str]]:
     normalized: list[dict[str, str]] = []
     for index, item in enumerate(content):
@@ -153,6 +193,22 @@ class InternVL3Adapter:
     _model: Any = None
     _tokenizer: Any = None
     _transform: Any = None
+    _generation_shim_applied: bool = False
+
+    def runtime_metadata(self) -> dict[str, Any]:
+        if self._model is None:
+            raise RuntimeError("InternVL runtime metadata requires a loaded model")
+        import timm
+
+        return {
+            "backend": "internvl3",
+            "generation_callable": callable(
+                getattr(self._model.language_model, "generate", None)
+            ),
+            "generation_shim_applied": self._generation_shim_applied,
+            "timm_version": timm.__version__,
+            "use_flash_attn": False,
+        }
 
     def load(self) -> None:
         if self._model is not None:
@@ -168,7 +224,11 @@ class InternVL3Adapter:
             use_flash_attn=False,
             trust_remote_code=True,
             local_files_only=True,
-        ).eval()
+        )
+        self._generation_shim_applied = ensure_internvl_generation_compatibility(
+            self._model
+        )
+        self._model.eval()
         self._model.to(self.device)
         self._tokenizer = AutoTokenizer.from_pretrained(
             self.model_path,
@@ -234,6 +294,15 @@ class Gemma3Adapter:
     max_new_tokens: int = 384
     _model: Any = None
     _processor: Any = None
+
+    def runtime_metadata(self) -> dict[str, Any]:
+        if self._model is None:
+            raise RuntimeError("Gemma runtime metadata requires a loaded model")
+        return {
+            "backend": "gemma3",
+            "generation_callable": callable(getattr(self._model, "generate", None)),
+            "processor_use_fast": False,
+        }
 
     def load(self) -> None:
         if self._model is not None:

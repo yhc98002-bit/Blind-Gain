@@ -105,6 +105,7 @@ def main() -> None:
             row["prediction_b"] = adapter.generate(
                 fliptrack_content(row, "b", args.condition, caption_row)
             )
+            row["runtime"] = adapter.runtime_metadata()
             row.update(pair_score(row))
             row.update(contract)
             row.update(
@@ -137,6 +138,7 @@ def main() -> None:
             "condition": args.condition,
             "parser_version": PARSER_VERSION,
             "row_count": len(scored),
+            "runtime": adapter.runtime_metadata(),
             "decoding": {
                 "temperature": 0.0,
                 "top_p": 1.0,

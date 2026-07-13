@@ -51,6 +51,21 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                     "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
                     "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1, "max_new_tokens": 384},
                     "per_template": {"template": {"pair_accuracy": 0.5}},
+                    "runtime": (
+                        {
+                            "backend": "internvl3",
+                            "generation_callable": True,
+                            "generation_shim_applied": True,
+                            "timm_version": "0.9.12",
+                            "use_flash_attn": False,
+                        }
+                        if backend == "internvl3"
+                        else {
+                            "backend": "gemma3",
+                            "generation_callable": True,
+                            "processor_use_fast": False,
+                        }
+                    ),
                 }
                 flip.append(
                     _write_run_metric(
@@ -77,6 +92,21 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                 "prompt_contract_sha256": DEFAULT_PROMPT_CONTRACT.sha256,
                 "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1, "max_new_tokens": 2048},
                 "per_source_category": {"source::category": {"n": 4096, "acc_final": 0.4}},
+                "runtime": (
+                    {
+                        "backend": "internvl3",
+                        "generation_callable": True,
+                        "generation_shim_applied": True,
+                        "timm_version": "0.9.12",
+                        "use_flash_attn": False,
+                    }
+                    if backend == "internvl3"
+                    else {
+                        "backend": "gemma3",
+                        "generation_callable": True,
+                        "processor_use_fast": False,
+                    }
+                ),
             }
             blind.append(
                 _write_run_metric(

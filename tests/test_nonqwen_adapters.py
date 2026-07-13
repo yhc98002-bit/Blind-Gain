@@ -8,10 +8,13 @@ import pytest
 
 from src.eval.nonqwen_adapters import (
     Gemma3Adapter,
+    InternVL3Adapter,
     caption_qa_prompt,
+    ensure_internvl_generation_compatibility,
     fliptrack_content,
     gemma_messages,
     internvl_question,
+    nonqwen_runtime_metadata_valid,
 )
 from scripts.eval_nonqwen_fliptrack import load_caption_pairs
 
@@ -168,3 +171,54 @@ def test_internvl_runtime_dependency_is_reproducibly_pinned() -> None:
     ]
 
     assert pins == ["timm==0.9.12"]
+
+
+def test_internvl_generation_shim_repairs_transformers_456_break() -> None:
+    class LegacyLanguageModel:
+        def original_method(self):
+            return "preserved"
+
+    class FakeGenerationMixin:
+        def generate(self):
+            return "generated"
+
+    class FakeInternVL:
+        language_model = LegacyLanguageModel()
+
+    model = FakeInternVL()
+
+    repaired = ensure_internvl_generation_compatibility(
+        model, generation_mixin_class=FakeGenerationMixin
+    )
+
+    assert repaired is True
+    assert model.language_model.original_method() == "preserved"
+    assert model.language_model.generate() == "generated"
+    assert ensure_internvl_generation_compatibility(
+        model, generation_mixin_class=FakeGenerationMixin
+    ) is False
+
+
+def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None:
+    fake_timm = types.ModuleType("timm")
+    fake_timm.__version__ = "0.9.12"
+    monkeypatch.setitem(sys.modules, "timm", fake_timm)
+
+    adapter = InternVL3Adapter("/models/internvl")
+    adapter._model = type(
+        "Model", (), {"language_model": type("LM", (), {"generate": lambda self: None})()}
+    )()
+    adapter._generation_shim_applied = True
+    internvl_metadata = adapter.runtime_metadata()
+
+    assert internvl_metadata == {
+        "backend": "internvl3",
+        "generation_callable": True,
+        "generation_shim_applied": True,
+        "timm_version": "0.9.12",
+        "use_flash_attn": False,
+    }
+    assert nonqwen_runtime_metadata_valid(internvl_metadata, "internvl3") is True
+    assert nonqwen_runtime_metadata_valid(
+        {**internvl_metadata, "generation_callable": False}, "internvl3"
+    ) is False

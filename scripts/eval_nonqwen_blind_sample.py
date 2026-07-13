@@ -16,7 +16,11 @@ from src.eval.blind_solvability import (
     load_caption_map,
     load_geometry_rows,
 )
-from src.eval.nonqwen_adapters import NONQWEN_BACKENDS, create_nonqwen_adapter
+from src.eval.nonqwen_adapters import (
+    NONQWEN_BACKENDS,
+    create_nonqwen_adapter,
+    nonqwen_runtime_metadata_valid,
+)
 from src.eval.prompt_contract import prompt_contract_metadata, response_satisfies_contract
 from src.rewards.answer_reward import PARSER_VERSION, answers_match, extract_answer_span
 
@@ -101,6 +105,8 @@ def validate_resume_prefix(
                     f"resume contract mismatch at line {index} for {key}: "
                     f"expected {value!r}, found {resumed.get(key)!r}"
                 )
+        if not nonqwen_runtime_metadata_valid(resumed.get("runtime"), backend):
+            raise ValueError(f"resume contract mismatch at line {index} for runtime")
     return lines
 
 
@@ -212,6 +218,7 @@ def main() -> None:
                 "backend": args.backend,
                 "condition": args.condition,
                 "prediction": prediction,
+                "runtime": adapter.runtime_metadata(),
                 "image_payload_count": len(image_paths),
                 "source_manifest_sha256": source_hash,
                 "format_prompt_sha256": format_hash,

@@ -18,6 +18,11 @@ def _row(index: int, correct: bool) -> dict:
         "parser_version": "canonical-v2",
         "prompt_contract_sha256": "c" * 64,
         "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1, "max_new_tokens": 2048},
+        "runtime": {
+            "backend": "gemma3",
+            "generation_callable": True,
+            "processor_use_fast": False,
+        },
         "acc_final": correct,
         "acc_strict": correct,
         "extractor_valid": True,
