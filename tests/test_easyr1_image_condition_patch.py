@@ -81,6 +81,7 @@ def _dataset(
                 "caption": "A red rectangle labeled seven.",
                 "caption_model_path": "Qwen2.5-VL-3B-Instruct",
                 "caption_prompt_sha256": "a" * 64,
+                "image_path": str(image_dir / "sample.png"),
             }
         )
         + "\n",
@@ -164,8 +165,41 @@ def test_caption_condition_uses_fixed_text_and_sends_no_image_tensor(tmp_path: P
 def test_caption_condition_fails_loudly_when_content_hash_is_missing(tmp_path: Path) -> None:
     dataset, _, _ = _dataset(tmp_path, "caption")
     dataset.caption_by_hash.clear()
+    dataset.caption_by_pixel_hash.clear()
     with pytest.raises(KeyError, match="missing fixed caption"):
         dataset[0]
+
+
+def test_caption_condition_resolves_in_memory_validation_image_by_pixels(
+    tmp_path: Path,
+) -> None:
+    dataset, tokenizer, processor = _dataset(tmp_path, "caption")
+    source_path = tmp_path / "images" / "sample.png"
+    with Image.open(source_path) as source:
+        in_memory = source.copy()
+    dataset.dataset = dataset.dataset.map(
+        lambda row: {**row, "images": [in_memory]}, load_from_cache_file=False
+    )
+
+    row = dataset[0]
+
+    assert "multi_modal_data" not in row
+    assert "A red rectangle labeled seven." in tokenizer.last_prompt
+    assert processor.last_images is None
+
+
+def test_in_memory_caption_fix_has_reproducible_patch_and_installer() -> None:
+    patch = (ROOT / "docs/easyr1_caption_pil_hash_patch.diff").read_text(
+        encoding="utf-8"
+    )
+    installer = (
+        ROOT / "scripts/apply_easyr1_caption_pil_hash_patch.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "def _pixel_sha256" in patch
+    assert "caption_by_pixel_hash" in patch
+    assert "normalized pixel hash" in patch
+    assert "git -C" in installer and "apply --check" in installer
 
 
 def test_noise_condition_is_deterministic_and_content_keyed() -> None:
