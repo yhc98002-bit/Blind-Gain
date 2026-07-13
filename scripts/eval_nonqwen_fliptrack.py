@@ -10,7 +10,12 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.eval.fliptrack_metrics import aggregate_pair_metrics, pair_score
+from src.eval.fliptrack_metrics import (
+    aggregate_pair_metrics,
+    aggregate_pair_metrics_by_template,
+    pair_accuracy_ci,
+    pair_score,
+)
 from src.eval.nonqwen_adapters import (
     FLIPTRACK_CONDITIONS,
     NONQWEN_BACKENDS,
@@ -47,6 +52,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--backend", choices=NONQWEN_BACKENDS, required=True)
     parser.add_argument("--model-path", required=True)
+    parser.add_argument("--dataset-id", choices=("r19", "r20"), required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--caption-input", type=Path)
     parser.add_argument("--condition", choices=FLIPTRACK_CONDITIONS, required=True)
@@ -104,6 +110,7 @@ def main() -> None:
             row.update(
                 {
                     "eval_backend": args.backend,
+                    "eval_dataset": args.dataset_id,
                     "eval_condition": args.condition,
                     "parser_version": PARSER_VERSION,
                     "decoding": {
@@ -118,10 +125,15 @@ def main() -> None:
             handle.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             handle.flush()
     metrics = aggregate_pair_metrics(scored)
+    metrics["per_template"] = aggregate_pair_metrics_by_template(scored)
+    ci_low, ci_high = pair_accuracy_ci(scored, n_boot=2000, seed=0)
+    metrics["pair_accuracy_ci95_low"] = ci_low
+    metrics["pair_accuracy_ci95_high"] = ci_high
     metrics.update(contract)
     metrics.update(
         {
             "backend": args.backend,
+            "dataset_id": args.dataset_id,
             "condition": args.condition,
             "parser_version": PARSER_VERSION,
             "row_count": len(scored),

@@ -115,3 +115,5 @@ def test_nonqwen_launcher_pins_single_node_tp1_and_greedy_contract() -> None:
     assert 'model must be an ephemeral node-local checkout' in launcher
     assert 'caption condition requires a nonempty fixed caption input' in launcher
     assert 'refusing to overwrite immutable non-Qwen run' in launcher
+    assert 'LIMIT_ARGS="--limit ${LIMIT}"' in launcher
+    assert '--dataset-id' in launcher

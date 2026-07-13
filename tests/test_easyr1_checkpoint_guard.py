@@ -80,6 +80,7 @@ def test_retrying_guard_waits_after_refusal_and_rechecks_quota(tmp_path: Path) -
             "BLIND_GAINS_CHECKPOINT_TIER": "S",
             "BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES": str(5 * GIB),
             "BLIND_GAINS_SHARED_QUOTA_ROOT": str(tmp_path),
+            "BLIND_GAINS_SHARED_QUOTA_BYTES": str(500 * GIB),
             "BLIND_GAINS_STORAGE_GUARD_LOG": str(tmp_path / "guard.jsonl"),
             "BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS": "7",
             "BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS": "2",

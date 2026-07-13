@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 8 || $# -gt 9 ]]; then
-  echo "usage: $0 <an12|an29> <gpu> <internvl3|gemma3> <model-path> <manifest> <real|none|caption> <caption-input|-> <run-tag> [max-new-tokens]" >&2
+if [[ $# -lt 9 || $# -gt 11 ]]; then
+  echo "usage: $0 <an12|an29> <gpu> <internvl3|gemma3> <model-path> <r19|r20> <manifest> <real|none|caption> <caption-input|-> <run-tag> [max-new-tokens] [limit|-]" >&2
   exit 2
 fi
 
@@ -10,11 +10,13 @@ NODE="$1"
 GPU="$2"
 BACKEND="$3"
 MODEL_PATH="$4"
-DATA_MANIFEST="$5"
-CONDITION="$6"
-CAPTION_INPUT="$7"
-RUN_TAG="$8"
-MAX_NEW_TOKENS="${9:-384}"
+DATASET_ID="$5"
+DATA_MANIFEST="$6"
+CONDITION="$7"
+CAPTION_INPUT="$8"
+RUN_TAG="$9"
+MAX_NEW_TOKENS="${10:-384}"
+LIMIT="${11:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ ]]; then
@@ -29,6 +31,10 @@ if [[ ! "${BACKEND}" =~ ^(internvl3|gemma3)$ ]]; then
   echo "backend must be internvl3 or gemma3" >&2
   exit 2
 fi
+if [[ ! "${DATASET_ID}" =~ ^(r19|r20)$ ]]; then
+  echo "dataset id must be r19 or r20" >&2
+  exit 2
+fi
 if [[ ! "${CONDITION}" =~ ^(real|none|caption)$ ]]; then
   echo "condition must be real, none, or caption" >&2
   exit 2
@@ -39,6 +45,10 @@ if [[ ! "${RUN_TAG}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
 fi
 if [[ ! "${MAX_NEW_TOKENS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "max-new-tokens must be positive" >&2
+  exit 2
+fi
+if [[ "${LIMIT}" != "-" && ! "${LIMIT}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "limit must be positive or -" >&2
   exit 2
 fi
 
@@ -85,8 +95,12 @@ if [[ "${CAPTION_INPUT}" != "-" ]]; then
   CAPTION_HASH="$(sha256sum "${CAPTION_INPUT}" | awk '{print $1}')"
   CAPTION_ARGS="--caption-input '${CAPTION_INPUT}'"
 fi
-CONFIG_HASH="$(printf 'backend=%s\nmodel=%s\ncondition=%s\nmax_new_tokens=%s\ncaption_hash=%s\n' "${BACKEND}" "${MODEL_PATH}" "${CONDITION}" "${MAX_NEW_TOKENS}" "${CAPTION_HASH}" | sha256sum | awk '{print $1}')"
-COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/eval_nonqwen_fliptrack.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --condition '${CONDITION}' ${CAPTION_ARGS} --output '${OUTPUT}' --metrics-output '${METRICS}' --max-new-tokens ${MAX_NEW_TOKENS}"
+CONFIG_HASH="$(printf 'backend=%s\nmodel=%s\ndataset=%s\ncondition=%s\nmax_new_tokens=%s\ncaption_hash=%s\nlimit=%s\n' "${BACKEND}" "${MODEL_PATH}" "${DATASET_ID}" "${CONDITION}" "${MAX_NEW_TOKENS}" "${CAPTION_HASH}" "${LIMIT}" | sha256sum | awk '{print $1}')"
+LIMIT_ARGS=""
+if [[ "${LIMIT}" != "-" ]]; then
+  LIMIT_ARGS="--limit ${LIMIT}"
+fi
+COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/eval_nonqwen_fliptrack.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --dataset-id '${DATASET_ID}' --manifest '${DATA_MANIFEST}' --condition '${CONDITION}' ${CAPTION_ARGS} --output '${OUTPUT}' --metrics-output '${METRICS}' --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS}"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
@@ -96,6 +110,7 @@ jq -n \
   --arg backend "${BACKEND}" \
   --arg model_path "${MODEL_PATH}" \
   --arg data_manifest "${DATA_MANIFEST}" \
+  --arg dataset_id "${DATASET_ID}" \
   --arg data_hash "${DATA_HASH}" \
   --arg caption_input "${CAPTION_INPUT}" \
   --arg caption_hash "${CAPTION_HASH}" \
@@ -108,6 +123,7 @@ jq -n \
   --arg output "${OUTPUT}" \
   --arg metrics "${METRICS}" \
   --argjson max_new_tokens "${MAX_NEW_TOKENS}" \
+  --arg limit "${LIMIT}" \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
@@ -123,6 +139,7 @@ jq -n \
     config_hash: $config_hash,
     data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
+    dataset_id: $dataset_id,
     caption_input: (if $caption_input == "-" then null else $caption_input end),
     caption_input_hash: (if $caption_hash == "-" then null else $caption_hash end),
     model_backend: $backend,
@@ -130,6 +147,7 @@ jq -n \
     model_revision: "ModelScope master; per-file stage manifest pinned in M11 V3",
     condition: $condition,
     max_new_tokens: $max_new_tokens,
+    limit: (if $limit == "-" then null else ($limit | tonumber) end),
     decoding: {temperature: 0.0, top_p: 1.0, n: 1},
     command: $command,
     start_time_utc: $started,
