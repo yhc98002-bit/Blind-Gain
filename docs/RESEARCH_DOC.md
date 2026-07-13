@@ -48,7 +48,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M8: four 7B pilot-contract conditions are active on an12 GPUs 4-7 from a node-local model and an exact-coverage own-caption store; noise remains queued.
 - M11: ModelScope access is public for both requested models. Compute-node DNS attempts failed at zero bytes, so resumable login-`/tmp` downloads are active for later an29 staging.
 - M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
-- M13: the Paper-1 skeleton, result registry, audit/data-card scaffolds, and contribution boundary are present; figure builders and registered values remain pending.
+- M13: the Paper-1 skeleton, result registry, audit/data-card scaffolds, contribution boundary, and fail-closed hash-pinned figure builder are present; registered values remain pending.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)

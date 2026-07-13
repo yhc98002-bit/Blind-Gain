@@ -1,0 +1,45 @@
+{
+  "schema_version": "blind-gains.paper1-figure-spec.v1",
+  "figures": {
+    "audits": {
+      "status": "pending",
+      "inputs": [
+        {
+          "path": "reports/artifact_gate_v01.md",
+          "sha256": "{result-pending:audit-input-hash}"
+        }
+      ],
+      "plot": "{result-pending:audit-table}"
+    },
+    "decomposition": {
+      "status": "pending",
+      "inputs": [
+        {
+          "path": "reports/pilot_3seed_summary_v1.md",
+          "sha256": "{result-pending:m3-input-hash}"
+        }
+      ],
+      "plot": "{result-pending:decomposition-bars}"
+    },
+    "dissociation": {
+      "status": "pending",
+      "inputs": [
+        {
+          "path": "reports/pilot_3seed_summary_v1.md",
+          "sha256": "{result-pending:m3-input-hash}"
+        }
+      ],
+      "plot": "{result-pending:dissociation-scatter}"
+    },
+    "hurdle": {
+      "status": "pending",
+      "inputs": [
+        {
+          "path": "reports/pilot_4arm_seed1_results_v1.md",
+          "sha256": "{result-pending:m2-input-hash}"
+        }
+      ],
+      "plot": "{result-pending:hurdle-estimates}"
+    }
+  }
+}
