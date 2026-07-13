@@ -1,0 +1,95 @@
+{
+  "checks": {
+    "all_expected_documents_nonempty": true,
+    "all_required_plotters_implemented": true,
+    "exact_registered_figure_set": true,
+    "figure_builder_and_tests_present": true,
+    "pending_figures_fail_closed": true,
+    "prohibited_claims_absent": true,
+    "required_terminology_present": true,
+    "result_registry_has_only_explicit_pending_rows": true
+  },
+  "errors": [],
+  "figures": {
+    "audits": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "table",
+      "status_pending": true
+    },
+    "decomposition": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "grouped_bar",
+      "status_pending": true
+    },
+    "dissociation": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "scatter",
+      "status_pending": true
+    },
+    "hurdle": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "hurdle",
+      "status_pending": true
+    }
+  },
+  "files": {
+    "README.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "2a1b6d88c29630bea69061251fabc127e0236b91835576e8978998b405b08be0",
+      "size_bytes": 1022
+    },
+    "contribution_nonoverlap.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "84983be53e742d43eeb6a524bec23c409276a17965bd237f5d45dda867bfe90e",
+      "size_bytes": 645
+    },
+    "data_card.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "573cfb695e1132001e2602c8125fd44566dd4d86463f7576aab217fa22b1ce13",
+      "size_bytes": 2121
+    },
+    "figure_registry.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "d099629e8d2f4114a65a12551733da90e3f84bc06f9626c80ce5023f809ac55e",
+      "size_bytes": 679
+    },
+    "figure_specs.json": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "4a9118aa45cce9ed43b8f535dd837b163ea0ef9f711e9bea1b44496a76bb7ea2",
+      "size_bytes": 1838
+    },
+    "master_result_table.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "e7f59d0f35fcecad63da6c6889ae59861d11f87711bbbb5d5093d630b064de0f",
+      "size_bytes": 1142
+    },
+    "methods_appendix.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "c2e464304da5d0a7025deca0f7f4ca9b6a30fe178015f853cb5b07e63099e30f",
+      "size_bytes": 5368
+    },
+    "outline.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "989531e1fb59c096c529b7d877122b2708768856faf4f1cda5bb5846f6b700bc",
+      "size_bytes": 821
+    }
+  },
+  "schema_version": "blind-gains.paper1-pipeline-audit.v1",
+  "status": "pass"
+}

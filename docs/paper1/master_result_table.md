@@ -9,4 +9,7 @@
 | 7B flagship three seeds | `reports/flagship_7b_3seed_v1.md` | pending | `{result-pending}` |
 | Long horizon | `reports/anchor_longhorizon_400_results_v1.md` | pending | `{result-pending}` |
 | Mini-A5 | `reports/mini_a5_control_results_v1.md` | pending | `{result-pending}` |
+| Non-Qwen inference audit | `reports/generalization_audits_v1.md` | pending | `{result-pending}` |
+| Chart v08 calibration | `reports/chart_v08_calibration.md` | pending | `{result-pending}` |
+| Chart v08 confirmatory | `reports/chart_v08_confirmatory.md` | pending | `{result-pending}` |
 | Merge-back | `reports/mergeback_gate_readouts_v1.md` | pending | `{result-pending}` |

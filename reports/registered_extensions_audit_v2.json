@@ -1,0 +1,35 @@
+{
+  "schema_version": "blind-gains.registered-extensions-audit.v2",
+  "status": "blocked",
+  "source": "docs/MAIN_PHASE_BRIEF.md",
+  "candidate": "docs/registered_extensions_v1.md",
+  "candidate_sha256": "5d9e629add21468ff114bcd57aa04d1f19d8b01568bb9ec93cef19596f27f07d",
+  "checks": {
+    "long_horizon_fixed_step_400": true,
+    "long_horizon_evaluations_150_200_300_400": true,
+    "long_horizon_no_early_stop_sentence": true,
+    "restore_resume_integrity_and_fresh_run_fallback": true,
+    "flat_rising_operational_rule_resolved": false,
+    "mini_a5_joint_and_member_reward_arms": true,
+    "mini_a5_matched_budget_and_heldout_template_primary": true,
+    "mini_a5_required_diagnostics": true,
+    "mini_a5_no_silent_shaped_reward": true,
+    "virl_four_arms_two_seeds": true,
+    "m1_fork_field_resolved_from_audited_ruling": true,
+    "m3_m7_m8_dependent_fields_explicitly_pending": true,
+    "flagship_conditional_gray_rule": true,
+    "flagship_own_caption_primary_and_fixed_3b_sensitivity": true,
+    "single_node_tp1_placement": true,
+    "exact_merged_at_head_marker": false,
+    "downstream_launch_fail_closed": true
+  },
+  "resolved_inputs": {
+    "m1_fork_row": "strong source/category heterogeneity -> H-mixed becomes the headline; stratify",
+    "m1_report": "reports/virl_fork_ruling.md",
+    "m1_report_sha256": "28c7cac92a276385dbeda5d1b7c499e12d822f652260456347cefd65dba584a1"
+  },
+  "blocked_questions": [
+    "What operational rule defines the registered flat/rising long-horizon verdict?",
+    "Has Richard merged this exact transcription with the canonical merged-at-HEAD marker?"
+  ]
+}

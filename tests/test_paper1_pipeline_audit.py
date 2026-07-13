@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from scripts.audit_paper1_pipeline import build_audit
+from scripts.audit_paper1_pipeline import build_audit, render_markdown
 
 
 def test_current_paper1_pipeline_passes_all_delivery_checks() -> None:
@@ -39,3 +39,16 @@ def test_ready_label_with_pending_payload_is_rejected(tmp_path: Path) -> None:
 
     assert payload["status"] == "fail"
     assert payload["checks"]["pending_figures_fail_closed"] is False
+
+
+def test_versioned_markdown_title_uses_requested_report_version() -> None:
+    payload = {"status": "pass", "checks": {"fixture": True}}
+
+    markdown = render_markdown(
+        payload,
+        Path("reports/paper1_pipeline_status_v5.json"),
+        report_version=5,
+    )
+
+    assert markdown.startswith("# Paper 1 Pipeline Status V5\n")
+    assert "Status V3" not in markdown

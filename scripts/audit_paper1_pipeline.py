@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -147,14 +148,16 @@ def _atomic_write(path: Path, content: str) -> None:
     os.replace(temporary, path)
 
 
-def render_markdown(payload: dict[str, Any], json_path: Path) -> str:
+def render_markdown(
+    payload: dict[str, Any], json_path: Path, *, report_version: int
+) -> str:
     check_rows = [
         f"| `{name}` | `{str(value).lower()}` |"
         for name, value in payload["checks"].items()
     ]
     return "\n".join(
         [
-            "# Paper 1 Pipeline Status V3",
+            f"# Paper 1 Pipeline Status V{report_version}",
             "",
             "Status:",
             f"- M13 pipeline-delivery status: `{payload['status']}`.",
@@ -194,9 +197,22 @@ def main() -> None:
         if args.markdown_output.is_absolute()
         else root / args.markdown_output
     )
+    version_match = re.search(r"_v([0-9]+)$", markdown_path.stem)
+    if version_match is None:
+        raise ValueError(
+            "paper pipeline markdown output must end in a version suffix such as _v4.md"
+        )
+    report_version = int(version_match.group(1))
     _atomic_write(json_path, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     display_json = json_path.relative_to(root) if json_path.is_relative_to(root) else json_path
-    _atomic_write(markdown_path, render_markdown(payload, Path(display_json)))
+    _atomic_write(
+        markdown_path,
+        render_markdown(
+            payload,
+            Path(display_json),
+            report_version=report_version,
+        ),
+    )
     print(json.dumps({"status": payload["status"], "errors": payload["errors"]}))
     raise SystemExit(0 if payload["status"] == "pass" else 1)
 

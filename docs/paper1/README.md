@@ -15,3 +15,10 @@ Required terminology:
 - Use **caption-mediated accessibility**.
 - Do not make information-superiority, anti-vision, or blind-training
   equivalence claims.
+
+Maintenance contract:
+- Populate a result only from its registered, hash-pinned machine artifact.
+- Preserve pending slots until every required input exists.
+- Version pipeline audits and generated figures; never overwrite an earlier
+  report or rendering.
+- Keep R19 and R20 separate and show overall R19 with every template result.

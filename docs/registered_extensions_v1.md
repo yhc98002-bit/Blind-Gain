@@ -1,11 +1,13 @@
 # Registered Extensions V1
 
 Status:
-- Transcription prepared from `docs/MAIN_PHASE_BRIEF.md`.
-- This commit is not registration sign-off. The document remains inactive until
-  Richard confirms the transcription and merges a follow-up that changes this
-  state to `merged-at-HEAD; merge is sign-off`.
-- Fields dependent on M1, M3, or M8 retain the PI-requested
+- Transcription prepared from `docs/MAIN_PHASE_BRIEF.md` and updated after the
+  audited M1 fork ruling.
+- Registration state: draft; downstream launch authorization is fail-closed.
+- This revision remains inactive until Richard merges the exact registration
+  follow-up. That follow-up must replace the state line above with the canonical
+  merged-at-HEAD marker.
+- Fields dependent on M3, M7 data preparation, or M8 retain the PI-requested
   `{computed-pending}` marker.
 
 ## Global Contract
@@ -47,6 +49,8 @@ Registered fallback:
 Primary readout:
 - Report the four checkpoint evaluations and the predeclared flat/rising curve
   verdict. Do not choose a terminal checkpoint from observed performance.
+- Flat/rising decision rule: `{computed-pending: the PI source names this
+  verdict but does not define its operational threshold}`.
 
 ## Extension 2: Mini-A5 Matched Control
 
@@ -101,14 +105,14 @@ Design:
 Computed fields:
 | Field | Registered value |
 | --- | --- |
-| M1 fork row | `{computed-pending}` |
+| M1 fork row | `strong source/category heterogeneity -> H-mixed becomes the headline; stratify` (`reports/virl_fork_ruling.md`) |
 | Frozen subset path | `{computed-pending}` |
 | Frozen subset SHA256 | `{computed-pending}` |
 | ViRL x Layer-1 decontamination manifest | `{computed-pending}` |
 | 3B caption-store path and SHA256 | `{computed-pending}` |
 | Caption coverage | `{computed-pending}` |
 | Steps and token budget | `{computed-pending}` |
-| Seeds | `{computed-pending}` |
+| Seeds | two fixed seeds; exact identifiers `{computed-pending}` |
 | Checkpoint cadence | `{computed-pending}` |
 
 Analysis:

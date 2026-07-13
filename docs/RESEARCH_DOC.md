@@ -40,7 +40,7 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 | E9 | Doc v-next calibration (one-shot 100 pairs) | 3B real 0.69; 7B real 1.00 → too easy | No iteration; harder family = Paper-2/later |
 | E10 | Ops/governance | storage guards+retention+quota tooling; goal-loop caught 3 Goodhart patterns (gate-status conjunction, duplicate audited file, registry authorship) — all structurally patched | Methodology section material |
 | E11 | ViRL39K blind-solvability, 4,096 items, five conditions | mean q_i: real 0.5115, caption 0.4355, gray 0.4188, noise 0.4251, no-image 0.4151; all 15 independent audit checks pass | Registered fork selects strong source/category heterogeneity; H-mixed headline and stratified readouts |
-| E12 | Paper-1 artifact pipeline | section/result/data-card/nonoverlap registries plus immutable builders for decomposition bars, hurdle intervals, dissociation scatter, and audit tables | Pipeline-delivery audit passes; scientific result slots remain explicit and fail closed |
+| E12 | Paper-1 artifact pipeline | section/result/data-card/nonoverlap registries plus immutable builders for decomposition bars, hurdle intervals, dissociation scatter, and audit tables | V5 audit passes after registered methods, corpus manifests, and landed audit hashes were populated; future scientific result slots remain explicit and fail closed |
 
 ## 5. In flight
 
@@ -49,13 +49,14 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
 - M11: ModelScope-first stages for InternVL3-9B and Gemma-3-12B-IT remain verified in an29 `/dev/shm`; both full architectures construct under meta weights and runtime settings are stamped into every result. Heartbeat queue `m11_generalization_queue_login_20260713T054030Z` atomically records each no-capacity poll, requires two stable free-GPU polls, and keeps six smoke cells ahead of the 18-cell matrix.
 - M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
-- M13: pipeline delivery is complete and machine-audited; registered values remain explicit pending slots and are populated continuously only from hash-pinned readouts.
+- M4: the audited M1 heterogeneity fork is filled into the extension transcription. Registration remains fail-closed because the PI source does not operationalize the required flat/rising verdict and the canonical merged-at-HEAD line is absent.
+- M13: pipeline delivery is complete and machine-audited at V5; the methods appendix and data card pin landed contracts/manifests while future values remain explicit pending slots.
 - Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
 
 1. **M2/M3** — launch the four-arm 3B pilot at three seeds, with registered hurdle mechanism analysis and checkpointed FlipTrack readouts.
-2. **M4** — transcribe and merge the long-horizon, mini-A5, ViRL 3B, and 7B flagship extension registry before those training units launch.
+2. **M4** — obtain the PI-defined flat/rising rule, then merge the exact long-horizon, mini-A5, ViRL 3B, and 7B flagship extension registry before those training units launch.
 3. **M8** — build the 7B own-caption store and run the 4,096-item pilot-contract blind-solvability preparation.
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.
 5. **M7/M8/M9** — ViRL 3B decomposition, 7B own-caption readiness, and three-seed 7B flagship.

@@ -112,6 +112,48 @@ def test_extension_pass_requires_registered_document(tmp_path: Path, task_id: st
     )
 
 
+def test_extension_pass_rejects_draft_that_only_mentions_registration_marker(
+    tmp_path: Path,
+) -> None:
+    root = _fixture(tmp_path)
+    _mark_pass(root, "M5")
+    (root / "reports/m5_report.md").write_text("result\n", encoding="utf-8")
+    (root / "docs/registered_extensions_v1.md").write_text(
+        "# Draft\n\nThis will later become `merged-at-HEAD; merge is sign-off`.\n",
+        encoding="utf-8",
+    )
+
+    payload = build_main_objective_audit(root)
+
+    assert payload["status"] == "fail"
+    assert payload["registered_extensions_dependency"]["present_nonempty"] is True
+    assert (
+        payload["registered_extensions_dependency"]["exact_merged_at_head_marker"]
+        is False
+    )
+    assert (
+        payload["checks"]["M5_M6_M7_or_M9_pass_requires_registered_extensions"]
+        is False
+    )
+
+
+def test_extension_pass_accepts_exact_merged_registration_marker(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    _mark_pass(root, "M5")
+    (root / "reports/m5_report.md").write_text("result\n", encoding="utf-8")
+    (root / "docs/registered_extensions_v1.md").write_text(
+        "# Registered\n\n- Registration state: merged-at-HEAD; merge is sign-off.\n",
+        encoding="utf-8",
+    )
+
+    payload = build_main_objective_audit(root)
+
+    assert payload["registered_extensions_dependency"]["exact_merged_at_head_marker"]
+    assert payload["checks"][
+        "M5_M6_M7_or_M9_pass_requires_registered_extensions"
+    ]
+
+
 def test_identical_audited_counterpart_is_rejected(tmp_path: Path) -> None:
     root = _fixture(tmp_path)
     (root / "reports/measurement.json").write_text('{"status": "pass"}\n', encoding="utf-8")

@@ -5,11 +5,27 @@
       "status": "pending",
       "inputs": [
         {
-          "path": "reports/artifact_gate_v01.md",
-          "sha256": "{result-pending:audit-input-hash}"
+          "path": "reports/parser_agreement_audit_v2.md",
+          "sha256": "a18b0c208f21533d47b3bf694c57b41dd00893d3b2c80af13c494033f29130a8"
+        },
+        {
+          "path": "reports/fliptrack_v02r19_human_audit.md",
+          "sha256": "3e0dcabdcf8c1764a3158fb0805c6fe385c4afcff27298db7d65ba12e244bd5b"
+        },
+        {
+          "path": "reports/artifact_gate_v02_r19.json",
+          "sha256": "26691bd61d4231d44edeae2765d7fe0d17ea8e310d397597848230e14d0ffd36"
+        },
+        {
+          "path": "reports/fliptrack_r20_confirmatory.json",
+          "sha256": "77b841e65d9cdb3304b2a4dea202a939d4fd26068976bc3fbb492a0385efa9cd"
+        },
+        {
+          "path": "reports/strong_caption_stress.md",
+          "sha256": "1324de119665aba83c2af0ce669dc86937d7c49aa6d80d9483b68a2774967e0a"
         }
       ],
-      "plot": "{result-pending:audit-table}"
+      "plot": "{result-pending:m11-m12-audit-table-completion}"
     },
     "decomposition": {
       "status": "pending",

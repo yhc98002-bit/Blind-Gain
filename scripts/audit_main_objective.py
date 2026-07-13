@@ -19,6 +19,7 @@ REPORT_TOKEN_RE = re.compile(r"`(reports/[^`]+)`")
 LEDGER_LINE_RE = re.compile(r"^(M(?:[0-9]|1[0-4])) \| (pass|fail|blocked) \| (\S.*)$")
 PREREGISTRATION = Path("reports/preregistration_pilot_v1.md")
 REGISTERED_EXTENSIONS = Path("docs/registered_extensions_v1.md")
+REGISTERED_EXTENSIONS_MARKER = "- Registration state: merged-at-HEAD; merge is sign-off."
 
 
 def _sha256(path: Path) -> str:
@@ -27,6 +28,10 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _has_exact_line(path: Path, expected: str) -> bool:
+    return path.is_file() and expected in path.read_text(encoding="utf-8").splitlines()
 
 
 def parse_main_registry(path: Path) -> dict[str, tuple[str, ...]]:
@@ -148,9 +153,11 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
         for task_id in ("M5", "M6", "M7", "M9")
         if ledger.get(task_id, {}).get("status") == "pass"
     ]
-    extensions_ok = not extensions_required_by or _nonempty_file(
-        root / REGISTERED_EXTENSIONS
+    extensions_path = root / REGISTERED_EXTENSIONS
+    extensions_registered = _nonempty_file(extensions_path) and _has_exact_line(
+        extensions_path, REGISTERED_EXTENSIONS_MARKER
     )
+    extensions_ok = not extensions_required_by or extensions_registered
     if not extensions_ok:
         errors.append(
             f"pass tasks {extensions_required_by} require {REGISTERED_EXTENSIONS}"
@@ -211,6 +218,9 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
             "required_by": extensions_required_by,
             "path": str(REGISTERED_EXTENSIONS),
             "present_nonempty": _nonempty_file(root / REGISTERED_EXTENSIONS),
+            "exact_merged_at_head_marker": _has_exact_line(
+                root / REGISTERED_EXTENSIONS, REGISTERED_EXTENSIONS_MARKER
+            ),
             "satisfied": extensions_ok,
         },
         "audited_file_checks": audited_checks,

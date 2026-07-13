@@ -2,7 +2,7 @@ M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals record
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
 M2 | blocked | reports/m2_seed1_launch_status_v2.md: all four authorized arms are running as single-node four-GPU jobs with one active watcher each; no registered result is yet reported
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
-M4 | blocked | reports/registered_extensions_audit_v1.md: faithful transcription is prepared with PI-requested computed-pending fields; Richard confirmation and merge-state follow-up are still required
+M4 | blocked | reports/registered_extensions_audit_v2.md: audited M1 fork value is filled; the source brief omits the flat/rising decision rule and the exact merged-at-HEAD authorization line is not yet present
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence
 M6 | blocked | requires merged M4, advantage-tensor equivalence, and disjoint pair-corpus evidence
 M7 | blocked | requires merged M4 and confirmed M1 fork ruling
@@ -11,5 +11,5 @@ M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | support-sharpening protocol registry and applicable post-training readouts do not yet exist
 M11 | blocked | reports/m11_execution_queue_status_v3.md + reports/m11_model_constructor_preflight_v1.md: heartbeat-enabled capacity queue is live with 24 pending cells; audited runtime paths are ready and six GPU smoke cells still gate the matrix
 M12 | blocked | reports/chart_v08_generation_status.md: declared 100-pair two-subfamily batch and necessity diagnostics are generated with no answer-pointing cues; scoring, human legibility, attackers, and freeze remain
-M13 | pass | reports/paper1_pipeline_status_v3.md + reports/paper1_pipeline_status_v3.json: reusable paper workspace and all four fail-closed figure paths pass the machine audit; scientific result slots remain explicitly pending
+M13 | pass | reports/paper1_pipeline_status_v5.md + reports/paper1_pipeline_status_v5.json: registered methods/data-card content and hash-pinned landed audit inputs pass the version-correct machine audit; future scientific result slots remain explicitly pending
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum
