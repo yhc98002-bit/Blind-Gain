@@ -154,3 +154,17 @@ def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
 
     assert processor_kwargs["local_files_only"] is True
     assert processor_kwargs["use_fast"] is False
+
+
+def test_internvl_runtime_dependency_is_reproducibly_pinned() -> None:
+    root = Path(__file__).resolve().parents[1]
+    requirements = (
+        root / "configs/env/m11_inference_requirements.txt"
+    ).read_text(encoding="utf-8")
+    pins = [
+        line.strip()
+        for line in requirements.splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+
+    assert pins == ["timm==0.9.12"]

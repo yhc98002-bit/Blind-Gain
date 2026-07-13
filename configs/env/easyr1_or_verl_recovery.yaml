@@ -23,6 +23,13 @@ verl:
   status: "kept as fallback/reference; current working recovery run uses EasyR1"
 qwen3vl:
   policy: "separate environment only; do not silently upgrade current Qwen2.5-VL env"
+m11_inference:
+  requirements_file: configs/env/m11_inference_requirements.txt
+  internvl3:
+    timm: "0.9.12"
+    source: "https://github.com/OpenGVLab/InternVL/blob/main/requirements/internvl_chat.txt"
+  gemma3:
+    processor_use_fast: false
 decision:
   primary_for_recovery: EasyR1
   fallback: verl

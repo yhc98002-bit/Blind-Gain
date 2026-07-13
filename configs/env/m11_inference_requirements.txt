@@ -1,0 +1,2 @@
+# OpenGVLab InternVL's official chat requirements pin this runtime dependency.
+timm==0.9.12
