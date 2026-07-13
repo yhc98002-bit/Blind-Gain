@@ -12,11 +12,16 @@ CONDITION="$3"
 RUN_TAG="$4"
 RESUME_FROM="${5:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-MODEL_PATH="artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
+MODEL_PATH="${VIRL_MODEL_PATH:-artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct}"
+MODEL_LOCATION="${VIRL_MODEL_LOCATION:-shared}"
+MODEL_REVISION="${VIRL_MODEL_REVISION:-Qwen/Qwen2.5-VL-3B-Instruct@66285546d2b821cf421d4f5eb2576359d3770cd3}"
 MANIFEST="data/virl39k_blind_sample_4096.jsonl"
 SAMPLE_SPEC="reports/virl39k_blind_sample_4096.json"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
-CAPTION_RUN="experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z"
+CAPTION_RUN="${VIRL_CAPTION_RUN:-experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z}"
+CAPTION_EXPECTED_SHARDS="${VIRL_CAPTION_EXPECTED_SHARDS:-3}"
+RUN_PREFIX="${VIRL_RUN_PREFIX:-blind_solvability_virl39k_v1}"
+JOB_TYPE="${VIRL_JOB_TYPE:-l10_virl39k_blind_solvability_v1}"
 SYMBOLIC_GRADER_TIMEOUT_SECONDS=5.0
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ || ! "${GPU}" =~ ^[0-7]$ ]]; then
@@ -31,18 +36,35 @@ if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "Invalid run tag" >&2
   exit 2
 fi
+if [[ ! "${MODEL_LOCATION}" =~ ^(shared|node-local)$ ]]; then
+  echo "VIRL_MODEL_LOCATION must be shared or node-local" >&2
+  exit 2
+fi
+if [[ ! "${CAPTION_EXPECTED_SHARDS}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "VIRL_CAPTION_EXPECTED_SHARDS must be positive" >&2
+  exit 2
+fi
 
 cd "${ROOT}"
 if ! rg -q '^L3 \| pass \|' reports/prelaunch_progress.md; then
   echo "L10 ViRL39K scoring is blocked until the L3 smoke is recorded pass" >&2
   exit 3
 fi
-for path in "${MODEL_PATH}" "${MANIFEST}" "${SAMPLE_SPEC}" "${FORMAT_PROMPT}"; do
+for path in "${MANIFEST}" "${SAMPLE_SPEC}" "${FORMAT_PROMPT}"; do
   if [[ ! -e "${path}" ]]; then
     echo "Required ViRL39K audit input is absent: ${path}" >&2
     exit 2
   fi
 done
+if [[ "${MODEL_LOCATION}" == "shared" ]]; then
+  if [[ ! -e "${MODEL_PATH}" ]]; then
+    echo "Required shared model path is absent: ${MODEL_PATH}" >&2
+    exit 2
+  fi
+elif ! ssh "${NODE}" "test -e '${MODEL_PATH}/config.json'"; then
+  echo "Required node-local model path is absent on ${NODE}: ${MODEL_PATH}" >&2
+  exit 2
+fi
 USED_MIB="$(ssh "${NODE}" "nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits -i '${GPU}'" | tr -d '[:space:]')"
 if [[ ! "${USED_MIB}" =~ ^[0-9]+$ || "${USED_MIB}" -ge 1024 ]]; then
   echo "Refusing ViRL39K audit: ${NODE} GPU ${GPU} has ${USED_MIB:-unknown} MiB allocated" >&2
@@ -53,12 +75,12 @@ CAPTION_ARGS=""
 DATA_FILES=("${MANIFEST}" "${SAMPLE_SPEC}" "${FORMAT_PROMPT}")
 if [[ "${CONDITION}" == "caption" ]]; then
   if ! jq -e '(.status == "complete") and (.max_new_tokens == 384)' "${CAPTION_RUN}/run_manifest.json" >/dev/null; then
-    echo "Fixed ViRL39K 3B caption store is not complete" >&2
+    echo "Fixed ViRL39K caption store is not complete" >&2
     exit 2
   fi
   mapfile -t CAPTION_FILES < <(find "${CAPTION_RUN}/shards" -maxdepth 1 -type f -name 'store_shard_*.jsonl' -size +0c | sort)
-  if [[ "${#CAPTION_FILES[@]}" -ne 3 ]]; then
-    echo "Fixed ViRL39K caption store must contain three shards" >&2
+  if [[ "${#CAPTION_FILES[@]}" -ne "${CAPTION_EXPECTED_SHARDS}" ]]; then
+    echo "Fixed ViRL39K caption store has ${#CAPTION_FILES[@]} shards; expected ${CAPTION_EXPECTED_SHARDS}" >&2
     exit 2
   fi
   printf -v CAPTION_ARGS ' %q' "${CAPTION_FILES[@]}"
@@ -77,7 +99,7 @@ if [[ "${RESUME_FROM}" != "-" ]]; then
 fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_ID="blind_solvability_virl39k_v1_${RUN_TAG}_${CONDITION}_${NODE}_${STAMP}"
+RUN_ID="${RUN_PREFIX}_${RUN_TAG}_${CONDITION}_${NODE}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 RUN_MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}_gpu${GPU}.log"
@@ -103,6 +125,7 @@ jq -n \
   --arg node "${NODE}" \
   --arg gpu "${GPU}" \
   --arg condition "${CONDITION}" \
+  --arg job_type "${JOB_TYPE}" \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg data_hash "${DATA_HASH}" \
@@ -114,6 +137,9 @@ jq -n \
   --arg output "${OUTPUT}" \
   --arg cache "${CACHE_DIR}" \
   --arg caption_run "${CAPTION_RUN}" \
+  --arg model_revision "${MODEL_REVISION}" \
+  --arg model_path "${MODEL_PATH}" \
+  --arg model_location "${MODEL_LOCATION}" \
   --arg resume "${RESUME_FROM}" \
   --arg parser_version "${PARSER_VERSION}" \
   --arg reward_version "${REWARD_VERSION}" \
@@ -125,7 +151,7 @@ jq -n \
   --argjson max_images "${MAX_IMAGES}" \
   '{
     run_id: $run_id,
-    job_type: "l10_virl39k_blind_solvability_v1",
+    job_type: $job_type,
     node: $node,
     gpu_allocation: [$gpu],
     gpu_ids: [($gpu | tonumber)],
@@ -145,7 +171,9 @@ jq -n \
     max_images_per_item: $max_images,
     train_filter_ids: null,
     train_filter_sha256: null,
-    model_revision: "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    model_revision: $model_revision,
+    model_path: $model_path,
+    model_location: $model_location,
     format_prompt_sha256: $format_prompt_hash,
     parser_version: $parser_version,
     pilot_reward_version: $reward_version,
