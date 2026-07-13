@@ -155,13 +155,14 @@ def test_authorization_rejects_nonempty_checkpoint_namespace(tmp_path: Path) -> 
     assert result["checks"]["selected_checkpoint_namespace_absent"] is False
 
 
-def test_current_repository_authorizes_after_pi_approved_m0_merge() -> None:
+def test_current_repository_refuses_duplicate_after_pi_approved_launch() -> None:
     root = Path(__file__).resolve().parents[1]
 
     result = build_authorization(root, "a1_real")
 
-    assert result["status"] == "authorized"
+    assert result["status"] == "blocked"
     assert result["checks"]["M0_registration_pass"] is True
     assert result["checks"]["final_preregistration_exists"] is True
     assert result["checks"]["merge_signoff_and_registration_content_exact"] is True
-    assert all(result["checks"].values())
+    assert result["checks"]["selected_checkpoint_namespace_absent"] is False
+    assert result["errors"] == ["selected_checkpoint_namespace_absent"]

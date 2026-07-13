@@ -20,3 +20,21 @@ def test_modelscope_download_is_node_local_guarded_and_proxy_free() -> None:
     assert '"m11_modelscope_node_local_download"' in launcher
     assert "nohup setsid" in launcher
     assert "logs/wrapper.log" in launcher
+
+
+def test_ephemeral_stage_is_guarded_manifest_verified_and_fail_closed() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = (root / "scripts/launch_ephemeral_model_stage.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "m11_ephemeral_model_stage" in launcher
+    assert "/tmp/blind-gains/models/" in launcher
+    assert "/dev/shm/blind-gains/models/" in launcher
+    assert "40 * 1024 * 1024 * 1024" in launcher
+    assert "refusing to overwrite node-local model or partial" in launcher
+    assert "source download run is not complete" in launcher
+    assert "sha256sum -c -" in launcher
+    assert "rsync -a --partial" in launcher
+    assert "nohup setsid" in launcher
+    assert 'tensor_parallel_width: null' in launcher

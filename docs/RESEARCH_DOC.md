@@ -44,8 +44,8 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 ## 5. In flight
 
 - M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
-- M2: A1 real, A2b no-image, and the fixed A3 retry are active under merged-at-HEAD authorization; A2 gray is queued behind M8. The first A3 attempt failed before model allocation on in-memory validation image hashing; commit `8c904154...` fixed all 601 validation rows with zero caption misses.
-- M8: four 7B pilot-contract conditions are active on an12 GPUs 4-7 from a node-local model and an exact-coverage own-caption store; noise remains queued.
+- M2: all four arms are active under merged-at-HEAD authorization as single-node four-GPU jobs: A1/A2-gray on disjoint an12 GPUs and A2b/A3 on disjoint an29 GPUs. The first A3 attempt failed before model allocation on in-memory validation image hashing; commit `8c904154...` fixed all 601 validation rows with zero caption misses.
+- M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
 - M11: ModelScope access is public for both requested models. Compute-node DNS attempts failed at zero bytes, so resumable login-`/tmp` downloads are active for later an29 staging.
 - M12: the declared 100-pair v08 calibration batch is generated as separate legend-target and point-value families with no answer-pointing cues and explicit no-star/random-star diagnostics; scoring is pending.
 - M13: the Paper-1 skeleton, result registry, audit/data-card scaffolds, contribution boundary, and fail-closed hash-pinned figure builder are present; registered values remain pending.

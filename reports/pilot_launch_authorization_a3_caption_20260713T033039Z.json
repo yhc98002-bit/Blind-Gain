@@ -1,0 +1,56 @@
+{
+  "arm": "a3_caption",
+  "arm_label": "A3 caption",
+  "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a3_caption",
+  "checks": {
+    "M0_registration_pass": true,
+    "M2_not_predeclared": true,
+    "all_arm_configs_match_registered_structure": true,
+    "filtered_ids_hash_pinned_in_preregistration": true,
+    "final_preregistration_exists": true,
+    "historical_dependencies_pass": true,
+    "l3_v6_audit_pass": true,
+    "main_ledger_parses_exact_M0_through_M14": true,
+    "merge_signoff_and_registration_content_exact": true,
+    "prelaunch_ledger_parses_exact_L0_through_L13": true,
+    "registration_placeholder_absent": true,
+    "reward_spec_v3_exists": true,
+    "selected_checkpoint_namespace_absent": true,
+    "selected_config_hash_pinned_in_preregistration": true
+  },
+  "config": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/configs/train/mech_a3_caption_3b_geo3k.yaml",
+  "config_sha256": "573b1ca7e26f8365ba140ecb40d76f75f23b8b2ff399c9b45d8200740e2d8826",
+  "errors": [],
+  "filtered_ids": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/geo3k_pilot_filtered_ids.json",
+  "filtered_ids_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+  "image_condition": "caption",
+  "l3_audit": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/pilot_reward_smoke_audit_v4.json",
+  "l3_audit_sha256": "125c11f06a62e6777bb48ad251236ac4193a5120725c9a1483278943d80cf931",
+  "ledger_dependencies": {
+    "L3": {
+      "note": "reports/pilot_reward_spec_v3.md and pilot_reward_smoke_audit_v4.json: exact five-step TP1/4-replica smoke passed all v6 checks; 40,970,272,505-byte retention-expired checkpoint was hash-listed then deleted",
+      "status": "pass"
+    },
+    "L4": {
+      "note": "reports/a3_caption_path.md: frozen corpus has 100% fixed-caption coverage and sampled caption batches contain no image payload",
+      "status": "pass"
+    },
+    "L5": {
+      "note": "required reports: V4 precision filter retains 1,288/2,101 rows; frozen ID SHA256 is 8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+      "status": "pass"
+    },
+    "M0": {
+      "note": "reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step",
+      "status": "pass"
+    },
+    "M2": {
+      "note": "requires reports/preregistration_pilot_v1.md merged and unchanged at HEAD",
+      "status": "blocked"
+    }
+  },
+  "preregistration": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/preregistration_pilot_v1.md",
+  "preregistration_sha256": "fb7e220f1dee62a01a0ce9ee8c4a9f1f1543f189239eb0e83466ed64ad1c1edb",
+  "reward_spec": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/pilot_reward_spec_v3.md",
+  "schema_version": "blind-gains.pilot-launch-authorization.v2",
+  "status": "authorized"
+}
