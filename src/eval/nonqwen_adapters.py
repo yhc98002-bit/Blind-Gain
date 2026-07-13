@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+from packaging.version import Version
 from PIL import Image
 
 from src.eval.prompt_contract import ANSWER_FORMAT_CONTRACT, format_question
@@ -21,36 +22,60 @@ def nonqwen_runtime_metadata_valid(metadata: Any, backend: str) -> bool:
     if backend == "internvl3":
         return (
             isinstance(metadata.get("generation_shim_applied"), bool)
+            and metadata.get("generation_config_ready") is True
             and metadata.get("timm_version") == "0.9.12"
             and metadata.get("use_flash_attn") is False
         )
     if backend == "gemma3":
-        return metadata.get("processor_use_fast") is False
+        torch_version = metadata.get("torch_version")
+        return (
+            metadata.get("processor_use_fast") is False
+            and isinstance(torch_version, str)
+            and gemma3_torch_runtime_supported(torch_version)
+        )
     return False
 
 
+def gemma3_torch_runtime_supported(torch_version: str) -> bool:
+    return Version(torch_version.split("+", maxsplit=1)[0]) >= Version("2.6")
+
+
 def ensure_internvl_generation_compatibility(
-    model: Any, *, generation_mixin_class: type[Any] | None = None
+    model: Any,
+    *,
+    generation_mixin_class: type[Any] | None = None,
+    generation_config_class: type[Any] | None = None,
 ) -> bool:
     language_model = getattr(model, "language_model", None)
     if language_model is None:
         raise ValueError("InternVL model lacks the registered language_model")
-    if callable(getattr(language_model, "generate", None)):
-        return False
-    if generation_mixin_class is None:
-        from transformers.generation import GenerationMixin
+    shim_applied = not callable(getattr(language_model, "generate", None))
+    if shim_applied:
+        if generation_mixin_class is None:
+            from transformers.generation import GenerationMixin
 
-        generation_mixin_class = GenerationMixin
-    original_class = type(language_model)
-    compatible_class = type(
-        f"{original_class.__name__}WithGeneration",
-        (original_class, generation_mixin_class),
-        {"__module__": original_class.__module__},
-    )
-    language_model.__class__ = compatible_class
+            generation_mixin_class = GenerationMixin
+        original_class = type(language_model)
+        compatible_class = type(
+            f"{original_class.__name__}WithGeneration",
+            (original_class, generation_mixin_class),
+            {"__module__": original_class.__module__},
+        )
+        language_model.__class__ = compatible_class
     if not callable(getattr(language_model, "generate", None)):
         raise RuntimeError("InternVL generation compatibility repair did not expose generate")
-    return True
+    if getattr(language_model, "generation_config", None) is None:
+        model_config = getattr(language_model, "config", None)
+        if model_config is None:
+            raise ValueError("InternVL language_model lacks config for generation")
+        if generation_config_class is None:
+            from transformers import GenerationConfig
+
+            generation_config_class = GenerationConfig
+        language_model.generation_config = generation_config_class.from_model_config(
+            model_config
+        )
+    return shim_applied
 
 
 def validate_content(content: Iterable[dict[str, Any]]) -> list[dict[str, str]]:
@@ -206,6 +231,8 @@ class InternVL3Adapter:
                 getattr(self._model.language_model, "generate", None)
             ),
             "generation_shim_applied": self._generation_shim_applied,
+            "generation_config_ready": self._model.language_model.generation_config
+            is not None,
             "timm_version": timm.__version__,
             "use_flash_attn": False,
         }
@@ -298,10 +325,13 @@ class Gemma3Adapter:
     def runtime_metadata(self) -> dict[str, Any]:
         if self._model is None:
             raise RuntimeError("Gemma runtime metadata requires a loaded model")
+        import torch
+
         return {
             "backend": "gemma3",
             "generation_callable": callable(getattr(self._model, "generate", None)),
             "processor_use_fast": False,
+            "torch_version": torch.__version__,
         }
 
     def load(self) -> None:
@@ -309,6 +339,12 @@ class Gemma3Adapter:
             return
         import torch
         from transformers import AutoProcessor, Gemma3ForConditionalGeneration
+
+        if not gemma3_torch_runtime_supported(torch.__version__):
+            raise RuntimeError(
+                "Gemma-3 multimodal inference requires torch>=2.6 for visual-token "
+                f"mask composition; found {torch.__version__}"
+            )
 
         self._model = Gemma3ForConditionalGeneration.from_pretrained(
             self.model_path,

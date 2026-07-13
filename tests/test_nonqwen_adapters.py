@@ -12,6 +12,7 @@ from src.eval.nonqwen_adapters import (
     caption_qa_prompt,
     ensure_internvl_generation_compatibility,
     fliptrack_content,
+    gemma3_torch_runtime_supported,
     gemma_messages,
     internvl_question,
     nonqwen_runtime_metadata_valid,
@@ -123,6 +124,8 @@ def test_nonqwen_launcher_pins_single_node_tp1_and_greedy_contract() -> None:
     assert 'refusing to overwrite immutable non-Qwen run' in launcher
     assert 'LIMIT_ARGS="--limit ${LIMIT}"' in launcher
     assert '--dataset-id' in launcher
+    assert 'BLIND_GAINS_NONQWEN_PYTHON' in launcher
+    assert 'runtime_python: $runtime_python' in launcher
 
 
 def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
@@ -146,6 +149,7 @@ def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
 
     fake_torch = types.ModuleType("torch")
     fake_torch.bfloat16 = object()
+    fake_torch.__version__ = "2.6.0+cu118"
     fake_transformers = types.ModuleType("transformers")
     fake_transformers.Gemma3ForConditionalGeneration = FakeModel
     fake_transformers.AutoProcessor = FakeProcessor
@@ -157,6 +161,12 @@ def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
 
     assert processor_kwargs["local_files_only"] is True
     assert processor_kwargs["use_fast"] is False
+
+
+def test_gemma_multimodal_runtime_rejects_torch_25() -> None:
+    assert gemma3_torch_runtime_supported("2.5.1+cu121") is False
+    assert gemma3_torch_runtime_supported("2.6.0+cu118") is True
+    assert gemma3_torch_runtime_supported("2.7.1") is True
 
 
 def test_internvl_runtime_dependency_is_reproducibly_pinned() -> None:
@@ -175,6 +185,9 @@ def test_internvl_runtime_dependency_is_reproducibly_pinned() -> None:
 
 def test_internvl_generation_shim_repairs_transformers_456_break() -> None:
     class LegacyLanguageModel:
+        config = object()
+        generation_config = None
+
         def original_method(self):
             return "preserved"
 
@@ -182,21 +195,57 @@ def test_internvl_generation_shim_repairs_transformers_456_break() -> None:
         def generate(self):
             return "generated"
 
+    class FakeGenerationConfig:
+        @classmethod
+        def from_model_config(cls, config):
+            assert config is LegacyLanguageModel.config
+            return cls()
+
     class FakeInternVL:
         language_model = LegacyLanguageModel()
 
     model = FakeInternVL()
 
     repaired = ensure_internvl_generation_compatibility(
-        model, generation_mixin_class=FakeGenerationMixin
+        model,
+        generation_mixin_class=FakeGenerationMixin,
+        generation_config_class=FakeGenerationConfig,
     )
 
     assert repaired is True
     assert model.language_model.original_method() == "preserved"
     assert model.language_model.generate() == "generated"
+    assert isinstance(model.language_model.generation_config, FakeGenerationConfig)
     assert ensure_internvl_generation_compatibility(
-        model, generation_mixin_class=FakeGenerationMixin
+        model,
+        generation_mixin_class=FakeGenerationMixin,
+        generation_config_class=FakeGenerationConfig,
     ) is False
+
+
+def test_internvl_repairs_missing_generation_config_even_when_generate_exists() -> None:
+    class LanguageModel:
+        config = object()
+        generation_config = None
+
+        def generate(self):
+            return None
+
+    class FakeGenerationConfig:
+        @classmethod
+        def from_model_config(cls, config):
+            assert config is LanguageModel.config
+            return cls()
+
+    model = type("InternVL", (), {"language_model": LanguageModel()})()
+
+    shim_applied = ensure_internvl_generation_compatibility(
+        model,
+        generation_config_class=FakeGenerationConfig,
+    )
+
+    assert shim_applied is False
+    assert isinstance(model.language_model.generation_config, FakeGenerationConfig)
 
 
 def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None:
@@ -206,7 +255,15 @@ def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None
 
     adapter = InternVL3Adapter("/models/internvl")
     adapter._model = type(
-        "Model", (), {"language_model": type("LM", (), {"generate": lambda self: None})()}
+        "Model",
+        (),
+        {
+            "language_model": type(
+                "LM",
+                (),
+                {"generate": lambda self: None, "generation_config": object()},
+            )()
+        },
     )()
     adapter._generation_shim_applied = True
     internvl_metadata = adapter.runtime_metadata()
@@ -215,6 +272,7 @@ def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None
         "backend": "internvl3",
         "generation_callable": True,
         "generation_shim_applied": True,
+        "generation_config_ready": True,
         "timm_version": "0.9.12",
         "use_flash_attn": False,
     }

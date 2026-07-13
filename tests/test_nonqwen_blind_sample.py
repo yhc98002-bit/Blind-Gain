@@ -61,6 +61,7 @@ def test_resume_prefix_rejects_backend_drift(tmp_path: Path) -> None:
                     "backend": "gemma3",
                     "generation_callable": True,
                     "processor_use_fast": False,
+                    "torch_version": "2.6.0+cu118",
                 },
             }
         )
@@ -102,6 +103,7 @@ def test_resume_prefix_accepts_exact_contract(tmp_path: Path) -> None:
             "backend": "internvl3",
             "generation_callable": True,
             "generation_shim_applied": True,
+            "generation_config_ready": True,
             "timm_version": "0.9.12",
             "use_flash_attn": False,
         },
@@ -135,3 +137,5 @@ def test_blind_launcher_pins_tp1_greedy_and_frozen_caption_store() -> None:
     assert 'refusing to overwrite immutable non-Qwen blind run' in launcher
     assert 'aggregate_nonqwen_blind_sample.py' in launcher
     assert 'expected_artifacts: [$output, $metrics]' in launcher
+    assert 'BLIND_GAINS_NONQWEN_PYTHON' in launcher
+    assert 'runtime_python: $runtime_python' in launcher

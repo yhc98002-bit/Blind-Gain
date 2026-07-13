@@ -43,6 +43,8 @@ def expand_cells(config: dict[str, Any], phase: str) -> list[dict[str, Any]]:
     conditions = tuple(config["conditions"])
     if set(models) != set(BACKENDS) or conditions != CONDITIONS:
         raise ValueError("M11 queue model/condition registry drift")
+    if any(model.get("python") != ".venv-m11/bin/python" for model in models.values()):
+        raise ValueError("M11 queue must use the isolated pinned inference runtime")
     cells = []
     if phase == "smoke":
         for backend in BACKENDS:
@@ -202,7 +204,16 @@ def launch_cell(config: dict[str, Any], cell: dict[str, Any], gpu: int) -> Path:
             "0",
             limit,
         ]
-    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    environment = dict(os.environ)
+    environment["BLIND_GAINS_NONQWEN_PYTHON"] = config["models"][backend]["python"]
+    result = subprocess.run(
+        command,
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+        env=environment,
+    )
     if result.returncode != 0:
         raise RuntimeError(
             f"M11 launch failed for {cell['id']}: stdout={result.stdout!r}, stderr={result.stderr!r}"

@@ -71,6 +71,9 @@ def test_m11_is_capacity_gated_not_training_completion_gated() -> None:
     assert "prerequisite_run_manifests" not in config
     assert len(config["neighbor_run_manifests"]) == 4
     assert config["gpu_free_stability_polls"] == 2
+    assert {model["python"] for model in config["models"].values()} == {
+        ".venv-m11/bin/python"
+    }
 
 
 def test_queue_launcher_is_login_only_and_fail_closed() -> None:

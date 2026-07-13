@@ -18,6 +18,7 @@ RUN_TAG="$9"
 MAX_NEW_TOKENS="${10:-384}"
 LIMIT="${11:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+RUNTIME_PYTHON_REL="${BLIND_GAINS_NONQWEN_PYTHON:-.venv/bin/python}"
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ ]]; then
   echo "node must be an12 or an29" >&2
@@ -51,8 +52,17 @@ if [[ "${LIMIT}" != "-" && ! "${LIMIT}" =~ ^[1-9][0-9]*$ ]]; then
   echo "limit must be positive or -" >&2
   exit 2
 fi
+if [[ ! "${RUNTIME_PYTHON_REL}" =~ ^\.venv(-m11)?/bin/python$ ]]; then
+  echo "non-Qwen runtime must be a registered project virtual environment" >&2
+  exit 2
+fi
 
 cd "${ROOT}"
+RUNTIME_PYTHON="${ROOT}/${RUNTIME_PYTHON_REL}"
+if [[ ! -x "${RUNTIME_PYTHON}" ]] || ! ssh "${NODE}" "test -x '${RUNTIME_PYTHON}'"; then
+  echo "non-Qwen runtime is absent on ${NODE}: ${RUNTIME_PYTHON}" >&2
+  exit 2
+fi
 if [[ ! -s "${DATA_MANIFEST}" ]]; then
   echo "nonempty FlipTrack manifest is required" >&2
   exit 2
@@ -100,7 +110,7 @@ LIMIT_ARGS=""
 if [[ "${LIMIT}" != "-" ]]; then
   LIMIT_ARGS="--limit ${LIMIT}"
 fi
-COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/eval_nonqwen_fliptrack.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --dataset-id '${DATASET_ID}' --manifest '${DATA_MANIFEST}' --condition '${CONDITION}' ${CAPTION_ARGS} --output '${OUTPUT}' --metrics-output '${METRICS}' --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS}"
+COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. '${RUNTIME_PYTHON}' scripts/eval_nonqwen_fliptrack.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --dataset-id '${DATASET_ID}' --manifest '${DATA_MANIFEST}' --condition '${CONDITION}' ${CAPTION_ARGS} --output '${OUTPUT}' --metrics-output '${METRICS}' --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS}"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
@@ -117,6 +127,7 @@ jq -n \
   --arg condition "${CONDITION}" \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "${CONFIG_HASH}" \
+  --arg runtime_python "${RUNTIME_PYTHON}" \
   --arg command "${COMMAND}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg log "${LOG}" \
@@ -137,6 +148,7 @@ jq -n \
     placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_hash: $config_hash,
+    runtime_python: $runtime_python,
     data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
     dataset_id: $dataset_id,

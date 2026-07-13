@@ -22,6 +22,7 @@ def _row(index: int, correct: bool) -> dict:
             "backend": "gemma3",
             "generation_callable": True,
             "processor_use_fast": False,
+            "torch_version": "2.6.0+cu118",
         },
         "acc_final": correct,
         "acc_strict": correct,

@@ -16,6 +16,7 @@ NUM_SHARDS="${7:-1}"
 SHARD_INDEX="${8:-0}"
 LIMIT="${9:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+RUNTIME_PYTHON_REL="${BLIND_GAINS_NONQWEN_PYTHON:-.venv/bin/python}"
 DATA_MANIFEST="data/virl39k_blind_sample_4096.jsonl"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 CAPTION_RUN="experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z"
@@ -49,8 +50,17 @@ if [[ ! "${MODEL_PATH}" =~ ^/dev/shm/blind-gains/models/[A-Za-z0-9._-]+$ ]]; the
   echo "model must be an ephemeral node-local checkout" >&2
   exit 2
 fi
+if [[ ! "${RUNTIME_PYTHON_REL}" =~ ^\.venv(-m11)?/bin/python$ ]]; then
+  echo "non-Qwen runtime must be a registered project virtual environment" >&2
+  exit 2
+fi
 
 cd "${ROOT}"
+RUNTIME_PYTHON="${ROOT}/${RUNTIME_PYTHON_REL}"
+if [[ ! -x "${RUNTIME_PYTHON}" ]] || ! ssh "${NODE}" "test -x '${RUNTIME_PYTHON}'"; then
+  echo "non-Qwen runtime is absent on ${NODE}: ${RUNTIME_PYTHON}" >&2
+  exit 2
+fi
 if [[ ! -s "${DATA_MANIFEST}" || ! -s "${FORMAT_PROMPT}" ]]; then
   echo "frozen ViRL sample or format prompt is absent" >&2
   exit 2
@@ -99,7 +109,7 @@ EXPECTED_ROWS=$(( (4096 - SHARD_INDEX + NUM_SHARDS - 1) / NUM_SHARDS ))
 if [[ "${LIMIT}" != "-" && "${LIMIT}" -lt "${EXPECTED_ROWS}" ]]; then
   EXPECTED_ROWS="${LIMIT}"
 fi
-COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/eval_nonqwen_blind_sample.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --format-prompt '${FORMAT_PROMPT}' --condition '${CONDITION}' ${CAPTION_ARGS} --cache-dir '${CACHE_DIR}' --output '${OUTPUT}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS} && PYTHONPATH=. .venv/bin/python scripts/aggregate_nonqwen_blind_sample.py --inputs '${OUTPUT}' --output '${METRICS}' --expected-rows ${EXPECTED_ROWS}"
+COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. '${RUNTIME_PYTHON}' scripts/eval_nonqwen_blind_sample.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --format-prompt '${FORMAT_PROMPT}' --condition '${CONDITION}' ${CAPTION_ARGS} --cache-dir '${CACHE_DIR}' --output '${OUTPUT}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS} && PYTHONPATH=. '${RUNTIME_PYTHON}' scripts/aggregate_nonqwen_blind_sample.py --inputs '${OUTPUT}' --output '${METRICS}' --expected-rows ${EXPECTED_ROWS}"
 CONFIG_HASH="$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
 PROMPT_CONTRACT_JSON="$(PYTHONPATH=. .venv/bin/python -c 'import json; from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(json.dumps(DEFAULT_PROMPT_CONTRACT.to_dict(), sort_keys=True))')"
@@ -115,6 +125,7 @@ jq -n \
   --arg backend "${BACKEND}" --arg model "${MODEL_PATH}" \
   --arg condition "${CONDITION}" --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "${CONFIG_HASH}" --arg data_hash "${DATA_HASH}" \
+  --arg runtime_python "${RUNTIME_PYTHON}" \
   --arg data_manifest "${DATA_MANIFEST}" --arg caption_run "${CAPTION_RUN}" \
   --arg caption_hash "${CAPTION_HASH}" --arg command "${COMMAND}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg log "${LOG}" \
@@ -137,6 +148,7 @@ jq -n \
     placement_policy_version: "pi-2026-07-11",
     git_hash: $git_hash,
     config_hash: $config_hash,
+    runtime_python: $runtime_python,
     data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
     model_backend: $backend,

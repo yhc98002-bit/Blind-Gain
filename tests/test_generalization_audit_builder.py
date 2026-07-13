@@ -56,6 +56,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                             "backend": "internvl3",
                             "generation_callable": True,
                             "generation_shim_applied": True,
+                            "generation_config_ready": True,
                             "timm_version": "0.9.12",
                             "use_flash_attn": False,
                         }
@@ -64,6 +65,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                             "backend": "gemma3",
                             "generation_callable": True,
                             "processor_use_fast": False,
+                            "torch_version": "2.6.0+cu118",
                         }
                     ),
                 }
@@ -97,6 +99,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                         "backend": "internvl3",
                         "generation_callable": True,
                         "generation_shim_applied": True,
+                        "generation_config_ready": True,
                         "timm_version": "0.9.12",
                         "use_flash_attn": False,
                     }
@@ -105,6 +108,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                         "backend": "gemma3",
                         "generation_callable": True,
                         "processor_use_fast": False,
+                        "torch_version": "2.6.0+cu118",
                     }
                 ),
             }
