@@ -35,10 +35,13 @@ Gemma runtime isolation:
 
 Launch plumbing:
 - Both non-Qwen launchers accept only registered project virtual-environment
-  paths and stamp `runtime_python` in each child manifest.
+  paths and stamp `runtime_python`, runtime-audit SHA256, and exact-freeze SHA256
+  in each child manifest.
 - `configs/eval/m11_generalization_v1.json` pins both backends to
   `.venv-m11/bin/python` and names the A2b retry as the current pilot neighbor.
 - The capacity scheduler passes the runtime path explicitly to each child.
+- Queue launch fails closed unless the machine audit is pass, every audit check is
+  true, the freeze hash matches, and all critical queue/adapter files equal HEAD.
 - Six one-pair smoke cells remain a hard barrier before 18 full cells.
 
 Verification:

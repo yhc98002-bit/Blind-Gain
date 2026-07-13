@@ -17,6 +17,8 @@ SHARD_INDEX="${8:-0}"
 LIMIT="${9:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_PYTHON_REL="${BLIND_GAINS_NONQWEN_PYTHON:-.venv/bin/python}"
+RUNTIME_AUDIT="${ROOT}/reports/m11_runtime_audit_v1.json"
+RUNTIME_FREEZE="${ROOT}/reports/m11_runtime_freeze_v1.txt"
 DATA_MANIFEST="data/virl39k_blind_sample_4096.jsonl"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 CAPTION_RUN="experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z"
@@ -60,6 +62,22 @@ RUNTIME_PYTHON="${ROOT}/${RUNTIME_PYTHON_REL}"
 if [[ ! -x "${RUNTIME_PYTHON}" ]] || ! ssh "${NODE}" "test -x '${RUNTIME_PYTHON}'"; then
   echo "non-Qwen runtime is absent on ${NODE}: ${RUNTIME_PYTHON}" >&2
   exit 2
+fi
+RUNTIME_AUDIT_HASH="-"
+RUNTIME_FREEZE_HASH="-"
+if [[ "${RUNTIME_PYTHON_REL}" == ".venv-m11/bin/python" ]]; then
+  if [[ ! -s "${RUNTIME_AUDIT}" || ! -s "${RUNTIME_FREEZE}" ]] || ! jq -e \
+    '(.status == "pass") and (.checks | type == "object" and all(. == true))' \
+    "${RUNTIME_AUDIT}" >/dev/null; then
+    echo "M11 runtime audit is absent or non-pass" >&2
+    exit 2
+  fi
+  RUNTIME_AUDIT_HASH="$(sha256sum "${RUNTIME_AUDIT}" | awk '{print $1}')"
+  RUNTIME_FREEZE_HASH="$(sha256sum "${RUNTIME_FREEZE}" | awk '{print $1}')"
+  if [[ "$(jq -r '.freeze_sha256' "${RUNTIME_AUDIT}")" != "${RUNTIME_FREEZE_HASH}" ]]; then
+    echo "M11 runtime freeze hash mismatch" >&2
+    exit 2
+  fi
 fi
 if [[ ! -s "${DATA_MANIFEST}" || ! -s "${FORMAT_PROMPT}" ]]; then
   echo "frozen ViRL sample or format prompt is absent" >&2
@@ -110,7 +128,7 @@ if [[ "${LIMIT}" != "-" && "${LIMIT}" -lt "${EXPECTED_ROWS}" ]]; then
   EXPECTED_ROWS="${LIMIT}"
 fi
 COMMAND="env CUDA_VISIBLE_DEVICES=${GPU} TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONHASHSEED=0 PYTHONPATH=. '${RUNTIME_PYTHON}' scripts/eval_nonqwen_blind_sample.py --backend '${BACKEND}' --model-path '${MODEL_PATH}' --manifest '${DATA_MANIFEST}' --format-prompt '${FORMAT_PROMPT}' --condition '${CONDITION}' ${CAPTION_ARGS} --cache-dir '${CACHE_DIR}' --output '${OUTPUT}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS} ${LIMIT_ARGS} && PYTHONPATH=. '${RUNTIME_PYTHON}' scripts/aggregate_nonqwen_blind_sample.py --inputs '${OUTPUT}' --output '${METRICS}' --expected-rows ${EXPECTED_ROWS}"
-CONFIG_HASH="$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')"
+CONFIG_HASH="$(printf '%s\nruntime_audit_hash=%s\nruntime_freeze_hash=%s\n' "${COMMAND}" "${RUNTIME_AUDIT_HASH}" "${RUNTIME_FREEZE_HASH}" | sha256sum | awk '{print $1}')"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
 PROMPT_CONTRACT_JSON="$(PYTHONPATH=. .venv/bin/python -c 'import json; from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(json.dumps(DEFAULT_PROMPT_CONTRACT.to_dict(), sort_keys=True))')"
 PROMPT_CONTRACT_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(DEFAULT_PROMPT_CONTRACT.sha256)')"
@@ -126,6 +144,8 @@ jq -n \
   --arg condition "${CONDITION}" --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "${CONFIG_HASH}" --arg data_hash "${DATA_HASH}" \
   --arg runtime_python "${RUNTIME_PYTHON}" \
+  --arg runtime_audit_hash "${RUNTIME_AUDIT_HASH}" \
+  --arg runtime_freeze_hash "${RUNTIME_FREEZE_HASH}" \
   --arg data_manifest "${DATA_MANIFEST}" --arg caption_run "${CAPTION_RUN}" \
   --arg caption_hash "${CAPTION_HASH}" --arg command "${COMMAND}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg log "${LOG}" \
@@ -149,6 +169,8 @@ jq -n \
     git_hash: $git_hash,
     config_hash: $config_hash,
     runtime_python: $runtime_python,
+    runtime_audit_sha256: (if $runtime_audit_hash == "-" then null else $runtime_audit_hash end),
+    runtime_freeze_sha256: (if $runtime_freeze_hash == "-" then null else $runtime_freeze_hash end),
     data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
     model_backend: $backend,

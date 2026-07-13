@@ -87,3 +87,7 @@ def test_queue_launcher_is_login_only_and_fail_closed() -> None:
     assert 'refusing M11 queue because final outputs already exist' in launcher
     assert 'active M11 queue already exists' in launcher
     assert 'nohup setsid' in launcher
+    assert 'M11 isolated runtime audit is absent or non-pass' in launcher
+    assert 'runtime_audit_sha256: $runtime_audit_hash' in launcher
+    assert 'runtime_freeze_sha256: $runtime_freeze_hash' in launcher
+    assert 'critical M11 queue code or config differs from HEAD' in launcher

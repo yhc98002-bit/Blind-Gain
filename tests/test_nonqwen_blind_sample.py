@@ -139,3 +139,5 @@ def test_blind_launcher_pins_tp1_greedy_and_frozen_caption_store() -> None:
     assert 'expected_artifacts: [$output, $metrics]' in launcher
     assert 'BLIND_GAINS_NONQWEN_PYTHON' in launcher
     assert 'runtime_python: $runtime_python' in launcher
+    assert 'runtime_audit_sha256:' in launcher
+    assert 'runtime_freeze_sha256:' in launcher

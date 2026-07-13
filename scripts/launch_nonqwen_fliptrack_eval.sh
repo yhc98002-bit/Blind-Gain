@@ -19,6 +19,8 @@ MAX_NEW_TOKENS="${10:-384}"
 LIMIT="${11:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_PYTHON_REL="${BLIND_GAINS_NONQWEN_PYTHON:-.venv/bin/python}"
+RUNTIME_AUDIT="${ROOT}/reports/m11_runtime_audit_v1.json"
+RUNTIME_FREEZE="${ROOT}/reports/m11_runtime_freeze_v1.txt"
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ ]]; then
   echo "node must be an12 or an29" >&2
@@ -63,6 +65,22 @@ if [[ ! -x "${RUNTIME_PYTHON}" ]] || ! ssh "${NODE}" "test -x '${RUNTIME_PYTHON}
   echo "non-Qwen runtime is absent on ${NODE}: ${RUNTIME_PYTHON}" >&2
   exit 2
 fi
+RUNTIME_AUDIT_HASH="-"
+RUNTIME_FREEZE_HASH="-"
+if [[ "${RUNTIME_PYTHON_REL}" == ".venv-m11/bin/python" ]]; then
+  if [[ ! -s "${RUNTIME_AUDIT}" || ! -s "${RUNTIME_FREEZE}" ]] || ! jq -e \
+    '(.status == "pass") and (.checks | type == "object" and all(. == true))' \
+    "${RUNTIME_AUDIT}" >/dev/null; then
+    echo "M11 runtime audit is absent or non-pass" >&2
+    exit 2
+  fi
+  RUNTIME_AUDIT_HASH="$(sha256sum "${RUNTIME_AUDIT}" | awk '{print $1}')"
+  RUNTIME_FREEZE_HASH="$(sha256sum "${RUNTIME_FREEZE}" | awk '{print $1}')"
+  if [[ "$(jq -r '.freeze_sha256' "${RUNTIME_AUDIT}")" != "${RUNTIME_FREEZE_HASH}" ]]; then
+    echo "M11 runtime freeze hash mismatch" >&2
+    exit 2
+  fi
+fi
 if [[ ! -s "${DATA_MANIFEST}" ]]; then
   echo "nonempty FlipTrack manifest is required" >&2
   exit 2
@@ -105,7 +123,7 @@ if [[ "${CAPTION_INPUT}" != "-" ]]; then
   CAPTION_HASH="$(sha256sum "${CAPTION_INPUT}" | awk '{print $1}')"
   CAPTION_ARGS="--caption-input '${CAPTION_INPUT}'"
 fi
-CONFIG_HASH="$(printf 'backend=%s\nmodel=%s\ndataset=%s\ncondition=%s\nmax_new_tokens=%s\ncaption_hash=%s\nlimit=%s\n' "${BACKEND}" "${MODEL_PATH}" "${DATASET_ID}" "${CONDITION}" "${MAX_NEW_TOKENS}" "${CAPTION_HASH}" "${LIMIT}" | sha256sum | awk '{print $1}')"
+CONFIG_HASH="$(printf 'backend=%s\nmodel=%s\ndataset=%s\ncondition=%s\nmax_new_tokens=%s\ncaption_hash=%s\nlimit=%s\nruntime_audit_hash=%s\nruntime_freeze_hash=%s\n' "${BACKEND}" "${MODEL_PATH}" "${DATASET_ID}" "${CONDITION}" "${MAX_NEW_TOKENS}" "${CAPTION_HASH}" "${LIMIT}" "${RUNTIME_AUDIT_HASH}" "${RUNTIME_FREEZE_HASH}" | sha256sum | awk '{print $1}')"
 LIMIT_ARGS=""
 if [[ "${LIMIT}" != "-" ]]; then
   LIMIT_ARGS="--limit ${LIMIT}"
@@ -128,6 +146,8 @@ jq -n \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "${CONFIG_HASH}" \
   --arg runtime_python "${RUNTIME_PYTHON}" \
+  --arg runtime_audit_hash "${RUNTIME_AUDIT_HASH}" \
+  --arg runtime_freeze_hash "${RUNTIME_FREEZE_HASH}" \
   --arg command "${COMMAND}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg log "${LOG}" \
@@ -149,6 +169,8 @@ jq -n \
     git_hash: $git_hash,
     config_hash: $config_hash,
     runtime_python: $runtime_python,
+    runtime_audit_sha256: (if $runtime_audit_hash == "-" then null else $runtime_audit_hash end),
+    runtime_freeze_sha256: (if $runtime_freeze_hash == "-" then null else $runtime_freeze_hash end),
     data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
     dataset_id: $dataset_id,
