@@ -155,6 +155,39 @@ def test_authorization_rejects_nonempty_checkpoint_namespace(tmp_path: Path) -> 
     assert result["checks"]["selected_checkpoint_namespace_absent"] is False
 
 
+def test_authorization_accepts_recovery_namespace_without_weakening_duplicate_guard(
+    tmp_path: Path,
+) -> None:
+    root = _fixture(tmp_path)
+    canonical = root / "checkpoints" / "pilot" / "mech_a1_real"
+    canonical.mkdir(parents=True)
+    (canonical / "failed-run-log.jsonl").write_text("{}\n", encoding="utf-8")
+    retry = root / "checkpoints" / "pilot" / "mech_a1_real_retry1"
+
+    result = build_authorization(root, "a1_real", checkpoint_path=retry)
+
+    assert result["status"] == "authorized"
+    assert result["checkpoint_path"] == str(retry.resolve())
+    assert result["checks"]["selected_checkpoint_path_valid"] is True
+    assert result["checks"]["selected_checkpoint_namespace_absent"] is True
+
+
+def test_authorization_rejects_recovery_path_outside_canonical_namespace(
+    tmp_path: Path,
+) -> None:
+    root = _fixture(tmp_path)
+
+    result = build_authorization(
+        root,
+        "a1_real",
+        checkpoint_path=root / "elsewhere" / "mech_a1_real_retry1",
+    )
+
+    assert result["status"] == "blocked"
+    assert result["checks"]["selected_checkpoint_path_valid"] is False
+    assert result["checks"]["selected_checkpoint_namespace_absent"] is False
+
+
 def test_current_repository_refuses_duplicate_after_pi_approved_launch() -> None:
     root = Path(__file__).resolve().parents[1]
 

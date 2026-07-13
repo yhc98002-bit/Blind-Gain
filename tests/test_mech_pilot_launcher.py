@@ -20,6 +20,7 @@ def test_authorization_precedes_run_directory_ssh_and_checkpoint_creation() -> N
 
     assert authorization < run_directory
     assert authorization < first_ssh
+    assert '--checkpoint-path "${CHECKPOINT_PATH}"' in source
     assert 'if [[ -e "${CHECKPOINT_PATH}" ]]' in source
 
 

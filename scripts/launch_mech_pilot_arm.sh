@@ -75,6 +75,7 @@ EASYR1_DIR="${ROOT}/artifacts/repos/EasyR1"
 PREREG="reports/preregistration_pilot_v1.md"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 AUTHORIZATION="reports/pilot_launch_authorization_${ARM}_${STAMP}.json"
+CHECKPOINT_PATH="${ROOT}/checkpoints/pilot/${ARM_RUN_NAME}"
 
 # This is the first executable gate. A blocked historical L3/L4/L5 or main M0
 # state exits before
@@ -82,6 +83,7 @@ AUTHORIZATION="reports/pilot_launch_authorization_${ARM}_${STAMP}.json"
 PYTHONPATH=. .venv/bin/python scripts/check_pilot_launch_authorization.py \
   --root . \
   --arm "${ARM}" \
+  --checkpoint-path "${CHECKPOINT_PATH}" \
   --output "${AUTHORIZATION}"
 
 if ! git ls-files --error-unmatch "${PREREG}" >/dev/null 2>&1; then
@@ -108,7 +110,6 @@ if ! git diff --quiet HEAD -- \
   exit 2
 fi
 
-CHECKPOINT_PATH="${ROOT}/checkpoints/pilot/${ARM_RUN_NAME}"
 if [[ -e "${CHECKPOINT_PATH}" ]]; then
   echo "pilot checkpoint namespace appeared after authorization: ${CHECKPOINT_PATH}" >&2
   exit 73

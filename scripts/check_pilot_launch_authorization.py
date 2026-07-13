@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -68,7 +69,12 @@ def parse_main_ledger(path: Path) -> dict[str, dict[str, str]]:
     return ledger
 
 
-def build_authorization(root: Path, arm: str) -> dict[str, Any]:
+def build_authorization(
+    root: Path,
+    arm: str,
+    *,
+    checkpoint_path: Path | None = None,
+) -> dict[str, Any]:
     root = root.resolve()
     if arm not in ARM_KEYS:
         raise ValueError(f"unknown pilot arm: {arm}")
@@ -104,7 +110,21 @@ def build_authorization(root: Path, arm: str) -> dict[str, Any]:
     arm_label = ARM_KEYS[arm]
     config_relative = ARM_CONFIGS[arm_label]
     config_path = root / config_relative
-    checkpoint_path = root / "checkpoints" / "pilot" / CHECKPOINT_NAMES[arm]
+    checkpoint_root = (root / "checkpoints" / "pilot").resolve()
+    canonical_checkpoint_name = CHECKPOINT_NAMES[arm]
+    selected_checkpoint_path = (
+        checkpoint_root / canonical_checkpoint_name
+        if checkpoint_path is None
+        else checkpoint_path.resolve()
+    )
+    checkpoint_path_valid = (
+        selected_checkpoint_path.parent == checkpoint_root
+        and re.fullmatch(
+            rf"{re.escape(canonical_checkpoint_name)}(?:_retry[1-9][0-9]*)?",
+            selected_checkpoint_path.name,
+        )
+        is not None
+    )
     config_hash = config_audit.get("hashes", {}).get(arm_label)
     filtered_hash = _sha256(filtered_ids) if filtered_ids.is_file() else None
     historical_dependencies = ("L3", "L4", "L5")
@@ -141,7 +161,9 @@ def build_authorization(root: Path, arm: str) -> dict[str, Any]:
         and config_hash in prereg_text,
         "filtered_ids_hash_pinned_in_preregistration": isinstance(filtered_hash, str)
         and filtered_hash in prereg_text,
-        "selected_checkpoint_namespace_absent": not checkpoint_path.exists(),
+        "selected_checkpoint_path_valid": checkpoint_path_valid,
+        "selected_checkpoint_namespace_absent": checkpoint_path_valid
+        and not selected_checkpoint_path.exists(),
     }
     failed = [name for name, passed in checks.items() if not passed]
     errors.extend(failed)
@@ -173,7 +195,7 @@ def build_authorization(root: Path, arm: str) -> dict[str, Any]:
         "config_sha256": config_hash,
         "filtered_ids": str(filtered_ids),
         "filtered_ids_sha256": filtered_hash,
-        "checkpoint_path": str(checkpoint_path),
+        "checkpoint_path": str(selected_checkpoint_path),
         "errors": errors,
     }
 
@@ -182,11 +204,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
     parser.add_argument("--arm", choices=tuple(ARM_KEYS), required=True)
+    parser.add_argument("--checkpoint-path", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite pilot authorization: {args.output}")
-    payload = build_authorization(args.root, args.arm)
+    payload = build_authorization(
+        args.root,
+        args.arm,
+        checkpoint_path=args.checkpoint_path,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary = args.output.with_name(f".{args.output.name}.partial.{os.getpid()}")
     temporary.write_text(
