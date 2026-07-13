@@ -1,6 +1,6 @@
 M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
-M2 | blocked | reports/m2_seed1_launch_status_v9.md: all four arms are active; A2b retry4 is resident with unchanged scientific YAML, expandable segments, and all temp/lock paths under job-local /dev/shm
+M2 | blocked | reports/pilot_a3_resume20_recovery_v1.md + reports/gpu_health_monitor_16x60m_status_v1.md: original A3 failed on compute-/tmp exhaustion; hash-audited step-20 resume is resident with all runtime temp under /dev/shm, and the 60-minute all-process monitor is active
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | pass | reports/registered_extensions_audit_v3.md + reports/registered_extensions_audit_v3.json: repository transcription and M1 dependency accounting are complete; scientific launch authorization remains fail-closed for M5-M7/M9
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence

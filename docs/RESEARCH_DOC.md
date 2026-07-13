@@ -46,17 +46,17 @@ Ops: single-node placement always at our scale; TP no wider than the model needs
 ## 5. In flight
 
 - M0: both PIs approved; `reports/preregistration_pilot_v1.md` is final, pins introduction commit `2782815cc057...`, and records merge-as-sign-off before any optimizer step.
-- M2: all four arms are active. After three retained pre-checkpoint/startup failures, A2b retry4 (`mech_a2b_noimage_retry4_an29_20260713T113556Z`) is resident with unchanged scientific YAML, expandable CUDA segments, and every tempfile/lock path under job-local `/dev/shm`. No pilot performance metric was inspected.
+- M2: all four arms are active. A2b retry4 remains resident on an29 GPUs 0-3. Original A3 stalled after step 26 because Python multiprocessing fell back to a full compute-node `/tmp`; it was finalized `fail`, and its hash-audited step-20 raw state was restored. A3 replacement `mech_a3_caption_resume20_an29_20260713T144233Z` uses an immutable save namespace and routes `TMPDIR`/`TMP`/`TEMP`/`RAY_TMPDIR` under job-local `/dev/shm`; its live Ray probe and four worker environments pass. A read-only 60-minute monitor covers all 16 GPUs and all GPU PIDs. No pilot performance metric was inspected.
 - M8: real/gray/no-image/own-caption 7B runs were gracefully preempted to prioritize M2 A2-gray; 118/126/118/126 batch-aligned rows are preserved and resume-required. The exact-coverage own-caption store and node-local model remain ready; noise is unstarted.
 - M11: the full matrix stayed closed after four historical failed smoke attempts. Isolated `.venv-m11` passes exact Torch 2.6/cu118, Transformers 4.56.2, mask-combinator, and Gemma-import checks. The live queue is waiting for successful completion of A2b retry4 and A3, with zero capacity polls and all 24 cells pending. The EasyR1 environment is unchanged.
 - M12: the declared 100-pair v08 calibration batch remains immutable. A V2 CPU audit reconstructs every image, verifies exact masks/mechanics and CVD-aware dual coding, and adds 400 answer-discordant member-level no-star/randomized-star interventions; human/model/caption/attacker gates remain.
 - M4: the repository transcription and dependency-accounting task is complete at V3. Scientific authorization remains fail-closed because the PI source does not operationalize the flat/rising verdict and the canonical merged-at-HEAD line is absent.
 - M13: pipeline delivery is complete and machine-audited; V6 preserves V5 evidence while making the pass-status scope explicit and consistency-safe. The methods appendix and data card pin landed contracts/manifests while future values remain fail-closed slots.
-- Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard now uses a conservative 1,500-GiB capacity with the 20-GiB floor; storage is not an M2 blocker.
+- Storage: the PI updated HDD_POOL capacity to 1.5 TiB (about 1.0 TiB available). The guard uses a conservative 1,500-GiB capacity with the 20-GiB floor. Before the next pilot save wave, 92,620,963,840 bytes of committed, superseded Stage-0 scratch archives were reclaimed; login `/tmp` free space rose from 151 to 238 GiB. Active resume and pilot archives were retained.
 
 ## 6. Upcoming experiments (order; ~60–70 node-days vs ~120 available)
 
-1. **M2/M3** — launch the four-arm 3B pilot at three seeds, with registered hurdle mechanism analysis and checkpointed FlipTrack readouts.
+1. **M2/M3** — complete and audit the recovered four-arm seed-1 pilot, then run seeds 2-3 with the registered hurdle mechanism analysis and checkpointed FlipTrack readouts.
 2. **M4** — obtain the PI-defined flat/rising rule, then merge the exact long-horizon, mini-A5, ViRL 3B, and 7B flagship extension registry before those training units launch.
 3. **M8** — build the 7B own-caption store and run the 4,096-item pilot-contract blind-solvability preparation.
 4. **M5/M6** — fixed step-400 anchor extension and matched CP-versus-member-reward mini-A5 control.

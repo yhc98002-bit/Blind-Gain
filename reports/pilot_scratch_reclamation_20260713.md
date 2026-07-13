@@ -26,4 +26,6 @@ Next actions:
 - Continue enforcing latest-raw-only retention for active pilot runs.
 
 Deletion record:
-- Pending execution.
+- Executed at `2026-07-13T14:48:45Z` after commit `21a860a` made the pre-deletion classification durable.
+- Both exact listed paths were verified absent after deletion.
+- Free bytes increased from 161,873,592,320 to 254,494,556,160; observed reclamation was exactly 92,620,963,840 bytes.
