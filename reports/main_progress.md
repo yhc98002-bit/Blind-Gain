@@ -1,6 +1,6 @@
 M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
-M2 | blocked | reports/pilot_a3_resume20_recovery_v2.md + reports/gpu_health_monitor_16x60m_result_v1.md: A3 resumed from hash-verified step 20 and advanced through step 22; one-hour all-process audit found every arm progressing with 66 healthy observations and no unhealthy observation
+M2 | blocked | reports/pilot_an12_host_oom_failure_v1.md + reports/pilot_a1_resume60_recovery_v1.md + reports/pilot_a2_resume60_staging_v1.md + reports/pilot_host_memory_monitor_v1.md: original A1/A2 failed together at Ray's 95% host-RAM threshold; A1 is isolated on an12 from audited step 60, A2 raw state is restored and lifecycle-queued, and a new 16-GPU/host-memory monitor is active
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | pass | reports/registered_extensions_audit_v3.md + reports/registered_extensions_audit_v3.json: repository transcription and M1 dependency accounting are complete; scientific launch authorization remains fail-closed for M5-M7/M9
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence
