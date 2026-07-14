@@ -25,13 +25,12 @@ git ls-files --error-unmatch scripts/launch_m2_completion_watchdog.sh >/dev/null
 }
 
 EXPECTED_ARMS=(a1_real a2_gray a2b_noimage a3_caption)
-EXPECTED_NODES=(an12 an12 an29 an29)
+EXPECTED_FIXED_NODES=(an12 "" an29 an29)
 INPUTS=("$@")
 ARM_ENTRIES='[]'
 
 for INDEX in 0 1 2 3; do
   ARM="${EXPECTED_ARMS[${INDEX}]}"
-  NODE="${EXPECTED_NODES[${INDEX}]}"
   INPUT="${INPUTS[${INDEX}]}"
   if [[ "${INPUT}" = /* ]]; then
     ABS_RUN="$(realpath -m "${INPUT}")"
@@ -47,9 +46,14 @@ for INDEX in 0 1 2 3; do
     echo "pilot run manifest is absent: ${MANIFEST}" >&2
     exit 2
   fi
+  NODE="$(jq -er '.node' "${MANIFEST}")"
+  FIXED_NODE="${EXPECTED_FIXED_NODES[${INDEX}]}"
+  if [[ -n "${FIXED_NODE}" && "${NODE}" != "${FIXED_NODE}" ]]; then
+    echo "pilot run node mismatch for ${ARM}: expected ${FIXED_NODE}, found ${NODE}" >&2
+    exit 2
+  fi
   if [[ "$(jq -r '.job_type' "${MANIFEST}")" != "l13_mechanical_pilot_arm" ]] || \
-     [[ "$(jq -r '.arm' "${MANIFEST}")" != "${ARM}" ]] || \
-     [[ "$(jq -r '.node' "${MANIFEST}")" != "${NODE}" ]]; then
+     [[ "$(jq -r '.arm' "${MANIFEST}")" != "${ARM}" ]]; then
     echo "pilot run identity mismatch for ${ARM}: ${MANIFEST}" >&2
     exit 2
   fi

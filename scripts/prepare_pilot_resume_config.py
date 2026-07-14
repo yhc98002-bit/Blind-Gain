@@ -49,6 +49,7 @@ def prepare_resume_config(
     save_checkpoint_path: Path,
     load_checkpoint_path: Path,
     expected_step: int,
+    expected_image_condition: str = "caption",
 ) -> dict[str, Any]:
     if output.exists():
         raise FileExistsError(f"refusing to overwrite resume config: {output}")
@@ -58,8 +59,12 @@ def prepare_resume_config(
     trainer = payload["trainer"]
     if trainer.get("max_steps") != 100 or trainer.get("save_freq") != 20:
         raise ValueError("resume source does not have the registered 100-step/20-save budget")
-    if payload.get("data", {}).get("image_condition") != "caption":
-        raise ValueError("step-20 recovery is restricted to the registered caption arm")
+    observed_condition = payload.get("data", {}).get("image_condition")
+    if observed_condition != expected_image_condition:
+        raise ValueError(
+            "resume source image condition mismatch: "
+            f"expected {expected_image_condition!r}, found {observed_condition!r}"
+        )
     if load_checkpoint_path.name != f"global_step_{expected_step}":
         raise ValueError("load checkpoint basename does not match expected resume step")
     if save_checkpoint_path.resolve() == Path(str(trainer.get("save_checkpoint_path"))).resolve():
@@ -92,6 +97,7 @@ def prepare_resume_config(
         "changed_fields": changed,
         "allowed_changes": sorted(ALLOWED_CHANGES),
         "resume_global_step": expected_step,
+        "image_condition": observed_condition,
         "save_checkpoint_path": str(save_checkpoint_path.resolve()),
         "load_checkpoint_path": str(load_checkpoint_path.resolve()),
         "scientific_config_changed": False,
@@ -116,6 +122,7 @@ def main() -> None:
     parser.add_argument("--save-checkpoint-path", type=Path, required=True)
     parser.add_argument("--load-checkpoint-path", type=Path, required=True)
     parser.add_argument("--expected-step", type=int, default=20)
+    parser.add_argument("--expected-image-condition", default="caption")
     args = parser.parse_args()
     audit = prepare_resume_config(
         args.source,
@@ -124,6 +131,7 @@ def main() -> None:
         save_checkpoint_path=args.save_checkpoint_path,
         load_checkpoint_path=args.load_checkpoint_path,
         expected_step=args.expected_step,
+        expected_image_condition=args.expected_image_condition,
     )
     _atomic_json(args.audit, audit)
     print(json.dumps(audit, sort_keys=True))

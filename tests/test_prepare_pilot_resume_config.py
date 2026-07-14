@@ -71,11 +71,29 @@ def test_resume_rejects_wrong_checkpoint_step(tmp_path: Path) -> None:
         )
 
 
-def test_resume_rejects_non_caption_source(tmp_path: Path) -> None:
+def test_resume_accepts_registered_real_condition_when_explicit(tmp_path: Path) -> None:
     source = tmp_path / "source.yaml"
     _source(source, condition="real")
 
-    with pytest.raises(ValueError, match="caption arm"):
+    audit = prepare_resume_config(
+        source,
+        tmp_path / "resume.yaml",
+        experiment_name="mech_a1_real_resume60",
+        save_checkpoint_path=tmp_path / "new",
+        load_checkpoint_path=tmp_path / "global_step_60",
+        expected_step=60,
+        expected_image_condition="real",
+    )
+
+    assert audit["image_condition"] == "real"
+    assert audit["resume_global_step"] == 60
+
+
+def test_resume_rejects_image_condition_mismatch(tmp_path: Path) -> None:
+    source = tmp_path / "source.yaml"
+    _source(source, condition="real")
+
+    with pytest.raises(ValueError, match="image condition mismatch"):
         prepare_resume_config(
             source,
             tmp_path / "resume.yaml",

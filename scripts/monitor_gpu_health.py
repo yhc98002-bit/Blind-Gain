@@ -104,7 +104,37 @@ def collect_node(node: str) -> dict[str, Any]:
         node,
         "printf 'BLOCKS\\n'; df -Pk /tmp /dev/shm; printf 'INODES\\n'; df -Pi /tmp",
     )
-    return {"node": node, "gpus": gpus, "processes": processes, "storage_raw": storage_text}
+    memory_text = _run_ssh(
+        node,
+        "awk '/^(MemTotal|MemAvailable|SwapTotal|SwapFree):/ {print $1, $2}' /proc/meminfo",
+    )
+    memory_kib = {}
+    for line in memory_text.splitlines():
+        key, value = line.rstrip(":").split()
+        memory_kib[key.rstrip(":")] = int(value)
+    required_memory = {"MemTotal", "MemAvailable", "SwapTotal", "SwapFree"}
+    if set(memory_kib) != required_memory:
+        raise RuntimeError(f"{node} returned incomplete host memory data: {memory_kib}")
+    top_processes = _run_ssh(
+        node,
+        "ps -u \"$USER\" -o pid=,rss=,pcpu=,pmem=,etime=,args= --sort=-rss | head -n 16",
+    )
+    return {
+        "node": node,
+        "gpus": gpus,
+        "processes": processes,
+        "storage_raw": storage_text,
+        "host_memory": {
+            "mem_total_kib": memory_kib["MemTotal"],
+            "mem_available_kib": memory_kib["MemAvailable"],
+            "mem_available_pct": round(
+                100 * memory_kib["MemAvailable"] / memory_kib["MemTotal"], 4
+            ),
+            "swap_total_kib": memory_kib["SwapTotal"],
+            "swap_free_kib": memory_kib["SwapFree"],
+        },
+        "top_user_processes_by_rss": top_processes.splitlines(),
+    }
 
 
 def _max_step(log_path: Path) -> int | None:
@@ -230,6 +260,34 @@ def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str
         )
     all_processes = {(node, process["pid"], process["gpu_index"], process["nvidia_process_name"])
                      for sample in samples for node in NODES for process in sample["nodes"][node]["processes"]}
+    host_memory_summary = []
+    for node in NODES:
+        values = [sample["nodes"][node]["host_memory"] for sample in samples]
+        host_memory_summary.append(
+            {
+                "node": node,
+                "min_mem_available_gib": round(
+                    min(value["mem_available_kib"] for value in values) / 1024**2, 3
+                ),
+                "min_mem_available_pct": min(
+                    value["mem_available_pct"] for value in values
+                ),
+                "max_swap_used_gib": round(
+                    max(
+                        value["swap_total_kib"] - value["swap_free_kib"]
+                        for value in values
+                    )
+                    / 1024**2,
+                    3,
+                ),
+                "samples_below_150_gib": sum(
+                    value["mem_available_kib"] < 150 * 1024**2 for value in values
+                ),
+                "samples_below_75_gib": sum(
+                    value["mem_available_kib"] < 75 * 1024**2 for value in values
+                ),
+            }
+        )
     return {
         "schema_version": "blind-gains.gpu-health-summary.v1", "status": "unhealthy" if unhealthy else "complete",
         "scientific_gate_decision": None, "started_at_utc": samples[0]["observed_at_utc"],
@@ -240,6 +298,7 @@ def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str
             for item in sorted(all_processes)
         ],
         "gpu_summary": gpu_summary, "run_summary": run_summary,
+        "host_memory_summary": host_memory_summary,
         "interpretation": "GPU idleness alone is not a failure; health combines process survival, logs, steps, and fatal-error evidence.",
     }
 
@@ -253,6 +312,17 @@ def render_markdown(summary: dict[str, Any]) -> str:
     ]
     for row in summary["run_summary"]:
         lines.append(f"| `{row['run_id']}` | `{row['arm']}` | `{row['node']}:{','.join(map(str,row['gpu_ids']))}` | {row['first_step']} | {row['last_step']} | {row['step_advanced']} | `{row['final_manifest_status']}` |")
+    lines += [
+        "", "## Host memory", "",
+        "| Node | Minimum available GiB | Minimum available | Maximum swap used GiB | Samples <150 GiB | Samples <75 GiB |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in summary["host_memory_summary"]:
+        lines.append(
+            f"| `{row['node']}` | {row['min_mem_available_gib']:.1f} | "
+            f"{row['min_mem_available_pct']:.1f}% | {row['max_swap_used_gib']:.1f} | "
+            f"{row['samples_below_150_gib']} | {row['samples_below_75_gib']} |"
+        )
     lines += ["", "## GPU summary", "", "| GPU | Mean util | Range | Max memory MiB | Max temp C | Samples <5% |", "|---|---:|---:|---:|---:|---:|"]
     for row in summary["gpu_summary"]:
         lines.append(f"| `{row['node']}:{row['gpu_index']}` | {row['mean_gpu_util_pct']:.1f}% | {row['min_gpu_util_pct']:.0f}-{row['max_gpu_util_pct']:.0f}% | {row['max_memory_used_mib']:.0f} | {row['max_temperature_c']:.0f} | {row['samples_below_5pct']} |")

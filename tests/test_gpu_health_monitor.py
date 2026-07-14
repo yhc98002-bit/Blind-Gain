@@ -62,6 +62,8 @@ def test_monitor_launcher_is_valid_and_read_only_by_contract() -> None:
     source = (ROOT / "scripts/monitor_gpu_health.py").read_text(encoding="utf-8")
     assert "nvidia-smi --query-gpu" in source
     assert "nvidia-smi --query-compute-apps" in source
+    assert "MemAvailable" in source
+    assert "top_user_processes_by_rss" in source
     assert "os.kill" not in source
     assert ".terminate(" not in source
     assert ".send_signal(" not in source
