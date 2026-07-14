@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -ne 2 ]]; then
-  echo "usage: $0 <an12|an29> <pilot-step60-resume-run-dir>" >&2
+  echo "usage: $0 <an12|an21|an29> <pilot-step60-resume-run-dir>" >&2
   exit 2
 fi
 NODE="$1"

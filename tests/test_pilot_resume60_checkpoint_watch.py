@@ -25,3 +25,4 @@ def test_resume60_watcher_launcher_is_fail_closed() -> None:
     assert '"a1_real" || "${ARM}" == "a2_gray"' in source
     assert "resume_schedule: [80,100]" in source
     assert "step60-evaluation-marker" not in source
+    assert "an12|an21|an29" in source

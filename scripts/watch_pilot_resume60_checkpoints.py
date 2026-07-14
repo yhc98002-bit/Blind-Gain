@@ -33,7 +33,7 @@ def main() -> None:
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--run-manifest", type=Path, required=True)
-    parser.add_argument("--node", choices=("an12", "an29"), required=True)
+    parser.add_argument("--node", choices=("an12", "an21", "an29"), required=True)
     parser.add_argument("--run-label", required=True)
     parser.add_argument("--expected-code-hash", required=True)
     args = parser.parse_args()

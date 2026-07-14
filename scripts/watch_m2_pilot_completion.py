@@ -71,7 +71,7 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         required = {"arm", "node", "run_id", "manifest"}
         if not required.issubset(item):
             raise ValueError(f"M2 watchdog arm entry lacks fields: {item}")
-        if item["node"] not in {"an12", "an29"}:
+        if item["node"] not in {"an12", "an21", "an29"}:
             raise ValueError(f"invalid compute node: {item['node']}")
         _resolve_within_root(root, str(item["manifest"]))
     interval = config.get("poll_interval_seconds")

@@ -154,6 +154,19 @@ def test_config_rejects_duplicate_arm_that_would_hide_missing_arm(tmp_path: Path
         validate_config(config, tmp_path)
 
 
+def test_a2_may_run_on_new_single_node(tmp_path: Path) -> None:
+    config = _config(tmp_path)
+    gray = next(item for item in config["arms"] if item["arm"] == "a2_gray")
+    gray["node"] = "an21"
+    manifest = tmp_path / gray["manifest"]
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    payload["node"] = "an21"
+    manifest.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+    validate_config(config, tmp_path)
+    assert observe(config, tmp_path)["status"] == "complete"
+
+
 def test_runtime_has_no_process_control_or_gpu_launch_path() -> None:
     root = Path(__file__).resolve().parents[1]
     source = (root / "scripts/watch_m2_pilot_completion.py").read_text(

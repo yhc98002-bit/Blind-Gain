@@ -28,6 +28,7 @@ def test_resume60_launcher_enforces_one_pilot_and_host_memory_floor() -> None:
     assert "MIN_MEM_AVAILABLE_KIB=$((650 * 1024 * 1024))" in source
     assert "host_memory_preflight" in source
     assert "one pilot trainer per node" in source
+    assert '"${NODE}" == "an21"' in source
 
 
 def test_resume60_launcher_keeps_registered_budget_unchanged() -> None:

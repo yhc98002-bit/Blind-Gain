@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -ne 4 ]]; then
-  echo "usage: $0 <a1_real|a2_gray> <an12|an29> <gpu0,gpu1,gpu2,gpu3> <failed-source-run-dir>" >&2
+  echo "usage: $0 <a1_real|a2_gray> <an12|an21|an29> <gpu0,gpu1,gpu2,gpu3> <failed-source-run-dir>" >&2
   exit 2
 fi
 
@@ -36,7 +36,7 @@ esac
 ARM_RUN_NAME="${BASE_NAME}_resume60"
 SAVE_ROOT="${ROOT}/checkpoints/pilot/${ARM_RUN_NAME}"
 
-[[ "${NODE}" == "an12" || "${NODE}" == "an29" ]] || { echo "invalid node" >&2; exit 2; }
+[[ "${NODE}" == "an12" || "${NODE}" == "an21" || "${NODE}" == "an29" ]] || { echo "invalid node" >&2; exit 2; }
 [[ "${GPU_LIST}" =~ ^[0-7](,[0-7]){3}$ ]] || { echo "exactly four GPU indices are required" >&2; exit 2; }
 IFS=',' read -r -a GPUS <<< "${GPU_LIST}"
 [[ "$(printf '%s\n' "${GPUS[@]}" | sort -u | wc -l)" -eq 4 ]] || { echo "GPU indices must be unique" >&2; exit 2; }

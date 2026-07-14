@@ -15,7 +15,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NODES = ("an12", "an29")
+DEFAULT_NODES = ("an12", "an29")
+SUPPORTED_NODES = frozenset(("an12", "an21", "an29"))
 FATAL_PATTERNS = (
     "no space left on device",
     "cuda out of memory",
@@ -50,6 +51,19 @@ def _run_ssh(node: str, command: str) -> str:
     if result.returncode != 0:
         raise RuntimeError(f"{node} command failed ({result.returncode}): {result.stderr.strip()}")
     return result.stdout
+
+
+def monitor_nodes(config: dict[str, Any]) -> tuple[str, ...]:
+    raw = config.get("nodes", list(DEFAULT_NODES))
+    if not isinstance(raw, list) or not raw or not all(isinstance(node, str) for node in raw):
+        raise ValueError("monitor nodes must be a non-empty list of node names")
+    nodes = tuple(raw)
+    if len(set(nodes)) != len(nodes):
+        raise ValueError("monitor nodes must not contain duplicates")
+    unsupported = sorted(set(nodes) - SUPPORTED_NODES)
+    if unsupported:
+        raise ValueError(f"unsupported monitor nodes: {unsupported}")
+    return nodes
 
 
 def _csv_rows(text: str, width: int) -> list[list[str]]:
@@ -225,8 +239,9 @@ def _atomic_write(path: Path, text: str) -> None:
 
 
 def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str, Any]:
+    nodes = monitor_nodes(config)
     gpu_summary = []
-    for node in NODES:
+    for node in nodes:
         for index in range(8):
             values = [next(g for g in sample["nodes"][node]["gpus"] if g["index"] == index) for sample in samples]
             gpu_summary.append(
@@ -259,9 +274,9 @@ def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str
             }
         )
     all_processes = {(node, process["pid"], process["gpu_index"], process["nvidia_process_name"])
-                     for sample in samples for node in NODES for process in sample["nodes"][node]["processes"]}
+                     for sample in samples for node in nodes for process in sample["nodes"][node]["processes"]}
     host_memory_summary = []
-    for node in NODES:
+    for node in nodes:
         values = [sample["nodes"][node]["host_memory"] for sample in samples]
         host_memory_summary.append(
             {
@@ -293,7 +308,8 @@ def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str
         "scientific_gate_decision": None, "started_at_utc": samples[0]["observed_at_utc"],
         "ended_at_utc": samples[-1]["observed_at_utc"], "sample_count": len(samples),
         "interval_seconds": config["interval_seconds"], "requested_duration_seconds": config["duration_seconds"],
-        "gpu_count": 16, "unique_gpu_processes": [
+        "gpu_count": sum(len(samples[0]["nodes"][node]["gpus"]) for node in nodes),
+        "observed_nodes": list(nodes), "unique_gpu_processes": [
             {"node": item[0], "pid": item[1], "gpu_index": item[2], "process_name": item[3]}
             for item in sorted(all_processes)
         ],
@@ -305,7 +321,7 @@ def summarize(samples: list[dict[str, Any]], config: dict[str, Any]) -> dict[str
 
 def render_markdown(summary: dict[str, Any]) -> str:
     lines = [
-        "# 16-GPU Health Monitor", "", f"Status: `{summary['status']}`", "",
+        "# Multi-Node GPU Health Monitor", "", f"Status: `{summary['status']}`", "",
         f"Observed {summary['gpu_count']} GPUs in {summary['sample_count']} samples from "
         f"`{summary['started_at_utc']}` through `{summary['ended_at_utc']}`.", "",
         "## Tracked runs", "", "| Run | Arm | Node/GPUs | First step | Last step | Step advanced | Final status |", "|---|---|---|---:|---:|---|---|",
@@ -337,6 +353,7 @@ def main() -> None:
     config = json.loads(args.config.read_text(encoding="utf-8"))
     if config.get("schema_version") != "blind-gains.gpu-health-monitor-config.v1":
         raise ValueError("unsupported monitor config")
+    nodes = monitor_nodes(config)
     raw_path = ROOT / config["samples_jsonl"]
     summary_json = ROOT / config["summary_json"]
     summary_md = ROOT / config["summary_markdown"]
@@ -349,16 +366,18 @@ def main() -> None:
     with raw_path.open("x", encoding="utf-8", buffering=1) as handle:
         while True:
             sample_started = time.monotonic()
-            nodes = {node: collect_node(node) for node in NODES}
+            node_samples = {node: collect_node(node) for node in nodes}
             runs = []
             for specification in config["runs"]:
                 current = collect_run(ROOT / specification["run_dir"])
-                assigned = [next(g for g in nodes[current["node"]]["gpus"] if g["index"] == index)["gpu_util_pct"] for index in current["gpu_ids"]]
+                if current["node"] not in node_samples:
+                    raise ValueError(f"tracked run node is not monitored: {current['node']}")
+                assigned = [next(g for g in node_samples[current["node"]]["gpus"] if g["index"] == index)["gpu_util_pct"] for index in current["gpu_ids"]]
                 current["assigned_mean_gpu_util_pct"] = statistics.fmean(assigned)
                 current["health"] = classify_run_sample(current, previous_runs.get(current["run_id"]), current["assigned_mean_gpu_util_pct"])
                 previous_runs[current["run_id"]] = current
                 runs.append(current)
-            sample = {"schema_version": "blind-gains.gpu-health-sample.v1", "observed_at_utc": _now(), "nodes": nodes, "runs": runs}
+            sample = {"schema_version": "blind-gains.gpu-health-sample.v1", "observed_at_utc": _now(), "nodes": node_samples, "runs": runs}
             handle.write(json.dumps(sample, sort_keys=True) + "\n")
             samples.append(sample)
             collection_finished = time.monotonic()

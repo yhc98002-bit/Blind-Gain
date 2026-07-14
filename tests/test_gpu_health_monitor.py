@@ -3,7 +3,9 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from scripts.monitor_gpu_health import cadence_sleep_seconds, classify_run_sample
+import pytest
+
+from scripts.monitor_gpu_health import cadence_sleep_seconds, classify_run_sample, monitor_nodes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,3 +69,19 @@ def test_monitor_launcher_is_valid_and_read_only_by_contract() -> None:
     assert "os.kill" not in source
     assert ".terminate(" not in source
     assert ".send_signal(" not in source
+
+
+def test_monitor_accepts_new_registered_node_without_changing_old_configs() -> None:
+    assert monitor_nodes({}) == ("an12", "an29")
+    assert monitor_nodes({"nodes": ["an12", "an21", "an29"]}) == (
+        "an12",
+        "an21",
+        "an29",
+    )
+
+
+def test_monitor_rejects_unknown_or_duplicate_nodes() -> None:
+    with pytest.raises(ValueError, match="unsupported"):
+        monitor_nodes({"nodes": ["an12", "unknown"]})
+    with pytest.raises(ValueError, match="duplicates"):
+        monitor_nodes({"nodes": ["an21", "an21"]})
