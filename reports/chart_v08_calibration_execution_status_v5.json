@@ -1,0 +1,47 @@
+{
+  "schema_version": "blind-gains.chart-v08-calibration-execution-status.v5",
+  "observed_utc": "2026-07-15T21:11:39Z",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_values_inspected": false,
+  "supersedes": "reports/chart_v08_calibration_execution_status_v4.json",
+  "strong_caption_download": {
+    "run": "experiments/runs/modelscope_ephemeral_qwen25vl72b_m12_chartv08_an12_20260715T211129Z",
+    "status": "running",
+    "node": "an12",
+    "gpu_ids": [],
+    "tensor_parallel_width": 0,
+    "replica_count": 0,
+    "model_id": "Qwen/Qwen2.5-VL-72B-Instruct",
+    "revision": "master",
+    "source": "ModelScope via audited proxy fallback",
+    "local_path": "/dev/shm/blind-gains/models/Qwen2.5-VL-72B-Instruct",
+    "git_hash": "aa83b645566fc3a6770dd023bf183bd79522f1bf",
+    "declared_bytes": 160000000000,
+    "inventory_bytes": 146833336607,
+    "free_bytes_before": 427770232832,
+    "projected_free_bytes_after_declared_write": 267770232832,
+    "scratch_floor_bytes": 42949672960
+  },
+  "completed_local_lifecycles": [
+    "3B real",
+    "7B real",
+    "3B caption",
+    "7B caption",
+    "3B gray",
+    "3B noise",
+    "7B gray",
+    "7B noise",
+    "7B no-star/random-star necessity",
+    "grouped DINOv2/frequency/metadata attackers"
+  ],
+  "remaining": [
+    "no-zoom human audit",
+    "72B download verification",
+    "TP4 question-blind caption generation",
+    "caption-only QA and gate audit",
+    "registered interpretation",
+    "freeze decision",
+    "one-shot confirmatory split if eligible"
+  ]
+}

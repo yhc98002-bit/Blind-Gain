@@ -10,6 +10,6 @@ M8 | blocked | reports/m8_7b_prep_launch_status_v3.md + reports/m8_7b_prep_launc
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | reports/support_sharpening_registry_v1.md: the exact 0/16-to-newly-solved selector, 64-sample follow-up, Jeffreys summary, and language lock are implemented; applicable post-training readouts do not yet exist
 M11 | blocked | reports/m11_execution_queue_status_v10.md: committed full-only login watchdog is active but GPU-inert with 18/18 cells pending; all four exact M2 step-100 evaluation markers must validate before any TP1 child can launch on an29
-M12 | blocked | reports/chart_v08_calibration_execution_status_v4.md + reports/chart_v08_calibration_execution_status_v4.json: local real/caption/gray/noise/necessity and grouped-attacker lifecycles are structurally complete with values uninspected; human, strong-caption, interpretation, freeze, and confirmatory gates remain
+M12 | blocked | reports/chart_v08_calibration_execution_status_v5.md + .json: local lifecycles remain structurally complete and uninspected; guarded CPU/network-only 72B download runs on an12, while human, strong-caption scoring, interpretation, freeze, and confirmatory gates remain
 M13 | pass | reports/paper1_pipeline_status_v6.md + reports/paper1_pipeline_status_v6.json: reusable paper pipeline and consistency-safe status wording pass; unresolved scientific result slots remain fail-closed
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum
