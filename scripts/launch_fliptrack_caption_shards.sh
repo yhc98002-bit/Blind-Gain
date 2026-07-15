@@ -28,6 +28,33 @@ if [[ ! "${MAX_NEW_TOKENS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "MAX_NEW_TOKENS must be positive" >&2
   exit 2
 fi
+read -r -a GPU_IDS <<< "${GPU_LIST}"
+if [[ "${#GPU_IDS[@]}" -ne "${NUM_SHARDS}" ]]; then
+  echo "Caption generation requires exactly one TP1 GPU replica per shard" >&2
+  exit 2
+fi
+if [[ "$(printf '%s\n' "${GPU_IDS[@]}" | sort -u | wc -l)" -ne "${NUM_SHARDS}" ]]; then
+  echo "GPU_LIST contains duplicate GPU ids" >&2
+  exit 2
+fi
+if [[ -e "${RUN_DIR}/run_manifest.json" ]]; then
+  echo "Refusing to overwrite an existing caption-generation run manifest" >&2
+  exit 73
+fi
+
+LOCK_PATH="/tmp/blind_gains_${NODE}_fliptrack_caption_launch.lock"
+exec 9>"${LOCK_PATH}"
+if ! flock -n 9; then
+  echo "Another FlipTrack caption launch preflight is active on ${NODE}" >&2
+  exit 75
+fi
+for GPU in "${GPU_IDS[@]}"; do
+  # shellcheck disable=SC2029
+  if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${GPU}' --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
+    echo "FlipTrack caption GPU ${GPU} on ${NODE} is occupied" >&2
+    exit 75
+  fi
+done
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
 GIT_HASH="$(git rev-parse HEAD)"
@@ -37,6 +64,7 @@ GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
 REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {
+  "run_id": "$(basename "${RUN_DIR}")",
   "job_type": "fliptrack_question_blind_caption_generation",
   "node": "${NODE}",
   "gpu_allocation": "${GPU_LIST}",
@@ -52,7 +80,7 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "model_path": "${MODEL_PATH}",
   "max_new_tokens": ${MAX_NEW_TOKENS},
   "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
-  "command": "scripts/launch_fliptrack_caption_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR}",
+  "command": "scripts/launch_fliptrack_caption_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${MANIFEST} ${RUN_DIR} '${GPU_LIST}' ${MAX_NEW_TOKENS}",
   "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "end_time_utc": null,
   "status": "running",
@@ -61,8 +89,9 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
 JSON
 
 LAUNCHED=0
-for GPU in ${GPU_LIST}; do
-  SHARD_INDEX=$((SHARD_OFFSET + GPU))
+for POSITION in "${!GPU_IDS[@]}"; do
+  GPU="${GPU_IDS[${POSITION}]}"
+  SHARD_INDEX=$((SHARD_OFFSET + POSITION))
   if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
     continue
   fi

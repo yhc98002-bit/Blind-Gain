@@ -255,6 +255,58 @@ def test_image_eval_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
     assert "shards assigned by replica ordinal" in source
 
 
+def test_caption_generation_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
+    source = (ROOT / "scripts" / "launch_fliptrack_caption_shards.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'read -r -a GPU_IDS <<< "${GPU_LIST}"' in source
+    assert 'for POSITION in "${!GPU_IDS[@]}"' in source
+    assert 'GPU="${GPU_IDS[${POSITION}]}"' in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + POSITION))" in source
+    assert "SHARD_INDEX=$((SHARD_OFFSET + GPU))" not in source
+    assert "--query-compute-apps=pid" in source
+
+
+def test_caption_generation_refuses_occupied_nonzero_gpus_before_run_creation(
+    tmp_path: Path,
+) -> None:
+    manifest = tmp_path / "input.jsonl"
+    manifest.write_text('{"pair_id":"p"}\n', encoding="utf-8")
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text("#!/usr/bin/env bash\nprintf '8765\\n'\n", encoding="utf-8")
+    fake_ssh.chmod(0o755)
+    run_dir = tmp_path / "must-not-exist"
+    environment = dict(os.environ)
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_fliptrack_caption_shards.sh",
+            "an12",
+            "0",
+            "2",
+            "model",
+            str(manifest),
+            str(run_dir),
+            "4 5",
+            "384",
+        ],
+        cwd=ROOT,
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 75
+    assert "GPU 4 on an12 is occupied" in result.stderr
+    assert not run_dir.exists()
+
+
 def test_caption_qa_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
     source = (ROOT / "scripts" / "launch_caption_qa_shards.sh").read_text(
         encoding="utf-8"
