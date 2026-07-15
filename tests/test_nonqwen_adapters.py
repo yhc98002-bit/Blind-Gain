@@ -199,6 +199,10 @@ def test_internvl_generation_shim_repairs_transformers_456_break() -> None:
         def generate(self):
             return "generated"
 
+        @classmethod
+        def _supports_default_dynamic_cache(cls):
+            return True
+
     class FakeGenerationConfig:
         @classmethod
         def from_model_config(cls, config):
@@ -219,6 +223,7 @@ def test_internvl_generation_shim_repairs_transformers_456_break() -> None:
     assert repaired is True
     assert model.language_model.original_method() == "preserved"
     assert model.language_model.generate() == "generated"
+    assert model.language_model._supports_default_dynamic_cache() is False
     assert isinstance(model.language_model.generation_config, FakeGenerationConfig)
     assert ensure_internvl_generation_compatibility(
         model,
@@ -234,6 +239,10 @@ def test_internvl_repairs_missing_generation_config_even_when_generate_exists() 
 
         def generate(self):
             return None
+
+        @classmethod
+        def _supports_default_dynamic_cache(cls):
+            return False
 
     class FakeGenerationConfig:
         @classmethod
@@ -252,6 +261,33 @@ def test_internvl_repairs_missing_generation_config_even_when_generate_exists() 
     assert isinstance(model.language_model.generation_config, FakeGenerationConfig)
 
 
+def test_internvl_disables_dynamic_cache_for_legacy_internlm2_adapter() -> None:
+    class LegacyLanguageModel:
+        config = object()
+        generation_config = object()
+
+        def generate(self):
+            return None
+
+        @classmethod
+        def _supports_default_dynamic_cache(cls):
+            return True
+
+        def prepare_inputs_for_generation(self, past_key_values):
+            return past_key_values[0][0].shape[2]
+
+    model = type("InternVL", (), {"language_model": LegacyLanguageModel()})()
+    empty_dynamic_cache = ((None, None),)
+
+    with pytest.raises(AttributeError, match="NoneType"):
+        model.language_model.prepare_inputs_for_generation(empty_dynamic_cache)
+
+    shim_applied = ensure_internvl_generation_compatibility(model)
+
+    assert shim_applied is True
+    assert model.language_model._supports_default_dynamic_cache() is False
+
+
 def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None:
     fake_timm = types.ModuleType("timm")
     fake_timm.__version__ = "0.9.12"
@@ -265,7 +301,13 @@ def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None
             "language_model": type(
                 "LM",
                 (),
-                {"generate": lambda self: None, "generation_config": object()},
+                {
+                    "generate": lambda self: None,
+                    "generation_config": object(),
+                    "_supports_default_dynamic_cache": classmethod(
+                        lambda cls: False
+                    ),
+                },
             )()
         },
     )()
@@ -277,6 +319,7 @@ def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None
         "generation_callable": True,
         "generation_shim_applied": True,
         "generation_config_ready": True,
+        "legacy_cache_only": True,
         "timm_version": "0.9.12",
         "use_flash_attn": False,
     }

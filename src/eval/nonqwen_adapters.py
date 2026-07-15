@@ -23,6 +23,7 @@ def nonqwen_runtime_metadata_valid(metadata: Any, backend: str) -> bool:
         return (
             isinstance(metadata.get("generation_shim_applied"), bool)
             and metadata.get("generation_config_ready") is True
+            and metadata.get("legacy_cache_only") is True
             and metadata.get("timm_version") == "0.9.12"
             and metadata.get("use_flash_attn") is False
         )
@@ -49,21 +50,41 @@ def ensure_internvl_generation_compatibility(
     language_model = getattr(model, "language_model", None)
     if language_model is None:
         raise ValueError("InternVL model lacks the registered language_model")
-    shim_applied = not callable(getattr(language_model, "generate", None))
+    needs_generation_mixin = not callable(getattr(language_model, "generate", None))
+    supports_dynamic_cache = getattr(
+        language_model, "_supports_default_dynamic_cache", None
+    )
+    needs_legacy_cache_override = needs_generation_mixin or (
+        callable(supports_dynamic_cache) and bool(supports_dynamic_cache())
+    )
+    shim_applied = needs_generation_mixin or needs_legacy_cache_override
     if shim_applied:
         if generation_mixin_class is None:
             from transformers.generation import GenerationMixin
 
             generation_mixin_class = GenerationMixin
         original_class = type(language_model)
+        bases = (
+            (original_class, generation_mixin_class)
+            if needs_generation_mixin
+            else (original_class,)
+        )
         compatible_class = type(
             f"{original_class.__name__}WithGeneration",
-            (original_class, generation_mixin_class),
-            {"__module__": original_class.__module__},
+            bases,
+            {
+                "__module__": original_class.__module__,
+                "_supports_default_dynamic_cache": classmethod(
+                    lambda cls: False
+                ),
+            },
         )
         language_model.__class__ = compatible_class
     if not callable(getattr(language_model, "generate", None)):
         raise RuntimeError("InternVL generation compatibility repair did not expose generate")
+    cache_support = getattr(language_model, "_supports_default_dynamic_cache", None)
+    if not callable(cache_support) or cache_support() is not False:
+        raise RuntimeError("InternVL compatibility repair did not select legacy caches")
     if getattr(language_model, "generation_config", None) is None:
         model_config = getattr(language_model, "config", None)
         if model_config is None:
@@ -233,6 +254,8 @@ class InternVL3Adapter:
             "generation_shim_applied": self._generation_shim_applied,
             "generation_config_ready": self._model.language_model.generation_config
             is not None,
+            "legacy_cache_only": self._model.language_model._supports_default_dynamic_cache()
+            is False,
             "timm_version": timm.__version__,
             "use_flash_attn": False,
         }
