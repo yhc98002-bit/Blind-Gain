@@ -80,6 +80,40 @@ if [[ "${PILOT_STEP_JSON}" != "null" && "${DATA_HASH}" != "${R19_MANIFEST_SHA256
   echo "Pilot evaluation manifest is not the locked R19 manifest" >&2
   exit 2
 fi
+
+read -r -a GPU_IDS <<< "${GPU_LIST}"
+ACTIVE_GPU_IDS=()
+for POSITION in "${!GPU_IDS[@]}"; do
+  SHARD_INDEX=$((SHARD_OFFSET + POSITION))
+  if [[ "${SHARD_INDEX}" -ge 0 && "${SHARD_INDEX}" -lt "${NUM_SHARDS}" ]]; then
+    ACTIVE_GPU_IDS+=("${GPU_IDS[${POSITION}]}")
+  fi
+done
+if [[ "${#ACTIVE_GPU_IDS[@]}" -eq 0 ]]; then
+  echo "No evaluation workers launched; check SHARD_OFFSET, NUM_SHARDS, and GPU_LIST" >&2
+  exit 2
+fi
+if [[ "$(printf '%s\n' "${ACTIVE_GPU_IDS[@]}" | sort -u | wc -l)" -ne "${#ACTIVE_GPU_IDS[@]}" ]]; then
+  echo "GPU_LIST maps multiple evaluation shards to the same GPU" >&2
+  exit 2
+fi
+
+# Serialize launch preflights and fail closed if a neighboring process acquired a
+# target GPU after an outer scheduler's capacity poll.
+LOCK_PATH="/tmp/blind_gains_${NODE}_fliptrack_eval_launch.lock"
+exec 9>"${LOCK_PATH}"
+if ! flock -n 9; then
+  echo "Another FlipTrack evaluation launch preflight is active on ${NODE}" >&2
+  exit 75
+fi
+for GPU in "${ACTIVE_GPU_IDS[@]}"; do
+  # shellcheck disable=SC2029
+  if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${GPU}' --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
+    echo "FlipTrack evaluation GPU ${GPU} on ${NODE} is occupied" >&2
+    exit 75
+  fi
+done
+
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards" "${RUN_DIR}/metrics"
 GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
 REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
@@ -120,7 +154,6 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
 }
 JSON
 
-read -r -a GPU_IDS <<< "${GPU_LIST}"
 LAUNCHED=0
 for POSITION in "${!GPU_IDS[@]}"; do
   GPU="${GPU_IDS[${POSITION}]}"

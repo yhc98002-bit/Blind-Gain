@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -104,6 +105,46 @@ def test_image_eval_launcher_rejects_negative_shard_mapping_before_ssh(tmp_path:
     assert result.returncode == 2
     assert "No evaluation workers launched" in result.stderr
     assert "Could not resolve hostname" not in result.stderr
+
+
+def test_image_eval_launcher_refuses_an_occupied_gpu_before_creating_run(
+    tmp_path: Path,
+) -> None:
+    manifest = tmp_path / "input.jsonl"
+    manifest.write_text('{"pair_id":"p"}\n', encoding="utf-8")
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text("#!/usr/bin/env bash\nprintf '4321\\n'\n", encoding="utf-8")
+    fake_ssh.chmod(0o755)
+    run_dir = tmp_path / "must-not-exist"
+    environment = dict(os.environ)
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_fliptrack_eval_shards.sh",
+            "an29",
+            "0",
+            "1",
+            "model",
+            str(manifest),
+            str(run_dir),
+            "32",
+            "4",
+            "real",
+        ],
+        cwd=ROOT,
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 75
+    assert "GPU 4 on an29 is occupied" in result.stderr
+    assert not run_dir.exists()
 
 
 @pytest.mark.parametrize(
