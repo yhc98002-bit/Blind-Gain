@@ -203,3 +203,48 @@ def test_virl_audit_rejects_missing_symbolic_guard_stamp(tmp_path: Path) -> None
 
     assert audit["status"] == "fail"
     assert audit["checks"]["symbolic_grader_guard_locked"] is False
+
+
+def test_virl_audit_binds_exact_7b_job_and_model_identity(tmp_path: Path) -> None:
+    runs, source, spec, prompt = _fixture(tmp_path)
+    expected_job = "m8_virl39k_7b_blind_solvability_v1"
+    expected_model = (
+        "Qwen/Qwen2.5-VL-7B-Instruct@cc594898137f460bfe9f0759e9844b3ce807cfb5"
+    )
+    for run in runs.values():
+        manifest_path = run / "run_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["job_type"] = expected_job
+        manifest["model_revision"] = expected_model
+        manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+
+    audit, _ = audit_runs(
+        runs,
+        source,
+        spec,
+        prompt,
+        expected_job_type=expected_job,
+        expected_model_revision=expected_model,
+    )
+
+    assert audit["expected_job_type"] == expected_job
+    assert audit["expected_model_revision"] == expected_model
+    assert all(
+        value
+        for name, value in audit["checks"].items()
+        if name != "row_count_exact_4096"
+    )
+
+    gray_manifest = runs["gray"] / "run_manifest.json"
+    payload = json.loads(gray_manifest.read_text(encoding="utf-8"))
+    payload["model_revision"] = "wrong-model"
+    gray_manifest.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+    rejected, _ = audit_runs(
+        runs,
+        source,
+        spec,
+        prompt,
+        expected_job_type=expected_job,
+        expected_model_revision=expected_model,
+    )
+    assert rejected["checks"]["all_run_manifests_complete_and_registered"] is False

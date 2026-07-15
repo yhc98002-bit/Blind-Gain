@@ -34,6 +34,10 @@ from src.rewards.pilot_reward import (
 )
 
 
+DEFAULT_EXPECTED_JOB_TYPE = "l10_virl39k_blind_solvability_v1"
+DEFAULT_EXPECTED_MODEL_REVISION = "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -110,6 +114,9 @@ def audit_runs(
     source_manifest: Path,
     sample_spec_path: Path,
     format_prompt: Path,
+    *,
+    expected_job_type: str = DEFAULT_EXPECTED_JOB_TYPE,
+    expected_model_revision: str = DEFAULT_EXPECTED_MODEL_REVISION,
 ) -> tuple[dict[str, Any], dict[str, list[dict[str, Any]]]]:
     source_hash = _sha256(source_manifest)
     sample_spec_hash = _sha256(sample_spec_path)
@@ -147,7 +154,7 @@ def audit_runs(
         manifest_checks[condition] = bool(
             manifest.get("status") == "complete"
             and manifest.get("exit_code") == 0
-            and manifest.get("job_type") == "l10_virl39k_blind_solvability_v1"
+            and manifest.get("job_type") == expected_job_type
             and manifest.get("condition") == condition
             and manifest.get("data_manifest") == str(source_manifest)
             and manifest.get("source_manifest_sha256") == source_hash
@@ -158,8 +165,7 @@ def audit_runs(
             and manifest.get("format_prompt_sha256") == format_prompt_hash
             and manifest.get("train_filter_ids") is None
             and manifest.get("train_filter_sha256") is None
-            and manifest.get("model_revision")
-            == "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
+            and manifest.get("model_revision") == expected_model_revision
             and manifest.get("parser_version") == PARSER_VERSION
             and manifest.get("pilot_reward_version") == PILOT_REWARD_VERSION
             and manifest.get("scoring_mode") == PILOT_SCORING_MODE
@@ -297,6 +303,8 @@ def audit_runs(
         "status": "pass" if all(checks.values()) else "fail",
         "checks": checks,
         "conditions": list(CONDITIONS),
+        "expected_job_type": expected_job_type,
+        "expected_model_revision": expected_model_revision,
         "row_counts": row_counts,
         "expected_row_count": len(expected_rows),
         "frozen_sample_statistics": observed_stats,
@@ -372,6 +380,7 @@ def build_summary(
         "dataset_name": "ViRL39K frozen stratified sample",
         "n_items": audit["expected_row_count"],
         "evaluation_contract": {
+            "model_revision": audit["expected_model_revision"],
             "max_tokens": 2048,
             "sample_count": 16,
             "sample_temperature": 1.0,
@@ -405,6 +414,7 @@ def render_summary(summary: dict[str, Any], audit_json: Path) -> str:
         "- This is a base-model corpus audit, not a pilot-arm result or PI gate decision.",
         "",
         "Evidence:",
+        f"- Model revision: `{summary['evaluation_contract']['model_revision']}`.",
         "- Decoding: greedy plus n=16 at temperature 1.0, 2,048 maximum tokens, G=5.",
         f"- Symbolic grading: `{summary['evaluation_contract']['symbolic_grader_guard_version']}` at `{summary['evaluation_contract']['symbolic_grader_timeout_seconds']}` seconds per bounded call.",
         f"- Frozen source SHA256: `{summary['audit']['source_manifest_sha256']}`.",
@@ -458,6 +468,11 @@ def render_summary(summary: dict[str, Any], audit_json: Path) -> str:
 
 
 def render_audit(audit: dict[str, Any], audit_json: Path) -> str:
+    task_label = (
+        "M8"
+        if audit.get("expected_job_type") == "m8_virl39k_7b_blind_solvability_v1"
+        else "L10"
+    )
     lines = [
         "# ViRL39K Blind-Solvability V1 Independent Audit",
         "",
@@ -478,10 +493,10 @@ def render_audit(audit: dict[str, Any], audit_json: Path) -> str:
             "- Any false sub-check makes the logical-AND audit fail; no waiver is encoded here.",
             "",
             "Decision:",
-            "- This artifact certifies measurement integrity only and does not declare L10 or a PI gate passed.",
+            f"- This artifact certifies measurement integrity only and does not declare {task_label} or a PI gate passed.",
             "",
             "Next actions:",
-            "- Use the summary only when this machine status is pass and the L10 ledger has its named reports.",
+            f"- Use the summary only when this machine status is pass and the {task_label} ledger has its named reports.",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -497,6 +512,14 @@ def main() -> None:
     parser.add_argument("--markdown-output", type=Path, required=True)
     parser.add_argument("--audit-json-output", type=Path, required=True)
     parser.add_argument("--audit-markdown-output", type=Path, required=True)
+    parser.add_argument(
+        "--expected-job-type",
+        default=DEFAULT_EXPECTED_JOB_TYPE,
+    )
+    parser.add_argument(
+        "--expected-model-revision",
+        default=DEFAULT_EXPECTED_MODEL_REVISION,
+    )
     args = parser.parse_args()
     outputs = (
         args.json_output,
@@ -513,6 +536,8 @@ def main() -> None:
         args.source_manifest,
         args.sample_spec,
         args.format_prompt,
+        expected_job_type=args.expected_job_type,
+        expected_model_revision=args.expected_model_revision,
     )
     args.audit_json_output.write_text(
         json.dumps(audit, indent=2, sort_keys=True) + "\n", encoding="utf-8"
