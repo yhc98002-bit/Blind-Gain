@@ -1,0 +1,31 @@
+{
+  "schema_version": "blind-gains.chart-v08-execution-status.v3",
+  "supersedes": "reports/chart_v08_calibration_execution_status_v2.json",
+  "carried_forward_model_snapshot": "reports/chart_v08_calibration_execution_status_v2.json",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_inspected": false,
+  "artifact_values_inspected": false,
+  "artifact_attacker_lifecycle": {
+    "status": "complete",
+    "run": "experiments/runs/chart_v08_artifact_gate_an12_gpu4_20260715T201107Z",
+    "node": "an12",
+    "gpu_ids": [4],
+    "tensor_parallel_width": 1,
+    "replica_count": 1,
+    "model_revision": "facebook/dinov2-small@ed25f3a31f01632728cabb09d1542f84ab7b0056",
+    "run_manifest_sha256": "0f17a4a5a0d144e560ac934cc536ff4728c2dfbd3fd7a876aa8e6cbf81fbaf49",
+    "metrics_sha256": "cd0afcc2f00d399cf0e02012901ddce6fbd2caf872ecfe8479e9dbd49a40bbaa",
+    "exit_code": 0,
+    "artifacts_exist": true,
+    "gate_interpretation": "pending"
+  },
+  "pending_checks": {
+    "human_no_zoom": "pending",
+    "strong_captioner": "pending",
+    "artifact_gate_interpretation": "pending",
+    "necessity_effect": "pending",
+    "freeze": "pending",
+    "confirmatory_split": "pending"
+  }
+}
