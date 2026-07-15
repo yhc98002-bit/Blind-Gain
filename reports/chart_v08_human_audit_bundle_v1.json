@@ -1,0 +1,32 @@
+{
+  "schema_version": "blind-gains.chart-v08-human-audit-bundle.v1",
+  "status": "pass",
+  "scientific_gate_decision": null,
+  "source_manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+  "source_manifest_sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+  "release_manifest": "data/fliptrack_chart_v08_calibration_v1_human_release/manifest.jsonl",
+  "release_manifest_sha256": "501efddf0634465f9b73bbcc93c96dba55efe6b651f88c554e97791393db8d2a",
+  "private_answer_key": ".private/fliptrack_chart_v08_calibration_v1_human_key.jsonl",
+  "private_answer_key_sha256": "e63859829e9add77a8599da3763707d3b58e690527fbf156123d9690933035ae",
+  "lint_report": "reports/chart_v08_human_package_lint_v1.json",
+  "lint_status": true,
+  "pair_count": 100,
+  "image_count": 200,
+  "template_counts": {
+    "chart_v08_legend_target_flip": 50,
+    "chart_v08_point_value_flip": 50
+  },
+  "member_order_counts": {
+    "ab": 51,
+    "ba": 49
+  },
+  "viewer": "tools/human_audit_viewer.html",
+  "viewer_sha256": "9b5245893a22e60528552ae73214670a0f5cdd2e6fe95adda251714556ac7122",
+  "reviewer_guide": "docs/CHART_V08_HUMAN_AUDIT_GUIDE.md",
+  "reviewer_guide_sha256": "9e0edb5f532d37b482df62cef5382d0eac1a9c13453d9bc614b1954ce96a7811",
+  "portable_zip": "reports/review_packages/blind_gains_chart_v08_calibration_human_audit_20260715_v1.zip",
+  "portable_zip_absolute_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/review_packages/blind_gains_chart_v08_calibration_human_audit_20260715_v1.zip",
+  "portable_zip_sha256": "ea4473d3148121d87f50bde36c8417cf22875472af166fd714b87904b483bf24",
+  "portable_zip_bytes": 8794408,
+  "human_audit_outcome": "pending"
+}
