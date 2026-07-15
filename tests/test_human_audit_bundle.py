@@ -142,6 +142,7 @@ def test_bundle_uses_source_order_not_randomized_release_order(tmp_path: Path) -
             for line in archive.read("audit_fixture/private/answer_key.jsonl").decode().splitlines()
         ]
         metadata = json.loads(archive.read("audit_fixture/bundle_manifest.json"))
+        readme = archive.read("audit_fixture/README.txt").decode()
 
     assert [row["pair_id"] for row in manifest] == ["opaque-a-first", "opaque-b-first"]
     assert [row["source_pair_id"] for row in keys] == ["source-a-first", "source-b-first"]
@@ -150,6 +151,8 @@ def test_bundle_uses_source_order_not_randomized_release_order(tmp_path: Path) -
     assert "audit_fixture/human_audit_viewer.html" in names
     assert "audit_fixture/REVIEWER_GUIDE.md" in names
     assert "audit_fixture/README.txt" in names
+    assert "portable 2-pair package" in readme
+    assert "portable 60-pair package" not in readme
     assert not any("a-second" in name for name in names if name.endswith(".png"))
 
 

@@ -243,7 +243,7 @@ def build_bundle(
 3. Open human_audit_viewer.html in Chromium or Firefox.
 4. For the package folder, choose: package
 5. For the private answer key, choose: private/answer_key.jsonl
-6. Select Open human audit. The portable 60-pair package defaults to All loaded pairs.
+6. Select Open human audit. This portable {len(selected_release)}-pair package defaults to All loaded pairs.
 7. Complete all six checks for every loaded pair.
 8. Export failures JSON when all pairs are reviewed.
 

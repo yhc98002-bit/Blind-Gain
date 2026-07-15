@@ -989,9 +989,9 @@
 
       <h3>Finish</h3>
       <p class="guide-note">
-        Review all 60 loaded pairs. Export only when progress shows 60/60 reviewed and
-        <code>unreviewed_pair_ids</code> will be empty. Return the exported JSON unchanged;
-        the PI makes the dataset-level decision.
+        Review every pair in the selected scope. Export only when the progress count is
+        complete and <code>unreviewed_pair_ids</code> will be empty. Return the exported JSON
+        unchanged; the PI makes the dataset-level decision.
       </p>
     </div>
   </dialog>
@@ -1008,7 +1008,7 @@
       <div class="file-field">
         <div class="step-label">
           <span class="step-number" aria-hidden="true">1</span>
-          <label for="imageDirectory">Choose the R19 package folder</label>
+          <label for="imageDirectory">Choose the audit package folder</label>
         </div>
         <div class="path-hint">Downloaded ZIP: package/ | Cluster: data/fliptrack_v02r19_artifact_expanded/</div>
         <input id="imageDirectory" type="file" webkitdirectory directory multiple>
@@ -1017,7 +1017,7 @@
       <div class="file-field">
         <div class="step-label">
           <span class="step-number" aria-hidden="true">2</span>
-          <label for="answerKeyFile">Choose the R19 private answer key</label>
+          <label for="answerKeyFile">Choose the private answer key</label>
         </div>
         <div class="path-hint">Downloaded ZIP: private/answer_key.jsonl | Cluster: .private/fliptrack_v02r19_key.jsonl</div>
         <input id="answerKeyFile" type="file" accept=".json,.jsonl,application/json">
@@ -1028,10 +1028,11 @@
         <span id="loadReadiness">Select both local inputs</span>
       </div>
       <details class="alternate-package">
-        <summary>Auditing R20 instead?</summary>
+        <summary>Cluster package examples</summary>
         <p>
-          Package: <code>data/fliptrack_r20/</code><br>
-          Private key: <code>.private/fliptrack_r20_key.jsonl</code>
+          R19: <code>data/fliptrack_v02r19_artifact_expanded/</code><br>
+          R20: <code>data/fliptrack_r20/</code><br>
+          Use the matching key under <code>.private/</code>.
         </p>
       </details>
       <p id="loadError" class="load-error hidden" role="alert"></p>
@@ -1042,7 +1043,7 @@
     <div class="empty-state-inner">
       <strong>No audit package is open</strong>
       <p>
-        Select the R19 package folder and private key above. The first pair will appear here
+        Select the audit package folder and matching private key above. The first pair will appear here
         after both inputs are accepted.
       </p>
       <p class="privacy-note">

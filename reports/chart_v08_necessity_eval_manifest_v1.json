@@ -1,0 +1,24 @@
+{
+  "evaluation_rows": 200,
+  "interventions": [
+    "no_star",
+    "random_star"
+  ],
+  "output": "data/fliptrack_chart_v08_calibration_v1_necessity_eval_manifest_v1.jsonl",
+  "output_sha256": "797f8545a283563921469976c716805f288f36062b369fb6f1b6d1e79b5f56cb",
+  "schema_version": "blind-gains.chart-v08-necessity-eval-manifest.v1",
+  "scientific_gate_decision": null,
+  "scoring_target": "original_member_answer",
+  "sidecar": "data/fliptrack_chart_v08_calibration_v1_diagnostics_v2.jsonl",
+  "sidecar_sha256": "18ccefd2be6efc0d10ff6c710e25e56c67fd2b65818872aa398f68941f12f800",
+  "source_manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+  "source_manifest_sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+  "source_pairs": 100,
+  "status": "pass",
+  "template_counts": {
+    "chart_v08_legend_target_flip__no_star": 50,
+    "chart_v08_legend_target_flip__random_star": 50,
+    "chart_v08_point_value_flip__no_star": 50,
+    "chart_v08_point_value_flip__random_star": 50
+  }
+}

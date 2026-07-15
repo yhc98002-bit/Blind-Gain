@@ -133,6 +133,9 @@ def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:
     assert "pair_id: pair.pairId" in source
     assert "failed_checks: failedChecks" in source
     assert "unreviewed_pair_ids: unreviewedPairIds" in source
+    assert "Review every pair in the selected scope" in source
+    assert "Choose the audit package folder" in source
+    assert "Review all 60 loaded pairs" not in source
 
     export_function = source.split("function exportFailures()", 1)[1].split(
         "function resetProgress()", 1
