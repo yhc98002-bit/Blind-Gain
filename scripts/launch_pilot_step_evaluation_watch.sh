@@ -49,8 +49,8 @@ for FILE in "${CRITICAL_FILES[@]}"; do
   git ls-files --error-unmatch "${FILE}" >/dev/null 2>&1 || { echo "untracked critical file: ${FILE}" >&2; exit 2; }
 done
 
-CHECKPOINT_ROOT="$(jq -er '.checkpoint_path' "${TRAINING_RUN}/run_manifest.json")"
-CHECKPOINT="${CHECKPOINT_ROOT}/global_step_${GLOBAL_STEP}/actor/huggingface"
+CHECKPOINT="$(realpath -m "$(jq -er '.model_revision' "${EVALUATION_RUN}/run_manifest.json")")"
+[[ -f "${CHECKPOINT}/model.safetensors.index.json" ]] || { echo "evaluation checkpoint index absent" >&2; exit 2; }
 ARM="$(jq -er '.arm' "${TRAINING_RUN}/run_manifest.json")"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="pilot_step_eval_finalize_watch_${ARM}_step${GLOBAL_STEP}_login_${STAMP}"

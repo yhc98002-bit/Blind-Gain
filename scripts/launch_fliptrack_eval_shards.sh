@@ -58,9 +58,15 @@ if [[ -n "${PILOT_SOURCE_RUN_INPUT}" || -n "${PILOT_GLOBAL_STEP}" ]]; then
   [[ -f "${PILOT_MANIFEST}" ]] || { echo "Pilot source manifest absent" >&2; exit 2; }
   [[ "$(jq -r '.job_type' "${PILOT_MANIFEST}")" == "l13_mechanical_pilot_arm" ]] || { echo "Pilot source is not an L13 arm" >&2; exit 2; }
   [[ "$(jq -r '.status' "${PILOT_MANIFEST}")" == "complete" ]] || { echo "Pilot source run must be complete" >&2; exit 2; }
-  EXPECTED_MODEL="$(realpath -m "$(jq -er '.checkpoint_path' "${PILOT_MANIFEST}")/global_step_${PILOT_GLOBAL_STEP}/actor/huggingface")"
-  [[ "$(realpath -m "${MODEL_PATH}")" == "${EXPECTED_MODEL}" ]] || { echo "Pilot checkpoint path does not match the registered source run and step" >&2; exit 2; }
-  [[ -f "${EXPECTED_MODEL}/model.safetensors.index.json" ]] || { echo "Pilot merged checkpoint index absent" >&2; exit 2; }
+  DIRECT_MODEL="$(realpath -m "$(jq -er '.checkpoint_path' "${PILOT_MANIFEST}")/global_step_${PILOT_GLOBAL_STEP}/actor/huggingface")"
+  EXPECTED_MODELS=("${DIRECT_MODEL}")
+  if [[ "$(jq -r '.resumed_from_global_step // -1' "${PILOT_MANIFEST}")" == "${PILOT_GLOBAL_STEP}" ]]; then
+    RESUME_SOURCE_MODEL="$(realpath -m "$(jq -er '.load_checkpoint_path' "${PILOT_MANIFEST}")/actor/huggingface")"
+    EXPECTED_MODELS+=("${RESUME_SOURCE_MODEL}")
+  fi
+  RESOLVED_MODEL="$(realpath -m "${MODEL_PATH}")"
+  printf '%s\n' "${EXPECTED_MODELS[@]}" | grep -Fxq "${RESOLVED_MODEL}" || { echo "Pilot checkpoint path does not match the registered source run and step" >&2; exit 2; }
+  [[ -f "${RESOLVED_MODEL}/model.safetensors.index.json" ]] || { echo "Pilot merged checkpoint index absent" >&2; exit 2; }
   PILOT_SOURCE_REL="${PILOT_SOURCE_RUN#"${ROOT}/"}"
   PILOT_SOURCE_JSON="$(jq -Rn --arg value "${PILOT_SOURCE_REL}" '$value')"
   PILOT_STEP_JSON="${PILOT_GLOBAL_STEP}"

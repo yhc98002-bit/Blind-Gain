@@ -91,6 +91,16 @@ def find_existing_aggregate(tag: str, source_run: Path, root: Path = ROOT) -> Pa
     return valid[0] if valid else None
 
 
+def checkpoint_candidates(training: dict[str, Any], global_step: int) -> tuple[Path, ...]:
+    candidates = [
+        Path(str(training["checkpoint_path"]))
+        / f"global_step_{global_step}/actor/huggingface"
+    ]
+    if training.get("resumed_from_global_step") == global_step:
+        candidates.append(Path(str(training["load_checkpoint_path"])) / "actor/huggingface")
+    return tuple(candidates)
+
+
 def launch_aggregate(source_run: Path, tag: str, root: Path = ROOT) -> Path:
     result = subprocess.run(
         ["bash", "scripts/launch_fliptrack_aggregate.sh", str(source_run), tag, "sync"],
@@ -132,8 +142,8 @@ def main() -> None:
     training = _read(training_manifest)
     if training.get("job_type") != "l13_mechanical_pilot_arm" or training.get("status") != "complete":
         raise ValueError("training source must be a complete L13 pilot arm")
-    expected_checkpoint = Path(str(training["checkpoint_path"])) / f"global_step_{args.global_step}/actor/huggingface"
-    if expected_checkpoint.resolve() != args.checkpoint_path.resolve():
+    expected_checkpoints = checkpoint_candidates(training, args.global_step)
+    if args.checkpoint_path.resolve() not in {path.resolve() for path in expected_checkpoints}:
         raise ValueError("checkpoint path does not match training run and global step")
 
     while True:

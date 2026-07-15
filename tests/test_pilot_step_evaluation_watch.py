@@ -6,7 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from scripts.watch_pilot_step_evaluation import find_existing_aggregate, validate_evaluation
+from scripts.watch_pilot_step_evaluation import (
+    checkpoint_candidates,
+    find_existing_aggregate,
+    validate_evaluation,
+)
 from scripts.finalize_pilot_step_evaluation import R19_MANIFEST_SHA256
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 
@@ -56,6 +60,17 @@ def test_duplicate_aggregate_lineage_is_rejected(tmp_path: Path) -> None:
         find_existing_aggregate("fixed", source, tmp_path)
 
 
+def test_resume_source_checkpoint_is_a_registered_step_candidate(tmp_path: Path) -> None:
+    training = {
+        "checkpoint_path": str(tmp_path / "new-namespace"),
+        "resumed_from_global_step": 60,
+        "load_checkpoint_path": str(tmp_path / "source/global_step_60"),
+    }
+    candidates = checkpoint_candidates(training, 60)
+    assert tmp_path / "source/global_step_60/actor/huggingface" in candidates
+    assert tmp_path / "unrelated/actor/huggingface" not in candidates
+
+
 def test_launcher_is_valid_and_binds_marker_to_training_step() -> None:
     launcher = ROOT / "scripts/launch_pilot_step_evaluation_watch.sh"
     subprocess.run(["bash", "-n", str(launcher)], check=True)
@@ -63,5 +78,6 @@ def test_launcher_is_valid_and_binds_marker_to_training_step() -> None:
     assert 'EXPECTED_MARKER="${TRAINING_RUN}/step${GLOBAL_STEP}_fliptrack_complete.json"' in source
     assert "pilot evaluation watcher code differs from HEAD" in source
     assert "active finalization watcher already owns marker" in source
+    assert "'.model_revision'" in source
     assert 'job_type: "pilot_step_evaluation_finalize_watch"' in source
     assert "scientific_gate_decision: null" in source

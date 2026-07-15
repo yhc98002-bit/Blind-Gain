@@ -195,6 +195,7 @@ def test_image_eval_launcher_binds_registered_pilot_checkpoint_metadata() -> Non
     assert "BLIND_GAINS_PILOT_GLOBAL_STEP" in launcher
     assert "Pilot source run must be complete" in launcher
     assert "Pilot checkpoint path does not match the registered source run and step" in launcher
+    assert "load_checkpoint_path" in launcher
     assert "Pilot evaluation manifest is not the locked R19 manifest" in launcher
     assert '"source_training_run": ${PILOT_SOURCE_JSON}' in launcher
     assert '"global_step": ${PILOT_STEP_JSON}' in launcher
