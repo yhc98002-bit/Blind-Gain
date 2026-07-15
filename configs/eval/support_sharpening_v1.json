@@ -1,0 +1,29 @@
+{
+  "schema_version": "blind-gains.support-sharpening.v1",
+  "eligibility": {
+    "initial_sample_count": 16,
+    "initial_correct_count": 0,
+    "step0_acc_final": false,
+    "target_step": "registered readout checkpoint",
+    "target_acc_final": true,
+    "condition_binding": "each arm uses its own frozen baseline condition"
+  },
+  "resampling": {
+    "model": "frozen base checkpoint",
+    "extra_samples": 64,
+    "decoding": "identical to the frozen 16-sample baseline audit",
+    "parser_and_reward": "identical to the arm's registered readout"
+  },
+  "classification": {
+    "high_confidence_support_expansion_candidate": "zero successes in all 80 base samples",
+    "otherwise": "observed in support-sharpening samples"
+  },
+  "required_language": [
+    "mass sharpening within observed support",
+    "not observed in the base K-sample set"
+  ],
+  "forbidden_language": [
+    "RL created a capability",
+    "RL taught a capability"
+  ]
+}
