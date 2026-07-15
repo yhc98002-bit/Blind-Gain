@@ -1,0 +1,79 @@
+{
+  "schema_version": "blind-gains.chart-v08-execution-status.v2",
+  "supersedes": "reports/chart_v08_calibration_execution_status_v1.json",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_inspected": false,
+  "calibration_manifest": {
+    "path": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+    "pairs": 100,
+    "sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292"
+  },
+  "necessity_manifest": {
+    "path": "data/fliptrack_chart_v08_calibration_v1_necessity_eval_manifest_v1.jsonl",
+    "rows": 200,
+    "sha256": "797f8545a283563921469976c716805f288f36062b369fb6f1b6d1e79b5f56cb"
+  },
+  "human_package": {
+    "path": "reports/review_packages/blind_gains_chart_v08_calibration_human_audit_20260715_v1.zip",
+    "sha256": "ea4473d3148121d87f50bde36c8417cf22875472af166fd714b87904b483bf24",
+    "audit_status": "pending"
+  },
+  "completed_cells": [
+    {
+      "condition": "qwen25vl3b_real",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl3b_real_an29_20260715T185645Z",
+      "run_manifest_sha256": "0a81b9062396c1359a9fa19aa1b5ad5a559998cdc4af31db9ed78526ed49ed1d",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl3b_real_20260715T190101Z"
+    },
+    {
+      "condition": "qwen25vl7b_real",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl7b_real_an12_20260715T192600Z",
+      "run_manifest_sha256": "d3183c26f5c9cca5c952e7284cfc11ab804be50995c6c62579f0e28878d5ccaa",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl7b_real_20260715t192600z_20260715T193220Z"
+    },
+    {
+      "condition": "qwen25vl3b_question_blind_caption_generation",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl3b_captions_an12_20260715T195700Z",
+      "run_manifest_sha256": "96dc65539c12ecdbe4af986fc3d46af2b74e4c93d2671bc66a2f1340e92f40bf"
+    },
+    {
+      "condition": "qwen25vl3b_caption_qa",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl3b_caption_qa_an12_20260715T200405Z",
+      "run_manifest_sha256": "e4d347483068c4a8c3adef8d190cdca93e132929e7d77b82392f3f7a039f9a50",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl3b_caption_qa_20260715t200405z_20260715T200452Z"
+    },
+    {
+      "condition": "qwen25vl7b_question_blind_caption_generation",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl7b_captions_an12_20260715T194147Z",
+      "run_manifest_sha256": "2f67efb624fcf53caa0f4f83f87bdc9b58874e21ca2cc7891077533fa69f46c5"
+    },
+    {
+      "condition": "qwen25vl7b_caption_qa",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl7b_caption_qa_an12_20260715T194628Z",
+      "run_manifest_sha256": "1dd8ab1d0849f28c0c7229655f62349f3a9d6851ec299402d3c9ac49147454e7",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl7b_caption_qa_20260715t194628z_20260715T194847Z"
+    },
+    {
+      "condition": "qwen25vl7b_no_star_random_star_necessity",
+      "rows": 200,
+      "run": "experiments/runs/chart_v08_necessity_qwen25vl7b_real_an12_20260715T194950Z",
+      "run_manifest_sha256": "ae2bfb7cce7063d7c887adcd2551ca1873135fad69868254434eaae3f55a9996",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_necessity_qwen25vl7b_real_20260715t194950z_20260715T195243Z"
+    }
+  ],
+  "pending_checks": {
+    "human_no_zoom": "pending",
+    "strong_captioner": "pending",
+    "artifact_attackers": "pending",
+    "necessity_effect": "pending",
+    "freeze": "pending",
+    "confirmatory_split": "pending"
+  }
+}
