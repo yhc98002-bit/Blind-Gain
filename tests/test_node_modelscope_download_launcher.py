@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import subprocess
+
 
 def test_modelscope_download_is_node_local_guarded_and_proxy_free() -> None:
     root = Path(__file__).resolve().parents[1]
@@ -38,3 +40,34 @@ def test_ephemeral_stage_is_guarded_manifest_verified_and_fail_closed() -> None:
     assert "rsync -a --partial" in launcher
     assert "nohup setsid" in launcher
     assert 'tensor_parallel_width: null' in launcher
+
+
+def test_shared_model_stage_rejects_released_node_before_source_or_remote_work() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = root / "scripts/launch_shared_model_stage.sh"
+    result = subprocess.run(
+        ["bash", str(launcher), "missing", "revision", "an21", "model"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    assert "permanent node" in result.stderr
+
+
+def test_shared_model_stage_is_atomic_guarded_and_hash_verified() -> None:
+    root = Path(__file__).resolve().parents[1]
+    launcher = root / "scripts/launch_shared_model_stage.sh"
+    subprocess.run(["bash", "-n", str(launcher)], check=True)
+    source = launcher.read_text(encoding="utf-8")
+
+    assert "artifacts/models" in source
+    assert "40 * 1024 * 1024 * 1024" in source
+    assert "refusing to overwrite node-local model or partial" in source
+    assert "sha256sum -c -" in source
+    assert "rsync -a --partial" in source
+    assert "mv '${PARTIAL}' '${DESTINATION}'" in source
+    assert 'tensor_parallel_width: null' in source
+    assert "nohup setsid" in source
