@@ -26,3 +26,13 @@ def test_resume60_watcher_launcher_is_fail_closed() -> None:
     assert "resume_schedule: [80,100]" in source
     assert "step60-evaluation-marker" not in source
     assert "an12|an21|an29" in source
+
+
+def test_resume60_watcher_recovery_is_fail_closed() -> None:
+    path = ROOT / "scripts" / "launch_pilot_resume60_checkpoint_watch.sh"
+    source = path.read_text(encoding="utf-8")
+    assert "BLIND_GAINS_WATCHER_RECOVERY_OF" in source
+    assert "completed parent requires a failed watcher recovery manifest" in source
+    assert '"$(jq -r \'.status\' "${RECOVERY_OF}")" == "fail"' in source
+    assert "recovery_of_failed_watcher" in source
+    assert "(_retry[1-9][0-9]*)?" in source

@@ -37,3 +37,14 @@ def test_resume60_launcher_keeps_registered_budget_unchanged() -> None:
     assert "max_steps" not in command
     assert "save_freq" not in command
     assert "val_freq" not in command
+
+
+def test_resume60_retry_requires_release_evidence_and_a_new_namespace() -> None:
+    source = LAUNCHER.read_text(encoding="utf-8")
+    assert "BLIND_GAINS_RESUME60_SUFFIX" in source
+    assert "BLIND_GAINS_RESUME60_PREVIOUS_ATTEMPT" in source
+    assert "retry suffix requires the previous interrupted attempt" in source
+    assert "compute_allocation_released_before_checkpoint" in source
+    assert 'ARM_RUN_NAME="${BASE_NAME}_resume60_${RETRY_SUFFIX}"' in source
+    assert "supersedes_interrupted_run" in source
+    assert "previous attempt contains a durable checkpoint" in source

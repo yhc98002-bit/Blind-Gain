@@ -10,6 +10,8 @@ ARM="$1"
 NODE="$2"
 GPU_LIST="$3"
 SOURCE_RUN_INPUT="$4"
+RETRY_SUFFIX="${BLIND_GAINS_RESUME60_SUFFIX:-}"
+PREVIOUS_ATTEMPT_INPUT="${BLIND_GAINS_RESUME60_PREVIOUS_ATTEMPT:-}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 SOURCE_RUN="$(realpath -m "${SOURCE_RUN_INPUT}")"
@@ -33,7 +35,14 @@ case "${ARM}" in
     ;;
   *) echo "step-60 recovery only supports a1_real or a2_gray" >&2; exit 2 ;;
 esac
-ARM_RUN_NAME="${BASE_NAME}_resume60"
+if [[ -z "${RETRY_SUFFIX}" ]]; then
+  [[ -z "${PREVIOUS_ATTEMPT_INPUT}" ]] || { echo "previous attempt requires a retry suffix" >&2; exit 2; }
+  ARM_RUN_NAME="${BASE_NAME}_resume60"
+else
+  [[ "${RETRY_SUFFIX}" =~ ^retry[1-9][0-9]*$ ]] || { echo "retry suffix must match retryN" >&2; exit 2; }
+  [[ -n "${PREVIOUS_ATTEMPT_INPUT}" ]] || { echo "retry suffix requires the previous interrupted attempt" >&2; exit 2; }
+  ARM_RUN_NAME="${BASE_NAME}_resume60_${RETRY_SUFFIX}"
+fi
 SAVE_ROOT="${ROOT}/checkpoints/pilot/${ARM_RUN_NAME}"
 
 [[ "${NODE}" == "an12" || "${NODE}" == "an21" || "${NODE}" == "an29" ]] || { echo "invalid node" >&2; exit 2; }
@@ -54,6 +63,35 @@ SOURCE_CONFIG="$(jq -er '.config_path' "${SOURCE_MANIFEST}")"
 [[ -f "${SOURCE_CONFIG}" ]] || { echo "source effective config absent" >&2; exit 2; }
 [[ ! -e "${SAVE_ROOT}" ]] || { echo "resume checkpoint namespace already exists" >&2; exit 73; }
 
+PREVIOUS_ATTEMPT=""
+PREVIOUS_ATTEMPT_HASH=""
+PREVIOUS_DISCARDED_STEPS='[]'
+if [[ -n "${PREVIOUS_ATTEMPT_INPUT}" ]]; then
+  PREVIOUS_ATTEMPT="$(realpath -m "${PREVIOUS_ATTEMPT_INPUT}")"
+  case "${PREVIOUS_ATTEMPT}" in
+    "${ROOT}"/experiments/runs/*) ;;
+    *) echo "previous attempt must be under experiments/runs" >&2; exit 2 ;;
+  esac
+  PREVIOUS_MANIFEST="${PREVIOUS_ATTEMPT}/run_manifest.json"
+  [[ -f "${PREVIOUS_MANIFEST}" ]] || { echo "previous attempt manifest absent" >&2; exit 2; }
+  [[ "$(jq -r '.job_type' "${PREVIOUS_MANIFEST}")" == "l13_mechanical_pilot_arm" ]] || { echo "previous attempt is not a pilot run" >&2; exit 2; }
+  [[ "$(jq -r '.arm' "${PREVIOUS_MANIFEST}")" == "${ARM}" ]] || { echo "previous attempt arm mismatch" >&2; exit 2; }
+  [[ "$(jq -r '.image_condition' "${PREVIOUS_MANIFEST}")" == "${IMAGE_CONDITION}" ]] || { echo "previous attempt image condition mismatch" >&2; exit 2; }
+  [[ "$(jq -r '.status' "${PREVIOUS_MANIFEST}")" == "fail" ]] || { echo "previous attempt must be finalized fail" >&2; exit 2; }
+  [[ "$(jq -r '.resumed_from_global_step' "${PREVIOUS_MANIFEST}")" == "60" ]] || { echo "previous attempt did not resume from step 60" >&2; exit 2; }
+  [[ "$(jq -r '.termination_reason.code' "${PREVIOUS_MANIFEST}")" == "compute_allocation_released_before_checkpoint" ]] || { echo "previous attempt lacks release evidence" >&2; exit 2; }
+  PREVIOUS_CHECKPOINT_ROOT="$(jq -er '.checkpoint_path' "${PREVIOUS_MANIFEST}")"
+  [[ "${PREVIOUS_CHECKPOINT_ROOT}" =~ ^${ROOT}/checkpoints/pilot/${BASE_NAME}_resume60(_retry[1-9][0-9]*)?$ ]] || { echo "previous attempt checkpoint namespace mismatch" >&2; exit 2; }
+  if find "${PREVIOUS_CHECKPOINT_ROOT}" -maxdepth 1 -type d -name 'global_step_*' -print -quit | grep -q .; then
+    echo "previous attempt contains a durable checkpoint" >&2
+    exit 2
+  fi
+  [[ ! -e "${PREVIOUS_CHECKPOINT_ROOT}/checkpoint_tracker.json" ]] || { echo "previous attempt contains a checkpoint tracker" >&2; exit 2; }
+  PREVIOUS_DISCARDED_STEPS="$(jq -c '.termination_reason.discarded_uncheckpointed_steps' "${PREVIOUS_MANIFEST}")"
+  [[ "$(jq -r 'length' <<< "${PREVIOUS_DISCARDED_STEPS}")" -gt 0 ]] || { echo "previous attempt has no recorded discarded steps" >&2; exit 2; }
+  PREVIOUS_ATTEMPT_HASH="$(sha256sum "${PREVIOUS_MANIFEST}" | awk '{print $1}')"
+fi
+
 if [[ -f "${SOURCE_ACTOR}/RAW_STATE_RELOCATED.json" ]]; then
   [[ -f "${SOURCE_ACTOR}/RAW_STATE_RESTORED_FOR_RESUME.json" ]] || {
     echo "relocated source raw state has not been restored" >&2
@@ -67,6 +105,7 @@ CRITICAL_FILES=(
   scripts/audit_easyr1_resume_checkpoint.py
   scripts/prepare_pilot_resume_config.py
   scripts/probe_ray_tempdir.py
+  scripts/finalize_released_pilot_attempt.py
   scripts/launch_mech_pilot_resume60.sh
   scripts/watch_pilot_resume60_checkpoints.py
   scripts/launch_pilot_resume60_checkpoint_watch.sh
@@ -178,8 +217,9 @@ jq -n \
   --arg prereg_hash "$(sha256sum "${RUN_DIR}/preregistration_pilot_v1.md" | awk '{print $1}')" \
   --arg model_revision "$(jq -r '.model_revision' "${SOURCE_MANIFEST}")" \
   --argjson excluded_steps "${EXCLUDED_STEPS}" --argjson mem_initial "${MEM_AVAILABLE_KIB}" \
-  --argjson mem_final "${MEM_AVAILABLE_KIB_FINAL}" \
-  '{
+  --argjson mem_final "${MEM_AVAILABLE_KIB_FINAL}" --arg previous_attempt "${PREVIOUS_ATTEMPT#"${ROOT}/"}" \
+  --arg previous_attempt_hash "${PREVIOUS_ATTEMPT_HASH}" --argjson previous_discarded_steps "${PREVIOUS_DISCARDED_STEPS}" \
+  '({
     schema_version: "blind-gains.run-manifest.v1", run_id: $run_id,
     job_type: "l13_mechanical_pilot_arm", arm: $arm, arm_run_name: $arm_run_name,
     image_condition: $condition, node: $node, gpu_allocation: $gpu_allocation, gpu_ids: $gpu_ids,
@@ -203,12 +243,22 @@ jq -n \
     host_memory_preflight: {minimum_mem_available_gib: 650, initial_kib: $mem_initial, final_kib: $mem_final},
     pytorch_cuda_alloc_conf: "expandable_segments:True",
     expected_artifacts: [$shadow, ($save_root + "/experiment_log.jsonl"), ($save_root + "/checkpoint_tracker.json")],
-    deviations: [{
+    deviations: ([{
       code: "resume_from_step60_after_ray_host_memory_pressure", scientific_config_change: false,
       operational_changes: ["new immutable save namespace", "explicit step-60 load path", "one pilot trainer per node", "650 GiB MemAvailable preflight"],
       excluded_uncheckpointed_source_steps: $excluded_steps
-    }]
-  }' > "${MANIFEST}"
+    }] + (if $previous_attempt == "" then [] else [{
+      code: "retry_after_compute_allocation_release", scientific_config_change: false,
+      supersedes_interrupted_run: $previous_attempt,
+      superseded_manifest_sha256: $previous_attempt_hash,
+      discarded_uncheckpointed_steps: $previous_discarded_steps,
+      operational_changes: ["new immutable retry namespace", "resume again from the original verified step-60 state"]
+    }] end))
+  } + (if $previous_attempt == "" then {} else {
+    supersedes_interrupted_run: $previous_attempt,
+    superseded_manifest_sha256: $previous_attempt_hash,
+    superseded_uncheckpointed_steps: $previous_discarded_steps
+  } end))' > "${MANIFEST}"
 
 ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RAY_ROOT}' '${JOB_TMP}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' TMPDIR='${JOB_TMP}' TMP='${JOB_TMP}' TEMP='${JOB_TMP}' RAY_TMPDIR='${RAY_ROOT}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 sleep 20

@@ -17,16 +17,35 @@ ARM="$(jq -er '.arm' "${MANIFEST_IN}")"
 [[ "${ARM}" == "a1_real" || "${ARM}" == "a2_gray" ]] || { echo "step-60 watcher only supports A1/A2" >&2; exit 2; }
 [[ "$(jq -r '.resumed_from_global_step' "${MANIFEST_IN}")" == "60" ]] || { echo "parent is not a step-60 resume" >&2; exit 2; }
 [[ "$(jq -r '.node' "${MANIFEST_IN}")" == "${NODE}" ]] || { echo "node mismatch" >&2; exit 2; }
-[[ "$(jq -r '.status' "${MANIFEST_IN}")" == "running" ]] || { echo "resume parent is not running" >&2; exit 2; }
+PARENT_STATUS="$(jq -r '.status' "${MANIFEST_IN}")"
+[[ "${PARENT_STATUS}" == "running" || "${PARENT_STATUS}" == "complete" ]] || { echo "resume parent is neither running nor complete" >&2; exit 2; }
 
 PARENT_RUN_ID="$(jq -er '.run_id' "${MANIFEST_IN}")"
 RUN_LABEL="$(jq -er '.arm_run_name' "${MANIFEST_IN}")"
 RUN_ROOT="$(jq -er '.checkpoint_path' "${MANIFEST_IN}")"
 case "${ARM}" in
-  a1_real) EXPECTED_ROOT="${ROOT}/checkpoints/pilot/mech_a1_real_resume60" ;;
-  a2_gray) EXPECTED_ROOT="${ROOT}/checkpoints/pilot/mech_a2_gray_resume60" ;;
+  a1_real) [[ "${RUN_LABEL}" =~ ^mech_a1_real_resume60(_retry[1-9][0-9]*)?$ ]] || { echo "unapproved A1 resume label" >&2; exit 2; } ;;
+  a2_gray) [[ "${RUN_LABEL}" =~ ^mech_a2_gray_resume60(_retry[1-9][0-9]*)?$ ]] || { echo "unapproved A2 resume label" >&2; exit 2; } ;;
 esac
+EXPECTED_ROOT="${ROOT}/checkpoints/pilot/${RUN_LABEL}"
 [[ "${RUN_ROOT}" == "${EXPECTED_ROOT}" ]] || { echo "unapproved resume checkpoint root" >&2; exit 2; }
+
+RECOVERY_OF=""
+RECOVERY_HASH=""
+if [[ "${PARENT_STATUS}" == "complete" ]]; then
+  RECOVERY_INPUT="${BLIND_GAINS_WATCHER_RECOVERY_OF:-}"
+  [[ -n "${RECOVERY_INPUT}" ]] || { echo "completed parent requires a failed watcher recovery manifest" >&2; exit 2; }
+  RECOVERY_OF="$(realpath -m "${RECOVERY_INPUT}")"
+  case "${RECOVERY_OF}" in
+    "${ROOT}"/experiments/runs/*/run_manifest.json) ;;
+    *) echo "watcher recovery manifest must be under experiments/runs" >&2; exit 2 ;;
+  esac
+  [[ -f "${RECOVERY_OF}" ]] || { echo "watcher recovery manifest absent" >&2; exit 2; }
+  [[ "$(jq -r '.job_type' "${RECOVERY_OF}")" == "pilot_resume60_checkpoint_retention_watch" ]] || { echo "recovery target is not a resume60 watcher" >&2; exit 2; }
+  [[ "$(jq -r '.status' "${RECOVERY_OF}")" == "fail" ]] || { echo "recovery target watcher is not failed" >&2; exit 2; }
+  [[ "$(realpath -m "$(jq -er '.parent_training_run' "${RECOVERY_OF}")")" == "$(realpath -m "${TRAINING_RUN}")" ]] || { echo "recovery watcher parent mismatch" >&2; exit 2; }
+  RECOVERY_HASH="$(sha256sum "${RECOVERY_OF}" | awk '{print $1}')"
+fi
 ARCHIVE_ROOT="/tmp/blindgain_checkpoint_archive/${PARENT_RUN_ID}"
 CODE_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from scripts.watch_pilot_resume60_checkpoints import resume60_code_bundle_hash; print(resume60_code_bundle_hash())')"
 
@@ -44,9 +63,10 @@ jq -n \
   --arg data_hash "$(jq -r '.data_manifest_hash' "${MANIFEST_IN}")" --arg command "${COMMAND}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg root "${RUN_ROOT}" \
   --arg archive "${ARCHIVE_ROOT}" \
+  --arg recovery_of "${RECOVERY_OF#"${ROOT}/"}" --arg recovery_hash "${RECOVERY_HASH}" \
   --arg final_index "${RUN_ROOT}/global_step_100/actor/huggingface/model.safetensors.index.json" \
   --arg final_raw "${RUN_ROOT}/global_step_100/actor/RAW_STATE_RELOCATED.json" \
-  '{
+  '({
     schema_version: "blind-gains.run-manifest.v1", run_id: $run_id,
     job_type: "pilot_resume60_checkpoint_retention_watch", parent_training_run: $parent,
     node: "login", compute_node: $node, gpu_ids: [], gpu_allocation: [],
@@ -57,7 +77,11 @@ jq -n \
     status: "running", run_root: $root, archive_root: $archive,
     raw_retention: "latest raw state only", resume_schedule: [80,100],
     expected_artifacts: [$final_index, $final_raw], deviations: []
-  }' > "${MANIFEST}"
+  } + (if $recovery_of == "" then {} else {
+    recovery_of_failed_watcher: $recovery_of,
+    recovery_of_manifest_sha256: $recovery_hash,
+    deviations: [{code: "restart_retention_after_code_bundle_fail_closed", scientific_config_change: false}]
+  } end))' > "${MANIFEST}"
 
 nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \
   "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > "${RUN_DIR}/logs/wrapper.log" 2>&1 < /dev/null &
