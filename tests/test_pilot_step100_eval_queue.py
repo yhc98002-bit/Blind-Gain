@@ -23,6 +23,8 @@ def _fixture(
     monkeypatch: pytest.MonkeyPatch,
     *,
     retention_status: str = "complete",
+    retention_job_type: str = "pilot_checkpoint_retention_recovery",
+    training_status: str = "complete",
 ) -> tuple[dict, Path]:
     training_run = tmp_path / "experiments/runs/train"
     retention_run = tmp_path / "experiments/runs/retention"
@@ -36,20 +38,34 @@ def _fixture(
             "job_type": "l13_mechanical_pilot_arm",
             "arm": "a3_caption",
             "node": "an29",
-            "status": "complete",
-            "exit_code": 0,
-            "artifacts_exist": True,
+            "status": training_status,
+            "exit_code": 0 if training_status == "complete" else None,
+            "artifacts_exist": True if training_status == "complete" else None,
+            "end_time_utc": "2026-07-15T00:00:00Z"
+            if training_status == "complete"
+            else None,
             "checkpoint_path": str(tmp_path / "checkpoints/pilot/a3"),
         },
     )
     retention = {
-        "job_type": "pilot_checkpoint_retention_recovery",
+        "job_type": retention_job_type,
         "parent_training_run": str(training_run.relative_to(tmp_path)),
         "compute_node": "an29",
         "status": retention_status,
         "exit_code": 0 if retention_status == "complete" else None,
         "artifacts_exist": True if retention_status == "complete" else None,
+        "expected_artifacts": [
+            str(checkpoint / "model.safetensors.index.json"),
+            str(checkpoint.parent / "RAW_STATE_RELOCATED.json"),
+        ],
     }
+    if retention_job_type == "pilot_resume60_checkpoint_retention_watch":
+        retention.update(
+            {
+                "run_root": str(tmp_path / "checkpoints/pilot/a3"),
+                "resume_schedule": [80, 100],
+            }
+        )
     _write_json(retention_run / "run_manifest.json", retention)
     r19 = tmp_path / "data/r19.jsonl"
     r19.parent.mkdir(parents=True)
@@ -102,6 +118,51 @@ def test_dependency_waits_for_retention_instead_of_launching_early(
     observed = queue.inspect_dependencies(config, tmp_path)
 
     assert observed["status"] == "waiting_retention"
+
+
+def test_dependency_waits_for_identity_correct_running_training(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config, _ = _fixture(tmp_path, monkeypatch, training_status="running")
+
+    observed = queue.inspect_dependencies(config, tmp_path)
+
+    assert observed == {"status": "waiting_training", "reason": "running"}
+
+
+def test_dependency_accepts_exact_primary_resume60_watcher(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config, _ = _fixture(
+        tmp_path,
+        monkeypatch,
+        retention_job_type="pilot_resume60_checkpoint_retention_watch",
+    )
+
+    observed = queue.inspect_dependencies(config, tmp_path)
+
+    assert observed["status"] == "ready"
+    assert observed["retention_profile"] == "primary_resume60"
+
+
+def test_dependency_rejects_primary_watcher_without_exact_schedule(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config, _ = _fixture(
+        tmp_path,
+        monkeypatch,
+        retention_job_type="pilot_resume60_checkpoint_retention_watch",
+    )
+    retention_manifest = tmp_path / config["retention_run"] / "run_manifest.json"
+    retention = json.loads(retention_manifest.read_text(encoding="utf-8"))
+    retention["resume_schedule"] = [100]
+    _write_json(retention_manifest, retention)
+
+    observed = queue.inspect_dependencies(config, tmp_path)
+
+    assert observed["status"] == "failed"
+    assert observed["reason"] == "retention_identity_mismatch"
+    assert "resume_schedule" in observed["details"]
 
 
 def test_dependency_requires_hash_verified_final_checkpoint(
@@ -186,3 +247,24 @@ def test_a1_base_config_is_bound_to_the_exact_recovery_lifecycle() -> None:
         "mech_a1_real_resume60/global_step_100/actor/huggingface"
     )
     assert config["marker"] == f'{config["training_run"]}/step100_fliptrack_complete.json'
+
+
+def test_a2_base_config_is_bound_to_the_active_primary_watcher() -> None:
+    config = json.loads(
+        (ROOT / "configs/eval/m2_a2_step100_eval_queue_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert config["arm"] == "a2_gray"
+    assert config["node"] == "an12"
+    assert config["gpu_ids"] == [4, 5, 6, 7]
+    assert config["training_run"].endswith(
+        "mech_a2_gray_resume60_retry2_an12_20260715T165701Z"
+    )
+    assert config["retention_run"].endswith(
+        "pilot_resume60_checkpoint_watch_mech_a2_gray_resume60_retry2_login_20260715T170029Z"
+    )
+    assert config["checkpoint_path"].endswith(
+        "mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface"
+    )

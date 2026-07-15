@@ -128,9 +128,6 @@ def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str,
             "job_type": "l13_mechanical_pilot_arm",
             "arm": config["arm"],
             "node": config["node"],
-            "status": "complete",
-            "exit_code": 0,
-            "artifacts_exist": True,
         }.items()
         if training.get(key) != value
     }
@@ -148,13 +145,59 @@ def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str,
             "reason": "training_identity_or_completion_mismatch",
             "details": training_errors,
         }
+    training_status = training.get("status")
+    if training_status in TERMINAL_FAILURES:
+        return {"status": "failed", "reason": f"training_terminal_{training_status}"}
+    if (
+        training_status == "running"
+        and training.get("exit_code") is None
+        and not training.get("end_time_utc")
+    ):
+        return {"status": "waiting_training", "reason": "running"}
+    if training_status != "complete":
+        return {
+            "status": "failed",
+            "reason": "training_state_inconsistent",
+            "details": {
+                "status": training_status,
+                "exit_code": training.get("exit_code"),
+                "end_time_utc": training.get("end_time_utc"),
+            },
+        }
+    if training.get("exit_code") != 0 or training.get("artifacts_exist") is not True:
+        return {"status": "failed", "reason": "training_completion_unverified"}
+
+    final_index = checkpoint / "model.safetensors.index.json"
+    final_raw = checkpoint.parent / "RAW_STATE_RELOCATED.json"
+    common_retention_expected = {
+        "parent_training_run": str(training_run.relative_to(root)),
+        "compute_node": config["node"],
+        "expected_artifacts": [str(final_index), str(final_raw)],
+    }
+    retention_job_type = retention.get("job_type")
+    if retention_job_type == "pilot_checkpoint_retention_recovery":
+        retention_expected = {
+            "job_type": retention_job_type,
+            **common_retention_expected,
+        }
+        retention_profile = "recovery"
+    elif retention_job_type == "pilot_resume60_checkpoint_retention_watch":
+        retention_expected = {
+            "job_type": retention_job_type,
+            **common_retention_expected,
+            "run_root": str(Path(str(training["checkpoint_path"])).resolve()),
+            "resume_schedule": [80, 100],
+        }
+        retention_profile = "primary_resume60"
+    else:
+        return {
+            "status": "failed",
+            "reason": "unsupported_retention_job_type",
+            "details": {"observed": retention_job_type},
+        }
     retention_errors = {
         key: {"expected": value, "observed": retention.get(key)}
-        for key, value in {
-            "job_type": "pilot_checkpoint_retention_recovery",
-            "parent_training_run": str(training_run.relative_to(root)),
-            "compute_node": config["node"],
-        }.items()
+        for key, value in retention_expected.items()
         if retention.get(key) != value
     }
     if retention_errors:
@@ -173,13 +216,12 @@ def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str,
         return {"status": "waiting_retention", "reason": retention_status}
     if retention.get("exit_code") != 0 or retention.get("artifacts_exist") is not True:
         return {"status": "failed", "reason": "retention_completion_unverified"}
-    checkpoint_index = checkpoint / "model.safetensors.index.json"
-    raw_marker = checkpoint.parent / "RAW_STATE_RELOCATED.json"
-    if not checkpoint_index.is_file() or not raw_marker.is_file():
+    if not final_index.is_file() or not final_raw.is_file():
         return {"status": "failed", "reason": "retention_artifact_absent"}
     return {
         "status": "ready",
-        "checkpoint_index_sha256": _sha256(checkpoint_index),
+        "retention_profile": retention_profile,
+        "checkpoint_index_sha256": _sha256(final_index),
         "retention_manifest_sha256": _sha256(retention_path),
         "training_manifest_sha256": _sha256(training_path),
     }
