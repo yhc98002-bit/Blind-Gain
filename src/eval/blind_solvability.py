@@ -167,6 +167,64 @@ def mixed_group_probability(probability: float, group_size: int) -> float:
     return 1.0 - probability**group_size - (1.0 - probability) ** group_size
 
 
+def score_greedy_item_pilot(
+    gold: str,
+    response: str,
+    prompt_contract: PromptContractLike = None,
+    *,
+    format_weight: float = 0.5,
+    symbolic_grader_timeout_seconds: float = DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+) -> dict[str, Any]:
+    """Score one locked greedy pilot response with both registered graders."""
+
+    contract_metadata = prompt_contract_metadata(prompt_contract)
+    if contract_metadata["prompt_contract_sha256"] != DEFAULT_PROMPT_CONTRACT.sha256:
+        raise ValueError("pilot scoring requires the registered pilot prompt contract")
+
+    inherited_shadow_path = os.environ.pop("BLIND_GAINS_REWARD_SHADOW_LOG", None)
+    try:
+        pilot_score = pilot_compute_score(
+            {"response": response, "ground_truth": gold},
+            format_weight=format_weight,
+            require_shadow_log=False,
+            symbolic_grader_timeout_seconds=symbolic_grader_timeout_seconds,
+        )
+    finally:
+        if inherited_shadow_path is not None:
+            os.environ["BLIND_GAINS_REWARD_SHADOW_LOG"] = inherited_shadow_path
+
+    inverse_reasons = {value: key for key, value in REASON_CODES.items()}
+    reason_code = float(pilot_score["reward_disagreement_reason_code"])
+    if reason_code not in inverse_reasons:
+        raise ValueError(f"unknown pilot reward disagreement reason code: {reason_code}")
+    extracted = extract_answer_span(response)
+    contract_valid = response_satisfies_contract(response, prompt_contract)
+    acc_final = bool(pilot_score["accuracy"])
+    canonical_correct = bool(answer_reward(response, gold))
+    return {
+        "scoring_mode": PILOT_SCORING_MODE,
+        "pilot_reward_version": PILOT_REWARD_VERSION,
+        "symbolic_grader_guard_version": SYMBOLIC_GRADER_GUARD_VERSION,
+        "symbolic_grader_timeout_seconds": symbolic_grader_timeout_seconds,
+        "format_weight": format_weight,
+        "training_reward": float(pilot_score["training_reward"]),
+        "pilot_accuracy_reward": float(pilot_score["accuracy"]),
+        "format_reward": float(pilot_score["format"]),
+        "native_r1v_shadow_reward": float(pilot_score["native_r1v_shadow_reward"]),
+        "native_r1v_shadow_valid": bool(pilot_score["native_r1v_shadow_valid"]),
+        "canonical_eval_reward": float(pilot_score["canonical_eval_reward"]),
+        "canonical_correct": canonical_correct,
+        "reward_disagreement_reason": inverse_reasons[reason_code],
+        "extracted_answer": extracted.span,
+        "extractor_valid": extracted.extractor_valid,
+        "contract_valid": contract_valid,
+        "acc_final": acc_final,
+        "acc_strict": contract_valid and acc_final,
+        "parser_version": PARSER_VERSION,
+        **contract_metadata,
+    }
+
+
 def score_item_pilot(
     gold: str,
     greedy_response: str,
