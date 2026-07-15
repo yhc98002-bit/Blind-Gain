@@ -174,3 +174,5 @@ def test_queue_launcher_is_login_only_and_fail_closed() -> None:
     assert 'runtime_freeze_sha256: $runtime_freeze_hash' in launcher
     assert 'critical M11 queue code or config differs from HEAD' in launcher
     assert 'both registered an29 blind arms complete' in launcher
+    assert 'm11_runtime_audit_v2.json' in launcher
+    assert 'm11_runtime_freeze_v2.txt' in launcher

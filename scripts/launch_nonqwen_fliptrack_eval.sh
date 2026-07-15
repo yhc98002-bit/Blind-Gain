@@ -19,8 +19,8 @@ MAX_NEW_TOKENS="${10:-384}"
 LIMIT="${11:--}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_PYTHON_REL="${BLIND_GAINS_NONQWEN_PYTHON:-.venv/bin/python}"
-RUNTIME_AUDIT="${ROOT}/reports/m11_runtime_audit_v1.json"
-RUNTIME_FREEZE="${ROOT}/reports/m11_runtime_freeze_v1.txt"
+RUNTIME_AUDIT="${ROOT}/reports/m11_runtime_audit_v2.json"
+RUNTIME_FREEZE="${ROOT}/reports/m11_runtime_freeze_v2.txt"
 
 if [[ ! "${NODE}" =~ ^(an12|an29)$ ]]; then
   echo "node must be an12 or an29" >&2
@@ -69,7 +69,7 @@ RUNTIME_AUDIT_HASH="-"
 RUNTIME_FREEZE_HASH="-"
 if [[ "${RUNTIME_PYTHON_REL}" == ".venv-m11/bin/python" ]]; then
   if [[ ! -s "${RUNTIME_AUDIT}" || ! -s "${RUNTIME_FREEZE}" ]] || ! jq -e \
-    '(.status == "pass") and (.checks | type == "object" and all(. == true))' \
+    '(.status == "pass") and (.schema_version == "blind-gains.m11-runtime-audit.v2") and (.checks | type == "object" and all(. == true))' \
     "${RUNTIME_AUDIT}" >/dev/null; then
     echo "M11 runtime audit is absent or non-pass" >&2
     exit 2

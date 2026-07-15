@@ -128,6 +128,8 @@ def test_nonqwen_launcher_pins_single_node_tp1_and_greedy_contract() -> None:
     assert 'runtime_python: $runtime_python' in launcher
     assert 'runtime_audit_sha256:' in launcher
     assert 'runtime_freeze_sha256:' in launcher
+    assert 'm11_runtime_audit_v2.json' in launcher
+    assert 'm11_runtime_freeze_v2.txt' in launcher
 
 
 def test_gemma_adapter_explicitly_pins_slow_processor(monkeypatch) -> None:
