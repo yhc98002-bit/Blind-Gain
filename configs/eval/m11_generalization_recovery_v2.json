@@ -1,0 +1,118 @@
+{
+  "schema_version": "blind-gains.m11-full-recovery-config.v2",
+  "node": "an29",
+  "poll_seconds": 300,
+  "gpu_free_memory_mib_ceiling": 1024,
+  "gpu_free_utilization_ceiling": 10,
+  "gpu_free_stability_polls": 2,
+  "allowed_gpu_ids": [0, 1, 2, 3, 4, 5, 6, 7],
+  "max_concurrent_jobs": 8,
+  "m2_priority_gate": [
+    {
+      "arm": "a1_real",
+      "marker": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z/step100_fliptrack_complete.json"
+    },
+    {
+      "arm": "a2_gray",
+      "marker": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z/step100_fliptrack_complete.json"
+    },
+    {
+      "arm": "a2b_noimage",
+      "marker": "experiments/runs/mech_a2b_noimage_retry4_an29_20260713T113556Z/step100_fliptrack_complete.json"
+    },
+    {
+      "arm": "a3_caption",
+      "marker": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z/step100_fliptrack_complete.json"
+    }
+  ],
+  "smoke_evidence": [
+    {
+      "cell_id": "smoke_gemma3_r19_real",
+      "backend": "gemma3",
+      "condition": "real",
+      "run_manifest": "experiments/runs/m11_smoke_gemma3_r19_real_gemma3_real_an29_20260714T165254Z/run_manifest.json",
+      "run_manifest_sha256": "c1e7c3de31ea7fffa8f59c3b34dfd65f69de0706622d8bd9e77a9519f82411df",
+      "metrics": "experiments/runs/m11_smoke_gemma3_r19_real_gemma3_real_an29_20260714T165254Z/metrics.json",
+      "metrics_sha256": "c00cec0c138bbd9201494ab9e8487cb73b48e6345edf5cd73f2f9caa9a2a8fbe",
+      "predictions": "experiments/runs/m11_smoke_gemma3_r19_real_gemma3_real_an29_20260714T165254Z/predictions.jsonl",
+      "predictions_sha256": "31151d1793f07d99bc9742b925fdb5e5fd91ec39a3c97bfe2f569e95aac35db3"
+    },
+    {
+      "cell_id": "smoke_gemma3_r19_none",
+      "backend": "gemma3",
+      "condition": "none",
+      "run_manifest": "experiments/runs/m11_smoke_gemma3_r19_none_gemma3_none_an29_20260714T165301Z/run_manifest.json",
+      "run_manifest_sha256": "64a71bfe511739093ec64f608c276e574d8d5fd6fae45c8f6ad0727d98be0a46",
+      "metrics": "experiments/runs/m11_smoke_gemma3_r19_none_gemma3_none_an29_20260714T165301Z/metrics.json",
+      "metrics_sha256": "34525448c5ceba8f1364d40e7532a0acb2139de7b0b51a97252766fe149b016f",
+      "predictions": "experiments/runs/m11_smoke_gemma3_r19_none_gemma3_none_an29_20260714T165301Z/predictions.jsonl",
+      "predictions_sha256": "547effe4bb19a056f4f12f3abb33f230cd2d3e7f9e12d29d443d2a709c61cb33"
+    },
+    {
+      "cell_id": "smoke_gemma3_r19_caption",
+      "backend": "gemma3",
+      "condition": "caption",
+      "run_manifest": "experiments/runs/m11_smoke_gemma3_r19_caption_gemma3_caption_an29_20260714T165307Z/run_manifest.json",
+      "run_manifest_sha256": "935d5c95395572b8714bde8a70c350652382d1bfb80d8b105a4b95c5055342b9",
+      "metrics": "experiments/runs/m11_smoke_gemma3_r19_caption_gemma3_caption_an29_20260714T165307Z/metrics.json",
+      "metrics_sha256": "7e51ba02d08633ae6697c6ed2b19f20b3fabf2abd53f1ada5e4b06592aa8be7f",
+      "predictions": "experiments/runs/m11_smoke_gemma3_r19_caption_gemma3_caption_an29_20260714T165307Z/predictions.jsonl",
+      "predictions_sha256": "89896e6f1bc9ef65f8d4f7e920d1bb33a7aa8a8b6b6170d9ae96cd75195ec502"
+    },
+    {
+      "cell_id": "smoke_internvl3_r19_real",
+      "backend": "internvl3",
+      "condition": "real",
+      "run_manifest": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_real_internvl3_real_an29_20260715T180309Z/run_manifest.json",
+      "run_manifest_sha256": "24ebf5066ae1b589b875857fd073bfe47a459fdf81878ee4a2485a4e8f3136ae",
+      "metrics": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_real_internvl3_real_an29_20260715T180309Z/metrics.json",
+      "metrics_sha256": "a903dca763da8935ae0d749b7aa660b4cad275d2c58f8eda46631e1e1966e202",
+      "predictions": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_real_internvl3_real_an29_20260715T180309Z/predictions.jsonl",
+      "predictions_sha256": "2b1b2f2f9a0bcdb7220e6e3a852f0b13bbef6aeefff90fdd8aa55f7636f4b694"
+    },
+    {
+      "cell_id": "smoke_internvl3_r19_none",
+      "backend": "internvl3",
+      "condition": "none",
+      "run_manifest": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_none_internvl3_none_an29_20260715T180223Z/run_manifest.json",
+      "run_manifest_sha256": "f3bd222ac2a292287d1f77c3e1184977efcdfd9e8af432d76b00444e2a32d889",
+      "metrics": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_none_internvl3_none_an29_20260715T180223Z/metrics.json",
+      "metrics_sha256": "0334312d3a6314d448b6fd52c46e47ae7925eab6a645cd6c7db0e6bce4b83838",
+      "predictions": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_none_internvl3_none_an29_20260715T180223Z/predictions.jsonl",
+      "predictions_sha256": "c976ce3f7d60b7215a97f500b85a5c78be4562232d367a15e3eb0da0746c54db"
+    },
+    {
+      "cell_id": "smoke_internvl3_r19_caption",
+      "backend": "internvl3",
+      "condition": "caption",
+      "run_manifest": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_caption_internvl3_caption_an29_20260715T180309Z/run_manifest.json",
+      "run_manifest_sha256": "3de38984bbea201944d12ca571300b68f98afaff93ec0ac31efb7a21795e887d",
+      "metrics": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_caption_internvl3_caption_an29_20260715T180309Z/metrics.json",
+      "metrics_sha256": "99adc7d0a1ee23d971e7b9eebff02e5c61cf96a5e9488a0bd35e3a2e62d67c28",
+      "predictions": "experiments/runs/m11_smoke_v3_cache_internvl3_r19_caption_internvl3_caption_an29_20260715T180309Z/predictions.jsonl",
+      "predictions_sha256": "1cda0050dacdcb113763aca469eda11553a1beec7624d531bd4fd7646d92887c"
+    }
+  ],
+  "models": {
+    "internvl3": {
+      "path": "/dev/shm/blind-gains/models/InternVL3-9B",
+      "python": ".venv-m11/bin/python",
+      "stage_manifest": "experiments/runs/m11_stage_InternVL3-9B_an29_20260713T035801Z/run_manifest.json"
+    },
+    "gemma3": {
+      "path": "/dev/shm/blind-gains/models/gemma-3-12b-it",
+      "python": ".venv-m11/bin/python",
+      "stage_manifest": "experiments/runs/m11_stage_gemma-3-12b-it_an29_20260713T040041Z/run_manifest.json"
+    }
+  },
+  "fliptrack": {
+    "r19": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+    "r20": "experiments/runs/caption_qa_pair_build_fliptrack_r20_private_full_v1_20260711T124039Z/shards/captions_shard_0.jsonl"
+  },
+  "conditions": ["real", "none", "caption"],
+  "smoke_limit": 1,
+  "outputs": {
+    "machine": "reports/generalization_audits_v1.json",
+    "markdown": "reports/generalization_audits_v1.md"
+  }
+}

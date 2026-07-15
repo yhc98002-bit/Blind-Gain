@@ -57,6 +57,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                             "generation_callable": True,
                             "generation_shim_applied": True,
                             "generation_config_ready": True,
+                            "legacy_cache_only": True,
                             "timm_version": "0.9.12",
                             "use_flash_attn": False,
                         }
@@ -100,6 +101,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                         "generation_callable": True,
                         "generation_shim_applied": True,
                         "generation_config_ready": True,
+                        "legacy_cache_only": True,
                         "timm_version": "0.9.12",
                         "use_flash_attn": False,
                     }
