@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+from pathlib import Path
 
 import numpy as np
 
@@ -11,6 +13,9 @@ from src.fliptrack.artifact_attackers import (
     grouped_folds,
     univariate_feature_diagnosis,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_grouped_folds_never_split_pair_members() -> None:
@@ -74,3 +79,29 @@ def test_univariate_diagnosis_identifies_planted_feature() -> None:
     result = univariate_feature_diagnosis(features, labels, ("planted", "noise"))
     assert result["planted"]["gate_statistic"] == 1.0
     assert result["noise"]["gate_statistic"] < 0.6
+
+
+def test_chart_v08_launcher_rejects_released_node_before_remote_query() -> None:
+    launcher = ROOT / "scripts/launch_chart_v08_artifact_gate.sh"
+    result = subprocess.run(
+        ["bash", str(launcher), "an21", "4"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    assert "permanent nodes" in result.stderr
+
+
+def test_chart_v08_launcher_records_placement_and_has_occupied_gpu_preflight() -> None:
+    launcher = ROOT / "scripts/launch_chart_v08_artifact_gate.sh"
+    subprocess.run(["bash", "-n", str(launcher)], check=True)
+    source = launcher.read_text(encoding="utf-8")
+
+    assert "--query-compute-apps=pid" in source
+    assert "flock -n" in source
+    assert 'tensor_parallel_width: 1' in source
+    assert 'replica_count: 1' in source
+    assert "os.kill" not in source
