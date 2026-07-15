@@ -1,0 +1,59 @@
+{
+  "schema_version": "blind-gains.m2-step100-lifecycle-status.v1",
+  "observed_utc": "2026-07-15T21:03:17Z",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_values_inspected": false,
+  "implementation_git_hash": "01839373c176b8f1b6247b3583301bb4ce707558",
+  "r19_markers_complete": 3,
+  "r19_markers_required": 4,
+  "a2_gray_mechanical_step": 69,
+  "arms": {
+    "a1_real": {
+      "training_status": "complete",
+      "r19_marker_status": "complete",
+      "r19_marker_sha256": "613c6c453ed53c14aa484cbff03c4890a95c9dbd6b3fa3d0a46780f745de9865",
+      "geo3k_run": "experiments/runs/m2_geo3k_a1_real_seed1_step100_an12_gpu4_20260715T210056Z",
+      "geo3k_status": "running",
+      "node": "an12",
+      "gpu_ids": [4],
+      "tensor_parallel_width": 1,
+      "replica_count": 1
+    },
+    "a2_gray": {
+      "training_status": "running",
+      "r19_marker_status": "pending",
+      "geo3k_status": "pending",
+      "node": "an12",
+      "gpu_ids": [0, 1, 2, 3]
+    },
+    "a2b_noimage": {
+      "training_status": "complete",
+      "r19_marker_status": "complete",
+      "r19_marker_sha256": "72063f92807b809afef582b5816813007cbe9bafce195edf2d6008bae2ffaf6f",
+      "geo3k_run": "experiments/runs/m2_geo3k_a2b_noimage_seed1_step100_an12_gpu5_20260715T210056Z",
+      "geo3k_status": "running",
+      "node": "an12",
+      "gpu_ids": [5],
+      "tensor_parallel_width": 1,
+      "replica_count": 1
+    },
+    "a3_caption": {
+      "training_status": "complete",
+      "r19_marker_status": "complete",
+      "r19_marker_sha256": "18d231ff8966dca99be4bb18d8809209e20ff6f1dcce944abbd34b72b2fe83ff",
+      "geo3k_run": "experiments/runs/m2_geo3k_a3_caption_seed1_step100_an12_gpu6_20260715T210056Z",
+      "geo3k_status": "running",
+      "node": "an12",
+      "gpu_ids": [6],
+      "tensor_parallel_width": 1,
+      "replica_count": 1
+    }
+  },
+  "remaining": [
+    "complete and audit three active Geometry3K readouts",
+    "complete A2-gray training and retention",
+    "complete A2-gray R19 and Geometry3K readouts",
+    "compute registered seed-1 estimands and identities"
+  ]
+}
