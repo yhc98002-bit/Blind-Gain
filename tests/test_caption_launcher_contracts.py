@@ -152,11 +152,52 @@ def test_image_eval_launcher_pins_seed_model_revision_and_atomic_outputs() -> No
     assert 'EVAL_SEED="${BLIND_GAINS_EVAL_SEED:-0}"' in launcher
     assert '"model_revision": "${MODEL_PATH}"' in launcher
     assert '"seed": ${EVAL_SEED}' in launcher
+    assert '"prompt_contract": ${PROMPT_CONTRACT_JSON}' in launcher
+    assert '"prompt_contract_sha256": "${PROMPT_CONTRACT_SHA256}"' in launcher
     assert "--seed ${EVAL_SEED} --noise-seed ${EVAL_SEED}" in launcher
     assert 'raise FileExistsError(f"refusing to overwrite FlipTrack predictions:' in evaluator
     assert 'partial_out.open("x"' in evaluator
     assert "os.replace(partial_out, out_path)" in evaluator
     assert "os.replace(partial_metrics, metrics_path)" in evaluator
+
+
+def test_image_eval_launcher_refuses_an_existing_run_directory(tmp_path: Path) -> None:
+    run_dir = tmp_path / "existing"
+    run_dir.mkdir()
+    result = subprocess.run(
+        [
+            "bash",
+            str(ROOT / "scripts/launch_fliptrack_eval_shards.sh"),
+            "an29",
+            "0",
+            "1",
+            "missing-model",
+            "missing-manifest",
+            str(run_dir),
+            "32",
+            "0",
+            "real",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 73
+    assert "Refusing to overwrite evaluation run directory" in result.stderr
+
+
+def test_image_eval_launcher_binds_registered_pilot_checkpoint_metadata() -> None:
+    launcher = (ROOT / "scripts/launch_fliptrack_eval_shards.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "BLIND_GAINS_PILOT_SOURCE_RUN" in launcher
+    assert "BLIND_GAINS_PILOT_GLOBAL_STEP" in launcher
+    assert "Pilot source run must be complete" in launcher
+    assert "Pilot checkpoint path does not match the registered source run and step" in launcher
+    assert "Pilot evaluation manifest is not the locked R19 manifest" in launcher
+    assert '"source_training_run": ${PILOT_SOURCE_JSON}' in launcher
+    assert '"global_step": ${PILOT_STEP_JSON}' in launcher
 
 
 def test_image_eval_maps_noncontiguous_gpus_by_replica_ordinal() -> None:
