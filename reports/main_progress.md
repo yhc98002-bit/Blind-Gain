@@ -6,7 +6,7 @@ M4 | pass | reports/registered_extensions_audit_v3.md + reports/registered_exten
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence
 M6 | blocked | requires merged M4, advantage-tensor equivalence, and disjoint pair-corpus evidence
 M7 | blocked | requires merged M4 and confirmed M1 fork ruling
-M8 | blocked | reports/m8_7b_prep_launch_status_v2.md: four batch-aligned condition prefixes were preserved and marked resume-required after priority preemption for M2 A2-gray; noise, completion, and audit remain
+M8 | blocked | reports/m8_7b_prep_launch_status_v3.md + reports/m8_7b_prep_launch_status_v3.json: hash-verified 7B staging completed and all five conditions run as TP1 jobs on an29:0-4; completion, aggregation, and audit remain
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | reports/support_sharpening_registry_v1.md: the exact 0/16-to-newly-solved selector, 64-sample follow-up, Jeffreys summary, and language lock are implemented; applicable post-training readouts do not yet exist
 M11 | blocked | reports/m11_execution_queue_status_v10.md: committed full-only login watchdog is active but GPU-inert with 18/18 cells pending; all four exact M2 step-100 evaluation markers must validate before any TP1 child can launch on an29

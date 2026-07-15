@@ -1,0 +1,68 @@
+{
+  "schema_version": "blind-gains.m8-7b-launch-status.v3",
+  "supersedes": "reports/m8_7b_prep_launch_status_v2.md",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "model_stage": {
+    "status": "complete",
+    "run": "experiments/runs/shared_model_stage_Qwen2.5-VL-7B-Instruct_an29_20260715T202013Z",
+    "destination": "/dev/shm/blind-gains/models/Qwen2.5-VL-7B-Instruct",
+    "model_revision": "Qwen/Qwen2.5-VL-7B-Instruct@cc594898137f460bfe9f0759e9844b3ce807cfb5",
+    "source_bytes": 16595985455,
+    "source_manifest_sha256": "7497ecc32ed34db83b7d2a8f79fd5bf45ef755195a2306805688af5c8a4cb4db",
+    "run_manifest_sha256": "022130a8c031245db6c17eefb585166dfefdd6bd0afe5e71b74ed3fcf78f845c",
+    "exit_code": 0,
+    "artifacts_exist": true
+  },
+  "conditions": [
+    {
+      "condition": "real",
+      "gpu": 0,
+      "status": "running",
+      "resume_prefix_rows": 118,
+      "run": "experiments/runs/blind_solvability_virl39k_7b_v1_pilot_contract_owncaption_resume1_real_an29_20260715T202424Z",
+      "config_hash": "a6be2a7558ffbfecc9f9c0ed5772a3f475e5042a9fb14c8b887f7a049423f717"
+    },
+    {
+      "condition": "gray",
+      "gpu": 1,
+      "status": "running",
+      "resume_prefix_rows": 126,
+      "run": "experiments/runs/blind_solvability_virl39k_7b_v1_pilot_contract_owncaption_resume1_gray_an29_20260715T202424Z",
+      "config_hash": "b3f4bcdc6280193b8d342f434968ce30128ba46b3bef4273ec925ce59435200e"
+    },
+    {
+      "condition": "none",
+      "gpu": 2,
+      "status": "running",
+      "resume_prefix_rows": 118,
+      "run": "experiments/runs/blind_solvability_virl39k_7b_v1_pilot_contract_owncaption_resume1_none_an29_20260715T202424Z",
+      "config_hash": "3f37d9c4f835bbf62366d9c8d68cef0c4265923f0622247e742f678bd6fed8e0"
+    },
+    {
+      "condition": "caption",
+      "gpu": 3,
+      "status": "running",
+      "resume_prefix_rows": 126,
+      "run": "experiments/runs/blind_solvability_virl39k_7b_v1_pilot_contract_owncaption_resume1_caption_an29_20260715T202425Z",
+      "config_hash": "5a24d567898e60e346dba34da3560ddb115643d32fe0e767ad0a1bad6a83bcdd"
+    },
+    {
+      "condition": "noise",
+      "gpu": 4,
+      "status": "running",
+      "resume_prefix_rows": 0,
+      "run": "experiments/runs/blind_solvability_virl39k_7b_v1_pilot_contract_owncaption_initial_noise_an29_20260715T202424Z",
+      "config_hash": "a1b10d9aaa93a2f9bc74972cebe3ddef12ab37cab2dd19b6d02639ec99481524"
+    }
+  ],
+  "checks": {
+    "node_local_model_hash_verified": true,
+    "all_five_conditions_launched": true,
+    "all_jobs_single_node_tp1": true,
+    "preserved_prefixes_bound": true,
+    "all_five_conditions_complete": false,
+    "aggregate_complete": false,
+    "audit_complete": false
+  }
+}
