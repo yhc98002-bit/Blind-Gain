@@ -1,6 +1,6 @@
 M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
-M2 | blocked | reports/m2_step100_lifecycle_status_v2.md + .json: A1/A2b/A3 exact R19 markers and 601-row geo3k readouts are complete with independent audits passing at zero mismatches; A2 is at step 70 and its fail-closed step-100 queue waits on training
+M2 | blocked | reports/m2_step100_lifecycle_status_v3.md + .json: A1/A2b/A3 exact R19 and audited geo3k lifecycles are complete; A2 is at step 70 with ordered fail-closed R19 then geo3k/audit queues active, and an21 is excluded
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | pass | reports/registered_extensions_audit_v3.md + reports/registered_extensions_audit_v3.json: repository transcription and M1 dependency accounting are complete; scientific launch authorization remains fail-closed for M5-M7/M9
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence
