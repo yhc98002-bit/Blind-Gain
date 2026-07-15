@@ -71,6 +71,14 @@ def test_monitor_launcher_is_valid_and_read_only_by_contract() -> None:
     assert ".send_signal(" not in source
 
 
+def test_monitor_launcher_excludes_the_released_node() -> None:
+    launcher = (ROOT / "scripts/launch_gpu_health_monitor.sh").read_text(encoding="utf-8")
+    assert 'NODES=\'["an12","an29"]\'' in launcher
+    assert '["an12","an21","an29"]' not in launcher
+    assert 'observed_nodes:$nodes' in launcher
+    assert 'RUN_ID="gpu_health_${GPU_COUNT}x60m_login_${STAMP}"' in launcher
+
+
 def test_monitor_accepts_new_registered_node_without_changing_old_configs() -> None:
     assert monitor_nodes({}) == ("an12", "an29")
     assert monitor_nodes({"nodes": ["an12", "an21", "an29"]}) == (
