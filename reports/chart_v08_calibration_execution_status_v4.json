@@ -1,0 +1,48 @@
+{
+  "schema_version": "blind-gains.chart-v08-execution-status.v4",
+  "supersedes": "reports/chart_v08_calibration_execution_status_v3.json",
+  "carried_forward_snapshot": "reports/chart_v08_calibration_execution_status_v3.json",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_inspected": false,
+  "floor_values_inspected": false,
+  "completed_floor_cells": [
+    {
+      "condition": "qwen25vl3b_gray",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl3b_gray_an29_20260715T203000Z",
+      "run_manifest_sha256": "165e980e1ac5403513437cffeaa3565c61574b910e6c5dedb8ed5fdf51edd497",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl3b_gray_20260715t203000z_20260715T203331Z"
+    },
+    {
+      "condition": "qwen25vl3b_noise",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl3b_noise_an29_20260715T203000Z",
+      "run_manifest_sha256": "bc7048f6c098a4cbac16bf52d2bbad8426c827d5e88f5f5f223de737b9ce6d2c",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl3b_noise_20260715t203000z_20260715T203337Z"
+    },
+    {
+      "condition": "qwen25vl7b_gray",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl7b_gray_an29_20260715T203000Z",
+      "run_manifest_sha256": "b9856afa75c64420442c4ec544a7dd71d153675257ef3f89186932e715aa078d",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl7b_gray_20260715t203000z_20260715T203342Z"
+    },
+    {
+      "condition": "qwen25vl7b_noise",
+      "rows": 100,
+      "run": "experiments/runs/chart_v08_calibration_qwen25vl7b_noise_an29_20260715T203315Z",
+      "run_manifest_sha256": "356d9bf2d765aaf1e127d889f6661a0bfec0ee76c54761629c6cec4cbfdbc0f9",
+      "aggregate": "experiments/runs/fliptrack_aggregate_chart_v08_qwen25vl7b_noise_20260715t203315z_20260715T203610Z"
+    }
+  ],
+  "pending_checks": {
+    "human_no_zoom": "pending",
+    "strong_captioner": "pending",
+    "calibration_interpretation": "pending",
+    "artifact_gate_interpretation": "pending",
+    "necessity_effect": "pending",
+    "freeze": "pending",
+    "confirmatory_split": "pending"
+  }
+}
