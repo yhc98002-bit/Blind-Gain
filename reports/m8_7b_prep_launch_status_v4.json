@@ -1,0 +1,34 @@
+{
+  "schema_version": "blind-gains.m8-7b-launch-status.v4",
+  "supersedes": "reports/m8_7b_prep_launch_status_v3.json",
+  "observed_utc": "2026-07-15T21:47:59Z",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_values_inspected": false,
+  "implementation_commit": "3bf812051aa46d5b0df6b76438169d1c280993fe",
+  "queue": {
+    "run": "experiments/runs/m8_virl39k_7b_summary_queue_login_20260715T214703Z",
+    "status": "waiting_source_runs",
+    "node": "login",
+    "gpu_ids": [],
+    "poll_count": 1,
+    "performance_values_inspected": false
+  },
+  "conditions": {
+    "real": {"node": "an29", "gpu": 0, "status": "running", "rows": 570, "expected_rows": 4096},
+    "gray": {"node": "an29", "gpu": 1, "status": "running", "rows": 610, "expected_rows": 4096},
+    "none": {"node": "an29", "gpu": 2, "status": "running", "rows": 552, "expected_rows": 4096},
+    "caption": {"node": "an29", "gpu": 3, "status": "running", "rows": 522, "expected_rows": 4096},
+    "noise": {"node": "an29", "gpu": 4, "status": "running", "rows": 412, "expected_rows": 4096}
+  },
+  "checks": {
+    "exact_five_source_runs_bound": true,
+    "all_jobs_single_node_tp1": true,
+    "exact_7b_revision_pinned": true,
+    "completion_queue_active": true,
+    "performance_values_uninspected": true,
+    "all_five_conditions_complete": false,
+    "aggregate_complete": false,
+    "audit_complete": false
+  }
+}
