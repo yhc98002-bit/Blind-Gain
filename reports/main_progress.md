@@ -9,7 +9,7 @@ M7 | blocked | requires merged M4 and confirmed M1 fork ruling
 M8 | blocked | reports/m8_7b_prep_launch_status_v2.md: four batch-aligned condition prefixes were preserved and marked resume-required after priority preemption for M2 A2-gray; noise, completion, and audit remain
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | support-sharpening protocol registry and applicable post-training readouts do not yet exist
-M11 | blocked | reports/m11_execution_queue_status_v7.md + reports/m11_queue_release_gate_v1.md: live queue remains waiting for successful completion of A2b retry4 and A3; zero capacity polls and all 24 cells pending
+M11 | blocked | reports/m11_execution_queue_status_v8.md + reports/m11_runtime_environment_v2.md: retained V1 queue has three Gemma smoke completes, three InternVL dependency failures, and 18 full cells pending; V2 now passes a real local InternVL class import and fresh smokes are next
 M12 | blocked | reports/chart_v08_generation_status_v2.md + reports/chart_v08_mechanical_audit_v2.md: 100 immutable pairs reconstruct exactly and 400 member-specific interventions pass 12 CPU checks; human/model/caption/attacker gates and freeze remain
 M13 | pass | reports/paper1_pipeline_status_v6.md + reports/paper1_pipeline_status_v6.json: reusable paper pipeline and consistency-safe status wording pass; unresolved scientific result slots remain fail-closed
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum

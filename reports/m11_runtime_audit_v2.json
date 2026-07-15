@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "cuda_runtime_is_11_8": true,
+    "exact_pinned_versions": true,
+    "gemma3_conditional_generation_importable": true,
+    "internvl3_model_class_importable": true,
+    "torch_mask_combinators_available": true
+  },
+  "cuda_runtime": "11.8",
+  "freeze": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/m11_runtime_freeze_v2.txt",
+  "freeze_sha256": "fd37c92bbb8338175b613e0d4e2d973781ab3388f573804ae135ea2465a6f00d",
+  "internvl_model_class_reference": "modeling_internvl_chat.InternVLChatModel",
+  "internvl_model_import_detail": "InternVLChatModel",
+  "internvl_model_path": "/dev/shm/blind-gains/models/InternVL3-9B",
+  "python_executable": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.venv-m11/bin/python",
+  "requirements": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/configs/env/m11_runtime_requirements_v2.txt",
+  "requirements_sha256": "60b77c6e5fd3725131a1440408a001cb76118a3c1297b9e0b22dd2a8a92bd2c0",
+  "schema_version": "blind-gains.m11-runtime-audit.v2",
+  "status": "pass",
+  "versions": {
+    "accelerate": "1.14.0",
+    "einops": "0.8.1",
+    "timm": "0.9.12",
+    "torch": "2.6.0+cu118",
+    "torchvision": "0.21.0+cu118",
+    "transformers": "4.56.2"
+  }
+}
