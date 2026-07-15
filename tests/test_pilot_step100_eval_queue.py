@@ -164,3 +164,25 @@ def test_queue_launcher_is_syntax_valid_and_never_accepts_an21() -> None:
     )
     assert '{"an12", "an29"}' in source
     assert "os.kill" not in source
+
+
+def test_a1_base_config_is_bound_to_the_exact_recovery_lifecycle() -> None:
+    config = json.loads(
+        (ROOT / "configs/eval/m2_a1_step100_eval_queue_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert config["arm"] == "a1_real"
+    assert config["node"] == "an12"
+    assert config["gpu_ids"] == [4, 5, 6, 7]
+    assert config["training_run"].endswith(
+        "mech_a1_real_resume60_an12_20260714T080855Z"
+    )
+    assert config["retention_run"].endswith(
+        "pilot_retention_recovery_mech_a1_real_resume60_login_20260715T195146Z"
+    )
+    assert config["checkpoint_path"].endswith(
+        "mech_a1_real_resume60/global_step_100/actor/huggingface"
+    )
+    assert config["marker"] == f'{config["training_run"]}/step100_fliptrack_complete.json'
