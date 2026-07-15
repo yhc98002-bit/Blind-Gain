@@ -1,0 +1,58 @@
+{
+  "schema_version": "blind-gains.m2-step100-lifecycle-status.v2",
+  "observed_utc": "2026-07-15T21:23:55Z",
+  "status": "blocked",
+  "scientific_gate_decision": null,
+  "performance_values_inspected": false,
+  "supersedes": "reports/m2_step100_lifecycle_status_v1.json",
+  "r19_markers_complete": 3,
+  "r19_markers_required": 4,
+  "geo3k_readouts_complete": 3,
+  "geo3k_readouts_required": 4,
+  "geo3k_audits_pass": 3,
+  "geo3k_audits_required": 4,
+  "a2_gray_mechanical_step": 70,
+  "arms": {
+    "a1_real": {
+      "r19_marker_status": "complete",
+      "geo3k_status": "complete",
+      "geo3k_rows": 601,
+      "audit_status": "pass",
+      "audit_sha256": "81cca198e1a0496b07d671daab32f2e60bdd14435f9a3ce463e820a0b8e6b2b8",
+      "output_sha256": "541b7cb18be0ac357aaeddea3cce94c47aa39ccf827c842666399b6e61d7dda5",
+      "static_mismatches": 0,
+      "score_recomputation_mismatches": 0,
+      "strict_identity_mismatches": 0
+    },
+    "a2_gray": {
+      "training_status": "running",
+      "r19_marker_status": "pending",
+      "geo3k_status": "pending",
+      "audit_status": "pending",
+      "queue_run": "experiments/runs/pilot_step100_eval_queue_a2_gray_login_20260715T211716Z",
+      "queue_status": "waiting_training"
+    },
+    "a2b_noimage": {
+      "r19_marker_status": "complete",
+      "geo3k_status": "complete",
+      "geo3k_rows": 601,
+      "audit_status": "pass",
+      "audit_sha256": "b2d88f529f209c49615e06f188abcd7c41e8f30c0447d7a643ae7d265878fbce",
+      "output_sha256": "2589d1eb5e12ac22545144448a536e49382b8baf8fb9c4fd27ca88b883993f27",
+      "static_mismatches": 0,
+      "score_recomputation_mismatches": 0,
+      "strict_identity_mismatches": 0
+    },
+    "a3_caption": {
+      "r19_marker_status": "complete",
+      "geo3k_status": "complete",
+      "geo3k_rows": 601,
+      "audit_status": "pass",
+      "audit_sha256": "2044a44668010eeeb85eff7e863e3bda63fbcd4d44fae11d3ffe8a9c9dacc4c0",
+      "output_sha256": "ec4bdc6a5782fbf6c4337e463cb3a38ddb824163b8e6c54e44e2afcfda7a665c",
+      "static_mismatches": 0,
+      "score_recomputation_mismatches": 0,
+      "strict_identity_mismatches": 0
+    }
+  }
+}
