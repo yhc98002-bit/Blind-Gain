@@ -1,6 +1,6 @@
 M0 | pass | reports/m0_preregistration_finalization.md: both PI approvals recorded; final path introduced at 2782815cc057d85a302af8bac232cac2b0e1ec75 and exact merged-at-HEAD provenance marker committed before any pilot step
 M1 | pass | reports/virl_fork_ruling.md: audited 4,096-row five-condition result selects the registered strong-heterogeneity row; H-mixed becomes the headline and subsequent analyses stratify
-M2 | blocked | reports/pilot_an12_host_oom_failure_v1.md + reports/pilot_a1_resume60_recovery_v1.md + reports/pilot_a2_resume60_an21_launch_v1.md + reports/pilot_host_memory_monitor_v2.md: A1 is isolated on an12, A2 is launched alone on new node an21 from audited step 60, A2b/A3 remain on an29, and a 24-GPU/three-node health monitor plus four-arm completion watchdog are active
+M2 | blocked | reports/pilot_a2_resume60_retry2_launch_v1.md: released an21 attempt finalized fail with uncheckpointed steps 61-64 discarded; A2 retry2 runs from the original audited step 60 on an12:0-3, A1/A2b/A3 are complete, a 16-GPU monitor and replacement 3/4 completion watchdog are active, and A2b/A3 registered step-60 R19 evaluations run on an29
 M3 | blocked | requires merged M0 and pilot seed-1 launch validation
 M4 | pass | reports/registered_extensions_audit_v3.md + reports/registered_extensions_audit_v3.json: repository transcription and M1 dependency accounting are complete; scientific launch authorization remains fail-closed for M5-M7/M9
 M5 | blocked | requires merged M4 and restore-and-resume integrity evidence
