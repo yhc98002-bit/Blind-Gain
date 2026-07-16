@@ -21,9 +21,14 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _stats(values: list[float]) -> dict[str, float | int]:
+def _stats(values: list[float]) -> dict[str, float | int | None]:
     if not values:
-        raise ValueError("cannot summarize an empty reward vector")
+        return {
+            "n": 0,
+            "hit_rate": None,
+            "population_variance": None,
+            "sample_variance": None,
+        }
     return {
         "n": len(values),
         "hit_rate": statistics.fmean(values),
@@ -135,8 +140,11 @@ def build_summary(rows: list[dict[str, Any]], predictions_path: Path) -> dict[st
         "pair_order_check": {
             "side_a": _stats(by_side["a"]),
             "side_b": _stats(by_side["b"]),
-            "side_a_minus_b_hit_rate": statistics.fmean(by_side["a"])
-            - statistics.fmean(by_side["b"]),
+            "side_a_minus_b_hit_rate": (
+                statistics.fmean(by_side["a"]) - statistics.fmean(by_side["b"])
+                if by_side["a"] and by_side["b"]
+                else None
+            ),
         },
         "reward_disagreement_reason_code_counts": dict(sorted(reason_codes.items())),
         "scientific_gate_decision": None,
