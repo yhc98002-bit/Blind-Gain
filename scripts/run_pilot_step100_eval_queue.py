@@ -84,7 +84,6 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         raise ValueError("queue config does not pin the registered R19 manifest")
     for field in (
         "training_run",
-        "retention_run",
         "checkpoint_path",
         "r19_manifest",
         "marker",
@@ -94,6 +93,10 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         if not isinstance(config.get(field), str):
             raise ValueError(f"missing path field: {field}")
         _resolve(root, config[field])
+    if "retention_run" in config:
+        if not isinstance(config["retention_run"], str):
+            raise ValueError("retention_run must be a path when provided")
+        _resolve(root, config["retention_run"])
     training_run = _resolve(root, config["training_run"])
     marker = _resolve(root, config["marker"])
     expected_marker = training_run / "step100_fliptrack_complete.json"
@@ -112,16 +115,56 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         raise ValueError("stable_free_polls must be >= 2")
 
 
+def _inspect_merged_checkpoint(checkpoint: Path) -> dict[str, Any]:
+    index_path = checkpoint / "model.safetensors.index.json"
+    if not index_path.is_file():
+        return {"status": "waiting_checkpoint", "reason": "merged_index_absent"}
+    try:
+        index = _read_json(index_path)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        return {
+            "status": "failed",
+            "reason": "merged_index_invalid",
+            "details": f"{type(error).__name__}: {error}",
+        }
+    weight_map = index.get("weight_map")
+    if not isinstance(weight_map, dict) or not weight_map:
+        return {"status": "failed", "reason": "merged_weight_map_absent"}
+    shard_names = sorted(set(weight_map.values()))
+    if any(
+        not isinstance(name, str)
+        or not name
+        or Path(name).name != name
+        or not name.endswith(".safetensors")
+        for name in shard_names
+    ):
+        return {"status": "failed", "reason": "merged_weight_map_unsafe"}
+    missing_or_empty = [
+        name
+        for name in shard_names
+        if not (checkpoint / name).is_file() or (checkpoint / name).stat().st_size <= 0
+    ]
+    if missing_or_empty:
+        return {
+            "status": "waiting_checkpoint",
+            "reason": "merged_shards_incomplete",
+            "missing_or_empty": missing_or_empty,
+        }
+    return {
+        "status": "ready",
+        "checkpoint_index_sha256": _sha256(index_path),
+        "checkpoint_shard_count": len(shard_names),
+        "checkpoint_weight_bytes": sum((checkpoint / name).stat().st_size for name in shard_names),
+    }
+
+
 def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
     training_run = _resolve(root, config["training_run"])
-    retention_run = _resolve(root, config["retention_run"])
     checkpoint = _resolve(root, config["checkpoint_path"])
     training_path = training_run / "run_manifest.json"
-    retention_path = retention_run / "run_manifest.json"
-    if not training_path.is_file() or not retention_path.is_file():
-        return {"status": "failed", "reason": "source_manifest_absent"}
+    if not training_path.is_file():
+        return {"status": "failed", "reason": "training_manifest_absent"}
     training = _read_json(training_path)
-    retention = _read_json(retention_path)
     training_errors = {
         key: {"expected": value, "observed": training.get(key)}
         for key, value in {
@@ -167,64 +210,23 @@ def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str,
     if training.get("exit_code") != 0 or training.get("artifacts_exist") is not True:
         return {"status": "failed", "reason": "training_completion_unverified"}
 
-    final_index = checkpoint / "model.safetensors.index.json"
-    final_raw = checkpoint.parent / "RAW_STATE_RELOCATED.json"
-    common_retention_expected = {
-        "parent_training_run": str(training_run.relative_to(root)),
-        "compute_node": config["node"],
-        "expected_artifacts": [str(final_index), str(final_raw)],
-    }
-    retention_job_type = retention.get("job_type")
-    if retention_job_type == "pilot_checkpoint_retention_recovery":
-        retention_expected = {
-            "job_type": retention_job_type,
-            **common_retention_expected,
-        }
-        retention_profile = "recovery"
-    elif retention_job_type == "pilot_resume60_checkpoint_retention_watch":
-        retention_expected = {
-            "job_type": retention_job_type,
-            **common_retention_expected,
-            "run_root": str(Path(str(training["checkpoint_path"])).resolve()),
-            "resume_schedule": [80, 100],
-        }
-        retention_profile = "primary_resume60"
-    else:
-        return {
-            "status": "failed",
-            "reason": "unsupported_retention_job_type",
-            "details": {"observed": retention_job_type},
-        }
-    retention_errors = {
-        key: {"expected": value, "observed": retention.get(key)}
-        for key, value in retention_expected.items()
-        if retention.get(key) != value
-    }
-    if retention_errors:
-        return {
-            "status": "failed",
-            "reason": "retention_identity_mismatch",
-            "details": retention_errors,
-        }
-    retention_status = retention.get("status")
-    if retention_status in TERMINAL_FAILURES:
-        return {
-            "status": "failed",
-            "reason": f"retention_terminal_{retention_status}",
-        }
-    if retention_status != "complete":
-        return {"status": "waiting_retention", "reason": retention_status}
-    if retention.get("exit_code") != 0 or retention.get("artifacts_exist") is not True:
-        return {"status": "failed", "reason": "retention_completion_unverified"}
-    if not final_index.is_file() or not final_raw.is_file():
-        return {"status": "failed", "reason": "retention_artifact_absent"}
-    return {
-        "status": "ready",
-        "retention_profile": retention_profile,
-        "checkpoint_index_sha256": _sha256(final_index),
-        "retention_manifest_sha256": _sha256(retention_path),
-        "training_manifest_sha256": _sha256(training_path),
-    }
+    checkpoint_state = _inspect_merged_checkpoint(checkpoint)
+    checkpoint_state["training_manifest_sha256"] = _sha256(training_path)
+
+    # Archive retention is operational bookkeeping. Its failure must never block
+    # evaluation of an independently complete merged checkpoint.
+    retention_value = config.get("retention_run")
+    if isinstance(retention_value, str):
+        retention_path = _resolve(root, retention_value) / "run_manifest.json"
+        if retention_path.is_file():
+            retention = _read_json(retention_path)
+            checkpoint_state["archive_relocation"] = {
+                "status": retention.get("status"),
+                "manifest_sha256": _sha256(retention_path),
+            }
+        else:
+            checkpoint_state["archive_relocation"] = {"status": "manifest_absent"}
+    return checkpoint_state
 
 
 def query_gpu_processes(node: str, gpu_ids: list[int]) -> dict[int, list[int]]:

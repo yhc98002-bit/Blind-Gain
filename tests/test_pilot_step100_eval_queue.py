@@ -30,7 +30,11 @@ def _fixture(
     retention_run = tmp_path / "experiments/runs/retention"
     checkpoint = tmp_path / "checkpoints/pilot/a3/global_step_100/actor/huggingface"
     checkpoint.mkdir(parents=True)
-    (checkpoint / "model.safetensors.index.json").write_text("{}\n", encoding="utf-8")
+    _write_json(
+        checkpoint / "model.safetensors.index.json",
+        {"weight_map": {"model.layer": "model-00001-of-00001.safetensors"}},
+    )
+    (checkpoint / "model-00001-of-00001.safetensors").write_bytes(b"weights")
     (checkpoint.parent / "RAW_STATE_RELOCATED.json").write_text("{}\n", encoding="utf-8")
     _write_json(
         training_run / "run_manifest.json",
@@ -110,14 +114,15 @@ def test_config_rejects_released_node_before_any_remote_query(
         queue.validate_config(config, tmp_path)
 
 
-def test_dependency_waits_for_retention_instead_of_launching_early(
+def test_failed_storage_relocation_does_not_block_complete_checkpoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    config, _ = _fixture(tmp_path, monkeypatch, retention_status="running")
+    config, _ = _fixture(tmp_path, monkeypatch, retention_status="failed")
 
     observed = queue.inspect_dependencies(config, tmp_path)
 
-    assert observed["status"] == "waiting_retention"
+    assert observed["status"] == "ready"
+    assert observed["archive_relocation"]["status"] == "failed"
 
 
 def test_dependency_waits_for_identity_correct_running_training(
@@ -130,22 +135,23 @@ def test_dependency_waits_for_identity_correct_running_training(
     assert observed == {"status": "waiting_training", "reason": "running"}
 
 
-def test_dependency_accepts_exact_primary_resume60_watcher(
+def test_dependency_accepts_complete_checkpoint_while_archive_is_running(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     config, _ = _fixture(
         tmp_path,
         monkeypatch,
         retention_job_type="pilot_resume60_checkpoint_retention_watch",
+        retention_status="running",
     )
 
     observed = queue.inspect_dependencies(config, tmp_path)
 
     assert observed["status"] == "ready"
-    assert observed["retention_profile"] == "primary_resume60"
+    assert observed["archive_relocation"]["status"] == "running"
 
 
-def test_dependency_rejects_primary_watcher_without_exact_schedule(
+def test_dependency_ignores_archive_schedule_mismatch(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     config, _ = _fixture(
@@ -160,9 +166,7 @@ def test_dependency_rejects_primary_watcher_without_exact_schedule(
 
     observed = queue.inspect_dependencies(config, tmp_path)
 
-    assert observed["status"] == "failed"
-    assert observed["reason"] == "retention_identity_mismatch"
-    assert "resume_schedule" in observed["details"]
+    assert observed["status"] == "ready"
 
 
 def test_dependency_requires_hash_verified_final_checkpoint(
@@ -174,7 +178,8 @@ def test_dependency_requires_hash_verified_final_checkpoint(
 
     observed = queue.inspect_dependencies(config, tmp_path)
 
-    assert observed == {"status": "failed", "reason": "retention_artifact_absent"}
+    assert observed["status"] == "waiting_checkpoint"
+    assert observed["reason"] == "merged_index_absent"
 
 
 def test_occupied_neighbor_keeps_queue_gpu_inert(

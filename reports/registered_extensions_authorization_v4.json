@@ -1,0 +1,61 @@
+{
+  "artifacts": {
+    "active_registration": {
+      "path": "docs/registered_extensions_v1.md",
+      "sha256": "3ee4bad0734c9f155d56dda2eb21200ea05207d17aee83472d6428c23228cadf"
+    },
+    "m8_audit": {
+      "path": "reports/blind_solvability_virl39k_7b_sample_v1_audited.json",
+      "sha256": "1487005f26fcd49f31e5de224f429cee022bfda66af4b1b240bf7d99fc587981"
+    },
+    "m8_report": {
+      "path": "reports/blind_solvability_virl39k_7b_sample_v1.md",
+      "sha256": "ac97650d0e0eb49838597cfab35b951207494c7851d169116573299ff3f92e73"
+    },
+    "pi_ruling": {
+      "path": "docs/MAIN_PHASE_RULING_20260716.md",
+      "sha256": "c4aea3f909852289517be9c4ea75a20ed3b445822295b7cf99558328d8accee0"
+    }
+  },
+  "authorization": {
+    "m5": "authorized_after_restore_integrity_pass",
+    "m6": "registered_but_readiness_blocked",
+    "m7": "registered_but_data_readiness_blocked",
+    "m9": "registered_but_readiness_blocked"
+  },
+  "checks": {
+    "a2_gray_retained_by_precommitted_rule": true,
+    "benchmark_context_rule_recorded": true,
+    "exact_merged_at_head_marker_present": true,
+    "fixed_step400_no_rerun": true,
+    "four_way_primary_rule_recorded": true,
+    "m8_artifacts_audited": true,
+    "m8_caption_coverage_exact": true,
+    "no_multiplicity_correction_recorded": true,
+    "secondary_endpoints_recorded": true,
+    "virl_stratification_amendment_present": true
+  },
+  "m8_rule": {
+    "arms": [
+      "A1_real",
+      "A2_gray",
+      "A2b_no_image",
+      "A3_7b_own_caption"
+    ],
+    "gray_accuracy": 0.2456,
+    "gray_ci": [
+      0.2327,
+      0.2595
+    ],
+    "no_image_accuracy": 0.1824,
+    "no_image_ci": [
+      0.1702,
+      0.1939
+    ],
+    "rule_fired": true,
+    "seeds_per_arm": 3
+  },
+  "schema_version": "blind-gains.registered-extensions-authorization.v4",
+  "scientific_gate_decision": null,
+  "status": "authorized"
+}
