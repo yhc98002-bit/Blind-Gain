@@ -1,0 +1,54 @@
+{
+  "checks": {
+    "advantage_audit_passed_31_checks": true,
+    "all_registered_artifacts_present": true,
+    "document_authorizes_smoke_only": true,
+    "document_contains_every_registered_hash": true,
+    "document_registers_exact_commands": true,
+    "isolated_easyr1_diff_nonempty": true,
+    "isolated_easyr1_revision_exact": true,
+    "registered_files_identical_to_commit": true,
+    "registration_commit_exists": true,
+    "registration_commit_is_head": true,
+    "step0_and_catch_audits_passed": true
+  },
+  "committed_identity": {
+    "advantage_audit": true,
+    "catch_audit": true,
+    "cp_config": true,
+    "member_config": true,
+    "overlay": true,
+    "pair_grouping": true,
+    "plumbing_data": true,
+    "registration_document": true,
+    "reward": true,
+    "step0_audit": true
+  },
+  "easyr1_revision": "dd71bbd252694f5f850213eec15795b6b88d9fea",
+  "easyr1_worktree_diff_sha256": "c12ca1eaddf11d13b5206834490d71179596af89c58d37741cc2f8624602766a",
+  "launcher_sha256": "103ecceccda008b3b188ed6dd74ec3816f15f920e67a285a61c11745072530fb",
+  "main_optimizer_steps_authorized": 0,
+  "plumbing_data_sha256": "1ed1413f6ca92d67fdd9ea2f8bf9072d9126c97403ffcd9fef0f97d9cbb74475",
+  "registered_artifact_sha256": {
+    "advantage_audit": "fc49b672828075e4456f89e47a7a12511bb2f2c1863ac599a20f4e699b99c45a",
+    "catch_audit": "37b9662c1f873c6b6cb7ee04a87a954dadef54ea974933c0e50e5ab8c60c2317",
+    "cp_config": "3dfcd9d8f2a9f654d51a0441166820d7b06ca4cf083bff97f781a065c00e4014",
+    "member_config": "f94f8b4426d11f9eb8f183640bfeeca8c6258801125477f759b46e488ef2e118",
+    "overlay": "03a46cd00626b58d5a4e56c0c7d450330801ef5b05cb3e11e7243bff15614b86",
+    "pair_grouping": "6cb21c0a199d049780aa427aad1f51cd995db553433c1d2627431f0c1c1076e0",
+    "plumbing_data": "1ed1413f6ca92d67fdd9ea2f8bf9072d9126c97403ffcd9fef0f97d9cbb74475",
+    "reward": "e8dea3e49c03c44a050881fba6e9bec5c8120977659f5a786f2bf4526b6213f0",
+    "step0_audit": "debc84d4ae0c22f44f43345fb3510033aea6b8bfee09ed71f6f768bbbe97107f"
+  },
+  "registration_commit": "5e429b335dc4bf10e885bc1907d731d9e0a503f3",
+  "registration_document": "docs/registered_mini_a5_smoke_v1.md",
+  "registration_document_sha256": "c93bcb3e41e9a2ec4ac1df738e6b7fa025991f9038dfdab45ed073f430fec155",
+  "schema_version": "blind-gains.mini-a5-smoke-registration.v1",
+  "scientific_gate_decision": null,
+  "smoke_config_sha256": {
+    "cp": "3dfcd9d8f2a9f654d51a0441166820d7b06ca4cf083bff97f781a065c00e4014",
+    "member": "f94f8b4426d11f9eb8f183640bfeeca8c6258801125477f759b46e488ef2e118"
+  },
+  "smoke_optimizer_steps_authorized_per_mode": 1,
+  "status": "registered"
+}
