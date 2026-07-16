@@ -20,7 +20,8 @@ if [[ ! -f "${TRAINING_MANIFEST}" ]]; then
   echo "pilot training manifest is absent: ${TRAINING_MANIFEST}" >&2
   exit 2
 fi
-if [[ "$(jq -r '.job_type' "${TRAINING_MANIFEST}")" != "l13_mechanical_pilot_arm" ]]; then
+PARENT_JOB_TYPE="$(jq -r '.job_type' "${TRAINING_MANIFEST}")"
+if [[ "${PARENT_JOB_TYPE}" != "l13_mechanical_pilot_arm" && "${PARENT_JOB_TYPE}" != "m3_mechanical_pilot_arm" ]]; then
   echo "checkpoint watcher refuses a non-pilot parent manifest" >&2
   exit 2
 fi
@@ -70,6 +71,7 @@ jq -n \
   --arg archive_root "${ARCHIVE_ROOT}" \
   --arg step60_marker "${STEP60_MARKER}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --argjson seed "$(jq -er '.seed' "${TRAINING_MANIFEST}")" \
   --arg final_index "${RUN_ROOT}/global_step_100/actor/huggingface/model.safetensors.index.json" \
   --arg final_raw_marker "${RUN_ROOT}/global_step_100/actor/RAW_STATE_RELOCATED.json" \
   '{
@@ -89,7 +91,7 @@ jq -n \
     config_hash: $config_hash,
     data_manifest: $parent_run,
     data_manifest_hash: $data_hash,
-    seed: 1,
+    seed: $seed,
     command: $command,
     start_time_utc: $started,
     end_time_utc: null,
