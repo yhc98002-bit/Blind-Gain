@@ -15,6 +15,8 @@ RUN_DIR="$6"
 GPU_LIST="${7:-0 1 2 3 4 5 6 7}"
 MAX_NEW_TOKENS="${8:-384}"
 RESUME_RUN="${9:--}"
+CAPTION_MODEL_ID="${BLIND_GAINS_CAPTION_MODEL_ID:-${MODEL_PATH}}"
+CAPTION_MODEL_REVISION="${BLIND_GAINS_CAPTION_MODEL_REVISION:-${MODEL_PATH}}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 
@@ -31,6 +33,41 @@ if [[ ! "${MAX_NEW_TOKENS}" =~ ^[1-9][0-9]*$ ]]; then
   exit 2
 fi
 
+read -r -a GPU_IDS <<< "${GPU_LIST}"
+ACTIVE_GPU_IDS=()
+ACTIVE_SHARD_IDS=()
+for POSITION in "${!GPU_IDS[@]}"; do
+  SHARD_INDEX=$((SHARD_OFFSET + POSITION))
+  if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
+    continue
+  fi
+  ACTIVE_GPU_IDS+=("${GPU_IDS[${POSITION}]}")
+  ACTIVE_SHARD_IDS+=("${SHARD_INDEX}")
+done
+if [[ "${#ACTIVE_GPU_IDS[@]}" -eq 0 ]]; then
+  echo "No caption-store workers launched; check SHARD_OFFSET, NUM_SHARDS, and GPU_LIST" >&2
+  exit 2
+fi
+EXPECTED_SHARD_IDS=()
+for ((INDEX = 0; INDEX < NUM_SHARDS; INDEX++)); do
+  EXPECTED_SHARD_IDS+=("${INDEX}")
+done
+if [[ "${ACTIVE_SHARD_IDS[*]}" != "${EXPECTED_SHARD_IDS[*]}" ]]; then
+  echo "A caption-store run must launch every shard 0..$((NUM_SHARDS - 1)) on one node" >&2
+  exit 2
+fi
+if [[ "$(printf '%s\n' "${ACTIVE_GPU_IDS[@]}" | sort -u | wc -l)" -ne "${#ACTIVE_GPU_IDS[@]}" ]]; then
+  echo "GPU_LIST maps multiple caption-store shards to the same GPU" >&2
+  exit 2
+fi
+
+# Close the scheduler race before initializing an immutable run directory.
+LOCK_PATH="/tmp/blind_gains_${NODE}_caption_store_launch.lock"
+exec 9>"${LOCK_PATH}"
+if ! flock -n 9; then
+  echo "Another caption-store launch preflight is active on ${NODE}" >&2
+  exit 75
+fi
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/shards"
 LAUNCH_LOCK="${RUN_DIR}/.launch_lock"
 if ! mkdir "${LAUNCH_LOCK}" 2>/dev/null; then
@@ -58,12 +95,14 @@ if [[ "${RESUME_RUN}" != "-" ]]; then
   RESUME_MANIFEST="${RESUME_RUN}/run_manifest.json"
   if [[ ! -s "${RESUME_MANIFEST}" ]] || ! jq -e \
     --arg model "${MODEL_PATH}" \
+    --arg revision "${CAPTION_MODEL_REVISION}" \
     --arg image_dir "${IMAGE_DIR}" \
     --argjson shards "${NUM_SHARDS}" \
     --argjson max_tokens "${MAX_NEW_TOKENS}" \
     '(.status == "fail") and
      (.job_type == "caption_image_store_generation") and
      (.model_path == $model) and
+     ((.model_revision // .model_path) == $revision) and
      (.data_manifest == $image_dir) and
      (.expected_shards == $shards) and
      (.max_new_tokens == $max_tokens)' "${RESUME_MANIFEST}" >/dev/null; then
@@ -75,14 +114,23 @@ if [[ "${RESUME_RUN}" != "-" ]]; then
     RESUME_SOURCE_HASH="$(sha256sum "${RESUME_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
   fi
 fi
-CONFIG_HASH="$(printf 'model=%s\nimage_hash=%s\nmax_new_tokens=%s\nprompt=question_blind_v1\nresume_source_hash=%s\n' "${MODEL_PATH}" "${IMAGE_HASH}" "${MAX_NEW_TOKENS}" "${RESUME_SOURCE_HASH}" | sha256sum | awk '{print $1}')"
-GPU_IDS_JSON="$(printf '%s\n' ${GPU_LIST} | jq -sc 'map(tonumber)')"
-REPLICA_COUNT="$(wc -w <<< "${GPU_LIST}" | tr -d ' ')"
+CONFIG_HASH="$(printf 'model=%s\nmodel_id=%s\nmodel_revision=%s\nimage_hash=%s\nmax_new_tokens=%s\nprompt=question_blind_v1\nresume_source_hash=%s\n' "${MODEL_PATH}" "${CAPTION_MODEL_ID}" "${CAPTION_MODEL_REVISION}" "${IMAGE_HASH}" "${MAX_NEW_TOKENS}" "${RESUME_SOURCE_HASH}" | sha256sum | awk '{print $1}')"
+GPU_IDS_JSON="$(printf '%s\n' "${ACTIVE_GPU_IDS[@]}" | jq -sc 'map(tonumber)')"
+ACTIVE_GPU_LIST="${ACTIVE_GPU_IDS[*]}"
+REPLICA_COUNT="${#ACTIVE_GPU_IDS[@]}"
+for GPU in "${ACTIVE_GPU_IDS[@]}"; do
+  # shellcheck disable=SC2029
+  if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${GPU}' --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
+    echo "Caption-store GPU ${GPU} on ${NODE} is occupied" >&2
+    exit 75
+  fi
+done
 cat > "${RUN_DIR}/run_manifest.json" <<JSON
 {
+  "run_id": "$(basename "${RUN_DIR}")",
   "job_type": "caption_image_store_generation",
   "node": "${NODE}",
-  "gpu_allocation": "${GPU_LIST}",
+  "gpu_allocation": "${ACTIVE_GPU_LIST}",
   "gpu_ids": ${GPU_IDS_JSON},
   "tensor_parallel_width": 1,
   "replica_count": ${REPLICA_COUNT},
@@ -93,24 +141,25 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "data_manifest": "${IMAGE_DIR}",
   "data_manifest_hash": "${IMAGE_HASH}",
   "model_path": "${MODEL_PATH}",
+  "model_id": "${CAPTION_MODEL_ID}",
+  "model_revision": "${CAPTION_MODEL_REVISION}",
   "max_new_tokens": ${MAX_NEW_TOKENS},
   "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
-  "command": "scripts/launch_caption_store_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${IMAGE_DIR} ${RUN_DIR} '${GPU_LIST}' ${MAX_NEW_TOKENS} ${RESUME_RUN}",
+  "command": "BLIND_GAINS_CAPTION_MODEL_ID=${CAPTION_MODEL_ID} BLIND_GAINS_CAPTION_MODEL_REVISION=${CAPTION_MODEL_REVISION} scripts/launch_caption_store_shards.sh ${NODE} ${SHARD_OFFSET} ${NUM_SHARDS} ${MODEL_PATH} ${IMAGE_DIR} ${RUN_DIR} '${GPU_LIST}' ${MAX_NEW_TOKENS} ${RESUME_RUN}",
   "resume_from_run": $(if [[ "${RESUME_RUN}" == "-" ]]; then printf 'null'; else printf '"%s"' "${RESUME_RUN}"; fi),
   "resume_source_hash": $(if [[ -z "${RESUME_SOURCE_HASH}" ]]; then printf 'null'; else printf '"%s"' "${RESUME_SOURCE_HASH}"; fi),
   "start_time_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "end_time_utc": null,
   "status": "running",
-  "expected_shards": ${NUM_SHARDS}
+  "expected_shards": ${NUM_SHARDS},
+  "expected_artifacts": ["${RUN_DIR}/shards"]
 }
 JSON
 
 LAUNCHED=0
-for GPU in ${GPU_LIST}; do
-  SHARD_INDEX=$((SHARD_OFFSET + GPU))
-  if [[ "${SHARD_INDEX}" -lt 0 || "${SHARD_INDEX}" -ge "${NUM_SHARDS}" ]]; then
-    continue
-  fi
+for POSITION in "${!ACTIVE_GPU_IDS[@]}"; do
+  GPU="${ACTIVE_GPU_IDS[${POSITION}]}"
+  SHARD_INDEX="${ACTIVE_SHARD_IDS[${POSITION}]}"
   LOG_PATH="${RUN_DIR}/logs/${NODE}_gpu${GPU}_store_shard${SHARD_INDEX}.log"
   PID_PATH="${RUN_DIR}/pids/${NODE}_gpu${GPU}_store_shard${SHARD_INDEX}.pid"
   OUT_PATH="${RUN_DIR}/shards/store_shard_${SHARD_INDEX}.jsonl"
@@ -129,7 +178,7 @@ for GPU in ${GPU_LIST}; do
     echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} skip=output_exists"
     continue
   fi
-  ssh "${NODE}" "cd '${ROOT}' && (nohup /bin/bash -lc \"env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} '${ROOT}/.venv/bin/python' scripts/caption_image_store.py --model-path '${MODEL_PATH}' --input-dir '${IMAGE_DIR}' --output '${PARTIAL_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS}${RESUME_ARG} && mv '${PARTIAL_PATH}' '${OUT_PATH}'\" > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
+  ssh "${NODE}" "cd '${ROOT}' && (nohup /bin/bash -lc \"env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} '${ROOT}/.venv/bin/python' scripts/caption_image_store.py --model-path '${MODEL_PATH}' --caption-model-id '${CAPTION_MODEL_ID}' --caption-model-revision '${CAPTION_MODEL_REVISION}' --tensor-parallel-width 1 --input-dir '${IMAGE_DIR}' --output '${PARTIAL_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --max-new-tokens ${MAX_NEW_TOKENS}${RESUME_ARG} && mv '${PARTIAL_PATH}' '${OUT_PATH}'\" > '${LOG_PATH}' 2>&1 < /dev/null & echo \$! > '${PID_PATH}')"
   echo "${NODE} gpu=${GPU} shard=${SHARD_INDEX} pid_file=${PID_PATH} log=${LOG_PATH}"
   LAUNCHED=$((LAUNCHED + 1))
 done

@@ -44,6 +44,9 @@ def generate_caption(model, processor, image_path: str, max_new_tokens: int) -> 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", required=True)
+    parser.add_argument("--caption-model-id")
+    parser.add_argument("--caption-model-revision")
+    parser.add_argument("--tensor-parallel-width", type=int, choices=(1,), default=1)
     parser.add_argument("--input-dir", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--num-shards", type=int, default=1)
@@ -51,6 +54,8 @@ def main() -> None:
     parser.add_argument("--max-new-tokens", type=int, default=384)
     parser.add_argument("--resume-from", type=Path)
     args = parser.parse_args()
+    caption_model_id = args.caption_model_id or args.model_path
+    caption_model_revision = args.caption_model_revision or args.model_path
     output = Path(args.output)
     if output.exists() and output.stat().st_size:
         raise FileExistsError(f"refusing to overwrite caption-store shard: {output}")
@@ -63,6 +68,8 @@ def main() -> None:
             items,
             model_path=args.model_path,
             max_new_tokens=args.max_new_tokens,
+            model_revision=caption_model_revision,
+            tensor_parallel_width=args.tensor_parallel_width,
         )
         if args.resume_from
         else []
@@ -100,10 +107,13 @@ def main() -> None:
                 **item,
                 "caption": generate_caption(model, processor, item["image_path"], args.max_new_tokens),
                 "caption_model_path": args.model_path,
+                "caption_model_id": caption_model_id,
+                "caption_model_revision": caption_model_revision,
                 "caption_prompt": CAPTION_PROMPT,
                 "caption_prompt_sha256": prompt_hash,
                 "max_new_tokens": args.max_new_tokens,
                 "decoding": {"temperature": 0.0, "top_p": 1.0, "n": 1},
+                "tensor_parallel_width": args.tensor_parallel_width,
             }
             handle.write(json.dumps(row, sort_keys=True, ensure_ascii=True) + "\n")
             handle.flush()

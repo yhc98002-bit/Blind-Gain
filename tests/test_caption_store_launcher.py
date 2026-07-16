@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -82,6 +83,10 @@ def test_caption_store_launcher_rejects_live_resume_run_before_ssh(tmp_path: Pat
         encoding="utf-8",
     )
     target = tmp_path / "target"
+    environment = _fake_ssh(
+        tmp_path,
+        'if [[ "$*" == *"--query-compute-apps=pid"* ]]; then exit 0; fi\nexit 0\n',
+    )
 
     result = subprocess.run(
         [
@@ -98,6 +103,7 @@ def test_caption_store_launcher_rejects_live_resume_run_before_ssh(tmp_path: Pat
             str(resume),
         ],
         cwd=ROOT,
+        env=environment,
         text=True,
         capture_output=True,
         check=False,
@@ -131,6 +137,10 @@ def test_caption_store_launcher_records_failed_run_resume_provenance(tmp_path: P
         encoding="utf-8",
     )
     target = tmp_path / "target"
+    environment = _fake_ssh(
+        tmp_path,
+        'if [[ "$*" == *"--query-compute-apps=pid"* ]]; then exit 0; fi\nexit 0\n',
+    )
 
     result = subprocess.run(
         [
@@ -147,13 +157,130 @@ def test_caption_store_launcher_records_failed_run_resume_provenance(tmp_path: P
             str(resume),
         ],
         cwd=ROOT,
+        env=environment,
         text=True,
         capture_output=True,
         check=False,
     )
 
-    assert result.returncode != 0
+    assert result.returncode == 0, result.stderr
     manifest = json.loads((target / "run_manifest.json").read_text(encoding="utf-8"))
     assert manifest["resume_from_run"] == str(resume)
     assert manifest["resume_source_hash"]
     assert str(resume) in manifest["command"]
+
+
+def _fake_ssh(tmp_path: Path, body: str) -> dict[str, str]:
+    fake_bin = tmp_path / "bin"
+    fake_bin.mkdir()
+    fake_ssh = fake_bin / "ssh"
+    fake_ssh.write_text("#!/usr/bin/env bash\n" + body, encoding="utf-8")
+    fake_ssh.chmod(0o755)
+    environment = dict(os.environ)
+    environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
+    return environment
+
+
+def test_caption_store_maps_shards_by_replica_ordinal(tmp_path: Path) -> None:
+    images = tmp_path / "images"
+    images.mkdir()
+    (images / "image.bin").write_bytes(b"image")
+    run_dir = tmp_path / "run"
+    environment = _fake_ssh(
+        tmp_path,
+        'if [[ "$*" == *"--query-compute-apps=pid"* ]]; then exit 0; fi\nexit 0\n',
+    )
+
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_caption_store_shards.sh",
+            "an29",
+            "0",
+            "2",
+            "model",
+            str(images),
+            str(run_dir),
+            "4 5",
+            "384",
+        ],
+        cwd=ROOT,
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "gpu=4 shard=0" in result.stdout
+    assert "gpu=5 shard=1" in result.stdout
+    manifest = json.loads((run_dir / "run_manifest.json").read_text(encoding="utf-8"))
+    assert manifest["gpu_ids"] == [4, 5]
+    assert manifest["replica_count"] == 2
+    assert manifest["model_revision"] == "model"
+
+
+def test_caption_store_refuses_occupied_gpu_before_manifest(tmp_path: Path) -> None:
+    images = tmp_path / "images"
+    images.mkdir()
+    (images / "image.bin").write_bytes(b"image")
+    run_dir = tmp_path / "run"
+    environment = _fake_ssh(
+        tmp_path,
+        'if [[ "$*" == *"--query-compute-apps=pid"* ]]; then printf "4321\\n"; fi\n',
+    )
+
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_caption_store_shards.sh",
+            "an29",
+            "0",
+            "1",
+            "model",
+            str(images),
+            str(run_dir),
+            "4",
+            "384",
+        ],
+        cwd=ROOT,
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 75
+    assert "Caption-store GPU 4 on an29 is occupied" in result.stderr
+    assert not (run_dir / "run_manifest.json").exists()
+
+
+def test_caption_store_rejects_partial_shard_coverage_before_ssh(tmp_path: Path) -> None:
+    images = tmp_path / "images"
+    images.mkdir()
+    (images / "image.bin").write_bytes(b"image")
+    run_dir = tmp_path / "run"
+
+    result = subprocess.run(
+        [
+            "bash",
+            "scripts/launch_caption_store_shards.sh",
+            "node-not-contacted",
+            "1",
+            "2",
+            "model",
+            str(images),
+            str(run_dir),
+            "4",
+            "384",
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 2
+    assert "must launch every shard" in result.stderr
+    assert "Could not resolve hostname" not in result.stderr
+    assert not run_dir.exists()

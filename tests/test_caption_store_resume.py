@@ -31,10 +31,12 @@ def _row(item: dict[str, object], model: str = "model") -> dict[str, object]:
         **item,
         "caption": "A question-blind caption.",
         "caption_model_path": model,
+        "caption_model_revision": "revision",
         "caption_prompt": CAPTION_PROMPT,
         "caption_prompt_sha256": hashlib.sha256(CAPTION_PROMPT.encode("utf-8")).hexdigest(),
         "max_new_tokens": 384,
         "decoding": CAPTION_DECODING,
+        "tensor_parallel_width": 1,
     }
 
 
@@ -48,7 +50,12 @@ def test_caption_resume_accepts_canonical_prefix(tmp_path: Path) -> None:
     _write(source, [_row(item) for item in items[:2]])
 
     lines = load_validated_caption_prefix(
-        source, items, model_path="model", max_new_tokens=384
+        source,
+        items,
+        model_path="model",
+        max_new_tokens=384,
+        model_revision="revision",
+        tensor_parallel_width=1,
     )
 
     assert len(lines) == 2
@@ -70,3 +77,21 @@ def test_caption_resume_rejects_model_contract_drift(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="caption_model_path"):
         load_validated_caption_prefix(source, items, model_path="model", max_new_tokens=384)
+
+
+def test_caption_resume_rejects_revision_contract_drift(tmp_path: Path) -> None:
+    items = _items()
+    source = tmp_path / "partial.jsonl"
+    row = _row(items[0])
+    row["caption_model_revision"] = "other-revision"
+    _write(source, [row])
+
+    with pytest.raises(ValueError, match="caption_model_revision"):
+        load_validated_caption_prefix(
+            source,
+            items,
+            model_path="model",
+            max_new_tokens=384,
+            model_revision="revision",
+            tensor_parallel_width=1,
+        )

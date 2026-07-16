@@ -42,6 +42,8 @@ def load_validated_caption_prefix(
     *,
     model_path: str,
     max_new_tokens: int,
+    model_revision: str | None = None,
+    tensor_parallel_width: int | None = None,
 ) -> list[str]:
     raw_lines = resume_from.read_text(encoding="utf-8").splitlines()
     if not raw_lines:
@@ -68,6 +70,10 @@ def load_validated_caption_prefix(
             "caption_model_path": model_path,
             "max_new_tokens": max_new_tokens,
         }
+        if model_revision is not None:
+            expected["caption_model_revision"] = model_revision
+        if tensor_parallel_width is not None:
+            expected["tensor_parallel_width"] = tensor_parallel_width
         for key, value in expected.items():
             if row.get(key) != value:
                 raise ValueError(
