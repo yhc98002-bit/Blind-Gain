@@ -27,6 +27,14 @@ def test_patch_rejects_independent_row_shuffle_and_odd_batches() -> None:
     assert "pair-grouped rollout batch sizes must be even" in source
 
 
+def test_patch_emits_opt_in_joint_advantage_runtime_evidence() -> None:
+    source = PATCH.read_text(encoding="utf-8")
+    assert 'os.getenv("BLIND_GAINS_CP_RUNTIME_AUDIT") == "1"' in source
+    assert "BLIND_GAINS_CP_ADVANTAGE_AUDIT" in source
+    assert '"rollout_counts"' in source
+    assert '"advantages_finite"' in source
+
+
 def test_prepare_script_never_targets_the_live_checkout() -> None:
     source = PREPARE.read_text(encoding="utf-8")
     assert 'TARGET="${1:-${ROOT}/artifacts/repos/EasyR1-mini-a5}"' in source

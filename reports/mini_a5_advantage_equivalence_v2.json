@@ -1,0 +1,107 @@
+{
+  "advantage_evidence": {
+    "g": 5,
+    "max_abs_cp_vs_independent_reference": 0.0,
+    "max_abs_cp_vs_member_when_rewards_equal": 0.0,
+    "max_abs_standard_member_vs_old_shared_2g_bug": 0.06644964218139648,
+    "member_group_uids": [
+      "member:[\"pair-1\",\"a\"]",
+      "member:[\"pair-1\",\"b\"]"
+    ],
+    "mixed_joint_scores": [
+      0.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0
+    ]
+  },
+  "allowed_arm_differences": [
+    "algorithm.pair_group_mode",
+    "trainer.experiment_name",
+    "trainer.save_checkpoint_path",
+    "worker.reward.reward_function"
+  ],
+  "artifacts": {
+    "catch_audit": "reports/mini_a5_catch_audit_v1.json",
+    "catch_audit_sha256": "37b9662c1f873c6b6cb7ee04a87a954dadef54ea974933c0e50e5ab8c60c2317",
+    "corpus_audit": "reports/mini_a5_corpus_audit_v1.json",
+    "corpus_audit_sha256": "3f02f8e995c33018c9ccbb2e72cfb97bdf3c99ed6fde5b97fb84fbf94baa4131",
+    "cp_config": "configs/train/mini_a5_cp_3b_v1.yaml",
+    "cp_config_sha256": "8d7736f5364bd8bfd5595584aa05917a71306888282eeb2a37682ebf02c325e8",
+    "cp_grouping_source_sha256": "6cb21c0a199d049780aa427aad1f51cd995db553433c1d2627431f0c1c1076e0",
+    "easyr1_overlay_sha256": "03a46cd00626b58d5a4e56c0c7d450330801ef5b05cb3e11e7243bff15614b86",
+    "fixed_subset_manifest": "data/mini_a5_fixed_subsets_v1_manifest.json",
+    "fixed_subset_manifest_sha256": "9d3ab38b639c7d9672404fd52c521abf040ca56c0cf0f297860b3a7ccf922b7d",
+    "member_config": "configs/train/mini_a5_same_data_3b_v1.yaml",
+    "member_config_sha256": "358e6d7cd40c3748e9e5dbae6715310611fcb295bab107e1138b4071ea0fcd9b",
+    "reward_source_sha256": "e8dea3e49c03c44a050881fba6e9bec5c8120977659f5a786f2bf4526b6213f0",
+    "step0_audit": "reports/mini_a5_step0_reward_audit_v1.json",
+    "step0_audit_sha256": "debc84d4ae0c22f44f43345fb3510033aea6b8bfee09ed71f6f768bbbe97107f"
+  },
+  "checks": {
+    "all_corpus_rows_consumed_per_epoch": true,
+    "catch_set_independent_audit_passed": true,
+    "constant_one_vector_is_finite_zero": true,
+    "constant_zero_vector_is_finite_zero": true,
+    "control_mode_is_member": true,
+    "control_reward_callback_exact": true,
+    "corpus_independent_audit_passed": true,
+    "cp_matches_independent_unique_pair_grpo": true,
+    "cp_mode_is_joint": true,
+    "cp_reward_callback_exact": true,
+    "duration_fixed_at_120_steps": true,
+    "duration_is_eight_exact_corpus_passes": true,
+    "fixed_subset_manifest_passed": true,
+    "g_is_exactly_five": true,
+    "kl_is_loss_not_reward_shaping": true,
+    "malformed_pair_metadata_is_rejected": true,
+    "member_control_has_distinct_prompt_groups": true,
+    "member_fixture_has_ten_rollout_rows": true,
+    "old_shared_2g_control_fixture_is_detected": true,
+    "online_filtering_disabled": true,
+    "only_registered_arm_fields_differ": true,
+    "paths_equal_when_reward_assignment_is_equal": true,
+    "plumbing_val_hash_exact": true,
+    "pre_shuffled_order_preserved": true,
+    "real_images_used": true,
+    "rollout_group_size_is_five": true,
+    "runtime_advantage_marker_present": true,
+    "single_node_eight_gpu_tp1": true,
+    "step0_reward_audit_passed": true,
+    "training_parquet_hash_exact": true,
+    "vision_tower_frozen": true
+  },
+  "config_differences": {
+    "algorithm.pair_group_mode": [
+      "joint",
+      "member"
+    ],
+    "trainer.experiment_name": [
+      "mini_a5_cp_seed1",
+      "mini_a5_same_data_seed1"
+    ],
+    "trainer.save_checkpoint_path": [
+      "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1",
+      "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1"
+    ],
+    "worker.reward.reward_function": [
+      "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/src/rewards/cp_grpo_reward.py:compute_score",
+      "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/src/rewards/cp_grpo_reward.py:compute_member_score"
+    ]
+  },
+  "fixed_budget": {
+    "batches_per_corpus_pass": 15,
+    "exact_corpus_passes": 8,
+    "max_response_tokens": 2048,
+    "maximum_generated_tokens_per_arm": 491520000,
+    "optimizer_steps": 120,
+    "rollout_source_prompts_per_step": 400,
+    "rollouts_per_prompt": 5,
+    "training_rows": 6000
+  },
+  "optimizer_steps_authorized_by_this_artifact": 0,
+  "schema_version": "blind-gains.mini-a5-advantage-config-audit.v2",
+  "scientific_gate_decision": null,
+  "status": "pass"
+}

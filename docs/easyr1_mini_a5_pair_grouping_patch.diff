@@ -67,7 +67,7 @@ index 9158547..0c683a4 100644
      """Compute advantage estimates for policy optimization."""
      adv_inputs = {
          "token_level_rewards": data.batch["token_level_rewards"],
-@@ -149,7 +160,18 @@ def compute_advantage(data: DataProto, adv_estimator: AdvantageEstimator, gamma:
+@@ -149,7 +160,33 @@ def compute_advantage(data: DataProto, adv_estimator: AdvantageEstimator, gamma:
      if "reward_baselines" in data.batch:
          adv_inputs["reward_baselines"] = data.batch["reward_baselines"]
  
@@ -82,6 +82,21 @@ index 9158547..0c683a4 100644
 +            pair_members=data.non_tensor_batch["pair_member"],
 +            pair_rollout_indices=data.non_tensor_batch["pair_rollout_index"],
 +        )
++        if os.getenv("BLIND_GAINS_CP_RUNTIME_AUDIT") == "1":
++            group_rollouts = defaultdict(set)
++            for uid, rollout_index in zip(
++                data.non_tensor_batch["pair_group_uid"],
++                data.non_tensor_batch["pair_rollout_index"],
++                strict=True,
++            ):
++                group_rollouts[str(uid)].add(int(rollout_index))
++            audit = {
++                "row_count": len(data.non_tensor_batch["pair_group_uid"]),
++                "pair_count": len(group_rollouts),
++                "rollout_counts": sorted({len(values) for values in group_rollouts.values()}),
++                "advantages_finite": bool(torch.isfinite(advantages).all().item()),
++            }
++            print("BLIND_GAINS_CP_ADVANTAGE_AUDIT " + json.dumps(audit, sort_keys=True), flush=True)
 +    else:
 +        advantages, returns = compute_advantage_return(adv_estimator, **adv_inputs)
      data.batch["advantages"] = advantages

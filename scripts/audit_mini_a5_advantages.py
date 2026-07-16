@@ -171,16 +171,24 @@ def _nested(config: dict[str, Any], path: str) -> Any:
     return value
 
 
+def machine_audit_passed(payload: dict[str, Any]) -> bool:
+    return payload.get("status") == "pass"
+
+
 def build_audit(
     cp_config_path: Path,
     member_config_path: Path,
     corpus_audit_path: Path,
     subset_manifest_path: Path,
+    step0_audit_path: Path,
+    catch_audit_path: Path,
 ) -> dict[str, Any]:
     cp_config = yaml.safe_load(cp_config_path.read_text(encoding="utf-8"))
     member_config = yaml.safe_load(member_config_path.read_text(encoding="utf-8"))
     corpus_audit = json.loads(corpus_audit_path.read_text(encoding="utf-8"))
     subset_manifest = json.loads(subset_manifest_path.read_text(encoding="utf-8"))
+    step0_audit = json.loads(step0_audit_path.read_text(encoding="utf-8"))
+    catch_audit = json.loads(catch_audit_path.read_text(encoding="utf-8"))
     differences = config_differences(cp_config, member_config)
     advantage_checks, advantage_evidence = build_advantage_checks()
 
@@ -192,6 +200,8 @@ def build_audit(
     max_response = int(_nested(cp_config, "data.max_response_length"))
     max_steps = int(_nested(cp_config, "trainer.max_steps"))
     maximum_generated_token_budget = rollout_batch * rollout_n * max_response * max_steps
+    overlay_path = Path("docs/easyr1_mini_a5_pair_grouping_patch.diff")
+    overlay_text = overlay_path.read_text(encoding="utf-8")
 
     config_checks = {
         "only_registered_arm_fields_differ": set(differences) == ALLOWED_ARM_DIFFS,
@@ -229,10 +239,15 @@ def build_audit(
         "corpus_independent_audit_passed": corpus_audit.get("status") == "pass",
         "fixed_subset_manifest_passed": subset_manifest.get("status") == "pass"
         and subset_manifest.get("pair_id_overlap") == 0,
+        "step0_reward_audit_passed": machine_audit_passed(step0_audit),
+        "catch_set_independent_audit_passed": machine_audit_passed(catch_audit),
+        "runtime_advantage_marker_present": "BLIND_GAINS_CP_ADVANTAGE_AUDIT"
+        in overlay_text
+        and 'os.getenv("BLIND_GAINS_CP_RUNTIME_AUDIT") == "1"' in overlay_text,
     }
     checks = {**advantage_checks, **config_checks}
     return {
-        "schema_version": "blind-gains.mini-a5-advantage-config-audit.v1",
+        "schema_version": "blind-gains.mini-a5-advantage-config-audit.v2",
         "status": "pass" if all(checks.values()) else "fail",
         "checks": checks,
         "config_differences": differences,
@@ -257,11 +272,13 @@ def build_audit(
             "corpus_audit_sha256": sha256_file(corpus_audit_path),
             "fixed_subset_manifest": str(subset_manifest_path),
             "fixed_subset_manifest_sha256": sha256_file(subset_manifest_path),
+            "step0_audit": str(step0_audit_path),
+            "step0_audit_sha256": sha256_file(step0_audit_path),
+            "catch_audit": str(catch_audit_path),
+            "catch_audit_sha256": sha256_file(catch_audit_path),
             "cp_grouping_source_sha256": sha256_file(Path("src/train/cp_grouping.py")),
             "reward_source_sha256": sha256_file(Path("src/rewards/cp_grpo_reward.py")),
-            "easyr1_overlay_sha256": sha256_file(
-                Path("docs/easyr1_mini_a5_pair_grouping_patch.diff")
-            ),
+            "easyr1_overlay_sha256": sha256_file(overlay_path),
         },
         "scientific_gate_decision": None,
         "optimizer_steps_authorized_by_this_artifact": 0,
@@ -275,7 +292,7 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
     ]
     return "\n".join(
         [
-            "# Mini-A5 Advantage and Config Audit V1",
+            "# Mini-A5 Advantage and Config Audit V2",
             "",
             "Status:",
             f"- Audit status: `{payload['status']}`.",
@@ -287,6 +304,7 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
             f"- Allowed config differences: `{json.dumps(payload['allowed_arm_differences'])}`.",
             f"- Observed config differences: `{json.dumps(payload['config_differences'], sort_keys=True)}`.",
             f"- Advantage evidence: `{json.dumps(payload['advantage_evidence'], sort_keys=True)}`.",
+            f"- Step-0 and catch audit inputs: `{payload['artifacts']['step0_audit']}`, `{payload['artifacts']['catch_audit']}`.",
             "",
             "Checks:",
             "| Check | Result |",
@@ -294,8 +312,7 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
             *rows,
             "",
             "Problems:",
-            "- Step-0 sampled reward statistics and a real EasyR1 GPU plumbing smoke remain pending.",
-            "- Catch-trial inputs and the final merged mini-A5 registration marker remain pending.",
+            "- A real EasyR1 GPU plumbing smoke and its post-smoke main-arm registration marker remain pending.",
             "",
             "Decision:",
             "- Supersede the draft shared-UID control behavior. Standard member-level GRPO uses one UID per source prompt; CP alone uses the shared pair UID.",
@@ -338,18 +355,33 @@ def main() -> None:
         default=Path("data/mini_a5_fixed_subsets_v1_manifest.json"),
     )
     parser.add_argument(
+        "--step0-audit",
+        type=Path,
+        default=Path("reports/mini_a5_step0_reward_audit_v1.json"),
+    )
+    parser.add_argument(
+        "--catch-audit",
+        type=Path,
+        default=Path("reports/mini_a5_catch_audit_v1.json"),
+    )
+    parser.add_argument(
         "--json-output",
         type=Path,
-        default=Path("reports/mini_a5_advantage_equivalence_v1.json"),
+        default=Path("reports/mini_a5_advantage_equivalence_v2.json"),
     )
     parser.add_argument(
         "--markdown-output",
         type=Path,
-        default=Path("reports/mini_a5_advantage_equivalence_v1.md"),
+        default=Path("reports/mini_a5_advantage_equivalence_v2.md"),
     )
     args = parser.parse_args()
     payload = build_audit(
-        args.cp_config, args.member_config, args.corpus_audit, args.subset_manifest
+        args.cp_config,
+        args.member_config,
+        args.corpus_audit,
+        args.subset_manifest,
+        args.step0_audit,
+        args.catch_audit,
     )
     atomic_write(args.json_output, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     atomic_write(args.markdown_output, render_markdown(payload, args.json_output))

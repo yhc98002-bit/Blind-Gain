@@ -9,6 +9,7 @@ from scripts.audit_mini_a5_advantages import (
     build_advantage_checks,
     config_differences,
     independent_grpo,
+    machine_audit_passed,
 )
 
 
@@ -47,3 +48,9 @@ def test_independent_grpo_rejects_singleton_group() -> None:
         assert "fewer than two" in str(error)
     else:
         raise AssertionError("singleton GRPO group was accepted")
+
+
+def test_failed_or_missing_prerequisite_audit_never_passes() -> None:
+    assert machine_audit_passed({"status": "pass"}) is True
+    assert machine_audit_passed({"status": "fail"}) is False
+    assert machine_audit_passed({}) is False

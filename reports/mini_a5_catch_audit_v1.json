@@ -1,0 +1,58 @@
+{
+  "artifact_sha256": {
+    "decontamination_json": "19ed9a833665aead2aee1f4494279a26055c4f531fed68d3e3340af8a1a16bda",
+    "pairs_jsonl": "fbd83d52fa01103bfb839fa2572eb9164c532f8c3a3431da6ca8f6033d6a9728"
+  },
+  "checks": {
+    "decontamination_status_pass": true,
+    "decontamination_templates_and_counts_exact": true,
+    "disjointness_recomputed_zero": true,
+    "evaluation_manifest_hashes_exact": true,
+    "generation_artifacts_registered": true,
+    "generation_manifest_complete_exit0": true,
+    "generation_manifest_identity": true,
+    "image_file_count_exact": true,
+    "image_hashes_unique_nonempty": true,
+    "mask_file_count_exact": true,
+    "no_model_performance_selection": true,
+    "pair_count_exact": true,
+    "pair_ids_unique_nonempty": true,
+    "pair_semantics_files_masks_and_target_regions_exact": true,
+    "recorded_zero_overlap": true,
+    "source_generator_hash_exact": true,
+    "template_counts_exact": true,
+    "training_manifest_hash_exact": true
+  },
+  "corpus_dir": "data/mini_a5_catch_v1",
+  "counts": {
+    "images": 600,
+    "masks": 600,
+    "pairs": 300,
+    "side_assignment": {
+      "False": 147,
+      "True": 153
+    },
+    "templates": {
+      "mini_a5_catch_distractor_matrix_v1": 100,
+      "mini_a5_catch_distractor_scatter_v1": 100,
+      "mini_a5_catch_distractor_trajectory_v1": 100
+    }
+  },
+  "errors": [],
+  "generation_manifest": "experiments/runs/mini_a5_catch_v1_login_20260716T185633Z/run_manifest.json",
+  "pair_error_count": 0,
+  "recomputed_overlaps": {
+    "evaluation": {
+      "image_hashes": [],
+      "pair_ids": [],
+      "template_ids": []
+    },
+    "training": {
+      "image_hashes": [],
+      "pair_ids": [],
+      "template_ids": []
+    }
+  },
+  "schema_version": "blind-gains.mini-a5-catch-audit.v1",
+  "status": "pass"
+}
