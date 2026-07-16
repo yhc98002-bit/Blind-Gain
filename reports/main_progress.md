@@ -9,7 +9,7 @@ M7 | blocked | requires merged M4 and confirmed M1 fork ruling
 M8 | blocked | reports/flagship_7b_readiness_v1.md + reports/blind_solvability_virl39k_7b_sample_v1.md + _audited.{md,json}: all five exact 4,096-row inference conditions and the independent audit are complete, but the frozen training subset, full own-caption store, and four hashed flagship configs remain pending
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | reports/support_sharpening_registry_v1.md + M2 immutable candidate artifacts: 47/8/7/18 A1/A2/A2b/A3 candidates are frozen; the required 64-sample base follow-up remains pending
-M11 | blocked | the old marker-only watchdog launched eight InternVL full cells; two blind cells failed, two caption cells completed, and four FlipTrack cells continue on an29 GPUs 0/1/3/4; remaining cells stay behind M5/seed-2 placement
+M11 | blocked | reports/m11_blind_sample_recovery_v1.md: the inference-only mathruler import leak is fixture-fixed without environment mutation; a 25-file hash-verified InternVL stage completed and fresh real/none/caption 4,096-row cells run TP1 on an12 GPUs 4/5/6 while four FlipTrack cells continue on an29
 M12 | blocked | reports/human_audit_viewer_v3.md + reports/chart_v08_human_audit_bundle_v2.json: fixed 700x450 no-zoom viewer and eight-decision v08 package are ready for Richard; human audit, strong-caption scoring, interpretation, freeze, and confirmatory gates remain
 M13 | pass | reports/paper1_pipeline_status_v6.md + reports/paper1_pipeline_status_v6.json: reusable paper pipeline and consistency-safe status wording pass; unresolved scientific result slots remain fail-closed
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum
