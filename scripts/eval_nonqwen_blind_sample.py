@@ -11,7 +11,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.eval.blind_solvability import (
+from src.eval.conditioned_inputs import (
     build_conditioned_messages,
     load_caption_map,
     load_geometry_rows,

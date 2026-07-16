@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -104,6 +106,7 @@ def test_resume_prefix_accepts_exact_contract(tmp_path: Path) -> None:
             "generation_callable": True,
             "generation_shim_applied": True,
             "generation_config_ready": True,
+            "legacy_cache_only": True,
             "timm_version": "0.9.12",
             "use_flash_attn": False,
         },
@@ -141,3 +144,28 @@ def test_blind_launcher_pins_tp1_greedy_and_frozen_caption_store() -> None:
     assert 'runtime_python: $runtime_python' in launcher
     assert 'runtime_audit_sha256:' in launcher
     assert 'runtime_freeze_sha256:' in launcher
+
+
+def test_nonqwen_blind_script_import_does_not_require_mathruler() -> None:
+    root = Path(__file__).resolve().parents[1]
+    blocker = (
+        "import importlib.abc\n"
+        "import sys\n"
+        "class BlockMathruler(importlib.abc.MetaPathFinder):\n"
+        " def find_spec(self, fullname, path=None, target=None):\n"
+        "  if fullname == 'mathruler' or fullname.startswith('mathruler.'):\n"
+        "   raise ModuleNotFoundError('mathruler deliberately unavailable')\n"
+        "  return None\n"
+        "sys.meta_path.insert(0, BlockMathruler())\n"
+        "import scripts.eval_nonqwen_blind_sample"
+    )
+
+    result = subprocess.run(
+        [sys.executable, "-c", blocker],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
