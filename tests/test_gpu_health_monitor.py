@@ -79,6 +79,15 @@ def test_monitor_launcher_excludes_the_released_node() -> None:
     assert 'RUN_ID="gpu_health_${GPU_COUNT}x60m_login_${STAMP}"' in launcher
 
 
+def test_monitor_launcher_accepts_current_registered_training_units() -> None:
+    launcher = (ROOT / "scripts/launch_gpu_health_monitor.sh").read_text(encoding="utf-8")
+
+    assert "m3_mechanical_pilot_arm" in launcher
+    assert "m5_anchor_resume_integrity_step101" in launcher
+    assert "m5_anchor_longhorizon_400" in launcher
+    assert "not a registered monitored training run" in launcher
+
+
 def test_monitor_accepts_new_registered_node_without_changing_old_configs() -> None:
     assert monitor_nodes({}) == ("an12", "an29")
     assert monitor_nodes({"nodes": ["an12", "an21", "an29"]}) == (

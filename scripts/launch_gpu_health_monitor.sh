@@ -17,7 +17,11 @@ for RUN_DIR_INPUT in "$@"; do
   [[ "${RUN_DIR}" == "${ROOT}/experiments/runs/"* ]] || { echo "run outside immutable registry" >&2; exit 2; }
   MANIFEST="${RUN_DIR}/run_manifest.json"
   [[ -f "${MANIFEST}" ]] || { echo "manifest absent: ${MANIFEST}" >&2; exit 2; }
-  [[ "$(jq -r '.job_type' "${MANIFEST}")" == "l13_mechanical_pilot_arm" ]] || { echo "not a pilot run" >&2; exit 2; }
+  JOB_TYPE="$(jq -r '.job_type' "${MANIFEST}")"
+  case "${JOB_TYPE}" in
+    l13_mechanical_pilot_arm|m3_mechanical_pilot_arm|m5_anchor_resume_integrity_step101|m5_anchor_longhorizon_400) ;;
+    *) echo "not a registered monitored training run: ${JOB_TYPE}" >&2; exit 2 ;;
+  esac
   ENTRY="$(jq -n --arg run_dir "${RUN_DIR#"${ROOT}/"}" --arg run_id "$(jq -er '.run_id' "${MANIFEST}")" '{run_dir:$run_dir,run_id:$run_id}')"
   RUNS="$(jq -c --argjson item "${ENTRY}" '. + [$item]' <<< "${RUNS}")"
 done
