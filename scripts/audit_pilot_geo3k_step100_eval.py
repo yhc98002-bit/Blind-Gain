@@ -94,7 +94,12 @@ def audit_run(
     )
     checkpoint_path = _resolve(root, str(manifest.get("model_revision", "missing")))
     checkpoint_index = checkpoint_path / "model.safetensors.index.json"
-    retention_marker = _resolve(root, str(manifest.get("retention_marker", "missing")))
+    r19_marker = _resolve(root, str(manifest.get("r19_completion_marker", "missing")))
+    provenance_mode = manifest.get("checkpoint_provenance_mode", "retention_marker")
+    retention_value = manifest.get("retention_marker")
+    retention_marker = (
+        _resolve(root, retention_value) if isinstance(retention_value, str) else None
+    )
 
     manifest_checks = {
         "job_type": manifest.get("job_type") == "m2_pilot_geo3k_step100_eval",
@@ -113,6 +118,8 @@ def audit_run(
         "parser": manifest.get("parser_version") == PARSER_VERSION,
         "reward": manifest.get("pilot_reward_version") == PILOT_REWARD_VERSION,
         "scoring_mode": manifest.get("scoring_mode") == PILOT_SCORING_MODE,
+        "checkpoint_provenance_mode": provenance_mode
+        in {"retention_marker", "r19_marker_index"},
     }
     input_checks = {
         "output_present": output_path.is_file(),
@@ -120,7 +127,7 @@ def audit_run(
         "source_present": source_path.is_file(),
         "training_manifest_present": training_manifest_path.is_file(),
         "checkpoint_index_present": checkpoint_index.is_file(),
-        "retention_marker_present": retention_marker.is_file(),
+        "r19_marker_present": r19_marker.is_file(),
     }
     if not all(input_checks.values()):
         checks = {**manifest_checks, **input_checks}
@@ -133,21 +140,17 @@ def audit_run(
             "performance_values_reported": False,
         }
 
-    retention = json.loads(retention_marker.read_text(encoding="utf-8"))
-    merged_files = retention.get("merged_checkpoint_files", [])
-    merged_files_match = bool(merged_files)
-    for item in merged_files:
-        if not isinstance(item, dict) or not isinstance(item.get("file"), str):
-            merged_files_match = False
-            break
-        path = checkpoint_path.parent / item["file"]
-        if (
-            not path.is_file()
-            or path.stat().st_size != item.get("size_bytes")
-            or _sha256(path) != item.get("sha256")
-        ):
-            merged_files_match = False
-            break
+    r19 = json.loads(r19_marker.read_text(encoding="utf-8"))
+    r19_checks = r19.get("checks")
+    r19_bound = (
+        r19.get("status") == "complete"
+        and r19.get("global_step") == 100
+        and Path(str(r19.get("checkpoint_path", ""))).resolve() == checkpoint_path
+        and r19.get("checkpoint_index_sha256") == manifest.get("checkpoint_index_sha256")
+        and isinstance(r19_checks, dict)
+        and bool(r19_checks)
+        and all(r19_checks.values())
+    )
     hash_checks = {
         "source_manifest_hash": _sha256(source_path)
         == manifest.get("source_manifest_sha256"),
@@ -155,12 +158,48 @@ def audit_run(
         == manifest.get("source_training_manifest_sha256"),
         "checkpoint_index_hash": _sha256(checkpoint_index)
         == manifest.get("checkpoint_index_sha256"),
-        "retention_marker_hash": _sha256(retention_marker)
-        == manifest.get("retention_marker_sha256"),
-        "merged_checkpoint_hash": retention.get("merged_checkpoint_sha256")
-        == manifest.get("merged_checkpoint_sha256"),
-        "merged_checkpoint_files_match": merged_files_match,
+        "r19_marker_hash": _sha256(r19_marker)
+        == manifest.get("r19_completion_marker_sha256"),
+        "r19_marker_binds_checkpoint_index": r19_bound,
     }
+    if provenance_mode == "retention_marker":
+        retention_present = retention_marker is not None and retention_marker.is_file()
+        retention: dict[str, Any] = (
+            json.loads(retention_marker.read_text(encoding="utf-8"))
+            if retention_present and retention_marker is not None
+            else {}
+        )
+        merged_files = retention.get("merged_checkpoint_files", [])
+        merged_files_match = bool(merged_files)
+        for item in merged_files:
+            if not isinstance(item, dict) or not isinstance(item.get("file"), str):
+                merged_files_match = False
+                break
+            path = checkpoint_path.parent / item["file"]
+            if (
+                not path.is_file()
+                or path.stat().st_size != item.get("size_bytes")
+                or _sha256(path) != item.get("sha256")
+            ):
+                merged_files_match = False
+                break
+        hash_checks.update(
+            {
+                "retention_marker_present": retention_present,
+                "retention_marker_hash": retention_present
+                and retention_marker is not None
+                and _sha256(retention_marker) == manifest.get("retention_marker_sha256"),
+                "merged_checkpoint_hash": retention.get("merged_checkpoint_sha256")
+                == manifest.get("merged_checkpoint_sha256"),
+                "merged_checkpoint_files_match": merged_files_match,
+            }
+        )
+    else:
+        hash_checks["relocation_decoupled"] = (
+            retention_marker is None
+            and manifest.get("retention_marker_sha256") is None
+            and manifest.get("merged_checkpoint_sha256") is None
+        )
 
     source_rows = load_geometry_rows(source_path, splits=("test",), train_filter_ids=None)
     raw_lines = output_path.read_text(encoding="utf-8").splitlines()

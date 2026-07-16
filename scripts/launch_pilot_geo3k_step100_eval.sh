@@ -132,18 +132,33 @@ PID_FILE="${RUN_DIR}/pids/${NODE}_gpu${GPU}.pid"
 OUTPUT="${RUN_DIR}/per_item.jsonl"
 CACHE_DIR="/dev/shm/blind-gains/${RUN_ID}/condition_cache"
 CHECKPOINT_INDEX_SHA256="$(sha256sum "${CHECKPOINT}/model.safetensors.index.json" | awk '{print $1}')"
+R19_MARKER_SHA256="$(sha256sum "${MARKER}" | awk '{print $1}')"
+MARKER_CHECKPOINT_INDEX_SHA256="$(jq -r '.checkpoint_index_sha256 // empty' "${MARKER}")"
+if [[ "${MARKER_CHECKPOINT_INDEX_SHA256}" != "${CHECKPOINT_INDEX_SHA256}" ]]; then
+  echo "R19 marker does not bind the current merged checkpoint index" >&2
+  exit 3
+fi
+
+# Relocation is operational bookkeeping, not an evaluation dependency. Prefer its
+# stronger full-tree provenance when available, otherwise retain the R19-bound index.
 RETENTION_MARKER="$(dirname "${CHECKPOINT_REAL}")/RAW_STATE_RELOCATED.json"
-if [[ ! -s "${RETENTION_MARKER}" ]] || ! jq -e \
+RETENTION_MARKER_SHA256=""
+MERGED_CHECKPOINT_SHA256=""
+CHECKPOINT_PROVENANCE_MODE="r19_marker_index"
+RETENTION_STATUS="absent"
+if [[ -s "${RETENTION_MARKER}" ]] && jq -e \
   --arg index_sha256 "${CHECKPOINT_INDEX_SHA256}" \
   '(.merged_checkpoint_sha256 | type == "string" and length == 64) and
    any(.merged_checkpoint_files[]; .file == "huggingface/model.safetensors.index.json" and .sha256 == $index_sha256)' \
   "${RETENTION_MARKER}" >/dev/null; then
-  echo "retention marker does not bind the current merged checkpoint index" >&2
-  exit 3
+  RETENTION_MARKER_SHA256="$(sha256sum "${RETENTION_MARKER}" | awk '{print $1}')"
+  MERGED_CHECKPOINT_SHA256="$(jq -r '.merged_checkpoint_sha256' "${RETENTION_MARKER}")"
+  CHECKPOINT_PROVENANCE_MODE="retention_marker"
+  RETENTION_STATUS="verified"
+  DATA_FILES+=("${RETENTION_MARKER}")
+elif [[ -e "${RETENTION_MARKER}" ]]; then
+  RETENTION_STATUS="invalid_ignored"
 fi
-RETENTION_MARKER_SHA256="$(sha256sum "${RETENTION_MARKER}" | awk '{print $1}')"
-MERGED_CHECKPOINT_SHA256="$(jq -r '.merged_checkpoint_sha256' "${RETENTION_MARKER}")"
-DATA_FILES+=("${RETENTION_MARKER}")
 SOURCE_MANIFEST_SHA256="$(sha256sum "${SOURCE_MANIFEST}" | awk '{print $1}')"
 TRAINING_MANIFEST_SHA256="$(sha256sum "${TRAINING_MANIFEST}" | awk '{print $1}')"
 PROMPT_CONTRACT_JSON="$(PYTHONPATH=.:artifacts/repos/EasyR1 .venv/bin/python -c 'import json; from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT; print(json.dumps(DEFAULT_PROMPT_CONTRACT.to_dict(), sort_keys=True))')"
@@ -168,11 +183,14 @@ jq -n \
   --arg training_run "${TRAINING_RUN}" \
   --arg training_manifest_sha256 "${TRAINING_MANIFEST_SHA256}" \
   --arg marker "${MARKER}" \
+  --arg marker_sha256 "${R19_MARKER_SHA256}" \
   --arg checkpoint "${CHECKPOINT_REAL}" \
   --arg checkpoint_index_sha256 "${CHECKPOINT_INDEX_SHA256}" \
   --arg retention_marker "${RETENTION_MARKER}" \
   --arg retention_marker_sha256 "${RETENTION_MARKER_SHA256}" \
   --arg merged_checkpoint_sha256 "${MERGED_CHECKPOINT_SHA256}" \
+  --arg checkpoint_provenance_mode "${CHECKPOINT_PROVENANCE_MODE}" \
+  --arg retention_status "${RETENTION_STATUS}" \
   --arg caption_run "${CAPTION_RUN}" \
   --arg resume_from "${RESUME_FROM}" \
   --arg parser_version "${PARSER_VERSION}" \
@@ -209,11 +227,14 @@ jq -n \
     source_training_run: $training_run,
     source_training_manifest_sha256: $training_manifest_sha256,
     r19_completion_marker: $marker,
+    r19_completion_marker_sha256: $marker_sha256,
     model_revision: $checkpoint,
     checkpoint_index_sha256: $checkpoint_index_sha256,
-    retention_marker: $retention_marker,
-    retention_marker_sha256: $retention_marker_sha256,
-    merged_checkpoint_sha256: $merged_checkpoint_sha256,
+    checkpoint_provenance_mode: $checkpoint_provenance_mode,
+    retention_status: $retention_status,
+    retention_marker: (if $retention_marker_sha256 == "" then null else $retention_marker end),
+    retention_marker_sha256: (if $retention_marker_sha256 == "" then null else $retention_marker_sha256 end),
+    merged_checkpoint_sha256: (if $merged_checkpoint_sha256 == "" then null else $merged_checkpoint_sha256 end),
     caption_source_run: (if $caption_run == "-" then null else $caption_run end),
     resume_from: (if $resume_from == "-" then null else $resume_from end),
     parser_version: $parser_version,

@@ -34,6 +34,20 @@ def _fixture(tmp_path: Path) -> Path:
     checkpoint.mkdir()
     index = checkpoint / "model.safetensors.index.json"
     index.write_text('{"weight_map":{}}\n', encoding="utf-8")
+    r19_marker = tmp_path / "step100_fliptrack_complete.json"
+    r19_marker.write_text(
+        json.dumps(
+            {
+                "status": "complete",
+                "global_step": 100,
+                "checkpoint_path": str(checkpoint),
+                "checkpoint_index_sha256": _sha256(index),
+                "checks": {"evaluation": True, "aggregate": True},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     retention = tmp_path / "RAW_STATE_RELOCATED.json"
     retention.write_text(
         json.dumps(
@@ -111,6 +125,10 @@ def _fixture(tmp_path: Path) -> Path:
         "source_training_manifest_sha256": _sha256(training_manifest),
         "model_revision": str(checkpoint),
         "checkpoint_index_sha256": _sha256(index),
+        "r19_completion_marker": str(r19_marker),
+        "r19_completion_marker_sha256": _sha256(r19_marker),
+        "checkpoint_provenance_mode": "retention_marker",
+        "retention_status": "verified",
         "retention_marker": str(retention),
         "retention_marker_sha256": _sha256(retention),
         "merged_checkpoint_sha256": "merged-hash",
@@ -148,6 +166,27 @@ def test_audit_rejects_false_strict_accounting(tmp_path: Path) -> None:
     assert result["checks"]["scores_recompute"] is False
     assert result["checks"]["strict_identity"] is False
     assert result["score_recomputation_mismatch_fields"] == {"acc_strict": 1}
+
+
+def test_audit_accepts_r19_index_provenance_without_relocation(tmp_path: Path) -> None:
+    run = _fixture(tmp_path)
+    manifest_path = run / "run_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    retention = Path(manifest["retention_marker"])
+    retention.unlink()
+    manifest.update(
+        checkpoint_provenance_mode="r19_marker_index",
+        retention_status="absent",
+        retention_marker=None,
+        retention_marker_sha256=None,
+        merged_checkpoint_sha256=None,
+    )
+    manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+
+    result = audit_run(run, root=tmp_path, expected_row_count=2)
+
+    assert result["status"] == "pass"
+    assert result["checks"]["relocation_decoupled"] is True
 
 
 def test_audit_rejects_truncated_output(tmp_path: Path) -> None:

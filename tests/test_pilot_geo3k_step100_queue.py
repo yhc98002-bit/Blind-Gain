@@ -64,7 +64,6 @@ def _complete_marker(tmp_path: Path, config: dict) -> None:
     checkpoint = tmp_path / config["checkpoint_path"]
     checkpoint.mkdir(parents=True)
     (checkpoint / "model.safetensors.index.json").write_text("{}\n", encoding="utf-8")
-    (checkpoint.parent / "RAW_STATE_RELOCATED.json").write_text("{}\n", encoding="utf-8")
     _write_json(
         tmp_path / config["r19_marker"],
         {
@@ -110,6 +109,20 @@ def test_marker_with_one_false_check_is_rejected(
 
     with pytest.raises(ValueError, match="marker validation failed"):
         queue.validate_r19_marker(config, tmp_path)
+
+
+def test_marker_validation_is_independent_of_relocation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config, _ = _fixture(tmp_path, monkeypatch)
+    _complete_marker(tmp_path, config)
+    retention_marker = (
+        tmp_path / config["checkpoint_path"]
+    ).parent / "RAW_STATE_RELOCATED.json"
+
+    assert not retention_marker.exists()
+    marker = queue.validate_r19_marker(config, tmp_path)
+    assert marker["status"] == "complete"
 
 
 def test_two_clean_polls_launch_exact_evaluation(

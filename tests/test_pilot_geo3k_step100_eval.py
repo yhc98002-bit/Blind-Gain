@@ -135,3 +135,7 @@ def test_launcher_records_locked_tp1_contract() -> None:
     assert "expected_row_count: 601" in source
     assert "--max-tokens ${MAX_TOKENS}" in source
     assert "(.checks | type == \"object\" and length > 0 and all(.[]; . == true))" in source
+    assert 'CHECKPOINT_PROVENANCE_MODE="r19_marker_index"' in source
+    assert 'RETENTION_STATUS="absent"' in source
+    assert "R19 marker does not bind the current merged checkpoint index" in source
+    assert "retention marker does not bind" not in source

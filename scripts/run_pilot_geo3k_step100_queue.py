@@ -167,8 +167,6 @@ def validate_r19_marker(config: dict[str, Any], root: Path = ROOT) -> dict[str, 
             errors[f"training_{key}"] = {"expected": value, "observed": training.get(key)}
     if not (checkpoint / "model.safetensors.index.json").is_file():
         errors["checkpoint_index"] = "absent"
-    if not (checkpoint.parent / "RAW_STATE_RELOCATED.json").is_file():
-        errors["retention_marker"] = "absent"
     if errors:
         raise ValueError(f"R19 marker validation failed: {errors}")
     return marker
