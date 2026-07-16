@@ -64,6 +64,8 @@ jq -n \
     expected_artifacts: [$train_records, $eval_records, $summary, $comparison]
   }' > "${MANIFEST}"
 
-nohup "${ROOT}/.venv/bin/python" scripts/run_manifest_job.py "${MANIFEST}" "${LOG}" > /dev/null 2>&1 < /dev/null &
-echo $! > "${PID_FILE}"
+command -v tmux >/dev/null 2>&1 || { echo "tmux is required for detached execution" >&2; exit 2; }
+tmux new-session -d -s "${RUN_ID}" \
+  "${ROOT}/.venv/bin/python '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}'"
+tmux list-panes -t "${RUN_ID}" -F '#{pane_pid}' > "${PID_FILE}"
 printf '%s\n' "${RUN_DIR}"
