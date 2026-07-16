@@ -267,3 +267,22 @@ def test_released_node_is_rejected() -> None:
     assert '{"an12", "an29"}' in source
     assert "an21" not in source
     assert "os.kill" not in source
+
+
+def test_a2_recovery_config_binds_fresh_r19_queue() -> None:
+    root = Path(__file__).resolve().parents[1]
+    config = json.loads(
+        (root / "configs/eval/m2_a2_geo3k_step100_queue_v2.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert config["training_run"].endswith(
+        "mech_a2_gray_resume60_retry2_an12_20260715T165701Z"
+    )
+    assert config["r19_queue_run"].endswith(
+        "pilot_step100_eval_queue_a2_gray_login_20260716T152519Z"
+    )
+    assert config["checkpoint_path"].endswith(
+        "mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface"
+    )

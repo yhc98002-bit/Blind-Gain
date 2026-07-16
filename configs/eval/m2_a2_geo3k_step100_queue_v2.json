@@ -1,0 +1,16 @@
+{
+  "schema_version": "blind-gains.pilot-geo3k-step100-queue.v1",
+  "arm": "a2_gray",
+  "condition": "gray",
+  "node": "an12",
+  "gpu_id": 4,
+  "global_step": 100,
+  "expected_row_count": 601,
+  "training_run": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z",
+  "r19_queue_run": "experiments/runs/pilot_step100_eval_queue_a2_gray_login_20260716T152519Z",
+  "r19_marker": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z/step100_fliptrack_complete.json",
+  "checkpoint_path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface",
+  "caption_run": "-",
+  "poll_seconds": 60,
+  "stable_free_polls": 2
+}
