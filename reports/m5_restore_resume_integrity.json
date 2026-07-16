@@ -1,0 +1,169 @@
+{
+  "checks": {
+    "integrity_config_exact_registered_diff": true,
+    "integrity_config_hash_bound": true,
+    "integrity_run_complete": true,
+    "integrity_run_identity": true,
+    "longhorizon_config_exact_registered_diff": true,
+    "loss_and_step_continuity": true,
+    "raw_hash_continuity": true,
+    "step101_checkpoint_audit_pass": true
+  },
+  "continuity": {
+    "checks": {
+      "all_continuity_fields_finite": true,
+      "gradient_norm_bounded": true,
+      "integrity_training_steps_exactly_101": true,
+      "kl_coefficient_continuity": true,
+      "kl_loss_bounded": true,
+      "learning_rate_continuity": true,
+      "policy_loss_bounded": true,
+      "reward_bounded": true,
+      "source_steps_91_through_100_present": true,
+      "step_time_positive": true,
+      "token_count_within_recent_factor_two": true
+    },
+    "integrity_training_steps": [
+      101
+    ],
+    "predeclared_bounds": {
+      "abs_kl_loss_max": 1.0,
+      "abs_policy_loss_max": 1.0,
+      "gradient_norm": [
+        0.0,
+        10.0
+      ],
+      "reward": [
+        0.0,
+        1.0
+      ],
+      "tokens_vs_source_tail_median": [
+        0.5,
+        2.0
+      ]
+    },
+    "source_tail_median_total_num_tokens": 1930294.0,
+    "source_tail_steps": [
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100
+    ],
+    "status": "pass",
+    "step101_fields": {
+      "actor.grad_norm": 0.2298421412706375,
+      "actor.kl_loss": 0.0573037164285779,
+      "actor.pg_loss": 0.02114930799186065,
+      "perf.time_per_step": 1585.0950253084302,
+      "perf.total_num_tokens": 1918711.0,
+      "reward.overall": 0.7201171875
+    }
+  },
+  "created_utc": "2026-07-16T17:28:14Z",
+  "integrity_config_audit": {
+    "base_config": "configs/train/anchor_a0_recipe_3b_geo3k.yaml",
+    "base_config_sha256": "fdd39cead00fa6932d03c3040d90e76b71599983623b7478d67a309ce4dc3862",
+    "checks": {
+      "exact_allowed_diff_keys": true,
+      "exact_registered_derived_values": true,
+      "native_reward_unchanged": true,
+      "rollout_tp_unchanged": true,
+      "seed_unchanged": true,
+      "vision_tower_setting_unchanged": true
+    },
+    "derived_config": "configs/train/m5_anchor_resume_integrity_step101.yaml",
+    "derived_config_sha256": "e99535a24e75d451976e7a13caf031c388e7905748b56cdcb3f52cc9bdb04112",
+    "mode": "integrity",
+    "observed_diffs": {
+      "trainer.experiment_name": {
+        "base": "anchor_a0_recipe_3b_geo3k",
+        "derived": "m5_anchor_resume_integrity_step101"
+      },
+      "trainer.load_checkpoint_path": {
+        "base": null,
+        "derived": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100"
+      },
+      "trainer.max_steps": {
+        "base": 100,
+        "derived": 101
+      },
+      "trainer.save_checkpoint_path": {
+        "base": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k",
+        "derived": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_resume_integrity_step101"
+      },
+      "trainer.save_freq": {
+        "base": 20,
+        "derived": 101
+      }
+    },
+    "status": "pass"
+  },
+  "integrity_run_manifest": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m5_anchor_resume_integrity_step101_an12_20260716T164403Z/run_manifest.json",
+  "longhorizon_config_audit": {
+    "base_config": "configs/train/anchor_a0_recipe_3b_geo3k.yaml",
+    "base_config_sha256": "fdd39cead00fa6932d03c3040d90e76b71599983623b7478d67a309ce4dc3862",
+    "checks": {
+      "exact_allowed_diff_keys": true,
+      "exact_registered_derived_values": true,
+      "native_reward_unchanged": true,
+      "rollout_tp_unchanged": true,
+      "seed_unchanged": true,
+      "vision_tower_setting_unchanged": true
+    },
+    "derived_config": "configs/train/m5_anchor_longhorizon_400.yaml",
+    "derived_config_sha256": "73ff58bd3b6a5a9a190f6f379a927bc6405c88001bd524f61846ffb22996f48c",
+    "mode": "longhorizon",
+    "observed_diffs": {
+      "trainer.experiment_name": {
+        "base": "anchor_a0_recipe_3b_geo3k",
+        "derived": "m5_anchor_longhorizon_400"
+      },
+      "trainer.load_checkpoint_path": {
+        "base": null,
+        "derived": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100"
+      },
+      "trainer.max_steps": {
+        "base": 100,
+        "derived": 400
+      },
+      "trainer.save_checkpoint_path": {
+        "base": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k",
+        "derived": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400"
+      },
+      "trainer.save_freq": {
+        "base": 20,
+        "derived": 50
+      }
+    },
+    "status": "pass"
+  },
+  "provenance": {
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m5_anchor_resume_integrity_step101_an12_20260716T164403Z/run_manifest.json": "0d4853eec00251a6c04ac8622007367d0cfecf9999001100f918b742df4d33ff",
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m5_anchor_step100_raw_restore_login_20260716T163248Z/restored_checkpoint_audit.json": "680d0f4c29157e29943fcb8e2afef0bc8a2e326d578ceae27936583bee087274",
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m5_integrity_queue_login_20260716T163532Z/step101_checkpoint_audit.json": "dfa7e775e2be4c9e39e593774928a31d691ccf6d0fc7d0613b9a0ddfd17181ea",
+    "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/experiment_log.jsonl": "79503502a03f0cc94a49505f96d12ea00ab27807b5cb73561338e719fbdbe98b",
+    "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/RAW_STATE_RELOCATED.json": "28679132898ba3d207ce6d8666bf9dfd90c395cfbfb8c3be6f6fa4ca7403b3f9",
+    "checkpoints/m5_anchor_resume_integrity_step101/experiment_log.jsonl": "0b91e19882f1114ce4505f3739822546bc8e384c0fa6914aa491bd41f522c037"
+  },
+  "raw_hash_continuity": {
+    "checks": {
+      "eight_raw_shards_registered": true,
+      "raw_shard_names_and_hashes_exact": true,
+      "relocation_marker_status": true,
+      "restored_checkpoint_audit_pass": true,
+      "restored_checkpoint_files_stable_during_hash": true
+    },
+    "raw_shard_count": 8,
+    "status": "pass"
+  },
+  "schema_version": "blind-gains.m5-restore-resume-integrity.v1",
+  "scientific_gate_decision": null,
+  "source_checkpoint": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100",
+  "status": "pass"
+}
