@@ -22,6 +22,7 @@ def _write_run_metric(
     manifest = {
         "status": "complete",
         "job_type": job_type,
+        "node": "an29",
         "expected_artifacts": [str(metric_path)],
         **manifest_fields,
     }
@@ -131,6 +132,7 @@ def _fixture(tmp_path: Path) -> tuple[list[Path], list[Path], list[Path]]:
                 {
                     "status": "complete",
                     "job_type": "m11_ephemeral_model_stage",
+                    "node": "an29",
                     "destination": f"/dev/shm/blind-gains/models/{stage_names[backend]}",
                     "data_manifest_hash": "a" * 64,
                 }
@@ -159,3 +161,40 @@ def test_missing_fliptrack_cell_fails_matrix(tmp_path: Path) -> None:
 
     assert payload["status"] == "fail"
     assert payload["checks"]["complete_fliptrack_2x2x3_matrix"] is False
+
+
+def test_each_backend_node_placement_requires_its_own_verified_stage(
+    tmp_path: Path,
+) -> None:
+    flip, blind, stages = _fixture(tmp_path)
+    internvl_blind = next(path for path in blind if "blind-internvl3-real" in str(path))
+    manifest_path = internvl_blind.parent / "run_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["node"] = "an12"
+    manifest_path.write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+
+    missing = build_payload(flip, blind, stages)
+
+    assert missing["status"] == "fail"
+    assert missing["checks"]["all_run_placements_have_verified_stage"] is False
+    assert any("('internvl3', 'an12')" in error for error in missing["errors"])
+
+    an12_stage = tmp_path / "stage-internvl3-an12.json"
+    an12_stage.write_text(
+        json.dumps(
+            {
+                "status": "complete",
+                "job_type": "m11_ephemeral_model_stage",
+                "node": "an12",
+                "destination": "/dev/shm/blind-gains/models/InternVL3-9B",
+                "data_manifest_hash": "a" * 64,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    covered = build_payload(flip, blind, [*stages, an12_stage])
+
+    assert covered["status"] == "pass"
+    assert covered["checks"]["all_run_placements_have_verified_stage"] is True

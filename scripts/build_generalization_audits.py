@@ -28,6 +28,10 @@ EXPECTED_FLIPTRACK_KEYS = {
 EXPECTED_BLIND_KEYS = {
     (backend, condition) for backend in BACKENDS for condition in CONDITIONS
 }
+MODEL_DIRECTORY_BACKENDS = {
+    "internvl3-9b": "internvl3",
+    "gemma-3-12b-it": "gemma3",
+}
 
 
 def _sha256(path: Path) -> str:
@@ -65,8 +69,12 @@ def build_payload(
 ) -> dict[str, Any]:
     errors: list[str] = []
     stage_evidence = []
+    staged_placements: set[tuple[str, str]] = set()
     for path in stage_paths:
         manifest = _load_json(path)
+        destination_name = Path(str(manifest.get("destination", ""))).name.lower()
+        backend = MODEL_DIRECTORY_BACKENDS.get(destination_name)
+        node = str(manifest.get("node", ""))
         valid = (
             manifest.get("status") == "complete"
             and manifest.get("job_type") == "m11_ephemeral_model_stage"
@@ -75,19 +83,26 @@ def build_payload(
             )
             and isinstance(manifest.get("data_manifest_hash"), str)
             and len(manifest["data_manifest_hash"]) == 64
+            and backend in BACKENDS
+            and node in {"an12", "an29"}
         )
         if not valid:
             errors.append(f"invalid model-stage manifest: {path}")
+        else:
+            staged_placements.add((str(backend), node))
         stage_evidence.append(
             {
                 "path": str(path),
                 "sha256": _sha256(path),
                 "destination": manifest.get("destination"),
+                "backend": backend,
+                "node": node,
                 "valid": valid,
             }
         )
 
     fliptrack: dict[tuple[str, str, str], dict[str, Any]] = {}
+    required_stage_placements: set[tuple[str, str]] = set()
     for path in fliptrack_paths:
         metric = _load_json(path)
         try:
@@ -124,6 +139,10 @@ def build_payload(
         }
         if not all(checks.values()):
             errors.append(f"invalid FlipTrack cell {key}: {checks}")
+        if manifest:
+            required_stage_placements.add(
+                (str(manifest.get("model_backend")), str(manifest.get("node")))
+            )
         fliptrack[key] = {
             "path": str(path),
             "sha256": _sha256(path),
@@ -159,6 +178,10 @@ def build_payload(
         }
         if not all(checks.values()):
             errors.append(f"invalid blind-sample cell {key}: {checks}")
+        if manifest:
+            required_stage_placements.add(
+                (str(manifest.get("model_backend")), str(manifest.get("node")))
+            )
         blind[key] = {
             "path": str(path),
             "sha256": _sha256(path),
@@ -178,14 +201,21 @@ def build_payload(
             f"missing={sorted(EXPECTED_BLIND_KEYS - set(blind))}, "
             f"extra={sorted(set(blind) - EXPECTED_BLIND_KEYS)}"
         )
+    missing_stage_placements = sorted(required_stage_placements - staged_placements)
+    if missing_stage_placements:
+        errors.append(
+            f"model-stage placement coverage missing: {missing_stage_placements}"
+        )
     checks = {
-        "two_verified_model_stages": len(stage_evidence) == 2
-        and all(record["valid"] for record in stage_evidence)
-        and {
-            Path(str(record["destination"])).name.lower()
+        "both_model_backends_staged": {
+            str(record["backend"])
             for record in stage_evidence
+            if record["valid"]
         }
-        == {"internvl3-9b", "gemma-3-12b-it"},
+        == set(BACKENDS),
+        "all_run_placements_have_verified_stage": not missing_stage_placements
+        and bool(required_stage_placements)
+        and all(record["valid"] for record in stage_evidence),
         "complete_fliptrack_2x2x3_matrix": set(fliptrack) == EXPECTED_FLIPTRACK_KEYS,
         "all_fliptrack_cells_audited": len(fliptrack) == 12
         and all(all(record["checks"].values()) for record in fliptrack.values()),
