@@ -15,6 +15,13 @@ FORMAT_PROMPT="${ROOT}/artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 [[ -d "${MODEL_PATH}" ]] || { echo "model is absent: ${MODEL_PATH}" >&2; exit 2; }
 [[ -s "${FORMAT_PROMPT}" ]] || { echo "format prompt is absent: ${FORMAT_PROMPT}" >&2; exit 2; }
 
+"${ROOT}/.venv/bin/python" scripts/storage_guard.py \
+  --tier S \
+  --path "${ROOT}/experiments/runs" \
+  --operation mini_a5_step0_predictions \
+  --required-bytes 2147483648 \
+  --log "${ROOT}/logs/storage_guard.jsonl"
+
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="mini_a5_step0_qwen25vl3b_${NODE}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
