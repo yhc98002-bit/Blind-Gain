@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 8 ]]; then
-  echo "Usage: $0 NODE GPU BASELINE TRAIN_RECORDS EVAL_RECORDS IMAGE_EMBEDDINGS TEXT_EMBEDDINGS RUN_TAG" >&2
+if [[ $# -lt 8 || $# -gt 9 ]]; then
+  echo "Usage: $0 NODE GPU BASELINE TRAIN_RECORDS EVAL_RECORDS IMAGE_EMBEDDINGS TEXT_EMBEDDINGS RUN_TAG [DATA_LABEL]" >&2
   exit 2
 fi
 
@@ -14,6 +14,7 @@ EVAL_RECORDS="$5"
 IMAGE_EMBEDDINGS="$6"
 TEXT_EMBEDDINGS="$7"
 RUN_TAG="$8"
+DATA_LABEL="${9:-hash/text baseline plus DINOv2 and BGE embeddings}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ ! "${GPU}" =~ ^[0-7]$ || ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
   echo "Invalid GPU or run tag" >&2
@@ -46,6 +47,7 @@ jq -n \
   --arg config_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg data_hash "${DATA_HASH}" \
   --arg command "${COMMAND}" \
+  --arg data_label "${DATA_LABEL}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg output "${OUTPUT}" \
   '{
@@ -53,9 +55,13 @@ jq -n \
     job_type: "p1_10_decon_embedding_comparison",
     node: $node,
     gpu_allocation: [$gpu],
+    gpu_ids: [$gpu],
+    tensor_parallel_width: 1,
+    replica_count: 1,
+    placement_justification: "Single-GPU batched cosine comparison; no model serving or tensor parallelism is used.",
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "hash/text baseline plus DINOv2 and BGE embeddings",
+    data_manifest: $data_label,
     data_manifest_hash: $data_hash,
     command: $command,
     start_time_utc: $start_time_utc,

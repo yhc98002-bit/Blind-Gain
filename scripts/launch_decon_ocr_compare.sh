@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 6 ]]; then
-  echo "Usage: $0 NODE BASELINE TRAIN_RECORDS EVAL_RECORDS OCR_RUN_DIR RUN_TAG" >&2
+if [[ $# -lt 6 || $# -gt 7 ]]; then
+  echo "Usage: $0 NODE BASELINE TRAIN_RECORDS EVAL_RECORDS OCR_RUN_DIR RUN_TAG [DATA_LABEL]" >&2
   exit 2
 fi
 
@@ -12,6 +12,7 @@ TRAIN_RECORDS="$3"
 EVAL_RECORDS="$4"
 OCR_RUN_DIR="$5"
 RUN_TAG="$6"
+DATA_LABEL="${7:-embedding comparison plus complete RapidOCR shards}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${RUN_TAG}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
@@ -54,6 +55,7 @@ jq -n \
   --arg config_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg data_hash "${DATA_HASH}" \
   --arg command "${COMMAND}" \
+  --arg data_label "${DATA_LABEL}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg output "${OUTPUT}" \
   --arg ocr_run "${OCR_RUN_DIR}" \
@@ -63,9 +65,13 @@ jq -n \
     job_type: "l5_decon_ocr_comparison",
     node: $node,
     gpu_allocation: [],
+    gpu_ids: [],
+    tensor_parallel_width: 0,
+    replica_count: 0,
+    placement_justification: "CPU-only deterministic OCR-signal merge; no GPU allocation or tensor parallelism is used.",
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "embedding comparison plus complete RapidOCR shards",
+    data_manifest: $data_label,
     data_manifest_hash: $data_hash,
     ocr_extraction_run: $ocr_run,
     ocr_shard_count: $shard_count,

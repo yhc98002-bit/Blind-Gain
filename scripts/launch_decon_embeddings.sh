@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 8 ]]; then
-  echo "Usage: $0 NODE GPU KIND MODEL TRAIN_RECORDS EVAL_RECORDS BATCH_SIZE RUN_TAG" >&2
+if [[ $# -lt 8 || $# -gt 9 ]]; then
+  echo "Usage: $0 NODE GPU KIND MODEL TRAIN_RECORDS EVAL_RECORDS BATCH_SIZE RUN_TAG [DATA_LABEL]" >&2
   exit 2
 fi
 
@@ -14,6 +14,7 @@ TRAIN_RECORDS="$5"
 EVAL_RECORDS="$6"
 BATCH_SIZE="$7"
 RUN_TAG="$8"
+DATA_LABEL="${9:-Geometry3K train and available Layer-1 records}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ ! "${GPU}" =~ ^[0-7]$ || ! "${KIND}" =~ ^(image|text)$ || ! "${BATCH_SIZE}" =~ ^[1-9][0-9]*$ ]]; then
@@ -53,6 +54,7 @@ jq -n \
   --arg data_hash "${DATA_HASH}" \
   --arg kind "${KIND}" \
   --arg model "${MODEL}" \
+  --arg data_label "${DATA_LABEL}" \
   --arg command "${COMMAND}" \
   --arg start_time_utc "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg output "${OUTPUT}" \
@@ -62,9 +64,13 @@ jq -n \
     job_type: "p1_10_decon_embedding_extraction",
     node: $node,
     gpu_allocation: [$gpu],
+    gpu_ids: [$gpu],
+    tensor_parallel_width: 1,
+    replica_count: 1,
+    placement_justification: "Single-GPU feature extraction; the encoder fits on one GPU and no tensor parallelism is required.",
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "Geometry3K train and available Layer-1 records",
+    data_manifest: $data_label,
     data_manifest_hash: $data_hash,
     embedding_kind: $kind,
     model_revision: $model,
