@@ -1,0 +1,4 @@
+# Main-Phase Deviations Log
+
+- 2026-07-16 | M2 | The first readout config contained three incorrect immutable run-directory timestamps and failed before opening scientific rows; the corrected v2 manifest retained the audited hashes. The complete machine analysis then exposed a Markdown-only frozen category-identifier bug, so the machine JSON was preserved and Markdown was rendered from it after a fixture-backed identifier fix; no scientific value was recomputed.
+- 2026-07-16 | M11 | The pre-existing scheduler used the fourth exact R19 marker as its only priority gate and launched eight lower-priority InternVL cells before M5/seed-2 placement. Two blind cells failed and six FlipTrack cells remain running; they were not terminated. Remaining M11 cells are held behind the PI-ordered M5/seed-2 work.
