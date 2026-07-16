@@ -144,6 +144,44 @@ def load_geometry3k_records(manifest: str | Path, split: str = "train") -> list[
     return records
 
 
+def load_virl39k_records(parquet_path: str | Path, image_root: str | Path) -> list[dict[str, Any]]:
+    """Load the full ViRL39K release as item-linked decontamination records."""
+    from src.data.virl39k_loader import load_rows
+
+    records: list[dict[str, Any]] = []
+    for row in load_rows(parquet_path, image_root):
+        image_paths = row["image_paths"]
+        relative_paths = row["relative_image_paths"]
+        if not image_paths:
+            raise ValueError(f"ViRL39K row has no images: {row['qid']}")
+        if len(image_paths) != len(relative_paths):
+            raise ValueError(f"ViRL39K image-path accounting mismatch: {row['qid']}")
+        for image_index, (image_path, relative_path) in enumerate(zip(image_paths, relative_paths)):
+            record = _record(
+                dataset="virl39k",
+                split="train",
+                item_id=row["qid"],
+                image_index=image_index,
+                image_path=image_path,
+                question=row["question"],
+                answer=row["answer"],
+                provenance_id=(
+                    f"TIGER-Lab/ViRL39K:{row['source']}:{row['qid']}:image{image_index}"
+                ),
+            )
+            record.update(
+                {
+                    "category": row["category"],
+                    "source": row["source"],
+                    "relative_image_path": relative_path,
+                    "pass_rate_32b_trained": row["pass_rate_32b_trained"],
+                    "pass_rate_7b_base": row["pass_rate_7b_base"],
+                }
+            )
+            records.append(record)
+    return records
+
+
 def _parse_paths(value: Any) -> list[str]:
     if isinstance(value, str) and value.strip().startswith("["):
         parsed = ast.literal_eval(value)
@@ -160,6 +198,8 @@ def load_layer1_records(
     blink_tsv: str | Path,
     mmvp_tsv: str | Path | None = None,
     hallusion_tsv: str | Path | None = None,
+    mathverse_tsv: str | Path | None = None,
+    mmmu_tsv: str | Path | None = None,
 ) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     mmstar = pd.read_csv(mmstar_tsv, sep="\t")
@@ -246,6 +286,44 @@ def load_layer1_records(
                     image_applicable=not placeholder,
                 )
             )
+
+    if mathverse_tsv is not None:
+        mathverse = pd.read_csv(mathverse_tsv, sep="\t")
+        for row in mathverse.to_dict(orient="records"):
+            records.append(
+                _record(
+                    dataset="mathverse",
+                    split="testmini",
+                    item_id=row["index"],
+                    image_index=0,
+                    image_path=row["image_path"],
+                    question=row["question"],
+                    answer=row["answer"],
+                    provenance_id=(
+                        f"MathVerse:{row.get('source', 'unknown')}:"
+                        f"{row.get('source_sample_index', row['index'])}"
+                    ),
+                )
+            )
+
+    if mmmu_tsv is not None:
+        mmmu = pd.read_csv(mmmu_tsv, sep="\t")
+        for row in mmmu.to_dict(orient="records"):
+            for image_index, path in enumerate(_parse_paths(row["image_path"])):
+                records.append(
+                    _record(
+                        dataset="mmmu",
+                        split=str(row.get("split", "dev+validation")),
+                        item_id=row["index"],
+                        image_index=image_index,
+                        image_path=path,
+                        question=row["question"],
+                        answer=row["answer"],
+                        provenance_id=(
+                            f"MMMU:{row.get('source_id', row['index'])}:image{image_index}"
+                        ),
+                    )
+                )
     return records
 
 

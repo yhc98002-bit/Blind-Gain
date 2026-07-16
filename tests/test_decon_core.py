@@ -3,6 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+import pytest
 from PIL import Image, ImageDraw
 
 from src.decon.core import (
@@ -13,6 +17,8 @@ from src.decon.core import (
     hamming,
     normalize_text,
     phash,
+    load_layer1_records,
+    load_virl39k_records,
     word_ngrams,
 )
 from src.decon.embedding_compare import cosine_candidates, merge_embedding_signals
@@ -118,6 +124,118 @@ def test_embedding_entities_deduplicate_images_but_not_questions(tmp_path: Path)
     )
     assert len(embedding_entities(rows, "image")) == 1
     assert [identifier for identifier, _ in embedding_entities(rows, "text")] == ["first", "second"]
+
+
+def test_virl_loader_preserves_item_linkage_and_strata_for_multi_image_rows(tmp_path: Path) -> None:
+    image_dir = tmp_path / "images"
+    image_dir.mkdir()
+    _image(image_dir / "a.png")
+    _image(image_dir / "b.png", offset=2)
+    table = pa.Table.from_pylist(
+        [
+            {
+                "question": "<image><image> Which diagram is symmetric?",
+                "answer": "\\boxed{A}",
+                "PassRate_32BTrained": 0.5,
+                "PassRate_7BBase": 0.25,
+                "category": "Spatial Reasoning",
+                "source": "fixture-source",
+                "qid": "fixture-qid",
+                "image": ["images/a.png", "images/b.png"],
+            }
+        ]
+    )
+    parquet = tmp_path / "virl.parquet"
+    pq.write_table(table, parquet)
+
+    records = load_virl39k_records(parquet, tmp_path)
+
+    assert [record["record_id"] for record in records] == [
+        "virl39k:train:fixture-qid:image0",
+        "virl39k:train:fixture-qid:image1",
+    ]
+    assert {record["item_id"] for record in records} == {"fixture-qid"}
+    assert {record["source"] for record in records} == {"fixture-source"}
+    assert {record["category"] for record in records} == {"Spatial Reasoning"}
+
+
+def test_virl_loader_rejects_image_free_rows_in_decon_path(tmp_path: Path) -> None:
+    table = pa.Table.from_pylist(
+        [
+            {
+                "question": "No image",
+                "answer": "1",
+                "PassRate_32BTrained": 0.0,
+                "PassRate_7BBase": 0.0,
+                "category": "fixture",
+                "source": "fixture",
+                "qid": "missing-images",
+                "image": [],
+            }
+        ]
+    )
+    parquet = tmp_path / "virl.parquet"
+    pq.write_table(table, parquet)
+
+    with pytest.raises(ValueError, match="has no images"):
+        load_virl39k_records(parquet, tmp_path)
+
+
+def test_layer1_loader_expands_mmmu_multi_image_rows(tmp_path: Path) -> None:
+    images = tmp_path / "images"
+    images.mkdir()
+    paths = []
+    for name, offset in (("a.png", 0), ("b.png", 2)):
+        path = images / name
+        _image(path, offset=offset)
+        paths.append(str(path))
+
+    def write_tsv(name: str, rows: list[dict[str, object]]) -> Path:
+        path = tmp_path / name
+        pd.DataFrame(rows).to_csv(path, sep="\t", index=False)
+        return path
+
+    mmstar = write_tsv("mmstar.tsv", [{"index": 1, "question": "q", "answer": "a"}])
+    _image(tmp_path / "1.png")
+    mathvista = write_tsv(
+        "mathvista.tsv",
+        [{"index": 1, "image_path": paths[0], "question": "q", "answer": "a"}],
+    )
+    blink = write_tsv(
+        "blink.tsv",
+        [{"index": 1, "image_path": paths[0], "question": "q", "answer": "a"}],
+    )
+    mathverse = write_tsv(
+        "mathverse.tsv",
+        [{"index": 1, "image_path": paths[0], "question": "q", "answer": "a"}],
+    )
+    mmmu = write_tsv(
+        "mmmu.tsv",
+        [
+            {
+                "index": "multi",
+                "image_path": repr(paths),
+                "question": "compare both",
+                "answer": "A",
+                "split": "validation",
+            }
+        ],
+    )
+
+    records = load_layer1_records(
+        mmstar,
+        tmp_path,
+        mathvista,
+        blink,
+        mathverse_tsv=mathverse,
+        mmmu_tsv=mmmu,
+    )
+    mmmu_records = [record for record in records if record["dataset"] == "mmmu"]
+
+    assert [record["record_id"] for record in mmmu_records] == [
+        "mmmu:validation:multi:image0",
+        "mmmu:validation:multi:image1",
+    ]
 
 
 def test_text_only_placeholder_is_excluded_from_image_signals_but_kept_for_text(tmp_path: Path) -> None:
