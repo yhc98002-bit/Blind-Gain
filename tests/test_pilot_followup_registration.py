@@ -64,7 +64,8 @@ def test_seed2_queue_does_not_open_metrics_or_preempt() -> None:
     assert "reward_shadow.jsonl" not in source
     assert "os.kill" not in source
     assert "kill -9" not in source
-    assert 'get("status") == "launched"' in source
+    assert 'get("status") in {"integrity_running", "complete"}' in source
+    assert "node == reserved_node and not longhorizon_launched" in source
     assert "streaks[node][gpu] >= 2" in source
 
 

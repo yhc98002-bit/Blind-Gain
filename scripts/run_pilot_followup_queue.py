@@ -56,6 +56,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, choices=(2, 3), required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--m5-queue-state", type=Path, required=True)
+    parser.add_argument("--m5-integrity-state", type=Path, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
     args = parser.parse_args()
     state_path = args.run_dir / "queue_state.json"
@@ -64,7 +65,7 @@ def main() -> None:
     records = {arm: {"status": "pending", "training_run": None} for arm in ARMS}
     state: dict[str, Any] = {
         "schema_version": "blind-gains.pilot-followup-queue.v1",
-        "status": "waiting_for_m5_launch",
+        "status": "waiting_for_m5_node_reservation",
         "seed": args.seed,
         "arms": records,
         "created_utc": _now(),
@@ -73,9 +74,14 @@ def main() -> None:
     }
     _write(state_path, state)
 
+    reserved_node: str | None = None
     while True:
-        if args.m5_queue_state.is_file() and _read(args.m5_queue_state).get("status") == "launched":
-            break
+        if args.m5_integrity_state.is_file():
+            integrity_state = _read(args.m5_integrity_state)
+            selected = integrity_state.get("selected_node")
+            if integrity_state.get("status") in {"integrity_running", "complete"} and selected in {"an12", "an29"}:
+                reserved_node = str(selected)
+                break
         time.sleep(args.poll_seconds)
 
     streaks = {node: {gpu: 0 for gpu in range(8)} for node in ("an12", "an29")}
@@ -101,6 +107,10 @@ def main() -> None:
             return
 
         snapshots = {node: node_snapshot(node) for node in ("an12", "an29")}
+        longhorizon_launched = (
+            args.m5_queue_state.is_file()
+            and _read(args.m5_queue_state).get("status") == "launched"
+        )
         for node, snapshot in snapshots.items():
             for gpu, values in snapshot["gpus"].items():
                 free = not snapshot["project_trainer_active"] and values["memory_mib"] <= 1024 and values["utilization_pct"] <= 10
@@ -108,6 +118,8 @@ def main() -> None:
 
         pending = [arm for arm in ARMS if records[arm]["status"] == "pending"]
         for node in ("an12", "an29"):
+            if node == reserved_node and not longhorizon_launched:
+                continue
             if not pending or snapshots[node]["project_trainer_active"]:
                 continue
             stable = [gpu for gpu in range(8) if streaks[node][gpu] >= 2]
@@ -135,6 +147,8 @@ def main() -> None:
             "arms": records,
             "node_snapshots": snapshots,
             "free_streaks": streaks,
+            "m5_reserved_node": reserved_node,
+            "m5_longhorizon_launched": longhorizon_launched,
             "updated_utc": _now(),
         })
         _write(state_path, state)
