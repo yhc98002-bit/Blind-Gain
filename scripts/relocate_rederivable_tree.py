@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -12,10 +13,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ops.storage_guard import check_storage
+from src.ops.storage_guard import (
+    DEFAULT_SHARED_FLOOR_BYTES,
+    DEFAULT_SHARED_QUOTA_BYTES,
+    Tier,
+    allocated_bytes_from_snapshot,
+    check_storage,
+)
 
 
 SCRATCH_FLOOR_BYTES = 40 * 1024**3
+SHARED_QUOTA_ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289")
+SHARED_USAGE_SNAPSHOT = (
+    Path(__file__).resolve().parents[1] / "reports/storage_usage_snapshot.json"
+)
 
 
 def _sha256(path: Path) -> str:
@@ -52,6 +63,9 @@ def relocate_tree(
     destination: Path,
     manifest_path: Path,
     operation: str,
+    destination_tier: Tier,
+    shared_quota_root: Path = SHARED_QUOTA_ROOT,
+    shared_usage_snapshot: Path = SHARED_USAGE_SNAPSHOT,
 ) -> dict[str, Any]:
     source = source.resolve()
     destination = destination.absolute()
@@ -63,13 +77,26 @@ def relocate_tree(
     source_inventory = inventory_tree(source)
     source_bytes = sum(record["size_bytes"] for record in source_inventory)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    guard = check_storage(
-        tier="T",
-        path=destination.parent,
-        operation=operation,
-        required_bytes=source_bytes,
-        scratch_floor_bytes=SCRATCH_FLOOR_BYTES,
-    )
+    guard_arguments: dict[str, Any] = {
+        "tier": destination_tier,
+        "path": destination.parent,
+        "operation": operation,
+        "required_bytes": source_bytes,
+    }
+    if destination_tier == "S":
+        guard_arguments.update(
+            shared_quota_root=shared_quota_root,
+            shared_quota_bytes=DEFAULT_SHARED_QUOTA_BYTES,
+            shared_floor_bytes=DEFAULT_SHARED_FLOOR_BYTES,
+            usage_probe=functools.partial(
+                allocated_bytes_from_snapshot,
+                shared_usage_snapshot,
+                max_age_seconds=6 * 60 * 60,
+            ),
+        )
+    else:
+        guard_arguments["scratch_floor_bytes"] = SCRATCH_FLOOR_BYTES
+    guard = check_storage(**guard_arguments)
     if not guard.allowed:
         raise RuntimeError(f"storage_guard refused relocation: {guard.reason}")
 
@@ -124,12 +151,20 @@ def main() -> None:
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--operation", required=True)
+    parser.add_argument("--destination-tier", choices=("S", "T"), required=True)
+    parser.add_argument("--shared-quota-root", type=Path, default=SHARED_QUOTA_ROOT)
+    parser.add_argument(
+        "--shared-usage-snapshot", type=Path, default=SHARED_USAGE_SNAPSHOT
+    )
     args = parser.parse_args()
     payload = relocate_tree(
         source=args.source,
         destination=args.destination,
         manifest_path=args.manifest,
         operation=args.operation,
+        destination_tier=args.destination_tier,
+        shared_quota_root=args.shared_quota_root,
+        shared_usage_snapshot=args.shared_usage_snapshot,
     )
     print(json.dumps(payload, sort_keys=True))
 

@@ -1,0 +1,225 @@
+{
+  "completed_at_utc": "2026-07-16T17:08:04.187284+00:00",
+  "destination": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive/login_tmp_checkpoint_archive/mech_a1_real_an12_20260713T031454Z",
+  "file_count": 39,
+  "files": [
+    {
+      "path": "global_step_20/actor/huggingface/added_tokens.json",
+      "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+      "size_bytes": 605
+    },
+    {
+      "path": "global_step_20/actor/huggingface/chat_template.jinja",
+      "sha256": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb",
+      "size_bytes": 1017
+    },
+    {
+      "path": "global_step_20/actor/huggingface/config.json",
+      "sha256": "67bebe299d8c1738a78882055b931d1fe04f36fa73949544971da2dfa5c6f41f",
+      "size_bytes": 3391
+    },
+    {
+      "path": "global_step_20/actor/huggingface/generation_config.json",
+      "sha256": "b12f4433fa536a72427ffcffd7caa5c5a9b334e40642af47bc514b14bf4b0c55",
+      "size_bytes": 147
+    },
+    {
+      "path": "global_step_20/actor/huggingface/merged_checkpoint.source.sha256",
+      "sha256": "101f1b2f593ce962050e8d51d7ff08e1bfb6eecf8b5ac48a21d9c830620e6f46",
+      "size_bytes": 1231
+    },
+    {
+      "path": "global_step_20/actor/huggingface/merges.txt",
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "size_bytes": 1671853
+    },
+    {
+      "path": "global_step_20/actor/huggingface/model-00001-of-00002.safetensors",
+      "sha256": "103e76f692b00f78376c04ab8f034c0dc3838e7275e0646248c638d824aef939",
+      "size_bytes": 4410764248
+    },
+    {
+      "path": "global_step_20/actor/huggingface/model-00002-of-00002.safetensors",
+      "sha256": "bc5fa966e7dfa7a279ddfad655ed1be3ee9458e11e425397413fd826b1b55f45",
+      "size_bytes": 3720903664
+    },
+    {
+      "path": "global_step_20/actor/huggingface/model.safetensors.index.json",
+      "sha256": "c2f0398c8fbc30751ff9279c1ca0112a92c9f35b2f008786d73e58a97d87a786",
+      "size_bytes": 65542
+    },
+    {
+      "path": "global_step_20/actor/huggingface/preprocessor_config.json",
+      "sha256": "276e1dbe46dd567fce6e587665266ede535f42ab08d46f3d7febea17cb37abcd",
+      "size_bytes": 791
+    },
+    {
+      "path": "global_step_20/actor/huggingface/special_tokens_map.json",
+      "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+      "size_bytes": 613
+    },
+    {
+      "path": "global_step_20/actor/huggingface/tokenizer.json",
+      "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+      "size_bytes": 11421896
+    },
+    {
+      "path": "global_step_20/actor/huggingface/tokenizer_config.json",
+      "sha256": "f64d944a98d2d9901581be7a5f36b626ff2dc0d5b7d5dedb412412ca39606df0",
+      "size_bytes": 4750
+    },
+    {
+      "path": "global_step_20/actor/huggingface/video_preprocessor_config.json",
+      "sha256": "2e82d384445cd3056b851d36b6481b9a9df99362b85e9d666317c1f0331fc6aa",
+      "size_bytes": 935
+    },
+    {
+      "path": "global_step_20/actor/huggingface/vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "size_bytes": 2776833
+    },
+    {
+      "path": "global_step_40/actor/huggingface/added_tokens.json",
+      "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+      "size_bytes": 605
+    },
+    {
+      "path": "global_step_40/actor/huggingface/chat_template.jinja",
+      "sha256": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb",
+      "size_bytes": 1017
+    },
+    {
+      "path": "global_step_40/actor/huggingface/config.json",
+      "sha256": "67bebe299d8c1738a78882055b931d1fe04f36fa73949544971da2dfa5c6f41f",
+      "size_bytes": 3391
+    },
+    {
+      "path": "global_step_40/actor/huggingface/generation_config.json",
+      "sha256": "b12f4433fa536a72427ffcffd7caa5c5a9b334e40642af47bc514b14bf4b0c55",
+      "size_bytes": 147
+    },
+    {
+      "path": "global_step_40/actor/huggingface/merged_checkpoint.source.sha256",
+      "sha256": "44c3d86203b3f669434ece4f98f7068ac796e266e90657c5721de68449c70f58",
+      "size_bytes": 1231
+    },
+    {
+      "path": "global_step_40/actor/huggingface/merges.txt",
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "size_bytes": 1671853
+    },
+    {
+      "path": "global_step_40/actor/huggingface/model-00001-of-00002.safetensors",
+      "sha256": "c82e4572c6876eacd635f60afd8495dac4763c2ae43dad46b01bb57857349c4d",
+      "size_bytes": 4994325408
+    },
+    {
+      "path": "global_step_40/actor/huggingface/model-00002-of-00002.safetensors",
+      "sha256": "4dadbd625bfe4b4bcf7e36a9bb1c25313cb32ae78869bd7b482adbd0212813d2",
+      "size_bytes": 3137342600
+    },
+    {
+      "path": "global_step_40/actor/huggingface/model.safetensors.index.json",
+      "sha256": "2830012222e68f0cb6b1820483e3884a333b7f7a738e483a719f902d0a16257c",
+      "size_bytes": 65542
+    },
+    {
+      "path": "global_step_40/actor/huggingface/preprocessor_config.json",
+      "sha256": "276e1dbe46dd567fce6e587665266ede535f42ab08d46f3d7febea17cb37abcd",
+      "size_bytes": 791
+    },
+    {
+      "path": "global_step_40/actor/huggingface/special_tokens_map.json",
+      "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+      "size_bytes": 613
+    },
+    {
+      "path": "global_step_40/actor/huggingface/tokenizer.json",
+      "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+      "size_bytes": 11421896
+    },
+    {
+      "path": "global_step_40/actor/huggingface/tokenizer_config.json",
+      "sha256": "f64d944a98d2d9901581be7a5f36b626ff2dc0d5b7d5dedb412412ca39606df0",
+      "size_bytes": 4750
+    },
+    {
+      "path": "global_step_40/actor/huggingface/video_preprocessor_config.json",
+      "sha256": "2e82d384445cd3056b851d36b6481b9a9df99362b85e9d666317c1f0331fc6aa",
+      "size_bytes": 935
+    },
+    {
+      "path": "global_step_40/actor/huggingface/vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "size_bytes": 2776833
+    },
+    {
+      "path": "global_step_40/actor/model_world_size_4_rank_0.pt",
+      "sha256": "9acf584e934391e3ce284a87d13d95e3044f84b46e4dcc348553f98e4d0449ca",
+      "size_bytes": 4066162202
+    },
+    {
+      "path": "global_step_40/actor/model_world_size_4_rank_1.pt",
+      "sha256": "f88bee8c5a031a706f2a523cc392b1619ae234471084ed5b927c5534fd9b7b08",
+      "size_bytes": 4066162202
+    },
+    {
+      "path": "global_step_40/actor/model_world_size_4_rank_2.pt",
+      "sha256": "b0f0cc755fe4b558e968b0886850b662c325f5d4d7b401ebb8f0869fdc9209e5",
+      "size_bytes": 4066162202
+    },
+    {
+      "path": "global_step_40/actor/model_world_size_4_rank_3.pt",
+      "sha256": "833697407d0facb20ba0ed9e95ee338aeee9709ddef3934a2ba677b79a4f0c09",
+      "size_bytes": 4066162202
+    },
+    {
+      "path": "global_step_40/actor/optim_world_size_4_rank_0.pt",
+      "sha256": "1b2ce431cf7419d61aeed9b3bb346b7b83cfffcb87f2db4501f3537e443373f8",
+      "size_bytes": 6172412241
+    },
+    {
+      "path": "global_step_40/actor/optim_world_size_4_rank_1.pt",
+      "sha256": "b39eb35b7adf1158c6c53f82b7717c37727cbc2c1e8ffdd156070f62a5b5fb75",
+      "size_bytes": 6172412241
+    },
+    {
+      "path": "global_step_40/actor/optim_world_size_4_rank_2.pt",
+      "sha256": "106aaba4e718a0ad0ab25cd46451b11abf3c09d371a50905c34ddf468a097f93",
+      "size_bytes": 6172412241
+    },
+    {
+      "path": "global_step_40/actor/optim_world_size_4_rank_3.pt",
+      "sha256": "55eeae3a6887ba55ec74ef8e632ff8534fac03abdc1a2c64bf6eceb460d3c73d",
+      "size_bytes": 6172412241
+    },
+    {
+      "path": "global_step_40/actor/raw_training_state.source.sha256",
+      "sha256": "e125d1b12345faf7557a2e3e924fb28a569f32c8c31f0f4ba6e563f12d1131c2",
+      "size_bytes": 760
+    }
+  ],
+  "operation": "superseded_a1_archive_sweep",
+  "schema_version": "blind-gains.rederivable-relocation.v1",
+  "source": "/tmp/blindgain_checkpoint_archive/mech_a1_real_an12_20260713T031454Z",
+  "source_replaced_by_symlink": true,
+  "status": "relocated",
+  "storage_guard": {
+    "capacity_bytes": null,
+    "checked_at_utc": "2026-07-16T17:00:56Z",
+    "event": "storage_guard",
+    "filesystem_type": "lustre",
+    "floor_bytes": 42949672960,
+    "free_bytes_after": 9158762714435876,
+    "free_bytes_before": 9158819963969536,
+    "operation": "superseded_a1_archive_sweep",
+    "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive/login_tmp_checkpoint_archive",
+    "reason": "scratch free space remains at or above the configured floor",
+    "required_bytes": 57249533660,
+    "schema_version": 1,
+    "status": "pass",
+    "tier": "T",
+    "used_bytes": null
+  },
+  "total_bytes": 57249533660
+}

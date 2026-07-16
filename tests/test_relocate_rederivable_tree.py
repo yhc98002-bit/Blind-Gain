@@ -45,6 +45,7 @@ def test_relocation_hashes_then_replaces_source_with_symlink(
         destination=destination,
         manifest_path=manifest,
         operation="fixture",
+        destination_tier="T",
     )
 
     assert source.is_symlink()
@@ -66,3 +67,53 @@ def test_inventory_rejects_symlink_payload(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="contains a symlink"):
         inventory_tree(source)
+
+
+def test_shared_destination_uses_quota_guard_not_scratch_guard(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "scratch" / "cache"
+    source.mkdir(parents=True)
+    (source / "payload.bin").write_bytes(b"shared-destination")
+    destination = tmp_path / "shared" / "cache"
+    manifest = tmp_path / "manifest.json"
+    observed: dict[str, object] = {}
+    allowed = GuardResult(
+        schema_version=1,
+        event="storage_guard",
+        checked_at_utc="2026-07-16T00:00:00Z",
+        status="pass",
+        tier="S",
+        operation="fixture",
+        path=str(destination.parent),
+        required_bytes=len(b"shared-destination"),
+        capacity_bytes=100,
+        used_bytes=10,
+        free_bytes_before=90,
+        free_bytes_after=72,
+        floor_bytes=20,
+        filesystem_type=None,
+        reason="ok",
+    )
+
+    def capture_guard(**kwargs: object) -> GuardResult:
+        observed.update(kwargs)
+        return allowed
+
+    monkeypatch.setattr(
+        "scripts.relocate_rederivable_tree.check_storage", capture_guard
+    )
+    relocate_tree(
+        source=source,
+        destination=destination,
+        manifest_path=manifest,
+        operation="fixture",
+        destination_tier="S",
+        shared_quota_root=tmp_path / "shared",
+        shared_usage_snapshot=tmp_path / "usage.json",
+    )
+
+    assert observed["tier"] == "S"
+    assert observed["shared_quota_root"] == tmp_path / "shared"
+    assert "usage_probe" in observed
+    assert "scratch_floor_bytes" not in observed
