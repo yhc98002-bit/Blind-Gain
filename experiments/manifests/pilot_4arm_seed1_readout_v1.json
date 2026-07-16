@@ -1,0 +1,96 @@
+{
+  "schema_version": "blind-gains.pilot-fourarm-seed1-readout-config.v1",
+  "seed": 1,
+  "bootstrap_draws": 5000,
+  "bootstrap_seed": 20260716,
+  "preregistration_sha256": "fb7e220f1dee62a01a0ce9ee8c4a9f1f1543f189239eb0e83466ed64ad1c1edb",
+  "training_runs": {
+    "a1_real": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z",
+    "a2_gray": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z",
+    "a2b_noimage": "experiments/runs/mech_a2b_noimage_retry4_an29_20260713T113556Z",
+    "a3_caption": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z"
+  },
+  "training_metric_segments": {
+    "a1_real": [
+      {
+        "path": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z/source_log_prefix_through_step60.jsonl",
+        "sha256": "c4c26f92a086552c56eff3b90cf1e6ad87be397983bfcfad15be827e5b058d42",
+        "start_step": 1,
+        "end_step": 60
+      },
+      {
+        "path": "checkpoints/pilot/mech_a1_real_resume60/experiment_log.jsonl",
+        "sha256": "0aea80663259792f2171af56c71e1bdd7fcf3a5213f8cbbb3fe75af48185321c",
+        "start_step": 61,
+        "end_step": 100
+      }
+    ],
+    "a2_gray": [
+      {
+        "path": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z/source_log_prefix_through_step60.jsonl",
+        "sha256": "f8ea8564be425890adf470382dce09147c066b0c9400026d30d20492a6be4a10",
+        "start_step": 1,
+        "end_step": 60
+      },
+      {
+        "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/experiment_log.jsonl",
+        "sha256": "754f7e9052075834f89c159ac5ad3a6b6abba75c038eab1b48dded9b1fe5f4e1",
+        "start_step": 61,
+        "end_step": 100
+      }
+    ],
+    "a2b_noimage": [
+      {
+        "path": "checkpoints/pilot/mech_a2b_noimage_retry4/experiment_log.jsonl",
+        "sha256": "91c7b4766488a3e1e50528ed46b6d51fe0071dcf2cacf64a3964aac0c7d1fc5a",
+        "start_step": 1,
+        "end_step": 100
+      }
+    ],
+    "a3_caption": [
+      {
+        "path": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z/source_log_prefix_through_step20.jsonl",
+        "sha256": "cee3c5cd757848e1cac8bd34615df2f90df9c7819bf0319a3f63c3268843ffc4",
+        "start_step": 1,
+        "end_step": 20
+      },
+      {
+        "path": "checkpoints/pilot/mech_a3_caption_resume20/experiment_log.jsonl",
+        "sha256": "1c8faa20ff992bd5c8c5007f973140f12d3de38f15fcc2b0366d84dc3b3f5f7c",
+        "start_step": 21,
+        "end_step": 100
+      }
+    ]
+  },
+  "geo_baselines": {
+    "a1_real": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",
+    "a2_gray": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_gray_login_20260712T050905Z/per_item.jsonl",
+    "a2b_noimage": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T050905Z/per_item.jsonl",
+    "a3_caption": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_caption_login_20260712T050905Z/per_item.jsonl"
+  },
+  "geo_audits": {
+    "a1_real": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a1_real_seed1_step100_an12_gpu4_20260715T210056Z_20260715T211733Z/audit.json",
+    "a2_gray": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a2_gray_seed1_step100_an12_gpu4_20260716T155345Z_20260716T161002Z/audit.json",
+    "a2b_noimage": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a2b_noimage_seed1_step100_an12_gpu5_20260715T210056Z_20260715T211906Z/audit.json",
+    "a3_caption": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a3_caption_seed1_step100_an12_gpu6_20260715T210056Z_20260715T212255Z/audit.json"
+  },
+  "r19_markers": {
+    "a1_real": {
+      "60": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z/step100_fliptrack_complete.json"
+    },
+    "a2_gray": {
+      "60": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z/step100_fliptrack_complete.json"
+    },
+    "a2b_noimage": {
+      "60": "experiments/runs/mech_a2b_noimage_retry4_an29_20260713T113556Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a2b_noimage_retry4_an29_20260713T113556Z/step100_fliptrack_complete.json"
+    },
+    "a3_caption": {
+      "60": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z/step100_fliptrack_complete.json"
+    }
+  },
+  "r19_base_run": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z"
+}
