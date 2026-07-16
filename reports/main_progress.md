@@ -4,7 +4,7 @@ M2 | pass | reports/pilot_4arm_seed1_results_v1.md + .json: all A1/A2/A2b/A3 inp
 M3 | blocked | docs/registered_pilot_seed23_v1.md + reports/m3_seed23_launch_readiness_v1.md: seed-2/3 configs are hash-registered; the corrected seed-2 queue reserves an12 for M5 and is seeking four stable GPUs on an29 without opening performance values
 M4 | pass | reports/registered_extensions_authorization_v4.md + .json: PI rule, exact merged-at-HEAD marker, M8-derived A2 retention, and ViRL stratification amendment are registered; M5 is authorized after restore integrity while M6/M7/M9 retain readiness dependencies
 M5 | blocked | reports/m5_restore_resume_integrity.{md,json} + reports/m5_longhorizon_launch_v1.md: the one-step restore audit passed 8/8 engineering checks and the fixed terminal step-400 run is active on an12 GPUs 0-3 with retention and relocation-independent evaluation watchers
-M6 | blocked | requires merged M4, advantage-tensor equivalence, and disjoint pair-corpus evidence
+M6 | blocked | reports/mini_a5_plumbing_audit_v1.md: exact CP/member rewards, shared-pair metadata, unique-pair GRPO equivalence, isolated EasyR1 overlay, and adversarial fixtures pass; immutable mass corpus, machine equivalence artifact, step-0 reward statistics, matched configs, and GPU smoke remain required
 M7 | blocked | requires merged M4 and confirmed M1 fork ruling
 M8 | blocked | reports/flagship_7b_readiness_v1.md + reports/blind_solvability_virl39k_7b_sample_v1.md + _audited.{md,json}: all five exact 4,096-row inference conditions and the independent audit are complete, but the frozen training subset, full own-caption store, and four hashed flagship configs remain pending
 M9 | blocked | requires merged M4 and completed M8

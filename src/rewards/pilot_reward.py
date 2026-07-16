@@ -149,6 +149,35 @@ def _disagreement_reason(
     )
 
 
+def grade_response_accuracy(
+    response: str,
+    ground_truth: str,
+    *,
+    symbolic_grader_timeout_seconds: float = DEFAULT_SYMBOLIC_GRADER_TIMEOUT_SECONDS,
+) -> dict[str, Any]:
+    """Grade one response with the pilot's immutable extraction/precedence rule."""
+
+    extracted = extract_answer_span(response)
+    mathruler_correct, mathruler_error = _mathruler_grade(
+        extracted.span,
+        ground_truth,
+        symbolic_grader_timeout_seconds,
+    )
+    canonical_correct = bool(answers_match(extracted.span, ground_truth))
+    reason = _disagreement_reason(
+        mathruler_correct=mathruler_correct,
+        canonical_correct=canonical_correct,
+        mathruler_error=mathruler_error,
+    )
+    return {
+        "extracted": extracted,
+        "mathruler_correct": mathruler_correct,
+        "mathruler_error": mathruler_error,
+        "canonical_correct": canonical_correct,
+        "reward_disagreement_reason": reason,
+    }
+
+
 def _append_shadow(path: Path, record: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     line = json.dumps(record, ensure_ascii=True, sort_keys=True, separators=(",", ":")) + "\n"
@@ -178,19 +207,17 @@ def compute_score(
         raise ValueError(f"format_weight must be in [0, 1], found {format_weight}")
     response = str(reward_input["response"])
     ground_truth = str(reward_input["ground_truth"]).strip()
-    extracted = extract_answer_span(response)
-    mathruler_correct, mathruler_error = _mathruler_grade(
-        extracted.span,
+    grade = grade_response_accuracy(
+        response,
         ground_truth,
-        symbolic_grader_timeout_seconds,
+        symbolic_grader_timeout_seconds=symbolic_grader_timeout_seconds,
     )
-    canonical_correct = bool(answers_match(extracted.span, ground_truth))
+    extracted = grade["extracted"]
+    mathruler_correct = bool(grade["mathruler_correct"])
+    mathruler_error = grade["mathruler_error"]
+    canonical_correct = bool(grade["canonical_correct"])
     contract_valid = bool(response_satisfies_contract(response))
-    reason = _disagreement_reason(
-        mathruler_correct=mathruler_correct,
-        canonical_correct=canonical_correct,
-        mathruler_error=mathruler_error,
-    )
+    reason = str(grade["reward_disagreement_reason"])
     accuracy_reward = float(mathruler_correct)
     format_reward = float(contract_valid)
     training_reward = (1.0 - format_weight) * accuracy_reward + format_weight * format_reward

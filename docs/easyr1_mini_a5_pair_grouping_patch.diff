@@ -1,0 +1,172 @@
+diff --git a/verl/trainer/config.py b/verl/trainer/config.py
+index e8fe3fa..cbfd0f1 100644
+--- a/verl/trainer/config.py
++++ b/verl/trainer/config.py
+@@ -98,6 +98,15 @@ class AlgorithmConfig:
+     """filter out low reward samples if online filtering"""
+     filter_high: float = 0.99
+     """filter out high reward samples if online filtering"""
++    pair_group_mode: str = "none"
++    """Blind Gains pair grouping: `none`, `member`, or `joint`."""
++
++    def post_init(self):
++        if self.pair_group_mode not in {"none", "member", "joint"}:
++            raise ValueError(
++                "pair_group_mode must be one of none/member/joint, found "
++                f"{self.pair_group_mode!r}"
++            )
+ 
+ 
+ @dataclass
+@@ -166,6 +175,17 @@ class PPOConfig:
+         self.worker.actor.use_kl_loss = self.algorithm.use_kl_loss
+         self.worker.actor.kl_penalty = self.algorithm.kl_penalty
+         self.worker.actor.kl_coef = self.algorithm.kl_coef
++        if self.algorithm.pair_group_mode != "none":
++            if self.data.shuffle:
++                raise ValueError(
++                    "pair-grouped training requires a pre-shuffled immutable corpus "
++                    "and data.shuffle=false"
++                )
++            batch_sizes = [self.data.rollout_batch_size]
++            if self.data.mini_rollout_batch_size is not None:
++                batch_sizes.append(self.data.mini_rollout_batch_size)
++            if any(batch_size % 2 for batch_size in batch_sizes):
++                raise ValueError("pair-grouped rollout batch sizes must be even")
+ 
+     def deep_post_init(self):
+         recursive_post_init(self)
+diff --git a/verl/trainer/ray_trainer.py b/verl/trainer/ray_trainer.py
+index 9158547..af07235 100644
+--- a/verl/trainer/ray_trainer.py
++++ b/verl/trainer/ray_trainer.py
+@@ -32,6 +32,11 @@ from ray.experimental.tqdm_ray import tqdm
+ from torchdata.stateful_dataloader import StatefulDataLoader
+ from transformers import PreTrainedTokenizer, ProcessorMixin
+ 
++from src.train.cp_grouping import (
++    compute_pair_level_grpo_advantage,
++    repeated_pair_metadata,
++)
++
+ from ..protocol import DataProto, pad_dataproto_to_divisor, unpad_dataproto
+ from ..single_controller.base import Worker
+ from ..single_controller.ray import RayClassWithInitArgs, RayResourcePool, RayWorkerGroup
+@@ -134,7 +139,13 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: KLController, kl_penalty="kl"):
+     return data, metrics
+ 
+ 
+-def compute_advantage(data: DataProto, adv_estimator: AdvantageEstimator, gamma: float = 1.0, lam: float = 1.0):
++def compute_advantage(
++    data: DataProto,
++    adv_estimator: AdvantageEstimator,
++    gamma: float = 1.0,
++    lam: float = 1.0,
++    pair_group_mode: str = "none",
++):
+     """Compute advantage estimates for policy optimization."""
+     adv_inputs = {
+         "token_level_rewards": data.batch["token_level_rewards"],
+@@ -149,7 +160,18 @@ def compute_advantage(data: DataProto, adv_estimator: AdvantageEstimator, gamma:
+     if "reward_baselines" in data.batch:
+         adv_inputs["reward_baselines"] = data.batch["reward_baselines"]
+ 
+-    advantages, returns = compute_advantage_return(adv_estimator, **adv_inputs)
++    if pair_group_mode == "joint":
++        if getattr(adv_estimator, "value", adv_estimator) != AdvantageEstimator.GRPO.value:
++            raise ValueError("joint pair reward requires the GRPO advantage estimator")
++        advantages, returns = compute_pair_level_grpo_advantage(
++            token_level_rewards=adv_inputs["token_level_rewards"],
++            response_mask=adv_inputs["response_mask"],
++            pair_group_uids=data.non_tensor_batch["pair_group_uid"],
++            pair_members=data.non_tensor_batch["pair_member"],
++            pair_rollout_indices=data.non_tensor_batch["pair_rollout_index"],
++        )
++    else:
++        advantages, returns = compute_advantage_return(adv_estimator, **adv_inputs)
+     data.batch["advantages"] = advantages
+     data.batch["returns"] = returns
+     return data
+@@ -420,8 +442,18 @@ class RayPPOTrainer:
+             test_output_gen_batch = self.actor_rollout_ref_wg.generate_sequences(test_gen_batch)
+             test_output_gen_batch = unpad_dataproto(test_output_gen_batch, pad_size=pad_size * repeat_times)
+ 
++            pair_metadata = None
++            if self.config.algorithm.pair_group_mode != "none":
++                pair_metadata = repeated_pair_metadata(
++                    test_batch.non_tensor_batch["pair_group_uid"],
++                    test_batch.non_tensor_batch["pair_member"],
++                    repeat_times,
++                )
++
+             # repeat to align with repeated responses in rollout
+             test_batch = test_batch.repeat(repeat_times=repeat_times, interleave=True)
++            if pair_metadata is not None:
++                test_batch.non_tensor_batch.update(pair_metadata)
+             test_batch = test_batch.union(test_output_gen_batch)
+ 
+             # evaluate using reward_function
+@@ -489,9 +521,20 @@ class RayPPOTrainer:
+                 "video_fps": self.config.data.video_fps,
+             }
+             new_batch: DataProto = DataProto.from_single_dict(batch_dict, meta_info=meta_info)
+-            new_batch.non_tensor_batch["uid"] = np.array(
+-                [str(uuid.uuid4()) for _ in range(len(new_batch.batch))], dtype=object
+-            )
++            pair_metadata = None
++            if self.config.algorithm.pair_group_mode == "none":
++                new_batch.non_tensor_batch["uid"] = np.array(
++                    [str(uuid.uuid4()) for _ in range(len(new_batch.batch))], dtype=object
++                )
++            else:
++                pair_metadata = repeated_pair_metadata(
++                    new_batch.non_tensor_batch["pair_group_uid"],
++                    new_batch.non_tensor_batch["pair_member"],
++                    self.config.worker.rollout.n,
++                )
++                new_batch.non_tensor_batch["uid"] = np.asarray(
++                    new_batch.non_tensor_batch["pair_group_uid"], dtype=object
++                )
+ 
+             # pop those keys for generation
+             gen_batch = new_batch.pop(
+@@ -519,6 +562,8 @@ class RayPPOTrainer:
+ 
+             # repeat to align with repeated responses in rollout
+             new_batch = new_batch.repeat(repeat_times=self.config.worker.rollout.n, interleave=True)
++            if pair_metadata is not None:
++                new_batch.non_tensor_batch.update(pair_metadata)
+             new_batch = new_batch.union(gen_batch_output)
+ 
+             # filter group
+@@ -652,6 +697,7 @@ class RayPPOTrainer:
+                         adv_estimator=self.config.algorithm.adv_estimator,
+                         gamma=self.config.algorithm.gamma,
+                         lam=self.config.algorithm.lam,
++                        pair_group_mode=self.config.algorithm.pair_group_mode,
+                     )
+ 
+                 # update critic
+diff --git a/verl/workers/reward/function.py b/verl/workers/reward/function.py
+index 216cbec..e4f2dc9 100644
+--- a/verl/workers/reward/function.py
++++ b/verl/workers/reward/function.py
+@@ -92,6 +92,18 @@ class BatchFunctionRewardManagerMixin:
+                 }
+             )
+ 
++        pair_fields = ("pair_group_uid", "pair_member", "pair_rollout_index")
++        pair_fields_present = [field in data.non_tensor_batch for field in pair_fields]
++        if any(pair_fields_present) and not all(pair_fields_present):
++            missing = [
++                field for field, present in zip(pair_fields, pair_fields_present) if not present
++            ]
++            raise ValueError(f"incomplete pair reward metadata: {missing}")
++        if all(pair_fields_present):
++            for row, reward_input in enumerate(reward_inputs):
++                for field in pair_fields:
++                    reward_input[field] = data.non_tensor_batch[field][row]
++
+         scores = self.reward_fn(reward_inputs)
+         reward_tensor = torch.zeros_like(data.batch["responses"], dtype=torch.float32)
+         reward_metrics = defaultdict(list)
