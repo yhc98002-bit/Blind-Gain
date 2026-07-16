@@ -1,0 +1,61 @@
+{
+  "artifact_sha256": {
+    "decontamination_json": "6060439b0b2b4b3253fbbc62843ba4307578af36806b3c577a1bb736c290851d",
+    "pairs_jsonl": "c592d8560cf3f5544fea36a12b3b52642d0faf0056c4ef9fddc0dde1f75f34bd",
+    "train_jsonl": "07d785ee6ae4a3b5325e12595f7830c5924e31c49565554f1e88b2abffc5fa5c",
+    "train_parquet": "0b0f0965987d1c340c3ebd78da742c9d99b319b61524b5cb42960519fd9c9b28"
+  },
+  "checks": {
+    "all_file_hashes_and_masks_exact": true,
+    "all_pair_semantics_exact": true,
+    "decontamination_status_pass": true,
+    "disjointness_recomputed_exact": true,
+    "evaluation_manifest_hashes_exact": true,
+    "generator_hash_exact": true,
+    "pair_count_exact": true,
+    "pair_ids_unique_nonempty": true,
+    "parquet_jsonl_row_identity_exact": true,
+    "run_manifest_complete_exit0": true,
+    "run_manifest_expected_commit": true,
+    "template_counts_exact": true,
+    "training_pair_adjacency_exact": true,
+    "training_projection_exact": true,
+    "training_row_count_exact": true
+  },
+  "corpus_dir": "data/mini_a5_train_v1",
+  "counts": {
+    "images": 6000,
+    "masks": 6000,
+    "pairs": 3000,
+    "templates": {
+      "mini_a5_train_code_matrix_v1": 1000,
+      "mini_a5_train_labeled_scatter_v1": 1000,
+      "mini_a5_train_named_trajectory_v1": 1000
+    },
+    "training_rows": 6000
+  },
+  "disjointness": {
+    "evaluation_template_count": 5,
+    "image_hash_overlap": 0,
+    "pair_id_overlap": 0,
+    "template_id_overlap": 0,
+    "training_template_ids": [
+      "mini_a5_train_code_matrix_v1",
+      "mini_a5_train_labeled_scatter_v1",
+      "mini_a5_train_named_trajectory_v1"
+    ]
+  },
+  "errors": [],
+  "pair_file_error_count": 0,
+  "run_manifest": "experiments/runs/mini_a5_corpus_v1_login_20260716T175758Z/run_manifest.json",
+  "schema_version": "blind-gains.mini-a5-corpus-audit.v1",
+  "semantic_side_assignment_counts": {
+    "mini_a5_train_code_matrix_v1:false": 503,
+    "mini_a5_train_code_matrix_v1:true": 497,
+    "mini_a5_train_labeled_scatter_v1:false": 497,
+    "mini_a5_train_labeled_scatter_v1:true": 503,
+    "mini_a5_train_named_trajectory_v1:false": 527,
+    "mini_a5_train_named_trajectory_v1:true": 473
+  },
+  "status": "pass"
+}
