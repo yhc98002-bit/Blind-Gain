@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import defaultdict
 from collections.abc import Sequence
 from typing import Any
@@ -9,6 +10,7 @@ import torch
 
 
 PAIR_MEMBERS = frozenset({"a", "b"})
+PAIR_GROUP_MODES = frozenset({"joint", "member"})
 
 
 def _text_list(values: Sequence[Any], name: str) -> list[str]:
@@ -39,18 +41,52 @@ def validate_pair_rows(pair_group_uids: Sequence[Any], pair_members: Sequence[An
         raise ValueError(f"each pair must contain exactly members a and b: {malformed}")
 
 
+def source_grpo_uids(
+    pair_group_uids: Sequence[Any],
+    pair_members: Sequence[Any],
+    pair_group_mode: str,
+) -> np.ndarray:
+    """Build the registered GRPO grouping id for each source prompt.
+
+    CP normalizes the G unique joint outcomes for the shared pair. The matched
+    standard-GRPO control normalizes each member prompt over its own G rollouts.
+    """
+
+    if pair_group_mode not in PAIR_GROUP_MODES:
+        raise ValueError(
+            f"pair_group_mode must be one of {sorted(PAIR_GROUP_MODES)}, "
+            f"found {pair_group_mode!r}"
+        )
+    validate_pair_rows(pair_group_uids, pair_members)
+    uids = [str(value) for value in pair_group_uids]
+    members = [str(value) for value in pair_members]
+    if pair_group_mode == "joint":
+        return np.asarray(uids, dtype=object)
+    return np.asarray(
+        [
+            "member:" + json.dumps([uid, member], ensure_ascii=True, separators=(",", ":"))
+            for uid, member in zip(uids, members, strict=True)
+        ],
+        dtype=object,
+    )
+
+
 def repeated_pair_metadata(
-    pair_group_uids: Sequence[Any], pair_members: Sequence[Any], rollout_n: int
+    pair_group_uids: Sequence[Any],
+    pair_members: Sequence[Any],
+    rollout_n: int,
+    *,
+    pair_group_mode: str = "joint",
 ) -> dict[str, np.ndarray]:
-    """Create shared GRPO ids and stable rollout indices before batch reordering."""
+    """Create registered GRPO ids and stable indices before batch reordering."""
 
     if rollout_n < 1:
         raise ValueError("pair rollout count must be positive")
-    validate_pair_rows(pair_group_uids, pair_members)
     uids = np.asarray([str(value) for value in pair_group_uids], dtype=object)
     members = np.asarray([str(value) for value in pair_members], dtype=object)
+    group_uids = source_grpo_uids(uids, members, pair_group_mode)
     return {
-        "uid": np.repeat(uids, rollout_n),
+        "uid": np.repeat(group_uids, rollout_n),
         "pair_group_uid": np.repeat(uids, rollout_n),
         "pair_member": np.repeat(members, rollout_n),
         "pair_rollout_index": np.tile(np.arange(rollout_n, dtype=np.int64), len(uids)),

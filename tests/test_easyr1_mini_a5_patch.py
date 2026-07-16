@@ -17,6 +17,8 @@ def test_patch_carries_pair_identity_through_reward_and_advantage() -> None:
     assert "pair_group_uids=data.non_tensor_batch" in source
     assert 'pair_fields = ("pair_group_uid", "pair_member", "pair_rollout_index")' in source
     assert "compute_pair_level_grpo_advantage" in source
+    assert "pair_group_mode=self.config.algorithm.pair_group_mode" in source
+    assert 'pair_metadata["uid"][' in source
 
 
 def test_patch_rejects_independent_row_shuffle_and_odd_batches() -> None:

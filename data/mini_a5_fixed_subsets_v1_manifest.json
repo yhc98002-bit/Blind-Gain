@@ -1,0 +1,37 @@
+{
+  "pair_id_overlap": 0,
+  "plumbing_validation": {
+    "pairs": 24,
+    "path": "data/mini_a5_plumbing_val_v1.jsonl",
+    "rows": 48,
+    "sha256": "1ed1413f6ca92d67fdd9ea2f8bf9072d9126c97403ffcd9fef0f97d9cbb74475"
+  },
+  "schema_version": "blind-gains.mini-a5-fixed-subsets.v1",
+  "source": {
+    "pairs_path": "data/mini_a5_train_v1/pairs.jsonl",
+    "pairs_sha256": "c592d8560cf3f5544fea36a12b3b52642d0faf0056c4ef9fddc0dde1f75f34bd",
+    "train_path": "data/mini_a5_train_v1/train.jsonl",
+    "train_sha256": "07d785ee6ae4a3b5325e12595f7830c5924e31c49565554f1e88b2abffc5fa5c"
+  },
+  "status": "pass",
+  "step0": {
+    "pairs": 192,
+    "path": "data/mini_a5_step0_sample_v1.jsonl",
+    "samples_per_pair": 5,
+    "sha256": "254558f2ab274ae95cd900412d56203e7bf6eaa94ddc95c8707641266da643c2"
+  },
+  "template_counts": {
+    "mini_a5_train_code_matrix_v1": {
+      "plumbing_val_pairs": 8,
+      "step0_pairs": 64
+    },
+    "mini_a5_train_labeled_scatter_v1": {
+      "plumbing_val_pairs": 8,
+      "step0_pairs": 64
+    },
+    "mini_a5_train_named_trajectory_v1": {
+      "plumbing_val_pairs": 8,
+      "step0_pairs": 64
+    }
+  }
+}

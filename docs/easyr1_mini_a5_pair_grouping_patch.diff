@@ -37,7 +37,7 @@ index e8fe3fa..cbfd0f1 100644
      def deep_post_init(self):
          recursive_post_init(self)
 diff --git a/verl/trainer/ray_trainer.py b/verl/trainer/ray_trainer.py
-index 9158547..af07235 100644
+index 9158547..0c683a4 100644
 --- a/verl/trainer/ray_trainer.py
 +++ b/verl/trainer/ray_trainer.py
 @@ -32,6 +32,11 @@ from ray.experimental.tqdm_ray import tqdm
@@ -87,7 +87,7 @@ index 9158547..af07235 100644
      data.batch["advantages"] = advantages
      data.batch["returns"] = returns
      return data
-@@ -420,8 +442,18 @@ class RayPPOTrainer:
+@@ -420,8 +442,19 @@ class RayPPOTrainer:
              test_output_gen_batch = self.actor_rollout_ref_wg.generate_sequences(test_gen_batch)
              test_output_gen_batch = unpad_dataproto(test_output_gen_batch, pad_size=pad_size * repeat_times)
  
@@ -97,6 +97,7 @@ index 9158547..af07235 100644
 +                    test_batch.non_tensor_batch["pair_group_uid"],
 +                    test_batch.non_tensor_batch["pair_member"],
 +                    repeat_times,
++                    pair_group_mode=self.config.algorithm.pair_group_mode,
 +                )
 +
              # repeat to align with repeated responses in rollout
@@ -106,7 +107,7 @@ index 9158547..af07235 100644
              test_batch = test_batch.union(test_output_gen_batch)
  
              # evaluate using reward_function
-@@ -489,9 +521,20 @@ class RayPPOTrainer:
+@@ -489,9 +522,21 @@ class RayPPOTrainer:
                  "video_fps": self.config.data.video_fps,
              }
              new_batch: DataProto = DataProto.from_single_dict(batch_dict, meta_info=meta_info)
@@ -123,14 +124,15 @@ index 9158547..af07235 100644
 +                    new_batch.non_tensor_batch["pair_group_uid"],
 +                    new_batch.non_tensor_batch["pair_member"],
 +                    self.config.worker.rollout.n,
++                    pair_group_mode=self.config.algorithm.pair_group_mode,
 +                )
-+                new_batch.non_tensor_batch["uid"] = np.asarray(
-+                    new_batch.non_tensor_batch["pair_group_uid"], dtype=object
-+                )
++                new_batch.non_tensor_batch["uid"] = pair_metadata["uid"][
++                    :: self.config.worker.rollout.n
++                ]
  
              # pop those keys for generation
              gen_batch = new_batch.pop(
-@@ -519,6 +562,8 @@ class RayPPOTrainer:
+@@ -519,6 +564,8 @@ class RayPPOTrainer:
  
              # repeat to align with repeated responses in rollout
              new_batch = new_batch.repeat(repeat_times=self.config.worker.rollout.n, interleave=True)
@@ -139,7 +141,7 @@ index 9158547..af07235 100644
              new_batch = new_batch.union(gen_batch_output)
  
              # filter group
-@@ -652,6 +697,7 @@ class RayPPOTrainer:
+@@ -652,6 +699,7 @@ class RayPPOTrainer:
                          adv_estimator=self.config.algorithm.adv_estimator,
                          gamma=self.config.algorithm.gamma,
                          lam=self.config.algorithm.lam,

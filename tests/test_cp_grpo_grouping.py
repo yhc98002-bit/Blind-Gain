@@ -9,6 +9,7 @@ from src.train.cp_grouping import (
     broadcast_joint_accuracy,
     compute_pair_level_grpo_advantage,
     repeated_pair_metadata,
+    source_grpo_uids,
 )
 
 
@@ -58,7 +59,9 @@ def test_malformed_pair_rollouts_are_rejected(members: list[str], message: str) 
 
 
 def test_repeated_metadata_uses_shared_uid_and_stable_rollout_index() -> None:
-    metadata = repeated_pair_metadata(["p1", "p1"], ["a", "b"], rollout_n=3)
+    metadata = repeated_pair_metadata(
+        ["p1", "p1"], ["a", "b"], rollout_n=3, pair_group_mode="joint"
+    )
     assert metadata["uid"].tolist() == ["p1"] * 6
     assert metadata["pair_member"].tolist() == ["a", "a", "a", "b", "b", "b"]
     assert metadata["pair_rollout_index"].tolist() == [0, 1, 2, 0, 1, 2]
@@ -68,6 +71,22 @@ def test_validation_metadata_supports_one_greedy_response_per_member() -> None:
     metadata = repeated_pair_metadata(["p1", "p1"], ["a", "b"], rollout_n=1)
     assert metadata["uid"].tolist() == ["p1", "p1"]
     assert metadata["pair_rollout_index"].tolist() == [0, 0]
+
+
+def test_member_control_uses_independent_standard_grpo_groups() -> None:
+    source_uids = source_grpo_uids(["p1", "p1"], ["a", "b"], "member")
+    assert source_uids[0] != source_uids[1]
+
+    metadata = repeated_pair_metadata(
+        ["p1", "p1"], ["a", "b"], rollout_n=3, pair_group_mode="member"
+    )
+    assert metadata["uid"].tolist() == [source_uids[0]] * 3 + [source_uids[1]] * 3
+    assert metadata["pair_group_uid"].tolist() == ["p1"] * 6
+
+
+def test_group_mode_rejects_accidental_none_or_unknown_mode() -> None:
+    with pytest.raises(ValueError, match="pair_group_mode"):
+        source_grpo_uids(["p1", "p1"], ["a", "b"], "none")
 
 
 def test_pair_advantage_exactly_matches_unique_grpo_then_broadcast() -> None:
