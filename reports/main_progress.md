@@ -10,6 +10,6 @@ M8 | blocked | reports/flagship_7b_readiness_v1.md + reports/blind_solvability_v
 M9 | blocked | requires merged M4 and completed M8
 M10 | blocked | reports/support_sharpening_registry_v1.md: the exact 0/16-to-newly-solved selector, 64-sample follow-up, Jeffreys summary, and language lock are implemented; applicable post-training readouts do not yet exist
 M11 | blocked | reports/m11_execution_queue_status_v10.md: 18/18 full cells remain pending and GPU-inert until the fourth exact M2 marker; the stale scheduler state will be reconciled after A2 lands
-M12 | blocked | reports/chart_v08_calibration_execution_status_v5.md + .json: local lifecycles remain structurally complete and uninspected; the 72B checkout completed and is hash-verified, while the fixed-size no-zoom viewer, human audit, strong-caption scoring, interpretation, freeze, and confirmatory gates remain
+M12 | blocked | reports/human_audit_viewer_v3.md + reports/chart_v08_human_audit_bundle_v2.json: fixed 700x450 no-zoom viewer and eight-decision v08 package are ready for Richard; human audit, strong-caption scoring, interpretation, freeze, and confirmatory gates remain
 M13 | pass | reports/paper1_pipeline_status_v6.md + reports/paper1_pipeline_status_v6.json: reusable paper pipeline and consistency-safe status wording pass; unresolved scientific result slots remain fail-closed
 M14 | blocked | requires M6, M9 seed 1, and a merged M4 addendum

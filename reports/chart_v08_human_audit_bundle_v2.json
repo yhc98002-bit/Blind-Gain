@@ -1,0 +1,41 @@
+{
+  "schema_version": "blind-gains.chart-v08-human-audit-bundle.v2",
+  "status": "pass",
+  "scientific_gate_decision": null,
+  "human_audit_outcome": "pending",
+  "pair_count": 100,
+  "image_count": 200,
+  "template_counts": {
+    "chart_v08_legend_target_flip": 50,
+    "chart_v08_point_value_flip": 50
+  },
+  "audit_contract": {
+    "mode": "chart_v08_fixed_no_zoom",
+    "member_width_px": 700,
+    "member_height_px": 450,
+    "viewer_zoom_enabled": false,
+    "decision_count": 8,
+    "standard_check_count": 6,
+    "v08_rating_ids": [
+      "no_zoom_correct",
+      "series_unambiguous"
+    ]
+  },
+  "viewer": "tools/human_audit_viewer.html",
+  "viewer_sha256": "e32aaadd4d3e43440204f13dfd582be4b031b4c9091b7d2b8860e9f88d7d29e1",
+  "reviewer_guide": "docs/CHART_V08_HUMAN_AUDIT_GUIDE.md",
+  "reviewer_guide_sha256": "97f09f7adfd56de7da34377b6e72bf80302cfa65578a550251981dd9d7ad0e0a",
+  "release_manifest": "data/fliptrack_chart_v08_calibration_v1_human_release/manifest.jsonl",
+  "release_manifest_sha256": "501efddf0634465f9b73bbcc93c96dba55efe6b651f88c554e97791393db8d2a",
+  "private_answer_key": ".private/fliptrack_chart_v08_calibration_v1_human_key.jsonl",
+  "private_answer_key_sha256": "e63859829e9add77a8599da3763707d3b58e690527fbf156123d9690933035ae",
+  "portable_zip": "reports/review_packages/blind_gains_chart_v08_calibration_human_audit_20260716_v2.zip",
+  "portable_zip_absolute_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/review_packages/blind_gains_chart_v08_calibration_human_audit_20260716_v2.zip",
+  "portable_zip_sha256": "20ab5fea8a674dfcd91d7d671bd9142ecacb2001002ff3e53cce25eb95a6df02",
+  "portable_zip_bytes": 8799203,
+  "focused_tests": {
+    "status": "pass",
+    "passed": 13,
+    "command": "PYTHONPATH=. pytest -q tests/test_human_audit_viewer.py tests/test_human_audit_bundle.py"
+  }
+}

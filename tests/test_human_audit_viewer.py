@@ -12,6 +12,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 VIEWER = ROOT / "tools" / "human_audit_viewer.html"
 GUIDE = ROOT / "docs" / "HUMAN_AUDIT_GUIDE.md"
+V08_GUIDE = ROOT / "docs" / "CHART_V08_HUMAN_AUDIT_GUIDE.md"
 
 
 class _DocumentShape(HTMLParser):
@@ -116,11 +117,11 @@ def test_reviewer_guide_explains_scope_checks_and_completion() -> None:
     assert "empty `unreviewed_pair_ids`" in guide
 
 
-def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:
+def test_viewer_pins_six_standard_checks_and_v08_ratings() -> None:
     source = _source()
     check_ids = re.findall(r'^\s+id: "([a-z0-9_]+)",$', source, re.MULTILINE)
 
-    assert check_ids == [
+    assert check_ids[:6] == [
         "visual_necessity",
         "single_answer_changing_difference",
         "legible_without_popout",
@@ -128,8 +129,11 @@ def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:
         "artifact_parity",
         "answer_key_exact",
     ]
+    assert check_ids[6:] == ["no_zoom_correct", "series_unambiguous"]
+    assert "return state.v08Mode ? [...STANDARD_CHECKS, ...V08_CHECKS]" in source
     assert 'for (const value of ["pass", "fail"])' in source
-    assert 'schema_version: "blind-gains.human-audit-failures.v1"' in source
+    assert '"blind-gains.human-audit-failures.v1"' in source
+    assert '"blind-gains.human-audit-failures.v2"' in source
     assert "pair_id: pair.pairId" in source
     assert "failed_checks: failedChecks" in source
     assert "unreviewed_pair_ids: unreviewedPairIds" in source
@@ -142,6 +146,26 @@ def test_viewer_pins_six_registered_checks_and_failure_only_export() -> None:
     )[0]
     assert "pair.members" not in export_function
     assert not re.search(r"\banswer\s*:", export_function)
+
+
+def test_v08_mode_mechanically_disables_zoom_and_uses_fixed_rendering() -> None:
+    source = _source()
+    guide = V08_GUIDE.read_text(encoding="utf-8")
+
+    assert 'pair.templateId.startsWith("chart_v08_")' in source
+    assert 'document.documentElement.classList.toggle("v08-fixed-audit", state.v08Mode)' in source
+    assert "dom.fitButton.disabled = state.v08Mode" in source
+    assert "dom.zoomRange.disabled = state.v08Mode" in source
+    assert 'link.tabIndex = state.v08Mode ? -1 : 0' in source
+    assert "html.v08-fixed-audit .zoom-controls" in source
+    assert "html.v08-fixed-audit .icon-link" in source
+    assert "grid-template-columns: 700px 700px" in source
+    assert "member_width_px: 700" in source
+    assert "member_height_px: 450" in source
+    assert 'audit_mode: state.v08Mode ? "chart_v08_fixed_no_zoom"' in source
+    assert "### 7. No-Zoom Correct" in guide
+    assert "### 8. Series Unambiguous" in guide
+    assert "all 100 pairs have eight explicit decisions" in guide
 
 
 def test_viewer_joins_answers_by_member_id_and_rejects_unsafe_inputs() -> None:

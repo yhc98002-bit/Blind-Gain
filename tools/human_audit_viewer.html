@@ -663,6 +663,48 @@
       max-height: none;
     }
 
+    .fixed-rendering-note {
+      display: none;
+      color: #405049;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    html.v08-fixed-audit .zoom-controls,
+    html.v08-fixed-audit .icon-link {
+      display: none;
+    }
+
+    html.v08-fixed-audit .fixed-rendering-note {
+      display: block;
+    }
+
+    html.v08-fixed-audit .image-grid {
+      grid-template-columns: 700px 700px;
+      width: max-content;
+      min-width: 100%;
+      overflow-x: auto;
+    }
+
+    html.v08-fixed-audit .member-panel,
+    html.v08-fixed-audit .image-stage {
+      width: 700px;
+    }
+
+    html.v08-fixed-audit .image-stage {
+      min-height: 450px;
+      height: 450px;
+      overflow: hidden;
+    }
+
+    html.v08-fixed-audit .image-stage img {
+      width: 700px !important;
+      height: 450px !important;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+    }
+
     .checks-band {
       padding: 16px clamp(16px, 3vw, 38px) 24px;
       background: var(--surface);
@@ -938,9 +980,9 @@
       <ol>
         <li>Read the question and inspect both images.</li>
         <li>Independently solve the question for each image.</li>
-        <li>Compare the images and decide all six checks below.</li>
+        <li>Compare the images and decide all six standard checks below.</li>
         <li>Use Fail for a violation or material unresolved ambiguity, and add a concrete note.</li>
-        <li>Continue only after all six checks have a value.</li>
+        <li>Continue only after every check shown by the loaded package has a value.</li>
       </ol>
 
       <h3>The six checks</h3>
@@ -968,6 +1010,14 @@
         <div class="guide-check">
           <strong>6. Answer key</strong>
           <p>Manually read both targets. Pass only if each displayed answer exactly matches its own image, including signs and every code character.</p>
+        </div>
+        <div class="guide-check">
+          <strong>Chart-v08 only: no-zoom correctness</strong>
+          <p>The viewer fixes each chart at 700 x 450 pixels and removes zoom and full-resolution controls. Pass only if both answers can be obtained in that fixed rendering.</p>
+        </div>
+        <div class="guide-check">
+          <strong>Chart-v08 only: series unambiguous</strong>
+          <p>Pass only if the starred legend entry maps to one series and that series remains traceable through every crossing needed for the requested value.</p>
         </div>
       </div>
 
@@ -1096,6 +1146,9 @@
         <input id="zoomRange" type="range" min="50" max="250" value="100" step="10">
         <output id="zoomValue" for="zoomRange">Fit</output>
       </div>
+      <div id="fixedRenderingNote" class="fixed-rendering-note">
+        Chart-v08 fixed audit: 700 x 450 pixels per member; zoom and original-image links disabled
+      </div>
       <div id="integritySummary" aria-live="polite">Image integrity pending</div>
     </div>
 
@@ -1157,7 +1210,7 @@
   <script>
     "use strict";
 
-    const CHECKS = Object.freeze([
+    const STANDARD_CHECKS = Object.freeze([
       Object.freeze({
         id: "visual_necessity",
         label: "1. Visual necessity: the question cannot be answered without seeing the image."
@@ -1184,6 +1237,17 @@
       })
     ]);
 
+    const V08_CHECKS = Object.freeze([
+      Object.freeze({
+        id: "no_zoom_correct",
+        label: "7. V08 no-zoom correctness: both answers are readable in the fixed 700 x 450 rendering."
+      }),
+      Object.freeze({
+        id: "series_unambiguous",
+        label: "8. V08 series identity: the starred series is unambiguous and traceable through crossings."
+      })
+    ]);
+
     const state = {
       allPairs: [],
       imageIndex: new Map(),
@@ -1194,6 +1258,7 @@
       currentIndex: 0,
       fitImages: true,
       zoom: 1,
+      v08Mode: false,
       manifestName: "",
       keyName: "",
       manifestSha256: "",
@@ -1211,11 +1276,20 @@
       "previousButton", "nextButton", "previousBottomButton",
       "nextBottomButton", "positionLabel", "progressLabel", "scopeSelect", "templateSelect",
       "pairSearch", "exportButton", "resetButton", "pairId", "templateId", "categoryId",
-      "questionText", "fitButton", "zoomRange", "zoomValue", "integritySummary", "checkList",
+      "questionText", "fitButton", "zoomRange", "zoomValue", "fixedRenderingNote",
+      "integritySummary", "checkList",
       "failureNote", "pairReviewStatus", "memberId1", "memberId2", "memberImage1",
       "memberImage2", "memberAnswer1", "memberAnswer2", "imageDetail1", "imageDetail2",
       "openImage1", "openImage2"
     ].map((id) => [id, document.getElementById(id)]));
+
+    function activeChecks() {
+      return state.v08Mode ? [...STANDARD_CHECKS, ...V08_CHECKS] : STANDARD_CHECKS;
+    }
+
+    function isChartV08Package(pairs) {
+      return pairs.length > 0 && pairs.every((pair) => pair.templateId.startsWith("chart_v08_"));
+    }
 
     function parseRecords(text, label) {
       const trimmed = text.trim();
@@ -1465,7 +1539,7 @@
 
     function defaultReview() {
       return {
-        checks: Object.fromEntries(CHECKS.map((check) => [check.id, null])),
+        checks: Object.fromEntries(activeChecks().map((check) => [check.id, null])),
         note: ""
       };
     }
@@ -1478,7 +1552,7 @@
       if (!review.checks || typeof review.checks !== "object") {
         review.checks = defaultReview().checks;
       }
-      for (const check of CHECKS) {
+      for (const check of activeChecks()) {
         if (![true, false, null].includes(review.checks[check.id])) {
           review.checks[check.id] = null;
         }
@@ -1490,11 +1564,11 @@
     }
 
     function isReviewed(review) {
-      return CHECKS.every((check) => typeof review.checks[check.id] === "boolean");
+      return activeChecks().every((check) => typeof review.checks[check.id] === "boolean");
     }
 
     function hasFailure(review) {
-      return CHECKS.some((check) => review.checks[check.id] === false);
+      return activeChecks().some((check) => review.checks[check.id] === false);
     }
 
     function saveProgress() {
@@ -1583,7 +1657,11 @@
 
     function applyZoom() {
       for (const image of [dom.memberImage1, dom.memberImage2]) {
-        if (state.fitImages) {
+        if (state.v08Mode) {
+          image.className = "fixed-image";
+          image.style.width = "700px";
+          image.style.height = "450px";
+        } else if (state.fitImages) {
           image.className = "fit-image";
           image.style.width = "";
           image.style.height = "";
@@ -1595,7 +1673,9 @@
           }
         }
       }
-      dom.zoomValue.value = state.fitImages ? "Fit" : `${Math.round(state.zoom * 100)}%`;
+      dom.zoomValue.value = state.v08Mode
+        ? "Fixed"
+        : state.fitImages ? "Fit" : `${Math.round(state.zoom * 100)}%`;
     }
 
     async function renderMember(pair, member, memberNumber, renderToken) {
@@ -1642,7 +1722,7 @@
 
     function renderChecks(pair) {
       const review = reviewFor(pair.pairId);
-      for (const check of CHECKS) {
+      for (const check of activeChecks()) {
         const row = dom.checkList.querySelector(`[data-check-id="${check.id}"]`);
         const value = review.checks[check.id];
         row.classList.toggle("pass", value === true);
@@ -1653,7 +1733,7 @@
         }
       }
       dom.failureNote.value = review.note;
-      const remaining = CHECKS.filter((check) => review.checks[check.id] === null).length;
+      const remaining = activeChecks().filter((check) => review.checks[check.id] === null).length;
       dom.pairReviewStatus.className = "";
       if (remaining > 0) {
         dom.pairReviewStatus.textContent = `${remaining} checks remaining`;
@@ -1722,8 +1802,9 @@
     }
 
     function buildCheckControls() {
+      dom.checkList.replaceChildren();
       const fragment = document.createDocumentFragment();
-      for (const check of CHECKS) {
+      for (const check of activeChecks()) {
         const row = document.createElement("div");
         row.className = "check-row";
         row.dataset.checkId = check.id;
@@ -1852,6 +1933,15 @@
         revokeImageUrls();
         state.imageIndex = nextImageIndex;
         state.allPairs = pairs;
+        state.v08Mode = isChartV08Package(pairs);
+        document.documentElement.classList.toggle("v08-fixed-audit", state.v08Mode);
+        dom.fitButton.disabled = state.v08Mode;
+        dom.zoomRange.disabled = state.v08Mode;
+        for (const link of [dom.openImage1, dom.openImage2]) {
+          link.tabIndex = state.v08Mode ? -1 : 0;
+          link.setAttribute("aria-hidden", state.v08Mode ? "true" : "false");
+        }
+        buildCheckControls();
         state.manifestName = manifestFile.name;
         state.keyName = keyFile.name;
         state.manifestSha256 = manifestSha256;
@@ -1889,7 +1979,7 @@
         if (!isReviewed(review)) {
           unreviewedPairIds.push(pair.pairId);
         }
-        const failedChecks = CHECKS
+        const failedChecks = activeChecks()
           .filter((check) => review.checks[check.id] === false)
           .map((check) => check.id);
         if (failedChecks.length > 0) {
@@ -1898,14 +1988,20 @@
             template_id: pair.templateId,
             failed_checks: failedChecks,
             check_results: Object.fromEntries(
-              CHECKS.map((check) => [check.id, review.checks[check.id]])
+              activeChecks().map((check) => [check.id, review.checks[check.id]])
             ),
             note: review.note
           });
         }
       }
       const payload = {
-        schema_version: "blind-gains.human-audit-failures.v1",
+        schema_version: state.v08Mode
+          ? "blind-gains.human-audit-failures.v2"
+          : "blind-gains.human-audit-failures.v1",
+        audit_mode: state.v08Mode ? "chart_v08_fixed_no_zoom" : "standard",
+        rendering_contract: state.v08Mode
+          ? { zoom_enabled: false, member_width_px: 700, member_height_px: 450 }
+          : { zoom_enabled: true },
         generated_at_utc: new Date().toISOString(),
         audit_scope: dom.scopeSelect.value === "all"
           ? "all_loaded_pairs"
@@ -1918,7 +2014,9 @@
           loaded_pair_count: state.allPairs.length,
           scoped_pair_count: pairs.length
         },
-        check_definitions: Object.fromEntries(CHECKS.map((check) => [check.id, check.label])),
+        check_definitions: Object.fromEntries(
+          activeChecks().map((check) => [check.id, check.label])
+        ),
         reviewed_pair_count: pairs.length - unreviewedPairIds.length,
         failure_count: failures.length,
         failures,
@@ -1988,10 +2086,16 @@
       saveProgress();
     });
     dom.fitButton.addEventListener("click", () => {
+      if (state.v08Mode) {
+        return;
+      }
       state.fitImages = true;
       applyZoom();
     });
     dom.zoomRange.addEventListener("input", () => {
+      if (state.v08Mode) {
+        return;
+      }
       state.fitImages = false;
       state.zoom = Number(dom.zoomRange.value) / 100;
       applyZoom();

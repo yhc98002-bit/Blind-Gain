@@ -156,6 +156,27 @@ def test_bundle_uses_source_order_not_randomized_release_order(tmp_path: Path) -
     assert not any("a-second" in name for name in names if name.endswith(".png"))
 
 
+def test_chart_v08_bundle_registers_eight_decisions(tmp_path: Path) -> None:
+    paths = _fixture(tmp_path)
+    for path in (paths["source"], paths["key"]):
+        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        for row in rows:
+            row["template_id"] = f"chart_v08_{row['template_id']}"
+        _jsonl(path, rows)
+    output = tmp_path / "v08.zip"
+
+    _build(paths, output)
+
+    with ZipFile(output) as archive:
+        readme = archive.read("audit_fixture/README.txt").decode()
+        metadata = json.loads(archive.read("audit_fixture/bundle_manifest.json"))
+    assert "Complete all 8 checks" in readme
+    assert metadata["audit_contract"] == {
+        "mode": "chart_v08_fixed_no_zoom",
+        "decision_count": 8,
+    }
+
+
 def test_bundle_rejects_unsafe_image_path(tmp_path: Path) -> None:
     paths = _fixture(tmp_path)
     rows = [json.loads(line) for line in paths["release"].read_text().splitlines()]

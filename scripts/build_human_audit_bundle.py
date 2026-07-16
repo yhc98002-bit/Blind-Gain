@@ -226,6 +226,10 @@ def build_bundle(
     selected_release, selected_keys, counts = select_contact_sheet_rows(
         source_rows, release_rows, key_rows, pairs_per_template
     )
+    chart_v08_mode = bool(counts) and all(
+        template_id.startswith("chart_v08_") for template_id in counts
+    )
+    decision_count = 8 if chart_v08_mode else 6
 
     output_zip.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="human_audit_bundle_", dir=output_zip.parent) as temporary:
@@ -244,7 +248,7 @@ def build_bundle(
 4. For the package folder, choose: package
 5. For the private answer key, choose: private/answer_key.jsonl
 6. Select Open human audit. This portable {len(selected_release)}-pair package defaults to All loaded pairs.
-7. Complete all six checks for every loaded pair.
+7. Complete all {decision_count} checks for every loaded pair.
 8. Export failures JSON when all pairs are reviewed.
 
 This bundle contains the first {pairs_per_template} source-order pairs from each frozen template.
@@ -265,6 +269,10 @@ Keep the private answer key and exported audit record within the research team.
                 "template_counts": dict(sorted(counts.items())),
                 "opaque_pair_ids": [str(row["pair_id"]) for row in selected_release],
                 "source_pair_ids": [str(row["source_pair_id"]) for row in selected_keys],
+            },
+            "audit_contract": {
+                "mode": "chart_v08_fixed_no_zoom" if chart_v08_mode else "standard",
+                "decision_count": decision_count,
             },
             "source_sha256": {
                 "source_manifest": sha256_file(source_manifest),

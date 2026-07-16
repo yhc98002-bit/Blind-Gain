@@ -16,12 +16,13 @@ No circle, highlight, or arrow should point to the queried plot point.
 
 ## Procedure
 
-1. Keep the viewer in **Fit** mode. The human-legibility gate is without zoom.
+1. Use the v08 viewer mode. It fixes each image at 700 x 450 pixels and mechanically
+   disables its zoom and full-resolution controls.
 2. Read the question and independently solve member 1 and member 2.
 3. Compare your readings with the displayed member-aligned answers.
-4. Record Pass or Fail for all six checks.
+4. Record Pass or Fail for all six standard checks and both v08 ratings.
 5. Add a concrete note for every failure.
-6. Export only after all 100 pairs have six explicit decisions.
+6. Export only after all 100 pairs have eight explicit decisions.
 
 ## Six Checks
 
@@ -40,7 +41,7 @@ may change.
 ### 3. Legibility Without Pop-Out
 
 Pass only if the star, legend identity, requested x-coordinate, series path, and
-y-value are readable in Fit mode without zoom. Fail any circle, highlight, or arrow
+y-value are readable in the fixed 700 x 450 rendering. Fail any circle, highlight, or arrow
 on the queried plot point.
 
 ### 4. Unambiguous Labels and Wording
@@ -67,5 +68,18 @@ that member.
 - Fail if any text inaccurately describes what the star marks.
 - Do not treat ordinary antialiasing around the intended changed element as an
   artifact by itself.
+
+## Two V08 Ratings
+
+### 7. No-Zoom Correct
+
+Pass only if both member answers can be obtained from the fixed 700 x 450 rendering.
+Do not use browser zoom, operating-system magnification, screenshots, or image export.
+
+### 8. Series Unambiguous
+
+Pass only if the starred legend entry maps to exactly one series and that series can
+be followed through every crossing needed to answer the question. Color alone is not
+sufficient; line style and marker must preserve the identity.
 
 The exported JSON is evidence for PI review. It does not itself accept the template.
