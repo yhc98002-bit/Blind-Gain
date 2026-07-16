@@ -24,8 +24,20 @@ def expected_hashes_from_manifest(path: Path) -> set[str]:
                 hash_field = "image_sha256"
             if not isinstance(images, list):
                 raise ValueError(f"manifest line {line_number} has no images or members list")
-            for image in images:
-                digest = str(image.get(hash_field, ""))
+            if images and all(isinstance(image, str) for image in images):
+                metadata = row.get("metadata")
+                digests = metadata.get("image_sha256") if isinstance(metadata, dict) else None
+                if not isinstance(digests, list) or len(digests) != len(images):
+                    raise ValueError(
+                        f"manifest line {line_number} string image paths lack one SHA256 per image"
+                    )
+            else:
+                digests = [
+                    image.get(hash_field, "") if isinstance(image, dict) else ""
+                    for image in images
+                ]
+            for digest_value in digests:
+                digest = str(digest_value)
                 if not digest:
                     raise ValueError(f"manifest line {line_number} has an image without SHA256")
                 expected.add(digest)

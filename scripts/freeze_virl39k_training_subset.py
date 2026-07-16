@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -73,11 +74,12 @@ def freeze_subset(
     filter_manifest: Path,
     ids_output: Path,
     dataset_output: Path,
+    image_index_dir: Path,
     summary_output: Path,
     expected_items: int = 38_870,
     expected_records: int = 42_908,
 ) -> dict[str, Any]:
-    for output in (ids_output, dataset_output, summary_output):
+    for output in (ids_output, dataset_output, image_index_dir, summary_output):
         if output.exists():
             raise FileExistsError(f"refusing to overwrite frozen ViRL39K artifact: {output}")
 
@@ -112,6 +114,7 @@ def freeze_subset(
 
     frozen_rows: list[dict[str, Any]] = []
     repaired_markers = 0
+    image_digests: dict[Path, str] = {}
     for row_index, row in enumerate(retained):
         problem, repaired = _problem_with_image_markers(
             str(row["question"]), len(row["image_paths"])
@@ -121,6 +124,14 @@ def freeze_subset(
         answer = extract_answer_span(answer_raw).span.strip()
         if not answer:
             raise ValueError(f"empty canonical answer for ViRL39K qid {row['qid']}")
+        row_digests = []
+        for raw_path in row["image_paths"]:
+            path = Path(raw_path)
+            digest = image_digests.get(path)
+            if digest is None:
+                digest = _sha256(path)
+                image_digests[path] = digest
+            row_digests.append(digest)
         frozen_rows.append(
             {
                 "schema_version": SCHEMA_VERSION,
@@ -138,10 +149,24 @@ def freeze_subset(
                     "pass_rate_32b_trained": float(row["pass_rate_32b_trained"]),
                     "pass_rate_7b_base": float(row["pass_rate_7b_base"]),
                     "relative_image_paths": list(row["relative_image_paths"]),
+                    "image_sha256": row_digests,
                     "image_markers_repaired": repaired,
                 },
             }
         )
+
+    temporary_index = image_index_dir.with_name(f".{image_index_dir.name}.partial.{os.getpid()}")
+    try:
+        temporary_index.mkdir(parents=True, exist_ok=False)
+        by_digest: dict[str, Path] = {}
+        for path, digest in image_digests.items():
+            by_digest.setdefault(digest, path)
+        for digest, path in sorted(by_digest.items()):
+            (temporary_index / f"{digest}{path.suffix.lower()}").symlink_to(path.resolve())
+        os.replace(temporary_index, image_index_dir)
+    except Exception:
+        shutil.rmtree(temporary_index, ignore_errors=True)
+        raise
 
     retained_ids = [str(row["qid"]) for row in retained]
     _atomic_write(ids_output, json.dumps(retained_ids, indent=2) + "\n")
@@ -169,11 +194,19 @@ def freeze_subset(
         "n_inspect_only_items_retained": len(inspect_qids),
         "n_retained_items": len(retained),
         "n_retained_image_references": sum(len(row["image_paths"]) for row in retained),
+        "n_retained_unique_images": len(set(image_digests.values())),
         "marker_repaired_rows": repaired_markers,
         "ids_output": str(ids_output),
         "ids_sha256": _sha256(ids_output),
         "dataset_output": str(dataset_output),
         "dataset_sha256": _sha256(dataset_output),
+        "image_index_dir": str(image_index_dir),
+        "image_index_manifest_sha256": hashlib.sha256(
+            "".join(
+                f"{digest} {path.resolve()}\n"
+                for digest, path in sorted(by_digest.items())
+            ).encode("utf-8")
+        ).hexdigest(),
         "distribution": {
             "original": _distribution(rows),
             "filtered": _distribution(retained),
@@ -190,6 +223,7 @@ def main() -> None:
     parser.add_argument("--filter-manifest", type=Path, required=True)
     parser.add_argument("--ids-output", type=Path, required=True)
     parser.add_argument("--dataset-output", type=Path, required=True)
+    parser.add_argument("--image-index-dir", type=Path, required=True)
     parser.add_argument("--summary-output", type=Path, required=True)
     args = parser.parse_args()
     summary = freeze_subset(**vars(args))

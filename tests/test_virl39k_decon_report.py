@@ -61,6 +61,9 @@ def _fixtures(tmp_path: Path) -> tuple[Path, Path, Path]:
                 "ids_sha256": "a" * 64,
                 "dataset_output": "dataset.jsonl",
                 "dataset_sha256": "b" * 64,
+                "image_index_dir": "caption_images",
+                "image_index_manifest_sha256": "c" * 64,
+                "n_retained_unique_images": 42_000,
             }
         ),
         encoding="utf-8",

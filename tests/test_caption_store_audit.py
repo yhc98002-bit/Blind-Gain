@@ -34,6 +34,41 @@ def test_caption_audit_rejects_manifest_without_image_hash(tmp_path: Path) -> No
         expected_hashes_from_manifest(manifest)
 
 
+def test_caption_audit_supports_training_rows_with_string_paths_and_hash_metadata(
+    tmp_path: Path,
+) -> None:
+    manifest = tmp_path / "training.jsonl"
+    manifest.write_text(
+        json.dumps(
+            {
+                "images": ["first.png", "second.png"],
+                "metadata": {"image_sha256": ["first-hash", "second-hash"]},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    assert expected_hashes_from_manifest(manifest) == {"first-hash", "second-hash"}
+
+
+def test_caption_audit_rejects_string_paths_without_exact_hash_count(tmp_path: Path) -> None:
+    manifest = tmp_path / "training.jsonl"
+    manifest.write_text(
+        json.dumps(
+            {
+                "images": ["first.png", "second.png"],
+                "metadata": {"image_sha256": ["only-one"]},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="lack one SHA256 per image"):
+        expected_hashes_from_manifest(manifest)
+
+
 def test_caption_audit_supports_packaged_pair_members(tmp_path: Path) -> None:
     manifest = tmp_path / "release.jsonl"
     manifest.write_text(

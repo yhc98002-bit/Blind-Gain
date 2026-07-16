@@ -61,6 +61,7 @@ def _fixture(tmp_path: Path) -> dict[str, Path | int]:
         "filter_manifest": filtering,
         "ids_output": tmp_path / "ids.json",
         "dataset_output": tmp_path / "dataset.jsonl",
+        "image_index_dir": tmp_path / "caption_images",
         "summary_output": tmp_path / "summary.json",
         "expected_items": 2,
         "expected_records": 3,
@@ -76,11 +77,15 @@ def test_freezer_drops_whole_multi_image_item_and_retains_inspect_only(tmp_path:
     frozen = json.loads(Path(paths["dataset_output"]).read_text())
     assert frozen["qid"] == "keep"
     assert frozen["images"] == [str(tmp_path / "images" / "c.png")]
+    assert len(frozen["metadata"]["image_sha256"]) == 1
     assert frozen["problem"].startswith("<image>\n")
     assert summary["n_remove_records"] == 1
     assert summary["n_remove_items"] == 1
     assert summary["n_inspect_only_items_retained"] == 1
     assert summary["candidate_language"] == "conservative contamination candidates"
+    links = list(Path(paths["image_index_dir"]).iterdir())
+    assert len(links) == 1 and links[0].is_symlink()
+    assert summary["n_retained_unique_images"] == 1
 
 
 def test_freezer_rejects_incomplete_decontamination(tmp_path: Path) -> None:

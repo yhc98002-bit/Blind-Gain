@@ -70,6 +70,8 @@ def build_report(
         ),
         "frozen_outputs_hashed": bool(frozen.get("ids_sha256"))
         and bool(frozen.get("dataset_sha256")),
+        "caption_image_index_exact": bool(frozen.get("image_index_manifest_sha256"))
+        and int(frozen.get("n_retained_unique_images", -1)) > 0,
         "conservative_candidate_language": frozen.get("candidate_language")
         == "conservative contamination candidates",
     }
@@ -102,6 +104,8 @@ def build_report(
             "ids_sha256": frozen.get("ids_sha256"),
             "dataset": frozen.get("dataset_output"),
             "dataset_sha256": frozen.get("dataset_sha256"),
+            "image_index": frozen.get("image_index_dir"),
+            "image_index_manifest_sha256": frozen.get("image_index_manifest_sha256"),
         },
     }
 
