@@ -87,7 +87,7 @@ jq -n \
     target_gpu_ids: $target_gpu_ids,
     child_tensor_parallel_width: 1,
     child_replica_count: 4,
-    placement_justification: "CPU-only queue observes pinned retention and capacity state; the child uses four independent TP1 replicas on one permanent node and sends no process signals.",
+    placement_justification: "CPU-only queue observes exact training/checkpoint readiness and capacity; archive relocation is informational, and the child uses four independent TP1 replicas on one permanent node without sending process signals.",
     git_hash: $git_hash,
     config_hash: $config_hash,
     data_manifest: $config,
