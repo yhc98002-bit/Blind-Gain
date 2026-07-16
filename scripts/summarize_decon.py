@@ -30,7 +30,7 @@ def build_filter_manifest(comparison: dict[str, Any]) -> dict[str, Any]:
         "completed_layers": comparison.get("completed_layers", []),
         "pending_layers": pending,
         "thresholds": comparison["thresholds"],
-        "auto_remove_rule": "drop a Geometry3K train record if any candidate edge has action=remove",
+        "auto_remove_rule": "drop a training record if any candidate edge has action=remove",
         "manual_review_rule": "inspect-only records are not auto-dropped because calibrated inspect thresholds admit false positives",
         "n_train_records": comparison["n_train_records"],
         "n_eval_records": comparison["n_eval_records"],

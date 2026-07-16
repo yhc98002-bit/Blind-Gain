@@ -28,3 +28,6 @@ def test_filter_manifest_is_incomplete_and_ands_pending_layers() -> None:
     assert result["complete"] is False
     assert result["remove_train_record_ids"] == ["train-a"]
     assert result["inspect_only_train_record_ids"] == ["train-b"]
+    assert result["auto_remove_rule"] == (
+        "drop a training record if any candidate edge has action=remove"
+    )
