@@ -103,6 +103,7 @@ def run_queue(
     *,
     node: str,
     allowed_gpus: tuple[int, ...],
+    arms: tuple[str, ...],
     poll_seconds: int,
     stable_polls: int,
 ) -> int:
@@ -114,15 +115,13 @@ def run_queue(
         "updated_utc": _utc(),
         "node": node,
         "allowed_gpu_ids": list(allowed_gpus),
-        "placement_reason": (
-            "Only an12 GPUs 5-6 are eligible after their existing M11 cells release; "
-            "an29 remains reserved for seed 2 and M11 repair."
-        ),
+        "registered_arms": list(arms),
+        "placement_reason": "an29 remains reserved for seed 2 and M11 repair.",
         "gpu_free_streaks": {str(gpu): 0 for gpu in allowed_gpus},
         "last_gpu_snapshot": {},
         "arms": {
             arm: {"status": "pending", "gpu": None, "run_dir": None}
-            for arm in ARMS
+            for arm in arms
         },
         "events": [],
         "performance_values_opened": False,
@@ -178,7 +177,7 @@ def run_queue(
             if state["gpu_free_streaks"][str(gpu)] >= stable_polls
             and gpu not in running_gpus
         ]
-        pending = [arm for arm in ARMS if state["arms"][arm]["status"] == "pending"]
+        pending = [arm for arm in arms if state["arms"][arm]["status"] == "pending"]
         for arm, gpu in zip(pending, stable):
             launched = _launch(node, gpu, arm)
             state["gpu_free_streaks"][str(gpu)] = 0
@@ -219,13 +218,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--node", default="an12", choices=("an12",))
-    parser.add_argument("--allowed-gpus", default="5,6")
+    parser.add_argument("--allowed-gpus", default="4,5,6,7")
+    parser.add_argument("--arms", default=",".join(ARMS))
     parser.add_argument("--poll-seconds", type=int, default=60)
     parser.add_argument("--stable-polls", type=int, default=2)
     args = parser.parse_args()
     allowed = tuple(int(value) for value in args.allowed_gpus.split(","))
-    if allowed != (5, 6):
-        raise ValueError("registered M10 queue permits only an12 GPUs 5,6")
+    arms = tuple(value for value in args.arms.split(",") if value)
+    if not arms or len(set(arms)) != len(arms) or any(arm not in ARMS for arm in arms):
+        raise ValueError("M10 queue arms must be a unique nonempty registered subset")
+    if not allowed or len(set(allowed)) != len(allowed) or any(
+        gpu not in (4, 5, 6, 7) for gpu in allowed
+    ):
+        raise ValueError("M10 queue permits only a unique subset of an12 GPUs 4-7")
     if args.poll_seconds < 1 or args.stable_polls < 1:
         raise ValueError("poll interval and stable-poll count must be positive")
     raise SystemExit(
@@ -233,6 +238,7 @@ def main() -> None:
             args.run_dir,
             node=args.node,
             allowed_gpus=allowed,
+            arms=arms,
             poll_seconds=args.poll_seconds,
             stable_polls=args.stable_polls,
         )

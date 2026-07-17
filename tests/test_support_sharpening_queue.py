@@ -20,8 +20,8 @@ def test_queue_capacity_filter_does_not_treat_loaded_idle_gpu_as_free() -> None:
     assert free_allowed_gpus(snapshot, (5, 6)) == []
 
 
-def test_queue_is_pinned_away_from_seed2_node_and_covers_four_arms() -> None:
-    launcher = ROOT / "scripts/launch_support_sharpening_queue.sh"
+def test_remaining_queue_is_pinned_away_from_seed2_and_cannot_duplicate_a1_a3() -> None:
+    launcher = ROOT / "scripts/launch_support_sharpening_remaining_queue.sh"
     source = launcher.read_text(encoding="utf-8")
     result = subprocess.run(
         ["bash", "-n", str(launcher)], capture_output=True, text=True, check=False
@@ -29,6 +29,8 @@ def test_queue_is_pinned_away_from_seed2_node_and_covers_four_arms() -> None:
 
     assert result.returncode == 0, result.stderr
     assert launcher.stat().st_mode & stat.S_IXUSR
-    assert "--node an12 --allowed-gpus 5,6" in source
-    assert "an29" not in source
+    assert "--node an12 --allowed-gpus 4,5,6,7 --arms a2_gray,a2b_noimage" in source
     assert set(ARMS) == {"a1_real", "a2_gray", "a2b_noimage", "a3_caption"}
+    command = next(line for line in source.splitlines() if line.startswith("COMMAND="))
+    assert "an29" not in command
+    assert "a1_real" not in command and "a3_caption" not in command
