@@ -15,6 +15,7 @@ from src.ops.storage_guard import (
     evaluate_scratch_guard,
     evaluate_shared_guard,
 )
+from scripts.watch_anchor_checkpoints import refresh_usage_snapshot_if_needed
 
 
 def test_default_shared_quota_matches_pi_allocation_update() -> None:
@@ -175,3 +176,34 @@ def test_quota_snapshot_rejects_different_root(tmp_path: Path) -> None:
             tmp_path,
             now=dt.datetime(2026, 7, 11, 0, 1, tzinfo=dt.timezone.utc),
         )
+
+
+def test_checkpoint_watcher_does_not_rescan_when_guard_snapshot_is_fresh(
+    tmp_path: Path,
+) -> None:
+    snapshot = tmp_path / "usage.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "status": "pass",
+                "quota_root": str(tmp_path),
+                "used_bytes": 10,
+                "measured_at_utc": "2026-07-11T00:00:00Z",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    def old_blocking_refresh(*args: object, **kwargs: object) -> Path:
+        raise AssertionError("fresh guard provenance must not trigger a full quota scan")
+
+    result = refresh_usage_snapshot_if_needed(
+        150,
+        "premerge",
+        scope="m5_longhorizon",
+        snapshot_path=snapshot,
+        quota_root=tmp_path,
+        now=dt.datetime(2026, 7, 11, 0, 1, tzinfo=dt.timezone.utc),
+        refresher=old_blocking_refresh,
+    )
+    assert result is None

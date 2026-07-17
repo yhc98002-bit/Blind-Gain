@@ -13,7 +13,9 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
+
+from src.ops.storage_guard import allocated_bytes_from_snapshot
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -266,6 +268,46 @@ def refresh_usage_snapshot(step: int, phase: str, *, scope: str = "anchor") -> P
     )
 
 
+def usage_snapshot_is_fresh(
+    snapshot_path: Path,
+    quota_root: Path,
+    *,
+    max_age_seconds: int = 6 * 60 * 60,
+    now: dt.datetime | None = None,
+) -> bool:
+    try:
+        allocated_bytes_from_snapshot(
+            snapshot_path,
+            quota_root,
+            max_age_seconds=max_age_seconds,
+            now=now,
+        )
+    except (OSError, RuntimeError, ValueError, json.JSONDecodeError):
+        return False
+    return True
+
+
+def refresh_usage_snapshot_if_needed(
+    step: int,
+    phase: str,
+    *,
+    scope: str,
+    snapshot_path: Path = CURRENT_USAGE_SNAPSHOT,
+    quota_root: Path = SHARED_QUOTA_ROOT,
+    max_age_seconds: int = 6 * 60 * 60,
+    now: dt.datetime | None = None,
+    refresher: Callable[..., Path] = refresh_usage_snapshot,
+) -> Path | None:
+    if usage_snapshot_is_fresh(
+        snapshot_path,
+        quota_root,
+        max_age_seconds=max_age_seconds,
+        now=now,
+    ):
+        return None
+    return refresher(step, phase, scope=scope)
+
+
 def guard_merge(actor_dir: Path, step: int, *, scope: str = "anchor") -> None:
     from src.ops.storage_guard import (
         StorageGuardRefusal,
@@ -482,10 +524,10 @@ def process_step(
 ) -> None:
     actor_dir = wait_for_stable_checkpoint(run_root, step, poll_seconds=60)
     require_code_bundle(expected_code_hash, code_bundle_paths)
-    refresh_usage_snapshot(step, "premerge", scope=scope)
+    refresh_usage_snapshot_if_needed(step, "premerge", scope=scope)
     require_code_bundle(expected_code_hash, code_bundle_paths)
     merge_checkpoint(actor_dir, step, node, scope=scope, run_label=run_label)
-    refresh_usage_snapshot(step, "postmerge", scope=scope)
+    refresh_usage_snapshot_if_needed(step, "postmerge", scope=scope)
     require_code_bundle(expected_code_hash, code_bundle_paths)
     relocate_raw(
         actor_dir=actor_dir,
@@ -511,7 +553,7 @@ def process_step(
             scope=scope,
             run_label=run_label,
         )
-    refresh_usage_snapshot(step, "postrelocation", scope=scope)
+    refresh_usage_snapshot_if_needed(step, "postrelocation", scope=scope)
 
 
 def main() -> None:
