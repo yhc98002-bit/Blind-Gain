@@ -33,7 +33,7 @@ LOG="${RUN_DIR}/logs/${NODE}.log"
 PID_FILE="${RUN_DIR}/pids/${NODE}.pid"
 mkdir -p "${ROOT}/${RUN_DIR}/logs" "${ROOT}/${RUN_DIR}/pids" "${ROOT}/${RUN_DIR}/shards"
 
-COMMAND="set -euo pipefail; pids=(); for shard in \$(seq 0 $((NUM_SHARDS - 1))); do OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv-ocr/bin/python scripts/extract_decon_ocr.py --inputs ${TRAIN_RECORDS} ${EVAL_RECORDS} --output ${RUN_DIR}/shards/shard_\${shard}.jsonl --num-shards ${NUM_SHARDS} --shard-index \${shard} & pids+=(\$!); done; for pid in \${pids[@]}; do wait \${pid}; done"
+COMMAND="set -euo pipefail; pids=(); for shard in \$(seq 0 $((NUM_SHARDS - 1))); do PYTHONPATH=. OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv-ocr/bin/python scripts/extract_decon_ocr.py --inputs ${TRAIN_RECORDS} ${EVAL_RECORDS} --output ${RUN_DIR}/shards/shard_\${shard}.jsonl --num-shards ${NUM_SHARDS} --shard-index \${shard} & pids+=(\$!); done; for pid in \${pids[@]}; do wait \${pid}; done"
 DATA_HASH="$(sha256sum "${ROOT}/${TRAIN_RECORDS}" "${ROOT}/${EVAL_RECORDS}" | sort -k2 | sha256sum | awk '{print $1}')"
 EXPECTED="$(seq 0 $((NUM_SHARDS - 1)) | jq -R --arg run_dir "${RUN_DIR}" '$run_dir + "/shards/shard_" + . + ".jsonl"' | jq -s .)"
 
@@ -70,5 +70,12 @@ jq -n \
     expected_artifacts: $expected
   }' > "${ROOT}/${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+if [[ "${NODE}" == "login" ]]; then
+  cd "${ROOT}"
+  nohup "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \
+    "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > /dev/null 2>&1 < /dev/null &
+  echo $! > "${ROOT}/${PID_FILE}"
+else
+  ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
+fi
 printf '%s\n' "${RUN_DIR}"

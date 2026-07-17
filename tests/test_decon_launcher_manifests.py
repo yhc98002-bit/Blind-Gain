@@ -30,3 +30,11 @@ def test_ocr_launchers_record_cpu_only_placement_without_fake_gpu_ids() -> None:
         assert "placement_justification:" in source
     assert "[DATA_LABEL]" in _source("launch_decon_ocr_compare.sh")
     assert "data_manifest: $data_label" in _source("launch_decon_ocr_compare.sh")
+
+
+def test_ocr_extractor_launcher_supports_login_without_ssh_and_sets_pythonpath() -> None:
+    source = _source("launch_decon_ocr.sh")
+
+    assert 'if [[ "${NODE}" == "login" ]]' in source
+    assert 'nohup "${ROOT}/.venv/bin/python"' in source
+    assert "PYTHONPATH=. OMP_NUM_THREADS=2" in source
