@@ -173,3 +173,16 @@ def test_independent_auditor_catches_tampered_stored_margin() -> None:
     recomputed = recompute_row(row, registry)
     assert abs(recomputed["paired_margin"] - 0.3) < 1e-12
     assert row["paired_margin"] != recomputed["paired_margin"]
+
+
+def test_matrix_queue_contains_each_registered_cell_once() -> None:
+    from scripts.run_visual_evidence_ranking_queue import matrix_cells
+
+    cells = matrix_cells()
+    identities = {(cell["model_key"], cell["condition"]) for cell in cells}
+    assert len(cells) == len(identities) == 9
+    assert identities == {
+        (model, condition)
+        for model in ("base", "a1_step60", "a1_step100")
+        for condition in ("real", "no_image", "gray")
+    }

@@ -1,1 +1,1 @@
-D1 | blocked | post-seed-1 visual-evidence ranking contract and 1,200-pair candidate registry are frozen before inference; execution and audited result bundle remain pending, with automatic branch assignment disabled because no margin SESOI was supplied
+D1 | blocked | reports/seed1_visual_evidence_ranking_smoke_v1.md: registration preceded inference and the two-pair TP1 smoke passed without opening values; the nine-cell lifecycle-only queue and audited result bundle remain pending, with automatic branch assignment disabled because no margin SESOI was supplied
