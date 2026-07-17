@@ -1,0 +1,28 @@
+{
+  "max_candidates": 16,
+  "output": "data/fliptrack_r19_visual_evidence_candidates_v1.jsonl",
+  "output_sha256": "fa9456941a730e174b1ed4bb4caefc151778e3f1adc0ca77db941955a4215f81",
+  "pair_count": 1200,
+  "schema_version": "blind-gains.visual-evidence-candidate-registry-metadata.v1",
+  "selection_uses_model_outputs": false,
+  "source": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+  "source_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+  "status": "complete",
+  "templates": {
+    "coordinate_register_twenty_point_x_v02": {
+      "candidate_max": 14,
+      "candidate_min": 14,
+      "pairs": 600
+    },
+    "header_cued_table_code_v02": {
+      "candidate_max": 16,
+      "candidate_min": 16,
+      "pairs": 300
+    },
+    "starred_series_value_nine_v07": {
+      "candidate_max": 9,
+      "candidate_min": 9,
+      "pairs": 300
+    }
+  }
+}

@@ -20,6 +20,13 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 | M13 | Paper 1 pipeline | continuous | `docs/paper1/`; `reports/paper1_pipeline_status_v7.md`; `reports/paper1_pipeline_status_v7.json` |
 | M14 | Merge-back readouts | M6 and M9 seed 1; registered M4 addendum | `reports/mergeback_gate_readouts_v1.md` |
 
+Prospective diagnostic addenda are tracked separately so they cannot be mistaken for
+original pilot endpoints:
+
+| ID | Diagnostic | Registration | Required evidence |
+| --- | --- | --- | --- |
+| D1 | Post-seed-1 visual-evidence/candidate-answer ranking | `docs/registered_seed1_visual_evidence_ranking_v1.md` | `reports/seed1_visual_evidence_ranking_results_v1.md`; machine artifact and independent audit |
+
 Global completion checks:
 - Every training unit has a registered document committed at `HEAD` before its first optimizer step.
 - Every GPU run has immutable placement, model/config/data hashes, seed, command, times, and artifact paths.

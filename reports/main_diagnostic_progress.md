@@ -1,0 +1,1 @@
+D1 | blocked | post-seed-1 visual-evidence ranking contract and 1,200-pair candidate registry are frozen before inference; execution and audited result bundle remain pending, with automatic branch assignment disabled because no margin SESOI was supplied
