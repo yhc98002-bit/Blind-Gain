@@ -36,5 +36,6 @@ def test_ocr_extractor_launcher_supports_login_without_ssh_and_sets_pythonpath()
     source = _source("launch_decon_ocr.sh")
 
     assert 'if [[ "${NODE}" == "login" ]]' in source
-    assert 'nohup "${ROOT}/.venv/bin/python"' in source
+    assert 'tmux new-session -d -s "${RUN_ID}"' in source
+    assert 'tmux list-panes -t "${RUN_ID}"' in source
     assert "PYTHONPATH=. OMP_NUM_THREADS=2" in source

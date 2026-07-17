@@ -72,9 +72,13 @@ jq -n \
 
 if [[ "${NODE}" == "login" ]]; then
   cd "${ROOT}"
-  nohup "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \
-    "${ROOT}/${MANIFEST}" "${ROOT}/${LOG}" > /dev/null 2>&1 < /dev/null &
-  echo $! > "${ROOT}/${PID_FILE}"
+  command -v tmux >/dev/null 2>&1 || {
+    echo "tmux is required for login-node detached execution" >&2
+    exit 2
+  }
+  tmux new-session -d -s "${RUN_ID}" \
+    "${ROOT}/.venv/bin/python '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}'"
+  tmux list-panes -t "${RUN_ID}" -F '#{pane_pid}' > "${ROOT}/${PID_FILE}"
 else
   ssh "${NODE}" "cd '${ROOT}' && (nohup '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 fi
