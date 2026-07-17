@@ -40,11 +40,44 @@ def recompute_row(row: dict[str, Any], registry: dict[str, Any]) -> dict[str, An
         raise ValueError("raw score keys do not match the frozen candidate set")
     margin_a = scores_a[gold_a] - scores_a[gold_b]
     margin_b = scores_b[gold_b] - scores_b[gold_a]
+    raw_a = {
+        str(key): float(value)
+        for key, value in row["candidate_raw_sum_scores_a"].items()
+    }
+    raw_b = {
+        str(key): float(value)
+        for key, value in row["candidate_raw_sum_scores_b"].items()
+    }
+    if set(raw_a) != expected_ids or set(raw_b) != expected_ids:
+        raise ValueError("raw-sum score keys do not match the frozen candidate set")
+
+    def conservative_rank(scores: dict[str, float], gold: str) -> int:
+        gold_score = scores[gold]
+        return 1 + sum(
+            candidate != gold and score >= gold_score - 1e-12
+            for candidate, score in scores.items()
+        )
+
+    rank_a = conservative_rank(scores_a, gold_a)
+    rank_b = conservative_rank(scores_b, gold_b)
+    raw_margin_a = raw_a[gold_a] - raw_a[gold_b]
+    raw_margin_b = raw_b[gold_b] - raw_b[gold_a]
     return {
         "margin_a": margin_a,
         "margin_b": margin_b,
         "paired_margin": (margin_a + margin_b) / 2.0,
         "pair_success": margin_a > 0.0 and margin_b > 0.0,
+        "rank_a": rank_a,
+        "rank_b": rank_b,
+        "candidate_top1_a": rank_a == 1,
+        "candidate_top1_b": rank_b == 1,
+        "candidate_pair_top1": rank_a == 1 and rank_b == 1,
+        "mrr_a": 1.0 / rank_a,
+        "mrr_b": 1.0 / rank_b,
+        "candidate_pair_mrr": (1.0 / rank_a + 1.0 / rank_b) / 2.0,
+        "raw_sum_margin_a_robustness": raw_margin_a,
+        "raw_sum_margin_b_robustness": raw_margin_b,
+        "raw_sum_paired_margin_robustness": (raw_margin_a + raw_margin_b) / 2.0,
     }
 
 
@@ -58,6 +91,26 @@ def _bootstrap(values: list[float], n_boot: int, seed: int) -> list[float]:
         means.extend(array[indices].mean(axis=1).tolist())
     means.sort()
     return means
+
+
+def _effect_summary(values: list[float], n_boot: int, seed: int) -> dict[str, Any]:
+    means = _bootstrap(values, n_boot=n_boot, seed=seed)
+    return {
+        "n_pairs": len(values),
+        "mean": sum(values) / len(values),
+        "ci95": [means[math.floor(0.025 * n_boot)], means[math.ceil(0.975 * n_boot) - 1]],
+    }
+
+
+def _summary_matches(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    return (
+        int(left["n_pairs"]) == int(right["n_pairs"])
+        and math.isclose(float(left["mean"]), float(right["mean"]), rel_tol=0.0, abs_tol=1e-12)
+        and all(
+            math.isclose(float(a), float(b), rel_tol=0.0, abs_tol=1e-12)
+            for a, b in zip(left["ci95"], right["ci95"])
+        )
+    )
 
 
 def main() -> None:
@@ -86,13 +139,32 @@ def main() -> None:
         for row in _jsonl(run_dir / "scores.jsonl"):
             pair_id = str(row["pair_id"])
             recalculated = recompute_row(row, registry[pair_id])
-            for field in ("margin_a", "margin_b", "paired_margin"):
+            for field in (
+                "margin_a",
+                "margin_b",
+                "paired_margin",
+                "mrr_a",
+                "mrr_b",
+                "candidate_pair_mrr",
+                "raw_sum_margin_a_robustness",
+                "raw_sum_margin_b_robustness",
+                "raw_sum_paired_margin_robustness",
+            ):
                 if not math.isclose(
                     float(row[field]), float(recalculated[field]), rel_tol=0.0, abs_tol=1e-12
                 ):
                     stored_metric_mismatches += 1
             if bool(row["pair_success"]) != bool(recalculated["pair_success"]):
                 stored_metric_mismatches += 1
+            for field in (
+                "rank_a",
+                "rank_b",
+                "candidate_top1_a",
+                "candidate_top1_b",
+                "candidate_pair_top1",
+            ):
+                if row[field] != recalculated[field]:
+                    stored_metric_mismatches += 1
             rows[pair_id] = {**row, **recalculated}
         cells[key] = rows
 
@@ -111,13 +183,40 @@ def main() -> None:
     ]
     n_boot = int(config["analysis"]["bootstrap"]["resamples"])
     seed = int(config["analysis"]["bootstrap"]["seed"])
-    means = _bootstrap(effects, n_boot=n_boot, seed=seed)
-    recomputed_primary = {
-        "n_pairs": len(effects),
-        "mean": sum(effects) / len(effects),
-        "ci95": [means[math.floor(0.025 * n_boot)], means[math.ceil(0.975 * n_boot) - 1]],
-    }
+    recomputed_primary = _effect_summary(effects, n_boot=n_boot, seed=seed)
     published = result["primary_effect"]["paired_margin_primary"]
+    effect_summary_mismatches = 0
+    effect_field_map = {
+        "paired_margin_primary": "paired_margin",
+        "pair_success_secondary": "pair_success",
+        "candidate_pair_top1_secondary": "candidate_pair_top1",
+        "candidate_pair_mrr_secondary": "candidate_pair_mrr",
+        "raw_sum_margin_robustness": "raw_sum_paired_margin_robustness",
+    }
+    for published_effect in result["effects"].values():
+        trained_model = str(published_effect["trained_model"])
+        blind = str(published_effect["blind_comparator"])
+        effect_template = str(published_effect["template_id"])
+        effect_ids = sorted(
+            pair_id
+            for pair_id, registry_row in registry.items()
+            if registry_row["template_id"] == effect_template
+        )
+        for summary_field, row_field in effect_field_map.items():
+            values = [
+                (
+                    float(cells[(trained_model, "real")][pair_id][row_field])
+                    - float(cells[("base", "real")][pair_id][row_field])
+                )
+                - (
+                    float(cells[(trained_model, blind)][pair_id][row_field])
+                    - float(cells[("base", blind)][pair_id][row_field])
+                )
+                for pair_id in effect_ids
+            ]
+            recomputed = _effect_summary(values, n_boot=n_boot, seed=seed)
+            if not _summary_matches(published_effect[summary_field], recomputed):
+                effect_summary_mismatches += 1
     markdown = Path(args.result_markdown).read_text(encoding="utf-8")
     checks = {
         "exact_nine_cells": set(cells)
@@ -130,6 +229,7 @@ def main() -> None:
             math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1e-12)
             for left, right in zip(published["ci95"], recomputed_primary["ci95"])
         ),
+        "all_effect_summaries_exact": effect_summary_mismatches == 0,
         "branch_unassigned": result.get("branch_assignment") is None,
         "prohibited_phrase_absent": "perception improved" not in markdown.lower(),
         "chart_human_label_present": "cued chart point-value reading" in markdown,
@@ -139,6 +239,7 @@ def main() -> None:
         "status": "pass" if all(checks.values()) else "fail",
         "checks": checks,
         "stored_metric_mismatches": stored_metric_mismatches,
+        "effect_summary_mismatches": effect_summary_mismatches,
         "recomputed_primary": recomputed_primary,
         "result_json_sha256": _sha256(Path(args.result_json)),
         "result_markdown_sha256": _sha256(Path(args.result_markdown)),

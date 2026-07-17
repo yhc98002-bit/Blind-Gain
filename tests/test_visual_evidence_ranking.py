@@ -169,6 +169,8 @@ def test_independent_auditor_catches_tampered_stored_margin() -> None:
     row = {
         "candidate_scores_a": {gold_a: -0.1, gold_b: -0.5},
         "candidate_scores_b": {gold_a: -0.4, gold_b: -0.2},
+        "candidate_raw_sum_scores_a": {gold_a: -1.0, gold_b: -2.0},
+        "candidate_raw_sum_scores_b": {gold_a: -2.0, gold_b: -1.0},
         "paired_margin": -99.0,
     }
     recomputed = recompute_row(row, registry)

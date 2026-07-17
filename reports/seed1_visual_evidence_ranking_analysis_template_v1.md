@@ -13,6 +13,9 @@ Evidence:
 - It also renders the already frozen raw-sum score as a length-handling robustness
   difference-in-differences. Mean-token log probability remains the only primary
   candidate score.
+- The independent auditor reconstructs both side margins, strict pair success,
+  conservative tie ranks, top-1, MRR, and raw-sum robustness from candidate scores,
+  then independently recomputes every published effect and bootstrap interval.
 - Focused suite: `13 passed in 2.32s` on an12.
 
 Problems:
