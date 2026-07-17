@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -8,11 +11,75 @@ from scripts.finalize_support_sharpening_seed1 import (
     DRAW_SCHEMA_VERSION,
     _validate_draw_contract,
     _validate_run,
+    render_markdown,
 )
 from src.analysis.support_sharpening import registered_sampling_kwargs
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 from src.rewards.answer_reward import PARSER_VERSION
 from src.rewards.pilot_reward import PILOT_REWARD_VERSION
+
+
+def test_finalizer_direct_cli_loads_without_pythonpath() -> None:
+    root = Path(__file__).resolve().parents[1]
+    environment = os.environ.copy()
+    environment.pop("PYTHONPATH", None)
+
+    result = subprocess.run(
+        [sys.executable, "scripts/finalize_support_sharpening_seed1.py", "--help"],
+        cwd=root,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "--a1-real-run" in result.stdout
+
+
+def test_readout_reports_registered_zero_of_80_interval_and_version() -> None:
+    payload = {
+        "arms": {
+            "a1_real": {
+                "candidate_count": 1,
+                "draw_count": 64,
+                "class_counts": {"high-confidence support-expansion candidate": 1},
+                "items": [
+                    {
+                        "classification": "high-confidence support-expansion candidate",
+                        "jeffreys_ci95": [0.000006118762279136294, 0.030816258492440227],
+                    }
+                ],
+            },
+            "a2_gray": {
+                "candidate_count": 0,
+                "draw_count": 0,
+                "class_counts": {},
+                "items": [],
+            },
+            "a2b_noimage": {
+                "candidate_count": 0,
+                "draw_count": 0,
+                "class_counts": {},
+                "items": [],
+            },
+            "a3_caption": {
+                "candidate_count": 0,
+                "draw_count": 0,
+                "class_counts": {},
+                "items": [],
+            },
+        }
+    }
+
+    markdown = render_markdown(
+        payload,
+        Path("reports/support_sharpening_seed1_v2.json"),
+        report_version=2,
+    )
+
+    assert markdown.startswith("# Seed-1 M10 Support-Sharpening Follow-Up V2\n")
+    assert "[0.00000612, 0.03081626]" in markdown
 
 
 def test_finalizer_rejects_draw_that_reuses_an_unregistered_decoding_call() -> None:

@@ -4,9 +4,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.run_support_sharpening_followup import (
     ARMS,
@@ -26,7 +31,7 @@ from src.rewards.pilot_reward import PILOT_REWARD_VERSION
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_VERSION = "blind-gains.support-sharpening-seed1-readout.v1"
+SCHEMA_VERSION = "blind-gains.support-sharpening-seed1-readout.v2"
 DISPLAY_NAMES = {
     "a1_real": "A1 real",
     "a2_gray": "A2 gray",
@@ -216,9 +221,28 @@ def build_readout(
     return payload
 
 
-def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
+def render_markdown(
+    payload: dict[str, Any], machine_path: Path, *, report_version: int
+) -> str:
+    zero_intervals = {
+        tuple(item["jeffreys_ci95"])
+        for record in payload["arms"].values()
+        for item in record["items"]
+        if item["classification"] == "high-confidence support-expansion candidate"
+    }
+    if len(zero_intervals) > 1:
+        raise ValueError("0/80 items do not share one Jeffreys interval")
+    zero_interval_line = (
+        "- No item remained at zero successes in all 80 registered draws."
+        if not zero_intervals
+        else (
+            "- Every 0/80 item has Jeffreys 95% posterior interval "
+            f"`[{next(iter(zero_intervals))[0]:.8f}, "
+            f"{next(iter(zero_intervals))[1]:.8f}]`."
+        )
+    )
     lines = [
-        "# Seed-1 M10 Support-Sharpening Follow-Up V1",
+        f"# Seed-1 M10 Support-Sharpening Follow-Up V{report_version}",
         "",
         "Status:",
         "- Four-arm frozen-base follow-up complete under the registered 64-seed rule.",
@@ -229,6 +253,7 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
         f"- Machine artifact: `{machine_path}`.",
         "- Draw indices `16..79`; seeds `20260732..20260795`; one `n=1` output row per item and seed.",
         "- Duplicate text responses were retained as distinct registered draws.",
+        zero_interval_line,
         "",
         "| Arm | Candidates | Follow-up draws | High-confidence support-expansion candidates | Observed in support-sharpening samples |",
         "| --- | ---: | ---: | ---: | ---: |",
@@ -265,10 +290,10 @@ def main() -> None:
     for arm in ARMS:
         parser.add_argument(f"--{arm.replace('_', '-')}-run", type=Path, required=True)
     parser.add_argument(
-        "--output-json", type=Path, default=Path("reports/support_sharpening_seed1_v1.json")
+        "--output-json", type=Path, default=Path("reports/support_sharpening_seed1_v2.json")
     )
     parser.add_argument(
-        "--output-md", type=Path, default=Path("reports/support_sharpening_seed1_v1.md")
+        "--output-md", type=Path, default=Path("reports/support_sharpening_seed1_v2.md")
     )
     args = parser.parse_args()
     config = _load(args.config)
@@ -283,9 +308,23 @@ def main() -> None:
     }
     output_json = args.output_json.resolve()
     output_md = args.output_md.resolve()
+    version_match = re.search(r"_v([0-9]+)$", output_md.stem)
+    if version_match is None:
+        raise ValueError(
+            "M10 markdown output must end in a version suffix such as _v2.md"
+        )
+    report_version = int(version_match.group(1))
+    payload["report_version"] = report_version
     _write_new(output_json, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     try:
-        _write_new(output_md, render_markdown(payload, output_json.relative_to(ROOT)))
+        _write_new(
+            output_md,
+            render_markdown(
+                payload,
+                output_json.relative_to(ROOT),
+                report_version=report_version,
+            ),
+        )
     except Exception:
         output_json.unlink(missing_ok=True)
         raise
