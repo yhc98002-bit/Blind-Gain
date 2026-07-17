@@ -69,7 +69,7 @@ def main() -> None:
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--timeout-seconds", type=int, default=1800)
+    parser.add_argument("--timeout-seconds", type=int, default=7200)
     args = parser.parse_args()
     payload = measure(args.root, workers=args.workers, timeout_seconds=args.timeout_seconds)
     atomic_write(args.output, payload)
