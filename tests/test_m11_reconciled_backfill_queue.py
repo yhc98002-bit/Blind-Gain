@@ -65,10 +65,22 @@ def test_target_gpu_reservation_ignores_same_index_on_other_node() -> None:
     assert target_running_gpus(state, "an29") == {1}
 
 
-def test_registered_config_reconciles_ten_and_leaves_only_gemma_pending() -> None:
+def test_superseded_v1_config_refuses_the_preserved_failed_cell() -> None:
     root = Path(__file__).resolve().parents[1]
     config = json.loads(
         (root / "configs/eval/m11_generalization_reconciled_backfill_v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    with pytest.raises(ValueError, match="not viable"):
+        initial_state(config, root)
+
+
+def test_v2_config_reconciles_all_eighteen_without_opening_metrics() -> None:
+    root = Path(__file__).resolve().parents[1]
+    config = json.loads(
+        (root / "configs/eval/m11_generalization_reconciled_backfill_v2.json").read_text(
             encoding="utf-8"
         )
     )
@@ -77,19 +89,19 @@ def test_registered_config_reconciles_ten_and_leaves_only_gemma_pending() -> Non
     pending = [cell for cell in state["cells"].values() if cell["status"] == "pending"]
 
     assert len(state["cells"]) == 18
-    assert len(pending) == 8
-    assert all(cell["backend"] == "gemma3" for cell in pending)
+    assert pending == []
+    assert state["performance_values_opened"] is False
 
 
 def test_launcher_is_login_only_and_never_reads_performance_values() -> None:
     root = Path(__file__).resolve().parents[1]
-    source = (root / "scripts/launch_m11_reconciled_backfill_queue.sh").read_text(
+    source = (root / "scripts/launch_m11_reconciled_backfill_queue_v2.sh").read_text(
         encoding="utf-8"
     )
 
-    assert 'job_type: "m11_generalization_reconciled_backfill_queue"' in source
+    assert 'job_type: "m11_generalization_reconciled_backfill_queue_v2"' in source
     assert 'node: "login"' in source
     assert "--preflight-only" in source
-    assert "critical M11 backfill code or config differs from HEAD" in source
+    assert "critical M11 V2 reconciliation code or config differs from HEAD" in source
     assert "metrics.json" not in source
     assert "build_generalization_audits" not in source
