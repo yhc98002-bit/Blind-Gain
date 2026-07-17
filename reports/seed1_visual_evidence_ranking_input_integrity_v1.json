@@ -1,0 +1,121 @@
+{
+  "candidate_registry": {
+    "bytes": 3479960,
+    "exists": true,
+    "expected_sha256": "fa9456941a730e174b1ed4bb4caefc151778e3f1adc0ca77db941955a4215f81",
+    "matches": true,
+    "observed_sha256": "fa9456941a730e174b1ed4bb4caefc151778e3f1adc0ca77db941955a4215f81",
+    "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/fliptrack_r19_visual_evidence_candidates_v1.jsonl"
+  },
+  "checks": {
+    "all_image_hashes_exact": true,
+    "all_model_indexes_and_shards_present": true,
+    "candidate_registry_hash_exact": true,
+    "config_exists": true,
+    "image_paths_inside_release": true,
+    "pair_count_exact": true,
+    "pair_ids_unique": true
+  },
+  "config_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/configs/eval/seed1_visual_evidence_ranking_v1.json",
+  "config_sha256": "6abd53bbf7742167aaf672dcc74633465f7d9378220067c651ce4575375b67bf",
+  "image_bytes": 105880309,
+  "image_hash_mismatch_count": 0,
+  "models": {
+    "a1_step100": {
+      "index": {
+        "bytes": 65542,
+        "exists": true,
+        "expected_sha256": "036e451c030b97b0b3d42c0719da861b5df191027888bbacb8b83648114860ff",
+        "matches": true,
+        "observed_sha256": "036e451c030b97b0b3d42c0719da861b5df191027888bbacb8b83648114860ff",
+        "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_resume60/global_step_100/actor/huggingface/model.safetensors.index.json"
+      },
+      "model_key": "a1_step100",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_resume60/global_step_100/actor/huggingface",
+      "shard_count": 2,
+      "shard_inventory_sha256": "bedaa5b6e44290355496413edee6462d9dcf8027296ffc961afc3cbce6a43d06",
+      "shards": [
+        {
+          "bytes": 4983590160,
+          "exists": true,
+          "name": "model-00001-of-00002.safetensors",
+          "sha256": "65e6d3d38e36b5dc859286be4d4f8563292063ba4f121da6554fa3fab84f4be1"
+        },
+        {
+          "bytes": 3148077848,
+          "exists": true,
+          "name": "model-00002-of-00002.safetensors",
+          "sha256": "de19ff7d41c43cb08fb5ac18ffd672404470c43bce816ec81544409f18201367"
+        }
+      ],
+      "status": "pass",
+      "weight_bytes": 8131668008
+    },
+    "a1_step60": {
+      "index": {
+        "bytes": 65542,
+        "exists": true,
+        "expected_sha256": "8c1d6496fd0baaeea530e26dbd9272ba735cbecb8d8abaecad57d7f903cdd21e",
+        "matches": true,
+        "observed_sha256": "8c1d6496fd0baaeea530e26dbd9272ba735cbecb8d8abaecad57d7f903cdd21e",
+        "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real/global_step_60/actor/huggingface/model.safetensors.index.json"
+      },
+      "model_key": "a1_step60",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real/global_step_60/actor/huggingface",
+      "shard_count": 2,
+      "shard_inventory_sha256": "6ac699dcdefe378883274903dc6cbde78fbc533b4a84350d4ed952db4593e4c9",
+      "shards": [
+        {
+          "bytes": 4922309568,
+          "exists": true,
+          "name": "model-00001-of-00002.safetensors",
+          "sha256": "d5df39b3b90c09205dbbe30cec9bad80a2276539b001b463147b59dfff727465"
+        },
+        {
+          "bytes": 3209358440,
+          "exists": true,
+          "name": "model-00002-of-00002.safetensors",
+          "sha256": "c10903a8c46356dc9d402ae950e1a23f445f4c2f2d6fbf2f9470ff1d06e20deb"
+        }
+      ],
+      "status": "pass",
+      "weight_bytes": 8131668008
+    },
+    "base": {
+      "index": {
+        "bytes": 65448,
+        "exists": true,
+        "expected_sha256": "c7dd78a4c6bea60b51332f1baf37b8f8124ecab2c35395a29a29825bf2619768",
+        "matches": true,
+        "observed_sha256": "c7dd78a4c6bea60b51332f1baf37b8f8124ecab2c35395a29a29825bf2619768",
+        "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct/model.safetensors.index.json"
+      },
+      "model_key": "base",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "shard_count": 2,
+      "shard_inventory_sha256": "6bff2e27c052fc9475f447f744a3dd2a2966e8e0581a2e98d96934b15f9aa5be",
+      "shards": [
+        {
+          "bytes": 3982649232,
+          "exists": true,
+          "name": "model-00001-of-00002.safetensors",
+          "sha256": "41a8895c164b4d32bae6b302f4603fcbc1797f32dafa45c7e9bcda23c6755df8"
+        },
+        {
+          "bytes": 3526688744,
+          "exists": true,
+          "name": "model-00002-of-00002.safetensors",
+          "sha256": "365531ff8752420e89dee707b79d021fb2d6e25abafe486f080555a4fe6972e4"
+        }
+      ],
+      "status": "pass",
+      "weight_bytes": 7509337976
+    }
+  },
+  "pair_count": 1200,
+  "path_escape_count": 0,
+  "performance_values_opened": false,
+  "schema_version": "blind-gains.visual-evidence-input-integrity.v1",
+  "status": "pass",
+  "unique_image_count": 2400
+}

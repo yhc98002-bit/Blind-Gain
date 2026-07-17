@@ -19,6 +19,9 @@ Evidence:
 - Focused suite: `13 passed in 2.32s` on an12.
 - A full-shape synthetic dry run produced 27 cell summaries and 12 effects with
   10,000 resamples in 343.99 seconds at 48,900 KiB peak RSS on the login node.
+- The separate input-integrity audit passed for the frozen 1,200-pair registry,
+  2,400 exact image hashes, and all base/step-60/step-100 model indexes and shards;
+  see `reports/seed1_visual_evidence_ranking_input_integrity_v1.md`.
 
 Problems:
 - These extra tables increase reporting completeness but do not create additional
@@ -30,4 +33,5 @@ Decision:
 
 Next actions:
 - Finalize only after all nine immutable cells complete, then run the separate raw-
-  score recomputation audit before updating the diagnostic ledger.
+  score recomputation audit before updating the diagnostic ledger. Input-integrity
+  status is a required provenance check and must remain `pass`.

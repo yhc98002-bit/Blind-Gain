@@ -234,3 +234,16 @@ def test_result_builder_keeps_geometry_noimage_did_as_the_single_primary() -> No
     )
     assert abs(result["primary_effect"]["paired_margin_primary"]["mean"] - 0.75) < 1e-12
     assert result["branch_assignment"] is None
+
+
+def test_input_integrity_audit_rejects_a_tampered_file(tmp_path) -> None:
+    from scripts.audit_visual_evidence_inputs import audit_expected_file
+
+    path = tmp_path / "artifact.bin"
+    path.write_bytes(b"registered")
+    expected = audit_expected_file(path, "00" * 32)
+    assert expected["exists"] is True
+    assert expected["matches"] is False
+    missing = audit_expected_file(tmp_path / "missing.bin", "00" * 32)
+    assert missing["exists"] is False
+    assert missing["matches"] is False
