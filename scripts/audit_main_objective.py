@@ -228,7 +228,9 @@ def build_main_objective_audit(root: Path) -> dict[str, Any]:
     }
 
 
-def render_markdown(payload: dict[str, Any], json_path: Path) -> str:
+def render_markdown(
+    payload: dict[str, Any], json_path: Path, *, report_version: int
+) -> str:
     check_rows = [
         f"| `{name}` | `{str(value).lower()}` |"
         for name, value in payload["checks"].items()
@@ -239,7 +241,7 @@ def render_markdown(payload: dict[str, Any], json_path: Path) -> str:
         if entry["status"] == "pass"
     ]
     lines = [
-        "# Main Objective Audit V1",
+        f"# Main Objective Audit V{report_version}",
         "",
         "Status:",
         f"- Machine audit status: `{payload['status']}`.",
@@ -288,12 +290,21 @@ def main() -> None:
         if args.markdown_output.is_absolute()
         else root / args.markdown_output
     )
+    version_match = re.search(r"_v([0-9]+)$", markdown_output.stem)
+    if version_match is None:
+        raise ValueError(
+            "main objective markdown output must end in a version suffix such as _v29.md"
+        )
+    report_version = int(version_match.group(1))
     if json_output.exists() or markdown_output.exists():
         raise FileExistsError("refusing to overwrite main objective audit artifacts")
     payload = build_main_objective_audit(root)
     _atomic_write(json_output, json.dumps(payload, indent=2, sort_keys=True) + "\n")
     display_json = json_output.relative_to(root) if json_output.is_relative_to(root) else json_output
-    _atomic_write(markdown_output, render_markdown(payload, Path(display_json)))
+    _atomic_write(
+        markdown_output,
+        render_markdown(payload, Path(display_json), report_version=report_version),
+    )
     print(json.dumps({"status": payload["status"], "errors": payload["errors"]}))
     raise SystemExit(0 if payload["status"] == "pass" else 1)
 

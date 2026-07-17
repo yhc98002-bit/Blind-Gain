@@ -39,10 +39,15 @@
     },
     "dissociation": {
       "status": "pending",
+      "uses_chart_deltas": true,
       "inputs": [
         {
           "path": "reports/pilot_3seed_summary_v1.md",
           "sha256": "{result-pending:m3-input-hash}"
+        },
+        {
+          "path": "reports/pilot_4arm_seed1_r19_null_v1.json",
+          "sha256": "5c8bb51bfca8a9175c8ad7f4efd9d8d8f80e56d3595f3f1c9f30645a7d9c4f78"
         }
       ],
       "plot": "{result-pending:dissociation-scatter}"

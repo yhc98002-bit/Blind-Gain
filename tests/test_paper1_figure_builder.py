@@ -58,6 +58,21 @@ def test_ready_chart_delta_requires_registered_null_diagnostics(tmp_path: Path) 
         validate_spec(tmp_path, "fixture", spec)
 
 
+def test_registered_dissociation_slot_pins_null_before_chart_delta_rendering() -> None:
+    root = Path(__file__).resolve().parents[1]
+    payload = __import__("json").loads(
+        (root / "docs/paper1/figure_specs.json").read_text(encoding="utf-8")
+    )
+    spec = payload["figures"]["dissociation"]
+
+    assert spec["uses_chart_deltas"] is True
+    assert {
+        record["path"]: record["sha256"] for record in spec["inputs"]
+    }["reports/pilot_4arm_seed1_r19_null_v1.json"] == (
+        "5c8bb51bfca8a9175c8ad7f4efd9d8d8f80e56d3595f3f1c9f30645a7d9c4f78"
+    )
+
+
 def test_ready_grouped_bar_writes_nonempty_png(tmp_path: Path) -> None:
     source = tmp_path / "result.json"
     source.write_text('{"status":"pass"}\n', encoding="utf-8")

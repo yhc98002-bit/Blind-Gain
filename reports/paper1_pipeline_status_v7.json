@@ -1,0 +1,56 @@
+{
+  "schema_version": "blind-gains.paper1-pipeline-status.v7",
+  "status": "pass",
+  "status_scope": "reusable paper artifact pipeline and seed-1 result-slot controls",
+  "scientific_gate_decision": null,
+  "checks": {
+    "v6_machine_audit_pass": true,
+    "v6_artifacts_retained": true,
+    "seed1_a2_gray_geometry_value_exact": true,
+    "seed1_d_caption_final_value_exact": true,
+    "both_seed1_values_have_required_confirmation_label": true,
+    "r19_null_has_36_complete_cells": true,
+    "r19_null_independent_audit_pass": true,
+    "dissociation_spec_pins_null_hash": true,
+    "chart_delta_builder_fails_closed_without_null": true,
+    "scientific_interpretation_made": false
+  },
+  "seed1_slots": [
+    {
+      "name": "A2-gray R19 geometry delta",
+      "value": -0.045,
+      "label": "registered seed-1 result; confirmation pending seeds 2–3"
+    },
+    {
+      "name": "D_caption^final",
+      "value": -0.108,
+      "label": "registered seed-1 result; confirmation pending seeds 2–3"
+    }
+  ],
+  "evidence": {
+    "v6_machine": {
+      "path": "reports/paper1_pipeline_status_v6.json",
+      "sha256": "7224fbd7eb194112df0accd574c2fdde76b8e09c9c2b791df6a577d17d25329d"
+    },
+    "master_result_table": {
+      "path": "docs/paper1/master_result_table.md",
+      "sha256": "c3f4cb4577032ed7f781fc9d92a8f2dab8e4247b8d0587bc182fda996ef3e164"
+    },
+    "figure_specs": {
+      "path": "docs/paper1/figure_specs.json",
+      "sha256": "501742cfe79c9c96ef3a38fe592585bbae2d3784333c4f58f73e8557ac301059"
+    },
+    "figure_builder": {
+      "path": "scripts/paper1/build_figures.py",
+      "sha256": "19ac94e5e77e3d6d5d84e07350b22424ea7ae47299165e3c4be5ab7669fd377d"
+    },
+    "r19_null": {
+      "path": "reports/pilot_4arm_seed1_r19_null_v1.json",
+      "sha256": "5c8bb51bfca8a9175c8ad7f4efd9d8d8f80e56d3595f3f1c9f30645a7d9c4f78"
+    },
+    "r19_null_audit": {
+      "path": "reports/pilot_4arm_seed1_r19_null_v1_audit.json",
+      "sha256": "cb9be5b4fd2b8caa7492e2921775c93e9916cf0054dedda371056609526661cc"
+    }
+  }
+}

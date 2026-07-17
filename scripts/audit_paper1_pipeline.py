@@ -33,6 +33,11 @@ PROHIBITED_CLAIMS = (
     "vision hurts",
     "caption training is blind training",
 )
+REGISTERED_SEED1_STATUS = "registered seed-1 result; confirmation pending seeds 2–3"
+REGISTERED_SEED1_FAMILIES = {
+    "3B Geometry3K seed 1: A2-gray R19 geometry delta",
+    "3B Geometry3K seed 1: `D_caption^final`",
+}
 
 
 def _sha256(path: Path) -> str:
@@ -41,6 +46,28 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _result_registry_rows(master: str) -> tuple[list[dict[str, str]], list[str]]:
+    rows: list[dict[str, str]] = []
+    errors: list[str] = []
+    for line_number, line in enumerate(master.splitlines(), start=1):
+        if not line.startswith("|") or "Registered artifact" in line or "---" in line:
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) != 4:
+            errors.append(f"malformed result registry row {line_number}: {line}")
+            continue
+        family, artifact, status, value = cells
+        rows.append(
+            {
+                "family": family,
+                "artifact": artifact.strip("`"),
+                "status": status,
+                "value": value.strip("`"),
+            }
+        )
+    return rows, errors
 
 
 def build_audit(root: Path) -> dict[str, Any]:
@@ -94,11 +121,21 @@ def build_audit(root: Path) -> dict[str, Any]:
     master = (paper / "master_result_table.md").read_text(encoding="utf-8") if (
         paper / "master_result_table.md"
     ).is_file() else ""
-    result_rows = [
-        line
-        for line in master.splitlines()
-        if line.startswith("|") and "Registered artifact" not in line and "---" not in line
-    ]
+    result_rows, result_row_errors = _result_registry_rows(master)
+    errors.extend(result_row_errors)
+    pending_rows = [row for row in result_rows if row["status"] == "pending"]
+    seed1_rows = [row for row in result_rows if row["status"] == REGISTERED_SEED1_STATUS]
+    known_status_rows = pending_rows + seed1_rows
+    seed1_artifacts_exist = all(
+        (root / row["artifact"]).is_file() and (root / row["artifact"]).stat().st_size > 0
+        for row in seed1_rows
+    )
+    seed1_values_numeric = True
+    for row in seed1_rows:
+        try:
+            float(row["value"])
+        except ValueError:
+            seed1_values_numeric = False
 
     checks = {
         "all_expected_documents_nonempty": all(
@@ -112,8 +149,12 @@ def build_audit(root: Path) -> dict[str, Any]:
             record["status_pending"] and record["pending_refuses_render"]
             for record in figure_checks.values()
         ),
-        "result_registry_has_only_explicit_pending_rows": bool(result_rows)
-        and all("pending" in line and "{result-pending}" in line for line in result_rows),
+        "result_registry_rows_follow_registered_state_contract": bool(result_rows)
+        and len(known_status_rows) == len(result_rows)
+        and all(row["value"] == "{result-pending}" for row in pending_rows)
+        and {row["family"] for row in seed1_rows} == REGISTERED_SEED1_FAMILIES
+        and seed1_artifacts_exist
+        and seed1_values_numeric,
         "required_terminology_present": "caption-mediated accessibility" in lower_markdown,
         "prohibited_claims_absent": not any(
             phrase in lower_markdown for phrase in PROHIBITED_CLAIMS
@@ -127,11 +168,12 @@ def build_audit(root: Path) -> dict[str, Any]:
         if not value:
             errors.append(name)
     return {
-        "schema_version": "blind-gains.paper1-pipeline-audit.v1",
+        "schema_version": "blind-gains.paper1-pipeline-audit.v2",
         "status": "pass" if all(checks.values()) and not errors else "fail",
         "checks": checks,
         "files": files,
         "figures": figure_checks,
+        "result_rows": result_rows,
         "errors": errors,
     }
 

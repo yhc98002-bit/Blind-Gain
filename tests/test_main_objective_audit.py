@@ -10,6 +10,7 @@ from scripts.audit_main_objective import (
     build_main_objective_audit,
     parse_main_progress,
     parse_main_registry,
+    render_markdown,
 )
 
 
@@ -202,3 +203,23 @@ def test_registry_and_progress_derive_exact_task_order(tmp_path: Path) -> None:
 
     assert tuple(registry) == EXPECTED_TASK_IDS
     assert tuple(progress) == EXPECTED_TASK_IDS
+
+
+def test_versioned_markdown_title_uses_requested_report_version() -> None:
+    payload = {
+        "status": "pass",
+        "checks": {"fixture": True},
+        "ledger": {},
+        "expected_task_ids": list(EXPECTED_TASK_IDS),
+        "audited_file_checks": {},
+        "errors": [],
+    }
+
+    markdown = render_markdown(
+        payload,
+        Path("reports/main_objective_audit_v29.json"),
+        report_version=29,
+    )
+
+    assert markdown.startswith("# Main Objective Audit V29\n")
+    assert "Audit V1" not in markdown

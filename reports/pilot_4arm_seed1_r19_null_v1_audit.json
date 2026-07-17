@@ -1,0 +1,37 @@
+{
+  "schema_version": "blind-gains.pilot-seed1-r19-null-audit.v1",
+  "status": "pass",
+  "scientific_gate_decision": null,
+  "independent_check_count": 60,
+  "failed_checks": [],
+  "checks": {
+    "status_complete": true,
+    "cells_36_unique": true,
+    "arms_exact": true,
+    "checkpoints_exact": true,
+    "categories_three": true,
+    "probabilities_finite_and_bounded": true,
+    "scorer_hash_matches_current_frozen_scorer": true,
+    "step0_shared_exactly_across_arms": true,
+    "all_chart_frequency_counts_equal_600": true,
+    "all_chart_frequency_shares_sum_to_one": true,
+    "all_answer_conditioned_counts_equal_600": true,
+    "all_step0_frequency_deltas_recompute_exactly": true,
+    "all_step0_accuracy_deltas_recompute_exactly": true,
+    "model_performance_interpretation_made": false
+  },
+  "artifacts": {
+    "machine": {
+      "path": "reports/pilot_4arm_seed1_r19_null_v1.json",
+      "sha256": "5c8bb51bfca8a9175c8ad7f4efd9d8d8f80e56d3595f3f1c9f30645a7d9c4f78"
+    },
+    "markdown": {
+      "path": "reports/pilot_4arm_seed1_r19_null_v1.md",
+      "sha256": "8f3b27adbd7d922747b0fc28d60db255bc8e1c444425f627a3b63deb656cb286"
+    },
+    "category_companion": {
+      "path": "reports/pilot_4arm_seed1_r19_null_category_tables_v1.md",
+      "sha256": "472f39bbac0fa43e16112eb489077a2e8db68c3e868e93b0f90d09c545e71add"
+    }
+  }
+}
