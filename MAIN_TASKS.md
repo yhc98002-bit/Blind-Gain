@@ -11,7 +11,7 @@ Source of authority: `docs/MAIN_PHASE_BRIEF.md`. A task is not complete merely b
 | M4 | Register extensions | M1 fork resolved; M3/M7/M8-dependent fields remain `{computed-pending}`; flat/rising rule and exact merge marker block M5–M7/M9 | `docs/registered_extensions_v1.md`; `reports/registered_extensions_audit_v3.md`; `reports/registered_extensions_audit_v3.json` |
 | M5 | Anchor long horizon to step 400 | M4; resume integrity | `reports/anchor_longhorizon_400_results_v1.md` |
 | M6 | Mini-A5 matched control | M4; reward/grouping audits | `reports/mini_a5_control_results_v1.md` |
-| M7 | ViRL 3B decomposition | M4 and M1 fork ruling; merged informed-prediction amendment before optimizer step 1 | `docs/registered_m7_amendment_v1.md`; `reports/virl_3b_decomposition_results_v1.md`; `reports/virl_3b_data_readiness_v1.md` |
+| M7 | ViRL 3B decomposition | M4 and M1 fork ruling; merged informed-prediction amendment before optimizer step 1 | `docs/registered_m7_amendment_v1.md`; `reports/virl_3b_decomposition_results_v1.md`; `reports/virl_3b_data_readiness_v1.md`; `reports/virl_3b_data_readiness_v2.md`; `reports/m7_ocr_login_launch_v1.md` |
 | M8 | 7B caption and blind-solvability prep | parallel with M7; fields feed M4/M9 | `reports/flagship_7b_readiness_v1.md`; `reports/blind_solvability_virl39k_7b_sample_v1.md` |
 | M9 | 7B flagship, seeds 1–3 | M4 and M8 | `reports/flagship_7b_results_v1.md`; `reports/flagship_7b_3seed_v1.md` |
 | M10 | Support-sharpening resampling | folded into each applicable readout | `reports/support_sharpening_registry_v3.md`; `reports/support_sharpening_execution_status_v2.md`; `reports/support_sharpening_seed1_v2.md`; `reports/support_sharpening_seed1_v2.json` plus per-readout 64-sample artifacts |
