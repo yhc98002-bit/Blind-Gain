@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from src.eval.nonqwen_adapters import (
+    _dynamic_preprocess_capped,
     Gemma3Adapter,
     InternVL3Adapter,
     caption_qa_prompt,
@@ -15,6 +16,7 @@ from src.eval.nonqwen_adapters import (
     gemma3_torch_runtime_supported,
     gemma_messages,
     internvl_question,
+    internvl_patch_budgets,
     nonqwen_runtime_metadata_valid,
 )
 from scripts.eval_nonqwen_fliptrack import load_caption_pairs
@@ -322,8 +324,28 @@ def test_runtime_metadata_requires_generation_compatibility(monkeypatch) -> None
         "legacy_cache_only": True,
         "timm_version": "0.9.12",
         "use_flash_attn": False,
+        "max_total_dynamic_patches": 12,
+        "dynamic_patch_allocation": "balanced_across_images",
     }
     assert nonqwen_runtime_metadata_valid(internvl_metadata, "internvl3") is True
     assert nonqwen_runtime_metadata_valid(
         {**internvl_metadata, "generation_callable": False}, "internvl3"
     ) is False
+
+
+def test_internvl_five_image_request_shares_one_strict_patch_budget() -> None:
+    budgets = internvl_patch_budgets(image_count=5, total_budget=12)
+
+    assert budgets == [3, 3, 2, 2, 2]
+    assert sum(budgets) == 12
+    assert max(budgets) < 12
+
+
+def test_internvl_thumbnail_stays_inside_per_image_patch_budget() -> None:
+    from PIL import Image
+
+    wide = Image.new("RGB", (1792, 448), "white")
+    tiles = _dynamic_preprocess_capped(wide, patch_budget=3)
+
+    assert len(tiles) == 3
+    assert all(tile.size == (448, 448) for tile in tiles)

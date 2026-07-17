@@ -34,6 +34,30 @@ def test_ready_figure_requires_exact_input_hash(tmp_path: Path) -> None:
         validate_spec(tmp_path, "fixture", spec)
 
 
+def test_ready_chart_delta_requires_registered_null_diagnostics(tmp_path: Path) -> None:
+    source = tmp_path / "result.json"
+    source.write_text("{}\n", encoding="utf-8")
+    spec = {
+        "status": "ready",
+        "uses_chart_deltas": True,
+        "inputs": [
+            {
+                "path": "result.json",
+                "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            }
+        ],
+        "plot": {
+            "type": "grouped_bar",
+            "title": "Cued chart point-value reading delta",
+            "labels": ["A1"],
+            "series": [{"label": "change", "values": [0.1]}],
+        },
+    }
+
+    with pytest.raises(ValueError, match="lacks the registered R19 null"):
+        validate_spec(tmp_path, "fixture", spec)
+
+
 def test_ready_grouped_bar_writes_nonempty_png(tmp_path: Path) -> None:
     source = tmp_path / "result.json"
     source.write_text('{"status":"pass"}\n', encoding="utf-8")

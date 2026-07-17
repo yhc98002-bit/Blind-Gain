@@ -12,6 +12,7 @@ import numpy as np
 
 
 PENDING_TOKEN = "{result-pending"
+R19_CHART_NULL_INPUT = "reports/pilot_4arm_seed1_r19_null_v1.json"
 
 
 def _sha256(path: Path) -> str:
@@ -32,6 +33,41 @@ def _contains_pending(value: Any) -> bool:
     return False
 
 
+def _strings(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        return [text for item in value.values() for text in _strings(item)]
+    if isinstance(value, list):
+        return [text for item in value for text in _strings(item)]
+    return []
+
+
+def _validate_chart_delta_gate(root: Path, spec: dict[str, Any]) -> None:
+    plot_text = " ".join(_strings(spec.get("plot"))).lower()
+    uses_chart_deltas = spec.get("uses_chart_deltas") is True or (
+        "chart" in plot_text and any(term in plot_text for term in ("delta", "change"))
+    )
+    if not uses_chart_deltas:
+        return
+    registered = {
+        str(record.get("path"))
+        for record in spec.get("inputs", [])
+        if isinstance(record, dict)
+    }
+    if R19_CHART_NULL_INPUT not in registered:
+        raise ValueError("chart-delta figure lacks the registered R19 null diagnostics")
+    payload = json.loads((root / R19_CHART_NULL_INPUT).read_text(encoding="utf-8"))
+    checks = payload.get("checks", {})
+    if (
+        payload.get("status") != "complete"
+        or checks.get("cell_count") != 36
+        or checks.get("expected_cell_count") != 36
+        or checks.get("model_performance_interpretation_made") is not False
+    ):
+        raise ValueError("registered R19 null diagnostics are incomplete")
+
+
 def validate_spec(root: Path, figure: str, spec: dict[str, Any]) -> None:
     if spec.get("status") != "ready":
         raise ValueError(f"figure {figure} is not ready")
@@ -49,6 +85,7 @@ def validate_spec(root: Path, figure: str, spec: dict[str, Any]) -> None:
             raise FileNotFoundError(f"figure {figure} input is absent: {path}")
         if len(expected_hash) != 64 or _sha256(path) != expected_hash:
             raise ValueError(f"figure {figure} input hash mismatch: {path}")
+    _validate_chart_delta_gate(root, spec)
 
 
 def _grouped_bar(ax: Any, plot: dict[str, Any]) -> None:

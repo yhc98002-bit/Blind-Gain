@@ -20,12 +20,21 @@ def nonqwen_runtime_metadata_valid(metadata: Any, backend: str) -> bool:
     if metadata.get("generation_callable") is not True:
         return False
     if backend == "internvl3":
-        return (
+        base_valid = (
             isinstance(metadata.get("generation_shim_applied"), bool)
             and metadata.get("generation_config_ready") is True
             and metadata.get("legacy_cache_only") is True
             and metadata.get("timm_version") == "0.9.12"
             and metadata.get("use_flash_attn") is False
+        )
+        allocation = metadata.get("dynamic_patch_allocation")
+        if allocation is None:
+            # Completed single-image M11 cells predate the multi-image budget repair.
+            return base_valid
+        return (
+            base_valid
+            and allocation == "balanced_across_images"
+            and metadata.get("max_total_dynamic_patches") == 12
         )
     if backend == "gemma3":
         torch_version = metadata.get("torch_version")
@@ -230,6 +239,39 @@ def _dynamic_preprocess(
     return tiles
 
 
+def internvl_patch_budgets(image_count: int, total_budget: int) -> list[int]:
+    """Allocate a strict total patch budget across all images in one request."""
+    if image_count < 0 or total_budget < 1:
+        raise ValueError("image count must be nonnegative and patch budget positive")
+    if image_count == 0:
+        return []
+    if image_count > total_budget:
+        raise ValueError(
+            f"cannot allocate at least one patch to {image_count} images "
+            f"from total budget {total_budget}"
+        )
+    quotient, remainder = divmod(total_budget, image_count)
+    return [quotient + int(index < remainder) for index in range(image_count)]
+
+
+def _dynamic_preprocess_capped(
+    image: Image.Image, *, patch_budget: int, image_size: int = 448
+) -> list[Image.Image]:
+    if patch_budget < 1:
+        raise ValueError("per-image patch budget must be positive")
+    tiles = _dynamic_preprocess(
+        image,
+        max_num=patch_budget,
+        image_size=image_size,
+        use_thumbnail=patch_budget > 1,
+    )
+    if len(tiles) <= patch_budget:
+        return tiles
+    # The dynamic tiler appends the thumbnail after the grid. Preserve it while
+    # enforcing the request-level memory bound.
+    return tiles[: patch_budget - 1] + [tiles[-1]]
+
+
 @dataclass
 class InternVL3Adapter:
     model_path: str
@@ -258,6 +300,8 @@ class InternVL3Adapter:
             is False,
             "timm_version": timm.__version__,
             "use_flash_attn": False,
+            "max_total_dynamic_patches": self.max_dynamic_patches,
+            "dynamic_patch_allocation": "balanced_across_images",
         }
 
     def load(self) -> None:
@@ -310,14 +354,19 @@ class InternVL3Adapter:
         patch_counts: list[int] = []
         if image_paths:
             tensors = []
-            for image_path in image_paths:
+            patch_budgets = internvl_patch_budgets(
+                len(image_paths), self.max_dynamic_patches
+            )
+            for image_path, patch_budget in zip(image_paths, patch_budgets):
                 with Image.open(Path(image_path)) as image:
-                    tiles = _dynamic_preprocess(
-                        image.convert("RGB"), max_num=self.max_dynamic_patches
+                    tiles = _dynamic_preprocess_capped(
+                        image.convert("RGB"), patch_budget=patch_budget
                     )
                 image_tensor = torch.stack([self._transform(tile) for tile in tiles])
                 tensors.append(image_tensor)
                 patch_counts.append(int(image_tensor.shape[0]))
+            if sum(patch_counts) > self.max_dynamic_patches:
+                raise AssertionError("InternVL request exceeded its total patch budget")
             pixel_values = torch.cat(tensors).to(device=self.device, dtype=torch.bfloat16)
         generation_config = {
             "max_new_tokens": self.max_new_tokens,

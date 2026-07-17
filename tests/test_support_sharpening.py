@@ -4,9 +4,13 @@ import pytest
 
 from src.analysis.support_sharpening import (
     EXTRA_SAMPLE_COUNT,
+    FOLLOWUP_SEED_BASE,
     TOTAL_SAMPLE_COUNT,
     build_resampling_candidates,
+    registered_followup_schedule,
+    registered_sampling_kwargs,
     summarize_resampling,
+    summarize_resampling_draws,
 )
 
 
@@ -122,3 +126,41 @@ def test_resampling_rejects_63_or_non_boolean_followups() -> None:
         summarize_resampling(candidate, [False] * 63)
     with pytest.raises(ValueError, match="exactly 64"):
         summarize_resampling(candidate, [False] * 63 + [0])
+
+
+def test_followup_launcher_contract_uses_64_distinct_n1_seeded_draws() -> None:
+    schedule = registered_followup_schedule()
+    kwargs = [registered_sampling_kwargs(row["draw_index"]) for row in schedule]
+
+    assert [row["draw_index"] for row in schedule] == list(range(16, 80))
+    assert [row["seed"] for row in schedule] == [20260716 + j for j in range(16, 80)]
+    assert len({row["seed"] for row in schedule}) == 64
+    assert all(item["n"] == 1 for item in kwargs)
+    assert all(item["seed"] != 20260710 for item in kwargs)
+    assert not any(item["n"] == 16 for item in kwargs)
+    assert FOLLOWUP_SEED_BASE == 20260716
+
+
+def test_identical_text_is_retained_when_distinct_registered_draws_are_scored() -> None:
+    candidate = build_resampling_candidates(
+        [_base(0)],
+        [_readout(0, False, True)],
+        arm="a2_gray",
+        condition="gray",
+        target_step=100,
+    )[0]
+    rows = [
+        {
+            **registered,
+            "source_item_fingerprint": candidate["source_item_fingerprint"],
+            "response": "the same text",
+            "pilot_accuracy_correct": False,
+        }
+        for registered in registered_followup_schedule()
+    ]
+
+    summary = summarize_resampling_draws(candidate, rows)
+
+    assert len(summary["draw_seeds"]) == 64
+    assert summary["duplicate_text_responses_retained"] is True
+    assert summary["classification"] == "high-confidence support-expansion candidate"

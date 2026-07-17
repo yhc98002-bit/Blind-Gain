@@ -11,6 +11,28 @@ SCHEMA_VERSION = "blind-gains.support-sharpening.v1"
 INITIAL_SAMPLE_COUNT = 16
 EXTRA_SAMPLE_COUNT = 64
 TOTAL_SAMPLE_COUNT = INITIAL_SAMPLE_COUNT + EXTRA_SAMPLE_COUNT
+FOLLOWUP_DRAW_START = INITIAL_SAMPLE_COUNT
+FOLLOWUP_DRAW_STOP = TOTAL_SAMPLE_COUNT
+FOLLOWUP_SEED_BASE = 20260716
+
+
+def registered_followup_schedule() -> list[dict[str, int]]:
+    return [
+        {"draw_index": draw_index, "seed": FOLLOWUP_SEED_BASE + draw_index}
+        for draw_index in range(FOLLOWUP_DRAW_START, FOLLOWUP_DRAW_STOP)
+    ]
+
+
+def registered_sampling_kwargs(draw_index: int) -> dict[str, Any]:
+    if not FOLLOWUP_DRAW_START <= draw_index < FOLLOWUP_DRAW_STOP:
+        raise ValueError(f"unregistered support-sharpening draw index: {draw_index}")
+    return {
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "n": 1,
+        "max_tokens": 2048,
+        "seed": FOLLOWUP_SEED_BASE + draw_index,
+    }
 
 
 def _identity(row: dict[str, Any]) -> tuple[str, int]:
@@ -167,3 +189,25 @@ def summarize_resampling(
         ),
         "causal_capability_claim_permitted": False,
     }
+
+
+def summarize_resampling_draws(
+    candidate: dict[str, Any], draw_rows: list[dict[str, Any]]
+) -> dict[str, Any]:
+    expected = registered_followup_schedule()
+    observed = [
+        {"draw_index": row.get("draw_index"), "seed": row.get("seed")}
+        for row in draw_rows
+    ]
+    if observed != expected:
+        raise ValueError("follow-up rows do not match the registered draw/seed schedule")
+    if any(row.get("source_item_fingerprint") != candidate.get("source_item_fingerprint") for row in draw_rows):
+        raise ValueError("follow-up source-item fingerprint mismatch")
+    outcomes = [row.get("pilot_accuracy_correct") for row in draw_rows]
+    if any(not isinstance(value, bool) for value in outcomes):
+        raise ValueError("follow-up rows require boolean pilot_accuracy_correct")
+    summary = summarize_resampling(candidate, outcomes)
+    summary["draw_indices"] = [row["draw_index"] for row in expected]
+    summary["draw_seeds"] = [row["seed"] for row in expected]
+    summary["duplicate_text_responses_retained"] = True
+    return summary
