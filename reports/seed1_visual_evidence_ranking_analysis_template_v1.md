@@ -17,6 +17,8 @@ Evidence:
   conservative tie ranks, top-1, MRR, and raw-sum robustness from candidate scores,
   then independently recomputes every published effect and bootstrap interval.
 - Focused suite: `13 passed in 2.32s` on an12.
+- A full-shape synthetic dry run produced 27 cell summaries and 12 effects with
+  10,000 resamples in 343.99 seconds at 48,900 KiB peak RSS on the login node.
 
 Problems:
 - These extra tables increase reporting completeness but do not create additional

@@ -77,6 +77,23 @@ nulls, paired bootstrap intervals, and per-template results. R19 geometry is
 primary, R19 overall is key secondary, and cued chart point-value reading is
 reported separately. R20 is robustness evidence and is never pooled with R19.
 
+### Post-seed-1 visual-evidence ranking diagnostic
+
+This diagnostic was registered after the seed-1 free-generation readout and is
+not part of the original pilot preregistration. For each R19 member, the model
+teacher-forces exact `<answer>...</answer>` verbalizations. The primary score is
+mean completion-token log probability; raw sum is length-handling robustness.
+On image A the margin contrasts gold A with counterfactual gold B, and image B
+reverses those roles. Pair success requires both margins to be positive.
+
+The primary effect is the step-100-minus-base change in geometry paired margins
+under real images minus the corresponding no-image change. Gray is an
+image-token-path robustness comparator. Candidate-set top-1 and MRR are
+secondary. Reports call this `visual-evidence ranking` or `candidate-answer
+ranking`; it is not treated as a direct perception measure. No automatic branch
+verdict is made because no log-probability-margin equivalence threshold was
+registered.
+
 ## Decontamination
 
 Flagged rows are conservative contamination candidates, never confirmed

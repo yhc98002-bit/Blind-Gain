@@ -65,55 +65,104 @@ def _gpu_is_free(node: str, gpu: int) -> bool:
     return not result.stdout.strip()
 
 
+def _remote_pid_alive(node: str, pid_path: Path) -> bool:
+    if not pid_path.is_file():
+        return False
+    try:
+        pid = int(pid_path.read_text(encoding="utf-8").strip())
+    except ValueError:
+        return False
+    result = subprocess.run(
+        ["ssh", node, f"kill -0 {pid}"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode == 0
+
+
 def _finish_queue(manifest_path: Path, status: str, exit_code: int) -> None:
     manifest = _read(manifest_path)
     manifest.update({"status": status, "exit_code": exit_code, "end_time_utc": _now()})
     _atomic(manifest_path, manifest)
 
 
-def run(queue_dir: Path, node: str, gpu_ids: list[int], poll_seconds: int) -> int:
+def run(
+    queue_dir: Path,
+    node: str,
+    gpu_ids: list[int],
+    poll_seconds: int,
+    resume: bool = False,
+) -> int:
     queue_dir.mkdir(parents=True, exist_ok=True)
     state_path = queue_dir / "state.json"
     manifest_path = queue_dir / "run_manifest.json"
     config = _read(CONFIG)
-    if state_path.exists() or manifest_path.exists():
-        raise FileExistsError("queue state already exists; this launcher is immutable")
     queue_tag = queue_dir.name
-    state: dict[str, Any] = {
-        "schema_version": "blind-gains.visual-evidence-ranking-queue-state.v1",
-        "status": "running",
-        "pending": matrix_cells(),
-        "active": {},
-        "complete": [],
-        "failed": [],
-        "performance_values_opened": False,
-        "last_update_utc": _now(),
-    }
-    manifest = {
-        "schema_version": "blind-gains.visual-evidence-ranking-queue-run.v1",
-        "run_id": queue_tag,
-        "job_type": "post_seed1_visual_evidence_ranking_queue",
-        "status": "running",
-        "node": node,
-        "gpu_ids": gpu_ids,
-        "tensor_parallel_width": 1,
-        "replica_count": len(gpu_ids),
-        "placement_justification": "Up to four independent TP1 3B ranking cells occupy disjoint free GPUs on one node; no cell is split across nodes.",
-        "git_hash": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "config_path": str(CONFIG.relative_to(ROOT)),
-        "config_hash": _sha256(CONFIG),
-        "data_manifest": config["candidate_registry"]["path"],
-        "data_manifest_hash": config["candidate_registry"]["sha256"],
-        "seed": 0,
-        "command": f"scripts/run_visual_evidence_ranking_queue.py --queue-dir {queue_dir} --node {node} --gpu-ids {' '.join(map(str, gpu_ids))} --poll-seconds {poll_seconds}",
-        "start_time_utc": _now(),
-        "end_time_utc": None,
-        "exit_code": None,
-        "expected_artifacts": [str(state_path), str(queue_dir / "matrix_runs.json")],
-        "performance_values_opened": False,
-    }
-    _atomic(state_path, state)
-    _atomic(manifest_path, manifest)
+    if resume:
+        if not state_path.is_file() or not manifest_path.is_file():
+            raise FileNotFoundError("resume requires existing queue state and manifest")
+        state = _read(state_path)
+        manifest = _read(manifest_path)
+        if state.get("status") != "running" or manifest.get("status") != "running":
+            raise ValueError("only a running queue may be resumed")
+        if manifest.get("node") != node or manifest.get("gpu_ids") != gpu_ids:
+            raise ValueError("resume placement differs from the immutable queue manifest")
+        if manifest.get("config_hash") != _sha256(CONFIG):
+            raise ValueError("resume config hash mismatch")
+        if manifest.get("data_manifest_hash") != config["candidate_registry"]["sha256"]:
+            raise ValueError("resume data hash mismatch")
+        event = {
+            "time_utc": _now(),
+            "git_hash": subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+            ).strip(),
+            "command": "explicit --resume",
+        }
+        state.setdefault("resume_events", []).append(event)
+        manifest.setdefault("resume_events", []).append(event)
+        _atomic(state_path, state)
+        _atomic(manifest_path, manifest)
+    else:
+        if state_path.exists() or manifest_path.exists():
+            raise FileExistsError("queue state already exists; use explicit --resume")
+        state = {
+            "schema_version": "blind-gains.visual-evidence-ranking-queue-state.v1",
+            "status": "running",
+            "pending": matrix_cells(),
+            "active": {},
+            "complete": [],
+            "failed": [],
+            "resume_events": [],
+            "performance_values_opened": False,
+            "last_update_utc": _now(),
+        }
+        manifest = {
+            "schema_version": "blind-gains.visual-evidence-ranking-queue-run.v1",
+            "run_id": queue_tag,
+            "job_type": "post_seed1_visual_evidence_ranking_queue",
+            "status": "running",
+            "node": node,
+            "gpu_ids": gpu_ids,
+            "tensor_parallel_width": 1,
+            "replica_count": len(gpu_ids),
+            "placement_justification": "Up to four independent TP1 3B ranking cells occupy disjoint free GPUs on one node; no cell is split across nodes.",
+            "git_hash": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+            "config_path": str(CONFIG.relative_to(ROOT)),
+            "config_hash": _sha256(CONFIG),
+            "data_manifest": config["candidate_registry"]["path"],
+            "data_manifest_hash": config["candidate_registry"]["sha256"],
+            "seed": 0,
+            "command": f"scripts/run_visual_evidence_ranking_queue.py --queue-dir {queue_dir} --node {node} --gpu-ids {' '.join(map(str, gpu_ids))} --poll-seconds {poll_seconds}",
+            "start_time_utc": _now(),
+            "end_time_utc": None,
+            "exit_code": None,
+            "resume_events": [],
+            "expected_artifacts": [str(state_path), str(queue_dir / "matrix_runs.json")],
+            "performance_values_opened": False,
+        }
+        _atomic(state_path, state)
+        _atomic(manifest_path, manifest)
 
     while state["pending"] or state["active"]:
         for gpu_text, active in list(state["active"].items()):
@@ -126,6 +175,13 @@ def run(queue_dir: Path, node: str, gpu_ids: list[int], poll_seconds: int) -> in
                 del state["active"][gpu_text]
             elif child.get("status") in {"failed", "fail", "error", "cancelled", "canceled"}:
                 state["failed"].append({**active, "child_status": child.get("status")})
+                del state["active"][gpu_text]
+            elif child.get("status") == "running" and not _remote_pid_alive(
+                node, ROOT / active["run_dir"] / "process.pid"
+            ):
+                state["failed"].append(
+                    {**active, "child_status": "running_manifest_without_live_worker"}
+                )
                 del state["active"][gpu_text]
 
         if state["failed"]:
@@ -203,12 +259,21 @@ def main() -> None:
     parser.add_argument("--node", choices=("an12", "an29"), required=True)
     parser.add_argument("--gpu-ids", nargs="+", type=int, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
     if len(set(args.gpu_ids)) != len(args.gpu_ids) or any(not 0 <= gpu <= 7 for gpu in args.gpu_ids):
         raise ValueError("GPU ids must be unique values in [0,7]")
     if args.poll_seconds < 15:
         raise ValueError("poll interval must be at least 15 seconds")
-    raise SystemExit(run(Path(args.queue_dir), args.node, args.gpu_ids, args.poll_seconds))
+    raise SystemExit(
+        run(
+            Path(args.queue_dir),
+            args.node,
+            args.gpu_ids,
+            args.poll_seconds,
+            resume=args.resume,
+        )
+    )
 
 
 if __name__ == "__main__":
