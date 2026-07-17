@@ -157,6 +157,13 @@ def build_result(
                     trained_blind=trained_blind,
                     field="candidate_pair_mrr",
                 )
+                raw_sum = paired_metric_did(
+                    base_real=base_real,
+                    trained_real=trained_real,
+                    base_blind=base_blind,
+                    trained_blind=trained_blind,
+                    field="raw_sum_paired_margin_robustness",
+                )
                 effect_key = f"{trained_model}|real_minus_{blind}|{template}"
                 effects[effect_key] = {
                     "trained_model": trained_model,
@@ -167,6 +174,7 @@ def build_result(
                     "pair_success_secondary": _effect_summary(success, n_boot, seed),
                     "candidate_pair_top1_secondary": _effect_summary(top1, n_boot, seed),
                     "candidate_pair_mrr_secondary": _effect_summary(mrr, n_boot, seed),
+                    "raw_sum_margin_robustness": _effect_summary(raw_sum, n_boot, seed),
                 }
 
     primary_key = (
@@ -219,10 +227,29 @@ def render_markdown(result: dict[str, Any], provenance: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
+            "## Absolute Cell Summaries",
+            "",
+            "| checkpoint | condition | construct | paired margin | 95% CI | pair success | candidate top-1 | candidate MRR |",
+            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    for cell in sorted(
+        result["cells"].values(),
+        key=lambda item: (item["model_key"], item["condition"], item["template_label"]),
+    ):
+        lines.append(
+            f"| {cell['model_key']} | {cell['condition']} | {cell['template_label']} | "
+            f"{cell['paired_margin_mean']:.6f} | [{cell['paired_margin_ci95'][0]:.6f}, {cell['paired_margin_ci95'][1]:.6f}] | "
+            f"{cell['pair_success_rate']:.6f} | {cell['candidate_pair_top1_rate']:.6f} | "
+            f"{cell['candidate_pair_mrr_mean']:.6f} |"
+        )
+    lines.extend(
+        [
+            "",
             "## Per-Template Effects",
             "",
-            "| checkpoint | comparator | construct | paired-margin effect | 95% CI | pair-success effect | top-1 effect | MRR effect |",
-            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
+            "| checkpoint | comparator | construct | paired-margin effect | 95% CI | pair-success effect | top-1 effect | MRR effect | raw-sum robustness |",
+            "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
     for effect in sorted(
@@ -233,10 +260,11 @@ def render_markdown(result: dict[str, Any], provenance: dict[str, Any]) -> str:
         success = effect["pair_success_secondary"]
         top1 = effect["candidate_pair_top1_secondary"]
         mrr = effect["candidate_pair_mrr_secondary"]
+        raw_sum = effect["raw_sum_margin_robustness"]
         lines.append(
             f"| {effect['trained_model']} | {effect['blind_comparator']} | {effect['template_label']} | "
             f"{margin['mean']:.6f} | [{margin['ci95'][0]:.6f}, {margin['ci95'][1]:.6f}] | "
-            f"{success['mean']:.6f} | {top1['mean']:.6f} | {mrr['mean']:.6f} |"
+            f"{success['mean']:.6f} | {top1['mean']:.6f} | {mrr['mean']:.6f} | {raw_sum['mean']:.6f} |"
         )
     lines.extend(
         [

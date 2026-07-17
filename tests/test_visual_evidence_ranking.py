@@ -138,6 +138,7 @@ def test_report_builder_rejects_the_prohibited_mechanism_phrase() -> None:
     result = {
         "scorer_version": "visual-evidence-ranking-v1",
         "primary_effect": {"template_id": "geometry"},
+        "cells": {},
         "effects": {},
     }
     text = render_markdown(result, {"runs": []})
@@ -186,3 +187,48 @@ def test_matrix_queue_contains_each_registered_cell_once() -> None:
         for model in ("base", "a1_step60", "a1_step100")
         for condition in ("real", "no_image", "gray")
     }
+
+
+def test_result_builder_keeps_geometry_noimage_did_as_the_single_primary() -> None:
+    from scripts.finalize_visual_evidence_ranking import build_result
+
+    config = {
+        "scope": "prospective diagnostic",
+        "analysis": {
+            "primary_template": "coordinate_register_twenty_point_x_v02",
+            "branch_reason": "no SESOI",
+            "bootstrap": {"resamples": 100, "seed": 7},
+        },
+        "interpretation": {},
+    }
+    margins = {
+        ("base", "real"): 0.0,
+        ("base", "no_image"): 0.0,
+        ("base", "gray"): 0.1,
+        ("a1_step60", "real"): 0.4,
+        ("a1_step60", "no_image"): 0.2,
+        ("a1_step60", "gray"): 0.3,
+        ("a1_step100", "real"): 1.0,
+        ("a1_step100", "no_image"): 0.25,
+        ("a1_step100", "gray"): 0.4,
+    }
+    cells = {}
+    for key, margin in margins.items():
+        cells[key] = [
+            {
+                "pair_id": "p",
+                "template_id": "coordinate_register_twenty_point_x_v02",
+                "template_label": "geometry",
+                "paired_margin": margin,
+                "pair_success": margin > 0,
+                "candidate_pair_top1": margin > 0,
+                "candidate_pair_mrr": 1.0 if margin > 0 else 0.5,
+                "raw_sum_paired_margin_robustness": margin * 2.0,
+            }
+        ]
+    result = build_result(config, cells)
+    assert result["primary_effect_key"] == (
+        "a1_step100|real_minus_no_image|coordinate_register_twenty_point_x_v02"
+    )
+    assert abs(result["primary_effect"]["paired_margin_primary"]["mean"] - 0.75) < 1e-12
+    assert result["branch_assignment"] is None
