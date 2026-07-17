@@ -94,6 +94,13 @@ ranking`; it is not treated as a direct perception measure. No automatic branch
 verdict is made because no log-probability-margin equivalence threshold was
 registered.
 
+The audited seed-1 result is a geometry step-100 image-dependent paired-margin
+effect of `+0.150142` with paired-bootstrap 95% CI
+`[+0.144849,+0.155388]`. The corresponding pair-success effect is `0.000000`
+and candidate-set top-1 effect is `+0.008333`. These values are reported as a
+margin-versus-decision diagnostic, not as evidence for an internal perceptual
+mechanism; no B1/B2/B3 branch is assigned automatically.
+
 ## Decontamination
 
 Flagged rows are conservative contamination candidates, never confirmed

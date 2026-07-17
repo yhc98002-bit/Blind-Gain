@@ -5,7 +5,7 @@
 | 3B Geometry3K seed 1: A2-gray R19 geometry delta | `reports/pilot_4arm_seed1_results_v1.md` | registered seed-1 result; confirmation pending seeds 2–3 | -0.045 |
 | 3B Geometry3K seed 1: `D_caption^final` | `reports/pilot_4arm_seed1_results_v1.md` | registered seed-1 result; confirmation pending seeds 2–3 | -0.108 |
 | 3B Geometry3K three seeds | `reports/pilot_3seed_summary_v1.md` | pending | `{result-pending}` |
-| Seed-1 post-registered visual-evidence ranking diagnostic | `reports/seed1_visual_evidence_ranking_results_v1.md` | running; not an original pilot endpoint | `{result-pending}` |
+| Seed-1 post-registered visual-evidence ranking diagnostic | `reports/seed1_visual_evidence_ranking_results_v1.md` | complete; not an original pilot endpoint; branch unassigned | geometry margin DiD +0.150142 [0.144849,0.155388]; pair-success effect 0.000000; top-1 effect +0.008333 |
 | ViRL 3B | `reports/virl_3b_decomposition_results_v1.md` | pending | `{result-pending}` |
 | 7B flagship seed 1 | `reports/flagship_7b_results_v1.md` | pending | `{result-pending}` |
 | 7B flagship three seeds | `reports/flagship_7b_3seed_v1.md` | pending | `{result-pending}` |

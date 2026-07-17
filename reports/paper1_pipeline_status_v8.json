@@ -1,0 +1,61 @@
+{
+  "schema_version": "blind-gains.paper1-pipeline-status.v8",
+  "status": "pass",
+  "status_scope": "paper artifact integration of the post-seed-1 visual-evidence ranking diagnostic",
+  "scientific_gate_decision": null,
+  "checks": {
+    "v7_machine_audit_pass": true,
+    "v7_artifacts_retained": true,
+    "diagnostic_is_labeled_post_seed1_not_original_endpoint": true,
+    "geometry_primary_margin_value_exact": true,
+    "geometry_pair_success_value_exact": true,
+    "geometry_top1_value_exact": true,
+    "input_integrity_audit_pass": true,
+    "builder_audit_pass": true,
+    "independent_recomputation_audit_pass": true,
+    "branch_assignment_is_null": true,
+    "direct_perception_claim_made": false
+  },
+  "diagnostic_slot": {
+    "name": "seed-1 post-registered visual-evidence ranking diagnostic",
+    "geometry_paired_margin_effect": 0.1501417384828839,
+    "geometry_paired_margin_ci95": [
+      0.1448490737733387,
+      0.15538774626595633
+    ],
+    "geometry_pair_success_effect": 0.0,
+    "geometry_candidate_top1_effect": 0.008333333333333333,
+    "branch_assignment": null,
+    "label": "complete; not an original pilot endpoint; branch unassigned"
+  },
+  "evidence": {
+    "v7_machine": {
+      "path": "reports/paper1_pipeline_status_v7.json",
+      "sha256": "a6edeb6285e2981611a4e535480e34042e6c8d49a8284cb7156468f1192db52c"
+    },
+    "master_result_table": {
+      "path": "docs/paper1/master_result_table.md",
+      "sha256": "75508789c5ee0b0b50c6779f2985e4156144eb58968857b6f429874445cd713b"
+    },
+    "diagnostic_results": {
+      "path": "reports/seed1_visual_evidence_ranking_results_v1.json",
+      "sha256": "f73792c0a5d670419b5e8d0f90fdb333b48a0491d691cc1bccb619d79533594b"
+    },
+    "input_integrity_audit": {
+      "path": "reports/seed1_visual_evidence_ranking_input_integrity_v1.json",
+      "sha256": "e229f3cc613b32ca66647740245de6e1cae2b8113e1a8942591ab0b1d722a232"
+    },
+    "builder_audit": {
+      "path": "reports/seed1_visual_evidence_ranking_builder_audit_v1.json",
+      "sha256": "76cc57270ef31c6d60d082f959ab4aa4d7def14de607d9446f617dbf71ae5787"
+    },
+    "independent_audit": {
+      "path": "reports/seed1_visual_evidence_ranking_audit_v1.json",
+      "sha256": "9e9f797ddf16e9fa8cca49e83f3bb46abba9b8081c22ffa2f33f212022c0e477"
+    },
+    "context_report": {
+      "path": "reports/seed1_visual_evidence_ranking_context_v1.md",
+      "sha256": "ddf13a98a882b244c7c5fc1e687e74c16a1e807dc5d1e94c9b4875ef0f9d4b90"
+    }
+  }
+}

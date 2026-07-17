@@ -1,0 +1,14 @@
+{
+  "branch_assignment": null,
+  "checks": {
+    "all_cells_1200_rows": true,
+    "exact_nine_cells": true,
+    "scorer_version_exact": true
+  },
+  "config_sha256": "6abd53bbf7742167aaf672dcc74633465f7d9378220067c651ce4575375b67bf",
+  "machine_output_sha256": "f73792c0a5d670419b5e8d0f90fdb333b48a0491d691cc1bccb619d79533594b",
+  "markdown_output_sha256": "eb3f10573e05e6464be3fcb4e1974be09575d0c40e76ffe69ec50b72f9c1b569",
+  "performance_values_opened": true,
+  "schema_version": "blind-gains.seed1-visual-evidence-ranking-audit.v1",
+  "status": "pass"
+}
