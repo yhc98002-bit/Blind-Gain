@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import stat
 from pathlib import Path
 
 from scripts.run_support_sharpening_queue import ARMS, free_allowed_gpus
@@ -27,6 +28,7 @@ def test_queue_is_pinned_away_from_seed2_node_and_covers_four_arms() -> None:
     )
 
     assert result.returncode == 0, result.stderr
+    assert launcher.stat().st_mode & stat.S_IXUSR
     assert "--node an12 --allowed-gpus 5,6" in source
     assert "an29" not in source
     assert set(ARMS) == {"a1_real", "a2_gray", "a2b_noimage", "a3_caption"}

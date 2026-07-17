@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import stat
 from pathlib import Path
 
 import pytest
@@ -92,6 +93,7 @@ def test_launcher_is_valid_shell_and_enforces_merged_head() -> None:
     source = launcher.read_text(encoding="utf-8")
 
     assert result.returncode == 0, result.stderr
+    assert launcher.stat().st_mode & stat.S_IXUSR
     assert "git diff --quiet HEAD" in source
     assert "Registration state: merged-at-HEAD" in source
     assert "n_per_call: 1" in source
