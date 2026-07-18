@@ -63,7 +63,7 @@ jq -e '(.status=="fail") and (.exit_code==1) and (.target_global_step==400)' \
   "${PRIOR_MANIFEST}" >/dev/null || { echo "prior M5 failure manifest invalid" >&2; exit 2; }
 jq -e '(.status=="complete") and (.exit_code==0) and (.job_type=="m5_step150_raw_restore") and (.resume_step==150)' \
   "${RESTORE_MANIFEST}" >/dev/null || { echo "step-150 restore run is incomplete" >&2; exit 3; }
-jq -e '(.status=="pass") and (.expected_step==150) and (.expected_world_size==4)' \
+jq -e '(.status=="pass") and (.expected_step==150) and (.world_size==4)' \
   "${RESTORE_AUDIT}" >/dev/null || { echo "step-150 restore audit is invalid" >&2; exit 3; }
 jq -e '(.status=="restored_for_optimizer_resume") and (.files|length==8)' \
   "${SOURCE_MARKER}" >/dev/null || { echo "step-150 raw state is not restored" >&2; exit 3; }

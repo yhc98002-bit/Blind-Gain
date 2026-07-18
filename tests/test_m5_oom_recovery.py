@@ -74,6 +74,8 @@ def test_m5_recovery_launcher_is_fail_closed_and_preserves_terminal_rule() -> No
     assert 'checkpoint_schedule:[200,250,300,350,400]' in source
     assert "another project EasyR1 trainer is active" in source
     assert "M5 recovery needs 650 GiB host memory" in source
+    assert '(.expected_step==150) and (.world_size==4)' in source
+    assert ".expected_world_size" not in source
     assert '[[ ! -e "${SAVE_ROOT}" ]]' in source
     assert "launch_m5_checkpoint_evaluation_queue.sh" in source
     assert source.index("step-150 raw state is not restored") < source.index(
