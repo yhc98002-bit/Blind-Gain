@@ -9,7 +9,12 @@ import pytest
 from scripts.finalize_m11_reconciled_report import _publish_pair, validate_queue_gate
 
 
-def _queue_fixture(tmp_path: Path, *, status: str) -> tuple[Path, list[Path]]:
+def _queue_fixture(
+    tmp_path: Path,
+    *,
+    status: str,
+    job_type: str = "m11_generalization_reconciled_backfill_queue",
+) -> tuple[Path, list[Path]]:
     run = tmp_path / "experiments/runs/queue"
     run.mkdir(parents=True)
     cells = {}
@@ -40,7 +45,7 @@ def _queue_fixture(tmp_path: Path, *, status: str) -> tuple[Path, list[Path]]:
     (run / "run_manifest.json").write_text(
         json.dumps(
             {
-                "job_type": "m11_generalization_reconciled_backfill_queue",
+                "job_type": job_type,
                 "status": "complete" if status == "cells_complete_pending_report" else "running",
                 "exit_code": 0 if status == "cells_complete_pending_report" else None,
                 "expected_artifacts": [str(state.relative_to(tmp_path))],
@@ -78,6 +83,31 @@ def test_complete_queue_exposes_exact_registered_metric_matrix(tmp_path: Path) -
     assert len(blind) == 6
 
 
+def test_v2_complete_queue_exposes_exact_registered_metric_matrix(tmp_path: Path) -> None:
+    run, _ = _queue_fixture(
+        tmp_path,
+        status="cells_complete_pending_report",
+        job_type="m11_generalization_reconciled_backfill_queue_v2",
+    )
+
+    _, state, fliptrack, blind = validate_queue_gate(run, root=tmp_path)
+
+    assert len(state["cells"]) == 18
+    assert len(fliptrack) == 12
+    assert len(blind) == 6
+
+
+def test_unknown_complete_queue_type_is_rejected(tmp_path: Path) -> None:
+    run, _ = _queue_fixture(
+        tmp_path,
+        status="cells_complete_pending_report",
+        job_type="m11_generalization_reconciled_backfill_queue_v3_unregistered",
+    )
+
+    with pytest.raises(ValueError, match="queue run is not complete"):
+        validate_queue_gate(run, root=tmp_path)
+
+
 def test_finalizer_launcher_is_cpu_only_and_commit_bound() -> None:
     root = Path(__file__).resolve().parents[1]
     source = (root / "scripts/launch_m11_reconciled_report.sh").read_text(
@@ -87,6 +117,8 @@ def test_finalizer_launcher_is_cpu_only_and_commit_bound() -> None:
     assert 'job_type: "m11_reconciled_final_report"' in source
     assert 'node: "login"' in source
     assert "--preflight-only" in source
+    assert "PYTHONPATH=. .venv/bin/python" in source
+    assert "env PYTHONPATH=. .venv/bin/python" in source
     assert "critical M11 final-report code differs from HEAD" in source
     assert "storage_guard.py --tier S" in source
 

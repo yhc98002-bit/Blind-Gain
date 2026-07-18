@@ -15,7 +15,12 @@ from scripts.build_generalization_audits import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_JOB_TYPE = "m11_generalization_reconciled_backfill_queue"
+EXPECTED_JOB_TYPES = frozenset(
+    {
+        "m11_generalization_reconciled_backfill_queue",
+        "m11_generalization_reconciled_backfill_queue_v2",
+    }
+)
 EXPECTED_STATE = "cells_complete_pending_report"
 
 
@@ -90,7 +95,7 @@ def validate_queue_gate(
     manifest = _load_object(manifest_path)
     state = _load_object(state_path)
     if (
-        manifest.get("job_type") != EXPECTED_JOB_TYPE
+        manifest.get("job_type") not in EXPECTED_JOB_TYPES
         or manifest.get("status") != "complete"
         or manifest.get("exit_code") != 0
     ):

@@ -41,7 +41,7 @@ STAGE_ARGS=()
 for STAGE in "${STAGE_MANIFESTS[@]}"; do
   STAGE_ARGS+=(--model-stage-manifest "${STAGE}")
 done
-.venv/bin/python scripts/finalize_m11_reconciled_report.py \
+PYTHONPATH=. .venv/bin/python scripts/finalize_m11_reconciled_report.py \
   --queue-run "${QUEUE_RUN}" "${STAGE_ARGS[@]}" --preflight-only >/dev/null
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -59,7 +59,7 @@ DATA_HASH="$(sha256sum "${INPUT_FILES[@]}" | sort -k2 | sha256sum | awk '{print 
 CONFIG_HASH="$(sha256sum "${CRITICAL_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
 
 COMMAND_PARTS=(
-  .venv/bin/python scripts/finalize_m11_reconciled_report.py
+  env PYTHONPATH=. .venv/bin/python scripts/finalize_m11_reconciled_report.py
   --queue-run "${QUEUE_RUN}"
   "${STAGE_ARGS[@]}"
   --machine-output "${MACHINE_OUTPUT}"
