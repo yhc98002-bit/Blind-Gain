@@ -35,13 +35,21 @@ RESTORE_AUDIT="${RESTORE_RUN}/restored_checkpoint_audit.json"
 for FILE in "${BASE_CONFIG}" "${REGISTRATION}" "${INCIDENT}" \
   scripts/build_m5_recovery_config.py scripts/launch_m5_anchor_recovery150.sh \
   scripts/watch_m5_checkpoints.py scripts/watch_m5_merged_relocation.py \
-  scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh; do
+  scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh \
+  scripts/run_m5_checkpoint_evaluation_queue.py scripts/launch_m5_checkpoint_evaluation_queue.sh \
+  scripts/launch_m5_geo3k_checkpoint_eval.sh scripts/launch_m5_fliptrack_checkpoint_eval.sh \
+  scripts/watch_m5_step_evaluation.py scripts/finalize_m5_step_evaluation.py \
+  scripts/launch_m5_step_evaluation_watch.sh; do
   git ls-files --error-unmatch "${FILE}" >/dev/null 2>&1 || { echo "untracked M5 recovery file: ${FILE}" >&2; exit 2; }
 done
 git diff --quiet HEAD -- "${BASE_CONFIG}" "${REGISTRATION}" "${INCIDENT}" \
   scripts/build_m5_recovery_config.py scripts/launch_m5_anchor_recovery150.sh \
   scripts/watch_m5_checkpoints.py scripts/watch_m5_merged_relocation.py \
-  scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh || {
+  scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh \
+  scripts/run_m5_checkpoint_evaluation_queue.py scripts/launch_m5_checkpoint_evaluation_queue.sh \
+  scripts/launch_m5_geo3k_checkpoint_eval.sh scripts/launch_m5_fliptrack_checkpoint_eval.sh \
+  scripts/watch_m5_step_evaluation.py scripts/finalize_m5_step_evaluation.py \
+  scripts/launch_m5_step_evaluation_watch.sh || {
   echo "M5 recovery registration/config/launcher differs from HEAD" >&2; exit 2;
 }
 [[ "$(sha256sum "${BASE_CONFIG}" | awk '{print $1}')" == "${EXPECTED_BASE_HASH}" ]] || {
@@ -147,13 +155,18 @@ jq -n --arg run_id "${RUN_ID}" --arg node "${NODE}" --arg allocation "${GPU_LIST
     scientific_gate_decision:null,performance_values_opened:false,
     deviations:["Operational resume from the last hash-verified step-150 state after a Ray host-memory OOM; the registered terminal step remains 400.","Optimizer work after step 150 in the failed process is repeated and reported as wall-clock/token overhead, not additional optimizer budget."]}' > "${MANIFEST}"
 
+EVALUATION_QUEUE="$(bash scripts/launch_m5_checkpoint_evaluation_queue.sh "${RUN_DIR}" "200,300,400")"
+printf '%s\n' "${EVALUATION_QUEUE}" > "${RUN_DIR}/evaluation_queue_run.txt"
+# shellcheck disable=SC2029
 ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_ROOT}' '${JOB_TMP}' && source .venv/bin/activate && (nohup setsid flock -n --no-fork '${LOCK}' env PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' TMPDIR='${JOB_TMP}' TMP='${JOB_TMP}' TEMP='${JOB_TMP}' RAY_TMPDIR='${RAY_ROOT}' RAY_DEDUP_LOGS=0 CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=60000000000 BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH='${EASYR1_DIR}:${ROOT}':\${PYTHONPATH:-} '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' >/dev/null 2>&1 </dev/null & echo \$! > '${ROOT}/${PID_FILE}')"
 sleep 20
 REMOTE_PID="$(cat "${PID_FILE}")"
+# shellcheck disable=SC2029
 ssh "${NODE}" "kill -0 '${REMOTE_PID}' 2>/dev/null" || { echo "M5 recovery exited during startup" >&2; exit 1; }
 CHECKPOINT_WATCH="$(bash scripts/launch_m5_checkpoint_watch.sh "${NODE}" "${RUN_DIR}")"
 RELOCATION_WATCH="$(bash scripts/launch_m5_merged_relocation_watch.sh "${RUN_DIR}")"
 printf '%s\n' "${CHECKPOINT_WATCH}" > "${RUN_DIR}/checkpoint_watcher_run.txt"
 printf '%s\n' "${RELOCATION_WATCH}" > "${RUN_DIR}/relocation_watcher_run.txt"
 printf '%s\n' "${RUN_DIR}"
-printf 'checkpoint_watcher=%s\nrelocation_watcher=%s\n' "${CHECKPOINT_WATCH}" "${RELOCATION_WATCH}"
+printf 'checkpoint_watcher=%s\nrelocation_watcher=%s\nevaluation_queue=%s\n' \
+  "${CHECKPOINT_WATCH}" "${RELOCATION_WATCH}" "${EVALUATION_QUEUE}"

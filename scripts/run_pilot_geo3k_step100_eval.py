@@ -26,6 +26,8 @@ from src.eval.prompt_contract import (
 
 
 ROW_SCHEMA_VERSION = "blind-gains.pilot-geo3k-step100-eval.v1"
+M5_ROW_SCHEMA_VERSION = "blind-gains.m5-geo3k-checkpoint-eval.v1"
+M5_REGISTERED_STEPS = frozenset({150, 200, 300, 400})
 REGISTERED_MAX_TOKENS = 2048
 REGISTERED_SEED = 20260710
 REGISTERED_DECODING = {
@@ -55,6 +57,8 @@ def load_validated_resume_prefix(
     checkpoint_index_sha256: str,
     source_manifest_sha256: str,
     source_training_manifest_sha256: str,
+    global_step: int = 100,
+    row_schema_version: str = ROW_SCHEMA_VERSION,
 ) -> list[str]:
     raw_lines = path.read_text(encoding="utf-8").splitlines()
     if not raw_lines or any(not line.strip() for line in raw_lines):
@@ -63,8 +67,9 @@ def load_validated_resume_prefix(
         raise ValueError("resume source is longer than the registered test split")
 
     expected_static = {
-        "schema_version": ROW_SCHEMA_VERSION,
+        "schema_version": row_schema_version,
         "arm": arm,
+        "global_step": global_step,
         "condition": condition,
         "model_revision": model_revision,
         "checkpoint_index_sha256": checkpoint_index_sha256,
@@ -137,12 +142,23 @@ def main() -> None:
     parser.add_argument("--max-tokens", type=int, default=REGISTERED_MAX_TOKENS)
     parser.add_argument("--seed", type=int, default=REGISTERED_SEED)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.72)
+    parser.add_argument("--global-step", type=int, default=100)
+    parser.add_argument("--row-schema-version")
     args = parser.parse_args()
 
     if args.max_tokens != REGISTERED_MAX_TOKENS or args.seed != REGISTERED_SEED:
         raise ValueError("pilot Geometry3K decoding contract drift")
     if args.batch_size <= 0 or args.max_model_len <= 0:
         raise ValueError("batch size and max model length must be positive")
+    if args.global_step == 100:
+        expected_schema_version = ROW_SCHEMA_VERSION
+    elif args.global_step in M5_REGISTERED_STEPS:
+        expected_schema_version = M5_ROW_SCHEMA_VERSION
+    else:
+        raise ValueError("global step is not a registered pilot or M5 evaluation endpoint")
+    row_schema_version = args.row_schema_version or expected_schema_version
+    if row_schema_version != expected_schema_version:
+        raise ValueError("row schema version does not match the registered evaluation endpoint")
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite evaluation output: {args.output}")
     if args.condition == "caption" and not args.caption_shards:
@@ -170,6 +186,8 @@ def main() -> None:
             checkpoint_index_sha256=args.checkpoint_index_sha256,
             source_manifest_sha256=source_manifest_sha256,
             source_training_manifest_sha256=source_training_manifest_sha256,
+            global_step=args.global_step,
+            row_schema_version=row_schema_version,
         )
         if args.resume_from
         else []
@@ -245,9 +263,9 @@ def main() -> None:
                     prompt_contract,
                 )
                 output = {
-                    "schema_version": ROW_SCHEMA_VERSION,
+                    "schema_version": row_schema_version,
                     "arm": args.arm,
-                    "global_step": 100,
+                    "global_step": args.global_step,
                     "split": row["split"],
                     "row_index": row["row_index"],
                     "qid": row.get("qid"),

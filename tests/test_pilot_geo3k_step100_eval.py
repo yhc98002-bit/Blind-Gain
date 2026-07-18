@@ -100,6 +100,34 @@ def test_resume_rejects_checkpoint_substitution(tmp_path: Path) -> None:
         )
 
 
+def test_resume_rejects_global_step_substitution(tmp_path: Path) -> None:
+    path = tmp_path / "resume.jsonl"
+    row = _resume_row()
+    row["global_step"] = 150
+    path.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    rows = [
+        {
+            "split": "test",
+            "row_index": 0,
+            "problem": "Find x.",
+            "answer": "5",
+            "images": [],
+        }
+    ]
+
+    with pytest.raises(ValueError, match="global_step"):
+        load_validated_resume_prefix(
+            path,
+            rows,
+            arm="a2b_noimage",
+            condition="none",
+            model_revision="checkpoint",
+            checkpoint_index_sha256="index-hash",
+            source_manifest_sha256="source-hash",
+            source_training_manifest_sha256="training-hash",
+        )
+
+
 def test_launcher_rejects_missing_inputs_before_contacting_node(tmp_path: Path) -> None:
     result = subprocess.run(
         [

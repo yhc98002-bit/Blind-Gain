@@ -60,6 +60,7 @@ def test_m5_recovery_shell_files_parse() -> None:
         "launch_m5_anchor_recovery150.sh",
         "launch_m5_checkpoint_watch.sh",
         "launch_m5_merged_relocation_watch.sh",
+        "launch_m5_checkpoint_evaluation_queue.sh",
     ):
         subprocess.run(["bash", "-n", str(ROOT / "scripts" / name)], check=True)
 
@@ -74,6 +75,7 @@ def test_m5_recovery_launcher_is_fail_closed_and_preserves_terminal_rule() -> No
     assert "another project EasyR1 trainer is active" in source
     assert "M5 recovery needs 650 GiB host memory" in source
     assert '[[ ! -e "${SAVE_ROOT}" ]]' in source
+    assert "launch_m5_checkpoint_evaluation_queue.sh" in source
     assert source.index("step-150 raw state is not restored") < source.index(
         'mkdir -p "${RUN_DIR}/logs"'
     )
