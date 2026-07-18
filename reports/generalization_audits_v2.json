@@ -1,0 +1,2876 @@
+{
+  "blind_sample": {
+    "gemma3|caption": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.30908203125,
+        "acc_final_ci95_high": 0.32373046875,
+        "acc_final_ci95_low": 0.294921875,
+        "acc_strict": 0.0,
+        "backend": "gemma3",
+        "caption_store_sha256": "6224cbc97901e1d05778ed1c17217b2a8abb93b36e3cab6d3a1764d0582c36ce",
+        "condition": "caption",
+        "contract_valid_rate": 0.000244140625,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.9208984375,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.5136986301369864,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.5641025641025641,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.3333333333333333,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.04918032786885246,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.0,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.0,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.4,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.2,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.46345811051693403,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.31871345029239767,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.20408163265306123,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.6097560975609756,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 1.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.27586206896551724,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.28651685393258425,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.8,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 1.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.5,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.4327956989247312,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.22343324250681199,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.18072289156626506,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.2777777777777778,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.6521739130434783,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.3142857142857143,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.23694779116465864,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.2857142857142857,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.02702702702702703,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.2,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.25,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 1.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.38961038961038963,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.14285714285714285,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.3826086956521739,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.15748031496062992,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.5227272727272727,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_blind_gemma3_virl4096_caption_gemma3_caption_s0of1_an29_20260716T231512Z/metrics.json",
+      "sha256": "ab5124948bb825296cc1562277a08f36a2b54ca2d7b4ba57346daab03a85080a"
+    },
+    "gemma3|none": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.242431640625,
+        "acc_final_ci95_high": 0.255615234375,
+        "acc_final_ci95_low": 0.229736328125,
+        "acc_strict": 0.0,
+        "backend": "gemma3",
+        "caption_store_sha256": null,
+        "condition": "none",
+        "contract_valid_rate": 0.0,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.86669921875,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.5684931506849316,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.41025641025641024,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.0,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.0,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.4563279857397504,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.21929824561403508,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.14965986394557823,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.04878048780487805,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.13793103448275862,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.07303370786516854,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.6,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.3333333333333333,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.4650537634408602,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.18256130790190736,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.1686746987951807,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.2222222222222222,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.5,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.05714285714285714,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.10441767068273092,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.14285714285714285,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.02702702702702703,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.3333333333333333,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.5,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.24675324675324675,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.16535433070866143,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.5227272727272727,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_blind_gemma3_virl4096_none_gemma3_none_s0of1_an29_20260716T200132Z/metrics.json",
+      "sha256": "4f29338127993583ea37e464ff3f989e70eb2a06d694d6d15ab1cf062c34acea"
+    },
+    "gemma3|real": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.341796875,
+        "acc_final_ci95_high": 0.357177734375,
+        "acc_final_ci95_low": 0.327880859375,
+        "acc_strict": 0.0,
+        "backend": "gemma3",
+        "caption_store_sha256": null,
+        "condition": "real",
+        "contract_valid_rate": 0.0,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.907470703125,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.5273972602739726,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.6239316239316239,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.2222222222222222,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.16666666666666666,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.0,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.2,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.6,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.47593582887700536,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.39766081871345027,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.2857142857142857,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.5853658536585366,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.22988505747126436,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.37640449438202245,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.7,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.5,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.48655913978494625,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.22888283378746593,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.22030981067125646,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.2777777777777778,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.6304347826086957,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.2571428571428571,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.30522088353413657,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.14285714285714285,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.08108108108108109,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.1,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.16666666666666666,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 1.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.5324675324675324,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.2857142857142857,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.3652173913043478,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.2047244094488189,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.5,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_blind_gemma3_virl4096_real_gemma3_real_s0of1_an29_20260716T191637Z/metrics.json",
+      "sha256": "a929fcada5c6e72ea575e4811b5cf774baa986b7dce95246f71c37a7fc904006"
+    },
+    "internvl3|caption": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.195068359375,
+        "acc_final_ci95_high": 0.207275390625,
+        "acc_final_ci95_low": 0.183349609375,
+        "acc_strict": 0.18603515625,
+        "backend": "internvl3",
+        "caption_store_sha256": "6224cbc97901e1d05778ed1c17217b2a8abb93b36e3cab6d3a1764d0582c36ce",
+        "condition": "caption",
+        "contract_valid_rate": 0.938720703125,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.97802734375,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.4315068493150685,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.36752136752136755,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.25,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.02564102564102564,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.2,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.2,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.27629233511586454,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.23391812865497075,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.36054421768707484,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.4634146341463415,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.1724137931034483,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.23595505617977527,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.1,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.3333333333333333,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 1.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.14516129032258066,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.09536784741144415,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.12736660929432014,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.18518518518518517,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.5,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.21428571428571427,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.14457831325301204,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.08108108108108109,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.1,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.4166666666666667,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.4155844155844156,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.07142857142857142,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.06956521739130435,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.16535433070866143,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.045454545454545456,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_virl4096_retry1_internvl3_caption_s0of1_an12_20260716T170744Z/metrics.json",
+      "sha256": "46ba653de4610ac9f02ed2e2a4e16f20cb17746699bc033800999a7abc7f148a"
+    },
+    "internvl3|none": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.15380859375,
+        "acc_final_ci95_high": 0.165283203125,
+        "acc_final_ci95_low": 0.142578125,
+        "acc_strict": 0.14306640625,
+        "backend": "internvl3",
+        "caption_store_sha256": null,
+        "condition": "none",
+        "contract_valid_rate": 0.9228515625,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.96630859375,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.3767123287671233,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.10256410256410256,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.0,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.0,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.22638146167557932,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.14327485380116958,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.38095238095238093,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.04878048780487805,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.1724137931034483,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.03932584269662921,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.1,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.1639784946236559,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.08446866485013624,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.14113597246127366,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.14814814814814814,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.41304347826086957,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.02857142857142857,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.0963855421686747,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.05405405405405406,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.08333333333333333,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.5,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.22077922077922077,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.4251968503937008,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.09090909090909091,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_virl4096_retry1_internvl3_none_s0of1_an12_20260716T170739Z/metrics.json",
+      "sha256": "c46de9800d38564f78059a38e5329f0bf25d241f703880cf869ae960a2ee0408"
+    },
+    "internvl3|real": {
+      "checks": {
+        "decoding": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "strata": true
+      },
+      "metrics": {
+        "acc_final": 0.280517578125,
+        "acc_final_ci95_high": 0.29443359375,
+        "acc_final_ci95_low": 0.266357421875,
+        "acc_strict": 0.279296875,
+        "backend": "internvl3",
+        "caption_store_sha256": null,
+        "condition": "real",
+        "contract_valid_rate": 0.984619140625,
+        "decoding": {
+          "max_new_tokens": 2048,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extractor_valid_rate": 0.988525390625,
+        "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+        "input_schema_version": "blind-gains.nonqwen-blind-sample.v1",
+        "n_rows": 4096,
+        "parser_version": "canonical-v2",
+        "per_source_category": {
+          "DeepScaleR::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.5,
+            "n": 146
+          },
+          "K12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.38461538461538464,
+            "n": 117
+          },
+          "M3CoT::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "M3CoT::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.4444444444444444,
+            "n": 9
+          },
+          "M3CoT::(GradeSchool) Science": {
+            "acc_final": 0.01639344262295082,
+            "n": 61
+          },
+          "M3CoT::Commonsense": {
+            "acc_final": 0.8333333333333334,
+            "n": 12
+          },
+          "M3CoT::Social Science": {
+            "acc_final": 0.02564102564102564,
+            "n": 39
+          },
+          "M3CoT::Spatial Reasoning": {
+            "acc_final": 0.06666666666666667,
+            "n": 15
+          },
+          "M3CoT::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 6
+          },
+          "M3CoTConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Social Science": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "M3CoTConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::(GradeSchool) Geometric": {
+            "acc_final": 0.3083778966131907,
+            "n": 561
+          },
+          "MMK12::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.2543859649122807,
+            "n": 342
+          },
+          "MMK12::(GradeSchool) Science": {
+            "acc_final": 0.42857142857142855,
+            "n": 147
+          },
+          "MMK12::Broader STEM Topics": {
+            "acc_final": 0.3170731707317073,
+            "n": 41
+          },
+          "MMK12::Social Science": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12::Spatial Reasoning": {
+            "acc_final": 0.20689655172413793,
+            "n": 87
+          },
+          "MMK12::Tables/Diagrams/Charts": {
+            "acc_final": 0.2640449438202247,
+            "n": 178
+          },
+          "MMK12Converted::(GradeSchool) Geometric": {
+            "acc_final": 0.3,
+            "n": 10
+          },
+          "MMK12Converted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.6666666666666666,
+            "n": 3
+          },
+          "MMK12Converted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "MMK12Converted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "MMK12Converted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "MMMath::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.22043010752688172,
+            "n": 372
+          },
+          "Processed::(GradeSchool) Geometric": {
+            "acc_final": 0.26430517711171664,
+            "n": 367
+          },
+          "Processed::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.21858864027538727,
+            "n": 581
+          },
+          "Processed::(GradeSchool) Science": {
+            "acc_final": 0.2222222222222222,
+            "n": 54
+          },
+          "Processed::Broader STEM Topics": {
+            "acc_final": 0.5217391304347826,
+            "n": 46
+          },
+          "Processed::Social Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "Processed::Spatial Reasoning": {
+            "acc_final": 0.2714285714285714,
+            "n": 70
+          },
+          "Processed::Tables/Diagrams/Charts": {
+            "acc_final": 0.24899598393574296,
+            "n": 249
+          },
+          "R1OneVision::(GradeSchool) Geometric": {
+            "acc_final": 0.7142857142857143,
+            "n": 7
+          },
+          "R1OneVision::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVision::(GradeSchool) Science": {
+            "acc_final": 0.05405405405405406,
+            "n": 37
+          },
+          "R1OneVision::Broader STEM Topics": {
+            "acc_final": 0.1,
+            "n": 10
+          },
+          "R1OneVision::Spatial Reasoning": {
+            "acc_final": 0.25,
+            "n": 12
+          },
+          "R1OneVision::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "R1OneVisionConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.0,
+            "n": 3
+          },
+          "R1OneVisionConverted::(GradeSchool) Non-Geo Math": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 4
+          },
+          "R1OneVisionConverted::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "R1OneVisionConverted::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 1
+          },
+          "ScienceQA::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 51
+          },
+          "ScienceQA::Broader STEM Topics": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ScienceQA::Social Science": {
+            "acc_final": 0.0,
+            "n": 21
+          },
+          "ScienceQA::Spatial Reasoning": {
+            "acc_final": 0.0,
+            "n": 19
+          },
+          "ScienceQA::Tables/Diagrams/Charts": {
+            "acc_final": 0.0,
+            "n": 5
+          },
+          "ScienceQAConverted::(GradeSchool) Science": {
+            "acc_final": 0.0,
+            "n": 2
+          },
+          "ai2d::Tables/Diagrams/Charts": {
+            "acc_final": 0.6623376623376623,
+            "n": 77
+          },
+          "chartqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.21428571428571427,
+            "n": 14
+          },
+          "dvqa::Tables/Diagrams/Charts": {
+            "acc_final": 0.45217391304347826,
+            "n": 115
+          },
+          "geoqa_plus::(GradeSchool) Geometric": {
+            "acc_final": 0.44881889763779526,
+            "n": 127
+          },
+          "geoqa_plusConverted::(GradeSchool) Geometric": {
+            "acc_final": 0.25,
+            "n": 44
+          }
+        },
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_identity_sha256": "b08a886b84a9861646c64de4ba65e1ede0198135892f03de08d93234345bee7a",
+        "runtime": {
+          "backend": "internvl3",
+          "dynamic_patch_allocation": "balanced_across_images",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "max_total_dynamic_patches": 12,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "schema_version": "blind-gains.nonqwen-blind-aggregate.v1",
+        "source_manifest_sha256": "ffbad6eaff57f6dd11f136b066e4d4206e43381281a3cb24cc677241c360e6d5"
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_virl4096_patchbudgetv2_internvl3_real_s0of1_an29_20260717T072527Z/metrics.json",
+      "sha256": "da59d80858e46469a6ce9d201f2309fa036de21cab75eda52949541321b0e6e1"
+    }
+  },
+  "checks": {
+    "all_blind_sample_cells_audited": true,
+    "all_fliptrack_cells_audited": true,
+    "all_run_placements_have_verified_stage": true,
+    "both_model_backends_staged": true,
+    "complete_blind_sample_2x3_matrix": true,
+    "complete_fliptrack_2x2x3_matrix": true
+  },
+  "errors": [],
+  "fliptrack": {
+    "gemma3|r19|caption": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 0.41833333333333333,
+        "condition": "caption",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0004166666666666667,
+        "extractor_valid_rate": 0.9995833333333334,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.042083333333333334,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.005833333333333334,
+        "pair_accuracy_ci95_high": 0.01,
+        "pair_accuracy_ci95_low": 0.0016666666666666668,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.3516666666666667,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0008333333333333334,
+            "extractor_valid_rate": 0.9991666666666666,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.07833333333333334,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.01,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.6666666666666666,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.011666666666666667,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0033333333333333335,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.30333333333333334,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r19_caption_gemma3_caption_an29_20260716T174015Z/metrics.json",
+      "sha256": "1a6ec7deb28cc6a32c036260791d59e234aecbb1f5946a4bdbfbbfbc0fa584a8"
+    },
+    "gemma3|r19|none": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 1.0,
+        "condition": "none",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.9708333333333333,
+        "extractor_valid_rate": 0.029166666666666667,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0008333333333333334,
+        "member_accuracy": 0.0,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.0,
+        "pair_accuracy_ci95_high": 0.0,
+        "pair_accuracy_ci95_low": 0.0,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.99,
+            "extractor_valid_rate": 0.01,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0016666666666666668,
+            "member_accuracy": 0.0,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.9033333333333333,
+            "extractor_valid_rate": 0.09666666666666666,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 1.0,
+            "extractor_valid_rate": 0.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r19_none_gemma3_none_an29_20260716T172145Z/metrics.json",
+      "sha256": "809c91e9c36af984f8845de694a802dc0da77321e0a04a05e8ed6b44c4c964a0"
+    },
+    "gemma3|r19|real": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 0.010833333333333334,
+        "condition": "real",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0004166666666666667,
+        "extractor_valid_rate": 0.9995833333333334,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.49583333333333335,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.3333333333333333,
+        "pair_accuracy_ci95_high": 0.36,
+        "pair_accuracy_ci95_low": 0.30666666666666664,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.016666666666666666,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.37833333333333335,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.14,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 1.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 1.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.01,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0016666666666666668,
+            "extractor_valid_rate": 0.9983333333333333,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.22666666666666666,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.05333333333333334,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r19_real_full_gemma3_real_an29_20260716T171516Z/metrics.json",
+      "sha256": "511e3e769ce28908f120c34a1f5fcb1ec4934d2a8f539bf12441d0ea36acd566"
+    },
+    "gemma3|r20|caption": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 0.43666666666666665,
+        "condition": "caption",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0,
+        "extractor_valid_rate": 1.0,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.044583333333333336,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.006666666666666667,
+        "pair_accuracy_ci95_high": 0.011666666666666667,
+        "pair_accuracy_ci95_low": 0.0025,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.39,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.07416666666666667,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.005,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.6666666666666666,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.03,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.016666666666666666,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.3,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r20_caption_gemma3_caption_an29_20260716T184903Z/metrics.json",
+      "sha256": "e8f5b2c585a86218d8d60acc806a89dd0297bfe75b4ca556b9e28fbe891d343a"
+    },
+    "gemma3|r20|none": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 1.0,
+        "condition": "none",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.9658333333333333,
+        "extractor_valid_rate": 0.034166666666666665,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.0,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.0,
+        "pair_accuracy_ci95_high": 0.0,
+        "pair_accuracy_ci95_low": 0.0,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.975,
+            "extractor_valid_rate": 0.025,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.9133333333333333,
+            "extractor_valid_rate": 0.08666666666666667,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 1.0,
+            "extractor_valid_rate": 0.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r20_none_gemma3_none_an29_20260716T183137Z/metrics.json",
+      "sha256": "616b7170816a37910f45c933d1cd99324638e79295167d064d68d9eb544c9c37"
+    },
+    "gemma3|r20|real": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "gemma3",
+        "collapse_rate": 0.020833333333333332,
+        "condition": "real",
+        "contract_valid_rate": 0.0,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0004166666666666667,
+        "extractor_valid_rate": 0.9995833333333334,
+        "format_valid_rate": 0.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.48375,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.3283333333333333,
+        "pair_accuracy_ci95_high": 0.35583333333333333,
+        "pair_accuracy_ci95_low": 0.3016666666666667,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.03,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.36,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.13,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.0033333333333333335,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.9966666666666667,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.9966666666666667,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.02,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 0.0016666666666666668,
+            "extractor_valid_rate": 0.9983333333333333,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.21833333333333332,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.056666666666666664,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "gemma3",
+          "generation_callable": true,
+          "processor_use_fast": false,
+          "torch_version": "2.6.0+cu118"
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_gemma3_r20_real_gemma3_real_an29_20260716T180802Z/metrics.json",
+      "sha256": "e66d46961aae7314ae1e28a4c34a533ddc747353c72573ca8203c7689fd6fe37"
+    },
+    "internvl3|r19|caption": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "internvl3",
+        "collapse_rate": 0.4575,
+        "condition": "caption",
+        "contract_valid_rate": 1.0,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0,
+        "extractor_valid_rate": 1.0,
+        "format_valid_rate": 1.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.050416666666666665,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.006666666666666667,
+        "pair_accuracy_ci95_high": 0.011666666666666667,
+        "pair_accuracy_ci95_low": 0.0025,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.41333333333333333,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.08333333333333333,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.008333333333333333,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.08333333333333333,
+            "strict_pair_accuracy": 0.008333333333333333
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.5433333333333333,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.021666666666666667,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.01,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.021666666666666667,
+            "strict_pair_accuracy": 0.01
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.46,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.013333333333333334,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.013333333333333334,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.050416666666666665,
+        "strict_pair_accuracy": 0.006666666666666667
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r19_caption_internvl3_caption_an29_20260716T155518Z/metrics.json",
+      "sha256": "20becf0141fc3bd2c7c44cc330b079d123e44096a74d05d27ff9244abfc68ef7"
+    },
+    "internvl3|r19|none": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "internvl3",
+        "collapse_rate": 1.0,
+        "condition": "none",
+        "contract_valid_rate": 0.23416666666666666,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.42916666666666664,
+        "extractor_valid_rate": 0.5708333333333333,
+        "format_valid_rate": 0.23416666666666666,
+        "full_text_mentions_both_rate": 0.006666666666666667,
+        "member_accuracy": 0.010416666666666666,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.0,
+        "pair_accuracy_ci95_high": 0.0,
+        "pair_accuracy_ci95_low": 0.0,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.20166666666666666,
+            "extraction_fallback_rate": 0.21666666666666667,
+            "extractor_valid_rate": 0.7833333333333333,
+            "format_valid_rate": 0.20166666666666666,
+            "full_text_mentions_both_rate": 0.013333333333333334,
+            "member_accuracy": 0.020833333333333332,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.5333333333333333,
+            "extraction_fallback_rate": 0.2833333333333333,
+            "extractor_valid_rate": 0.7166666666666667,
+            "format_valid_rate": 0.5333333333333333,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 1.0,
+            "extractor_valid_rate": 0.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.0,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r19_none_internvl3_none_an29_20260716T155516Z/metrics.json",
+      "sha256": "4f1d05f06fbf10a3edb2e9cbcaed789bb59b2777872b09d7e0171eec86b67180"
+    },
+    "internvl3|r19|real": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0008333333333333334,
+        "backend": "internvl3",
+        "collapse_rate": 0.011666666666666667,
+        "condition": "real",
+        "contract_valid_rate": 0.57,
+        "dataset_id": "r19",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.42875,
+        "extractor_valid_rate": 0.57125,
+        "format_valid_rate": 0.57,
+        "full_text_mentions_both_rate": 0.006666666666666667,
+        "member_accuracy": 0.81,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.6808333333333333,
+        "pair_accuracy_ci95_high": 0.7066666666666667,
+        "pair_accuracy_ci95_low": 0.6541666666666667,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0016666666666666668,
+            "collapse_rate": 0.013333333333333334,
+            "contract_valid_rate": 0.57,
+            "extraction_fallback_rate": 0.42833333333333334,
+            "extractor_valid_rate": 0.5716666666666667,
+            "format_valid_rate": 0.57,
+            "full_text_mentions_both_rate": 0.013333333333333334,
+            "member_accuracy": 0.6858333333333333,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.485,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.4008333333333333,
+            "strict_pair_accuracy": 0.165
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.006666666666666667,
+            "contract_valid_rate": 0.9866666666666667,
+            "extraction_fallback_rate": 0.011666666666666667,
+            "extractor_valid_rate": 0.9883333333333333,
+            "format_valid_rate": 0.9866666666666667,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.9833333333333333,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.9733333333333334,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.9716666666666667,
+            "strict_pair_accuracy": 0.95
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.013333333333333334,
+            "contract_valid_rate": 0.15333333333333332,
+            "extraction_fallback_rate": 0.8466666666666667,
+            "extractor_valid_rate": 0.15333333333333332,
+            "format_valid_rate": 0.15333333333333332,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.885,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.78,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.13833333333333334,
+            "strict_pair_accuracy": 0.03
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.47791666666666666,
+        "strict_pair_accuracy": 0.3275
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r19_real_internvl3_real_an29_20260716T155512Z/metrics.json",
+      "sha256": "47feba17a2c31d4cc11a7ff6580bb1dae7b695aa51c6015a525d349ae936d712"
+    },
+    "internvl3|r20|caption": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "internvl3",
+        "collapse_rate": 0.4533333333333333,
+        "condition": "caption",
+        "contract_valid_rate": 1.0,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.0,
+        "extractor_valid_rate": 1.0,
+        "format_valid_rate": 1.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.06416666666666666,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.013333333333333334,
+        "pair_accuracy_ci95_high": 0.02,
+        "pair_accuracy_ci95_low": 0.0075,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.4066666666666667,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0975,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.013333333333333334,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0975,
+            "strict_pair_accuracy": 0.013333333333333334
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.55,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.043333333333333335,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.02666666666666667,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.043333333333333335,
+            "strict_pair_accuracy": 0.02666666666666667
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.45,
+            "contract_valid_rate": 1.0,
+            "extraction_fallback_rate": 0.0,
+            "extractor_valid_rate": 1.0,
+            "format_valid_rate": 1.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.018333333333333333,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.018333333333333333,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.06416666666666666,
+        "strict_pair_accuracy": 0.013333333333333334
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r20_caption_internvl3_caption_an29_20260716T155527Z/metrics.json",
+      "sha256": "2693c6e5720e77ec70cd7d3ca9d8a92631b1a9ea9d698b763b89600e8f890aa1"
+    },
+    "internvl3|r20|none": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0,
+        "backend": "internvl3",
+        "collapse_rate": 1.0,
+        "condition": "none",
+        "contract_valid_rate": 0.20666666666666667,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.42083333333333334,
+        "extractor_valid_rate": 0.5791666666666667,
+        "format_valid_rate": 0.20666666666666667,
+        "full_text_mentions_both_rate": 0.015833333333333335,
+        "member_accuracy": 0.010833333333333334,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.0,
+        "pair_accuracy_ci95_high": 0.0,
+        "pair_accuracy_ci95_low": 0.0,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.15833333333333333,
+            "extraction_fallback_rate": 0.20166666666666666,
+            "extractor_valid_rate": 0.7983333333333333,
+            "format_valid_rate": 0.15833333333333333,
+            "full_text_mentions_both_rate": 0.03166666666666667,
+            "member_accuracy": 0.021666666666666667,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0008333333333333334,
+            "strict_pair_accuracy": 0.0
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.51,
+            "extraction_fallback_rate": 0.28,
+            "extractor_valid_rate": 0.72,
+            "format_valid_rate": 0.51,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 1.0,
+            "contract_valid_rate": 0.0,
+            "extraction_fallback_rate": 1.0,
+            "extractor_valid_rate": 0.0,
+            "format_valid_rate": 0.0,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.0,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.0,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.0,
+            "strict_pair_accuracy": 0.0
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.0004166666666666667,
+        "strict_pair_accuracy": 0.0
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r20_none_internvl3_none_an29_20260716T155524Z/metrics.json",
+      "sha256": "c5b247c0b9523bac54f0a88b1d0050ad6b4b065dd210da2a031277fd79c47917"
+    },
+    "internvl3|r20|real": {
+      "checks": {
+        "decoding": true,
+        "pair_count": true,
+        "parser": true,
+        "prompt": true,
+        "row_count": true,
+        "run_key": true,
+        "runtime": true,
+        "templates": true
+      },
+      "metrics": {
+        "ambiguous_rate": 0.0008333333333333334,
+        "backend": "internvl3",
+        "collapse_rate": 0.016666666666666666,
+        "condition": "real",
+        "contract_valid_rate": 0.5429166666666667,
+        "dataset_id": "r20",
+        "decoding": {
+          "max_new_tokens": 384,
+          "n": 1,
+          "temperature": 0.0,
+          "top_p": 1.0
+        },
+        "extraction_fallback_rate": 0.45416666666666666,
+        "extractor_valid_rate": 0.5458333333333333,
+        "format_valid_rate": 0.5429166666666667,
+        "full_text_mentions_both_rate": 0.0033333333333333335,
+        "member_accuracy": 0.8020833333333334,
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.6783333333333333,
+        "pair_accuracy_ci95_high": 0.7033333333333334,
+        "pair_accuracy_ci95_low": 0.6525,
+        "parser_version": "canonical-v2",
+        "per_template": {
+          "coordinate_register_twenty_point_x_v02": {
+            "ambiguous_rate": 0.0016666666666666668,
+            "collapse_rate": 0.025,
+            "contract_valid_rate": 0.5366666666666666,
+            "extraction_fallback_rate": 0.4575,
+            "extractor_valid_rate": 0.5425,
+            "format_valid_rate": 0.5366666666666666,
+            "full_text_mentions_both_rate": 0.006666666666666667,
+            "member_accuracy": 0.6641666666666667,
+            "n_pairs": 600.0,
+            "pair_accuracy": 0.46,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.35083333333333333,
+            "strict_pair_accuracy": 0.12666666666666668
+          },
+          "header_cued_table_code_v02": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.01,
+            "contract_valid_rate": 0.9816666666666667,
+            "extraction_fallback_rate": 0.018333333333333333,
+            "extractor_valid_rate": 0.9816666666666667,
+            "format_valid_rate": 0.9816666666666667,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.9866666666666667,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.9833333333333333,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.9683333333333334,
+            "strict_pair_accuracy": 0.95
+          },
+          "starred_series_value_nine_v07": {
+            "ambiguous_rate": 0.0,
+            "collapse_rate": 0.006666666666666667,
+            "contract_valid_rate": 0.11666666666666667,
+            "extraction_fallback_rate": 0.8833333333333333,
+            "extractor_valid_rate": 0.11666666666666667,
+            "format_valid_rate": 0.11666666666666667,
+            "full_text_mentions_both_rate": 0.0,
+            "member_accuracy": 0.8933333333333333,
+            "n_pairs": 300.0,
+            "pair_accuracy": 0.81,
+            "parser_version": "canonical-v2",
+            "prompt_contract_id": "answer-tags-v1",
+            "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+            "strict_member_accuracy": 0.10833333333333334,
+            "strict_pair_accuracy": 0.02666666666666667
+          }
+        },
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "row_count": 1200,
+        "runtime": {
+          "backend": "internvl3",
+          "generation_callable": true,
+          "generation_config_ready": true,
+          "generation_shim_applied": true,
+          "legacy_cache_only": true,
+          "timm_version": "0.9.12",
+          "use_flash_attn": false
+        },
+        "strict_member_accuracy": 0.44458333333333333,
+        "strict_pair_accuracy": 0.3075
+      },
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_flip_internvl3_r20_real_internvl3_real_an29_20260716T155521Z/metrics.json",
+      "sha256": "8a64da756e1450bce88e3ae6b2361ac858461e30136952ebd6ab7ed1b3ce91d8"
+    }
+  },
+  "model_stages": [
+    {
+      "backend": "internvl3",
+      "destination": "/dev/shm/blind-gains/models/InternVL3-9B",
+      "node": "an12",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_stage_InternVL3-9B_an12_20260716T170439Z/run_manifest.json",
+      "sha256": "50588ccf5d2cdfa49ba2ffaf6a0991b39da3c1c408a700e83fc4cfed938fb92b",
+      "valid": true
+    },
+    {
+      "backend": "internvl3",
+      "destination": "/dev/shm/blind-gains/models/InternVL3-9B",
+      "node": "an29",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_stage_InternVL3-9B_an29_20260713T035801Z/run_manifest.json",
+      "sha256": "ea5a3c049e123115e4aa6307d93a73630891d02dd5e2385ecdf874bf2efaf7fb",
+      "valid": true
+    },
+    {
+      "backend": "gemma3",
+      "destination": "/dev/shm/blind-gains/models/gemma-3-12b-it",
+      "node": "an29",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/m11_stage_gemma-3-12b-it_an29_20260713T040041Z/run_manifest.json",
+      "sha256": "371dd13e0df17a968a82f903e89edb36848f3518f6918f43c85cf576e4163161",
+      "valid": true
+    }
+  ],
+  "queue_provenance": {
+    "cell_count": 18,
+    "performance_values_opened_only_after_complete_queue_gate": true,
+    "queue_git_hash": "6cf8677fe122e567b25733d5c4ef1f76314c2977",
+    "queue_state_sha256": "d8bd02cf84e5d2b7024d78162d0b17f6dee1190bafcd5280d42cd8a261998273",
+    "run": "experiments/runs/m11_reconciled_backfill_v2_login_20260717T075457Z",
+    "run_manifest_sha256": "50d0e0c6942bb947910d9532856fc67966cb58918e22b6d8449f96dbc52b456a"
+  },
+  "schema_version": "blind-gains.generalization-audits.v1",
+  "status": "pass"
+}

@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "checkpoint_index_present": true,
+    "geo3k_601_rows_exact": true,
+    "global_step_registered": true,
+    "r19_real_1200_pairs_exact": true
+  },
+  "checkpoint_index_sha256": "2064a3cf97dcb84c9cfefb32c95f02c8d1c3cbab37ad158521ef074746588d8c",
+  "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400/global_step_150/actor/huggingface",
+  "geo3k": {
+    "output_sha256": "90c97b6df7c4c78d9d90e564c84fb1616e0e0fa8f6d63b24851bfe6b98e83a6f",
+    "row_count": 601,
+    "run": "experiments/runs/m5_geo3k_step150_an12_gpu4_20260718T051839Z"
+  },
+  "global_step": 150,
+  "performance_values_opened": false,
+  "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+  "r19_real": {
+    "aggregate_metrics_sha256": "fe635749aab6ee7f057fbfc9e0cdccd4857c085082df0ca7b5a14e9ff6728202",
+    "aggregate_run": "experiments/runs/fliptrack_aggregate_m5_step150_m5_anchor_longhorizon_400_an12_20260716t173030z_real_20260718T053827Z",
+    "evaluation_run": "experiments/runs/m5_r19_step150_real_an12_20260718T051758Z",
+    "pair_count": 1200
+  },
+  "schema_version": "blind-gains.m5-step150-evaluation-completion-report.v1",
+  "scientific_gate_decision": null,
+  "status": "pass"
+}
