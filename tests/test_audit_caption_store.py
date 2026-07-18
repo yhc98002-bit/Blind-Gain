@@ -6,7 +6,12 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from scripts.audit_caption_store import audit_caption_store, sha256_file
+from scripts.audit_caption_store import (
+    audit_caption_store,
+    audit_raw_caption_rows,
+    expected_hashes_from_manifest,
+)
+from src.captioning.store import sha256_file
 from src.captioning.store import CAPTION_DECODING, CAPTION_PROMPT, CAPTION_PROMPT_SHA256
 
 
@@ -83,3 +88,27 @@ def test_caption_store_audit_rejects_source_mutation_after_captioning(tmp_path: 
             caption_store_path=store,
             input_dirs=[image_dir],
         )
+
+
+def test_legacy_manifest_and_shard_audit_api_remains_available(tmp_path: Path) -> None:
+    manifest, store, image_dir = _fixture(tmp_path)
+    row = json.loads(store.read_text(encoding="utf-8"))
+    legacy_manifest = tmp_path / "manifest.jsonl"
+    legacy_manifest.write_text(
+        json.dumps({"members": [{"image_sha256": row["image_sha256"]}]}) + "\n",
+        encoding="utf-8",
+    )
+    assert expected_hashes_from_manifest(legacy_manifest) == {row["image_sha256"]}
+    audit = audit_raw_caption_rows(
+        [store],
+        expected_model="Qwen/fixture",
+        expected_revision="revision",
+        expected_tp=4,
+    )
+    assert audit["checks"] == {
+        "one_row_per_image_hash": True,
+        "caption_image_files_match_hashes": True,
+        "expected_model_exact": True,
+        "expected_revision_exact": True,
+        "expected_tensor_parallel_width_exact": True,
+    }
