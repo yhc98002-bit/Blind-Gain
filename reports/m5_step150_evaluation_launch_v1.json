@@ -1,0 +1,32 @@
+{
+  "schema_version": "blind-gains.m5-step150-evaluation-launch.v1",
+  "status": "running",
+  "observed_at_utc": "2026-07-18T05:23:00Z",
+  "scientific_gate_decision": null,
+  "performance_values_opened": false,
+  "source_training_run": "experiments/runs/m5_anchor_longhorizon_400_an12_20260716T173030Z",
+  "global_step": 150,
+  "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400/global_step_150/actor/huggingface",
+  "checkpoint_index_sha256": "2064a3cf97dcb84c9cfefb32c95f02c8d1c3cbab37ad158521ef074746588d8c",
+  "r19_manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+  "git_hash": "6ee812fba440edd47382d3f22e383ba478f31e6e",
+  "placement": {
+    "node": "an12",
+    "geo3k_gpu_ids": [4],
+    "r19_gpu_ids": [5, 6, 7],
+    "tensor_parallel_width": 1,
+    "replica_count": 4,
+    "host_mem_available_kib_after_launch": 621267084
+  },
+  "runs": {
+    "queue": "experiments/runs/m5_checkpoint_evaluation_queue_login_20260718T051317Z",
+    "geo3k": "experiments/runs/m5_geo3k_step150_an12_gpu4_20260718T051839Z",
+    "r19_real": "experiments/runs/m5_r19_step150_real_an12_20260718T051758Z",
+    "watcher": "experiments/runs/m5_step150_evaluation_watch_login_20260718T052100Z"
+  },
+  "expected_structural_outputs": {
+    "geo3k_rows": 601,
+    "r19_pairs": 1200,
+    "marker": "experiments/runs/m5_anchor_longhorizon_400_an12_20260716T173030Z/evaluations/step150_evaluation_complete.json"
+  }
+}
