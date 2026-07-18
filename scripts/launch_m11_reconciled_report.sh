@@ -11,8 +11,8 @@ cd "${ROOT}"
 QUEUE_RUN="$1"
 shift
 STAGE_MANIFESTS=("$@")
-MACHINE_OUTPUT="reports/generalization_audits_v1.json"
-MARKDOWN_OUTPUT="reports/generalization_audits_v1.md"
+MACHINE_OUTPUT="reports/generalization_audits_v2.json"
+MARKDOWN_OUTPUT="reports/generalization_audits_v2.md"
 
 CRITICAL_FILES=(
   scripts/build_generalization_audits.py

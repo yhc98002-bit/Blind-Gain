@@ -8,6 +8,7 @@ from scripts.build_generalization_audits import (
     CONDITIONS,
     DATASETS,
     build_payload,
+    render_markdown,
 )
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 
@@ -161,6 +162,22 @@ def test_missing_fliptrack_cell_fails_matrix(tmp_path: Path) -> None:
 
     assert payload["status"] == "fail"
     assert payload["checks"]["complete_fliptrack_2x2x3_matrix"] is False
+
+
+def test_human_report_uses_registered_chart_construct_label(tmp_path: Path) -> None:
+    flip, blind, stages = _fixture(tmp_path)
+    metric = json.loads(flip[0].read_text(encoding="utf-8"))
+    metric["per_template"] = {
+        "starred_series_value_nine_v07": {"pair_accuracy": 0.5}
+    }
+    flip[0].write_text(json.dumps(metric) + "\n", encoding="utf-8")
+
+    payload = build_payload(flip, blind, stages)
+    markdown = render_markdown(payload, Path("reports/generalization_audits_v2.json"))
+
+    assert "cued chart point-value reading=0.5000" in markdown
+    assert "starred_series_value_nine_v07" not in markdown
+    assert "starred_series_value_nine_v07" in json.dumps(payload)
 
 
 def test_each_backend_node_placement_requires_its_own_verified_stage(

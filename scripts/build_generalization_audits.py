@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 from src.eval.nonqwen_adapters import nonqwen_runtime_metadata_valid
+from src.eval.visual_evidence_ranking import HUMAN_TEMPLATE_LABELS
 from src.rewards.answer_reward import PARSER_VERSION
 
 
@@ -244,7 +245,7 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
         backend, dataset, condition = key.split("|")
         metric = record["metrics"]
         templates = ", ".join(
-            f"{name}={_format(values.get('pair_accuracy'))}"
+            f"{HUMAN_TEMPLATE_LABELS.get(name, name)}={_format(values.get('pair_accuracy'))}"
             for name, values in sorted(metric["per_template"].items())
         )
         flip_rows.append(
@@ -266,12 +267,13 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
     ]
     return "\n".join(
         [
-            "# Generalization Audits V1",
+            "# Generalization Audits V2",
             "",
             "Status:",
             f"- M11 evidence conjunction: `{payload['status']}`.",
             "- These are inference-only audits; they do not establish a training-effect claim.",
             "- Caption results measure caption-mediated accessibility using fixed 3B question-blind captions.",
+            "- Human-facing chart label: `cued chart point-value reading`; internal template IDs remain only in the machine artifact for compatibility.",
             "",
             "Checks:",
             "| Check | Result |",
