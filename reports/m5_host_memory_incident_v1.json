@@ -1,0 +1,47 @@
+{
+  "schema_version": "blind-gains.m5-host-memory-incident.v1",
+  "status": "recoverable_blocked",
+  "scientific_gate_decision": null,
+  "performance_values_opened": false,
+  "failed_run": "experiments/runs/m5_anchor_longhorizon_400_an12_20260716T173030Z",
+  "failed_at_utc": "2026-07-18T00:41:18Z",
+  "failure": {
+    "class": "ray_host_memory_oom",
+    "node": "an12",
+    "node_memory_used_gb": 957.22,
+    "node_memory_total_gb": 1007.52,
+    "ray_kill_threshold": 0.95,
+    "m5_worker_memory_gb": [146.33, 146.20, 145.76, 145.37]
+  },
+  "overlapping_job": {
+    "run": "experiments/runs/chart_v08_strong_caption_store_m12_v08_calibration_v1_an12_20260718T003420Z",
+    "started_at_utc": "2026-07-18T00:34:59Z",
+    "node": "an12",
+    "gpu_ids": [4, 5, 6, 7],
+    "ephemeral_checkout_bytes": 146833337667
+  },
+  "last_verified_checkpoint": {
+    "step": 150,
+    "merged_run": "experiments/runs/easyr1_checkpoint_merge_m5_anchor_longhorizon_400_step150_an12_20260717T224659Z",
+    "raw_relocation_run": "experiments/runs/easyr1_raw_relocation_m5_anchor_longhorizon_400_step150_login_20260717T225019Z",
+    "raw_archive": "/tmp/blindgain_checkpoint_archive/m5_anchor_longhorizon_400_an12_20260716T173030Z/global_step_150/actor",
+    "raw_checksum_manifest_sha256": "3805e66bd07a0e7cc144dda19bbcf02ee5839888e2279f74ef5076c5aab6bcbb"
+  },
+  "checks": {
+    "root_cause_from_ray_exception": true,
+    "step150_merge_complete": true,
+    "step150_raw_relocation_complete": true,
+    "archive_retained": true,
+    "caption_store_audit_pass": true,
+    "ephemeral_captioner_deleted": true,
+    "active_seed2_training_not_signaled": true,
+    "seed2_queue_held_for_m5_recovery": true
+  },
+  "recovery": {
+    "resume_from_step": 150,
+    "terminal_step": 400,
+    "new_checkpoint_root_required": true,
+    "host_exclusive_rl_or_72b_rule_required": true,
+    "status": "awaiting_hash_verified_raw_restore_and_node_capacity"
+  }
+}

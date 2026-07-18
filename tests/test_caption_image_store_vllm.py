@@ -148,3 +148,7 @@ def test_chart_v08_strong_caption_launcher_uses_exact_m12_provenance() -> None:
     assert "HOST_AVAILABLE_KIB" in launcher
     assert "HOST_AVAILABLE_BYTES=$((HOST_AVAILABLE_KIB * 1024))" in launcher
     assert "awk '/MemAvailable:/" not in launcher
+    assert "Refusing to colocate the 72B captioner with a BlindGain RL trainer" in launcher
+    assert launcher.index("verl.trainer.main.*BlindGain") < launcher.index(
+        'for gpu in "${GPU_IDS[@]}"'
+    )

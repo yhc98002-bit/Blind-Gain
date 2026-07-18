@@ -1,0 +1,23 @@
+{
+  "schema_version": "blind-gains.ephemeral-deletion.v1",
+  "status": "pass",
+  "node": "an12",
+  "path": "/dev/shm/blind-gains/models/Qwen2.5-VL-72B-Instruct",
+  "deleted_at_utc": "2026-07-18T01:12:50Z",
+  "deleted_bytes": 146833337667,
+  "source_checkout_manifest": "experiments/runs/modelscope_ephemeral_qwen25vl72b_m12_chartv08_an12_20260715T211129Z/model_checkout.json",
+  "source_checkout_manifest_sha256": "3d8a67e28485c9c7c95e737ad11ff7f165f107c9326d946b1dca77419fee5e58",
+  "prerequisite_caption_audit": "reports/chart_v08_strong_caption_store_v1.json",
+  "prerequisite_caption_audit_sha256": "5dfe69bd2be3731c3e46388fd263feaa2f75de84ed7d405ab1c292b1366c002e",
+  "checks": {
+    "canonical_path_exact": true,
+    "caption_run_complete": true,
+    "caption_audit_pass": true,
+    "no_caption_process": true,
+    "gpus_4_7_process_free": true,
+    "path_absent_after": true
+  },
+  "shm_free_bytes_before": 260383789056,
+  "shm_free_bytes_after": 407217197056,
+  "host_mem_available_kib_after": 712866192
+}

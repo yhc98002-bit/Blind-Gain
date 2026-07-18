@@ -1,0 +1,38 @@
+{
+  "caption_store": "experiments/runs/chart_v08_strong_caption_store_m12_v08_calibration_v1_an12_20260718T003420Z/captions.jsonl",
+  "caption_store_sha256": "00f2aa36f2683264f10f725cd23f537eafc071b318bf4735ba053061e86a21ed",
+  "checks": {
+    "image_coverage_exact": true,
+    "image_hashes_unique": true,
+    "model_revision_uniform": true,
+    "no_empty_captions": true,
+    "performance_values_unopened": true,
+    "question_blind_contract_valid": true,
+    "row_count_exact": true,
+    "run_complete": true,
+    "run_exit_zero": true,
+    "source_bytes_match": true
+  },
+  "decoding": {
+    "n": 1,
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1
+  },
+  "expected_rows": 200,
+  "input_dirs": [
+    "data/fliptrack_chart_v08_calibration_v1/legend_target/images",
+    "data/fliptrack_chart_v08_calibration_v1/point_value/images"
+  ],
+  "input_image_hashes_sha256": "f7980fb5b2c3e40e4934520300482f15afca31908bb802589eff0c9cf33f7ea1",
+  "max_new_tokens": 384,
+  "model_id": "Qwen/Qwen2.5-VL-72B-Instruct",
+  "model_revision": "master",
+  "rows": 200,
+  "run_id": "chart_v08_strong_caption_store_m12_v08_calibration_v1_an12_20260718T003420Z",
+  "run_manifest": "experiments/runs/chart_v08_strong_caption_store_m12_v08_calibration_v1_an12_20260718T003420Z/run_manifest.json",
+  "run_manifest_sha256": "4d229f23a60386a0770f724af64435ef4146d73a28c63c2ed0219897e8f2e5b0",
+  "schema_version": "blind-gains.caption-store-audit.v1",
+  "status": "pass",
+  "tensor_parallel_width": 4
+}

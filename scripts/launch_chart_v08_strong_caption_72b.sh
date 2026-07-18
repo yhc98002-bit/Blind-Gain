@@ -106,6 +106,10 @@ if [[ "${HOST_AVAILABLE_BYTES}" -lt "${MIN_HOST_AVAILABLE_BYTES}" ]]; then
   echo "Host available memory is below the 80-GiB launch floor" >&2
   exit 75
 fi
+if ssh "${NODE}" "pgrep -af '[p]ython.*verl.trainer.main.*BlindGain' >/dev/null"; then
+  echo "Refusing to colocate the 72B captioner with a BlindGain RL trainer on ${NODE}" >&2
+  exit 75
+fi
 for gpu in "${GPU_IDS[@]}"; do
   if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${gpu}' --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
     echo "Selected GPU ${gpu} is occupied" >&2
