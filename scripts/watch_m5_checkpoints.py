@@ -29,12 +29,15 @@ def main() -> None:
     parser.add_argument("--node", choices=("an12", "an29"), required=True)
     parser.add_argument("--run-label", required=True)
     parser.add_argument("--expected-code-hash", required=True)
+    parser.add_argument("--resume-after-step", type=int, default=0)
     args = parser.parse_args()
     require_code_bundle(args.expected_code_hash, M5_CODE_BUNDLE_PATHS)
 
     # Evaluation and merged-checkpoint relocation are intentionally separate.
     # This queue only makes an immutable merge and enforces latest-raw retention.
-    for step in M5_STEPS:
+    if args.resume_after_step not in {0, 100, 150}:
+        raise ValueError("M5 resume-after step must be 0, 100, or 150")
+    for step in (item for item in M5_STEPS if item > args.resume_after_step):
         process_step(
             run_root=args.run_root,
             archive_root=args.archive_root,

@@ -64,11 +64,14 @@ def main() -> None:
     parser.add_argument("--run-label", required=True)
     parser.add_argument("--evaluation-marker-dir", type=Path, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
+    parser.add_argument("--resume-after-step", type=int, default=0)
     args = parser.parse_args()
     if args.poll_seconds < 10:
         raise ValueError("poll interval must be at least 10 seconds")
+    if args.resume_after_step not in {0, 100, 150}:
+        raise ValueError("M5 resume-after step must be 0, 100, or 150")
 
-    for step in INTERMEDIATE_STEPS:
+    for step in (item for item in INTERMEDIATE_STEPS if item > args.resume_after_step):
         actor_dir = args.run_root / f"global_step_{step}" / "actor"
         wait_for_merge(actor_dir, args.poll_seconds)
         if step in EVALUATED_STEPS:
