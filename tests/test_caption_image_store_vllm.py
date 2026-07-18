@@ -73,6 +73,34 @@ def test_serving_manifest_requires_one_single_node_tp4_replica(tmp_path: Path) -
         )
 
 
+def test_serving_manifest_accepts_registered_m12_job_but_rejects_unknown_job(
+    tmp_path: Path,
+) -> None:
+    model_path = Path("/dev/shm/blind-gains/models/qwen72b")
+    manifest = tmp_path / "run_manifest.json"
+    payload = {
+        "job_type": "m12_chart_v08_strong_caption_store_generation",
+        "gpu_ids": [4, 5, 6, 7],
+        "tensor_parallel_width": 4,
+        "replica_count": 1,
+        "model_path": str(model_path),
+    }
+    manifest.write_text(json.dumps(payload), encoding="utf-8")
+    assert (
+        validate_serving_manifest(
+            manifest, tensor_parallel_size=4, model_path=model_path
+        )["job_type"]
+        == "m12_chart_v08_strong_caption_store_generation"
+    )
+
+    payload["job_type"] = "unregistered_caption_job"
+    manifest.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="job_type"):
+        validate_serving_manifest(
+            manifest, tensor_parallel_size=4, model_path=model_path
+        )
+
+
 def test_strong_caption_launcher_cannot_use_tp1_or_cross_node() -> None:
     launcher = (
         Path(__file__).resolve().parents[1]
@@ -99,3 +127,21 @@ def test_strong_caption_launcher_locks_before_expensive_input_hashing() -> None:
     assert 'exec 9>"${LOCK_PATH}"' in launcher
     assert "flock -n 9" in launcher
     assert launcher.index("flock -n 9") < launcher.index('R19_HASH="$(find -L')
+
+
+def test_chart_v08_strong_caption_launcher_uses_exact_m12_provenance() -> None:
+    launcher = (
+        Path(__file__).resolve().parents[1]
+        / "scripts"
+        / "launch_chart_v08_strong_caption_72b.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'job_type: "m12_chart_v08_strong_caption_store_generation"' in launcher
+    assert "EXPECTED_MANIFEST_SHA256" in launcher
+    assert "expected_unique_image_count: 200" in launcher
+    assert "chart_v08_legend_target_flip" in launcher
+    assert "chart_v08_point_value_flip" in launcher
+    assert "R19_IMAGES" not in launcher
+    assert "R20_IMAGES" not in launcher
+    assert "TP_WIDTH=4" in launcher
+    assert "MIN_HOST_AVAILABLE_BYTES" in launcher

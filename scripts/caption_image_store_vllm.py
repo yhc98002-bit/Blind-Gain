@@ -24,6 +24,12 @@ from src.captioning.store import (
 
 REGISTERED_MAX_NEW_TOKENS = 384
 REGISTERED_SEED = 0
+ALLOWED_JOB_TYPES = frozenset(
+    {
+        "l9_strong_caption_store_generation",
+        "m12_chart_v08_strong_caption_store_generation",
+    }
+)
 
 
 def discover_image_roots(input_dirs: list[Path]) -> list[dict[str, Any]]:
@@ -59,7 +65,6 @@ def validate_serving_manifest(
 ) -> dict[str, Any]:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     expected = {
-        "job_type": "l9_strong_caption_store_generation",
         "tensor_parallel_width": tensor_parallel_size,
         "replica_count": 1,
         "model_path": str(model_path),
@@ -69,6 +74,11 @@ def validate_serving_manifest(
         for key, value in expected.items()
         if manifest.get(key) != value
     }
+    if manifest.get("job_type") not in ALLOWED_JOB_TYPES:
+        mismatches["job_type"] = {
+            "expected": sorted(ALLOWED_JOB_TYPES),
+            "found": manifest.get("job_type"),
+        }
     gpu_ids = manifest.get("gpu_ids")
     if not isinstance(gpu_ids, list) or len(gpu_ids) != tensor_parallel_size:
         mismatches["gpu_ids"] = {
