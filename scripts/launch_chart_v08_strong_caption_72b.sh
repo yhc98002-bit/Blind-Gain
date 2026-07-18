@@ -96,7 +96,12 @@ if ! ssh "${NODE}" "test -d '${MODEL_PATH}'"; then
   echo "Ephemeral model checkout is absent on ${NODE}" >&2
   exit 2
 fi
-HOST_AVAILABLE_BYTES="$(ssh "${NODE}" "awk '/MemAvailable:/ {print \$2 * 1024}' /proc/meminfo")"
+HOST_AVAILABLE_KIB="$(ssh "${NODE}" "grep '^MemAvailable:' /proc/meminfo | tr -cd '0-9'")"
+if [[ ! "${HOST_AVAILABLE_KIB}" =~ ^[0-9]+$ ]]; then
+  echo "Could not parse remote MemAvailable" >&2
+  exit 75
+fi
+HOST_AVAILABLE_BYTES=$((HOST_AVAILABLE_KIB * 1024))
 if [[ "${HOST_AVAILABLE_BYTES}" -lt "${MIN_HOST_AVAILABLE_BYTES}" ]]; then
   echo "Host available memory is below the 80-GiB launch floor" >&2
   exit 75

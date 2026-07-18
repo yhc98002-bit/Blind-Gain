@@ -145,3 +145,6 @@ def test_chart_v08_strong_caption_launcher_uses_exact_m12_provenance() -> None:
     assert "R20_IMAGES" not in launcher
     assert "TP_WIDTH=4" in launcher
     assert "MIN_HOST_AVAILABLE_BYTES" in launcher
+    assert "HOST_AVAILABLE_KIB" in launcher
+    assert "HOST_AVAILABLE_BYTES=$((HOST_AVAILABLE_KIB * 1024))" in launcher
+    assert "awk '/MemAvailable:/" not in launcher
