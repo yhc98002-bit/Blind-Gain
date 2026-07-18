@@ -1,0 +1,26 @@
+{
+  "schema_version": "blind-gains.failed-parent-watchers-retired.v1",
+  "status": "pass",
+  "retired_at_utc": "2026-07-18T03:13:08Z",
+  "parent_run": "experiments/runs/m5_anchor_longhorizon_400_an12_20260716T173030Z",
+  "parent_status": "fail",
+  "watchers": [
+    {
+      "run": "experiments/runs/m5_checkpoint_watch_v2_login_20260717T223653Z",
+      "pid": 2129462
+    },
+    {
+      "run": "experiments/runs/m5_merged_relocation_watch_login_20260716T173053Z",
+      "pid": 1678977
+    }
+  ],
+  "checks": {
+    "parent_terminal": true,
+    "step150_merge_complete": true,
+    "step150_raw_archive_complete": true,
+    "restore_process_untouched": true,
+    "recovery_queue_untouched": true
+  },
+  "performance_values_opened": false,
+  "reason": "The failed parent cannot produce later checkpoints; fresh watchers are launched against the immutable recovery root."
+}
