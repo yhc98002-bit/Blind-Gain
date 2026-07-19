@@ -4,6 +4,7 @@ Status:
 - Operational recovery is active; this is not an M3 scientific pass.
 - A2-gray resumed on `an12` GPUs `0,1,2,3` from the hash-verified step-20 state.
 - A2b-no-image resumed on `an29` GPUs `0,1,2,3` from the hash-verified step-20 state.
+- Both replacements completed their first post-recovery optimizer step (`20 -> 21`) and continue running without a fatal log pattern.
 - Both replacement runs use new immutable checkpoint namespaces and leave the failed source runs unchanged.
 
 Evidence:
@@ -20,10 +21,12 @@ Evidence:
 - A2 replacement: `experiments/runs/mech_a2_gray_seed2_resume20_an12_20260719T125918Z`.
   - Checkpoints: `checkpoints/pilot/mech_a2_gray_seed2_resume20`.
   - Repeats uncheckpointed source steps 21-39; these rows are excluded from the retained source trajectory.
+  - The immutable file log recorded step 21 at `2026-07-19T13:35:15Z`.
 - A2b replacement: `experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z`.
   - Checkpoints: `checkpoints/pilot/mech_a2b_noimage_seed2_resume20`.
   - No post-step-20 source metric rows existed to exclude.
   - Independent source digest: `7e568129d11e131a44d97f5fa448120889a3d2cf46c497c44c6a514eba7307a2`.
+  - The immutable file log recorded step 21 at `2026-07-19T13:23:14Z`.
 - Retention watchers:
   - `experiments/runs/pilot_resume_checkpoint_watch_mech_a2_gray_seed2_resume20_login_20260719T130104Z`.
   - `experiments/runs/pilot_resume_checkpoint_watch_mech_a2b_noimage_seed2_resume20_login_20260719T125711Z`.
@@ -43,6 +46,7 @@ Decision:
 - Keep GPUs 4-7 free for now because synchronous GRPO already uses the node-level Ray object store and host-memory budget; idle GPU percentage is not a gate.
 
 Next actions:
-- Observe startup, GPU memory, fatal log patterns, and the first recovered optimizer step.
+- Continue process, GPU, host-memory, fatal-pattern, and storage monitoring without opening training metrics.
 - Let the retention watchers merge and archive steps 40/60/80 while preserving step 100 on shared storage.
+- Rough operational ETA from prior cadence, excluding checkpoint variance: A2b about 22 hours and A2 about 32 hours after step 21.
 - Start M5 on the first fully released node, then continue the registered seed-2 queue.
