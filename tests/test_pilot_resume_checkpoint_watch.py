@@ -27,4 +27,5 @@ def test_resume_watcher_launcher_is_valid_and_fail_closed() -> None:
     assert '[[ "${RUN_LABEL}" == "${SOURCE_RUN_NAME}_resume20" ]]' in source
     assert '"${ARM}" == "a2_gray"' in source
     assert '"${ARM}" == "a2b_noimage"' in source
+    assert '"${RUN_LABEL}" == "mech_a3_caption_resume20"' in source
     assert "resume_schedule: [40,60,80,100]" in source

@@ -23,7 +23,13 @@ ARM="$(jq -er '.arm' "${MANIFEST_IN}")"
 PARENT_RUN_ID="$(jq -er '.run_id' "${MANIFEST_IN}")"
 RUN_LABEL="$(jq -er '.arm_run_name' "${MANIFEST_IN}")"
 RUN_ROOT="$(jq -er '.checkpoint_path' "${MANIFEST_IN}")"
-SOURCE_RUN_NAME="$(jq -er '.recovery_source_arm_run_name' "${MANIFEST_IN}")"
+SOURCE_RUN_NAME="$(jq -r '.recovery_source_arm_run_name // empty' "${MANIFEST_IN}")"
+if [[ -z "${SOURCE_RUN_NAME}" ]]; then
+  [[ "${ARM}" == "a3_caption" && "${RUN_LABEL}" == "mech_a3_caption_resume20" ]] || {
+    echo "resume source arm run name is absent" >&2; exit 2;
+  }
+  SOURCE_RUN_NAME="mech_a3_caption"
+fi
 [[ "${RUN_LABEL}" == "${SOURCE_RUN_NAME}_resume20" ]] || { echo "resume label does not match source arm run" >&2; exit 2; }
 [[ "${RUN_ROOT}" == "${ROOT}/checkpoints/pilot/${RUN_LABEL}" ]] || { echo "unapproved resume checkpoint root" >&2; exit 2; }
 ARCHIVE_ROOT="/tmp/blindgain_checkpoint_archive/${PARENT_RUN_ID}"
