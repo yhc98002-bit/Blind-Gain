@@ -19,6 +19,14 @@ from scripts.finalize_pilot_step_evaluation import (
 
 ROOT = Path(__file__).resolve().parents[1]
 TERMINAL_FAILURES = {"fail", "failed", "error", "cancelled", "canceled"}
+SEED1_CONFIG_SCHEMA = "blind-gains.pilot-step100-eval-queue.v1"
+FOLLOWUP_CONFIG_SCHEMA = "blind-gains.pilot-followup-r19-eval-queue.v1"
+ARM_CONDITIONS = {
+    "a1_real": "real",
+    "a2_gray": "gray",
+    "a2b_noimage": "none",
+    "a3_caption": "caption",
+}
 
 
 def _now() -> str:
@@ -59,10 +67,17 @@ def _write_state(path: Path, payload: dict[str, Any]) -> None:
     os.replace(temporary, path)
 
 
+def _is_followup(config: dict[str, Any]) -> bool:
+    return config.get("schema_version") == FOLLOWUP_CONFIG_SCHEMA
+
+
 def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
-    if config.get("schema_version") != "blind-gains.pilot-step100-eval-queue.v1":
+    if config.get("schema_version") not in {
+        SEED1_CONFIG_SCHEMA,
+        FOLLOWUP_CONFIG_SCHEMA,
+    }:
         raise ValueError("unsupported queue config schema")
-    if config.get("arm") not in {"a1_real", "a2_gray", "a2b_noimage", "a3_caption"}:
+    if config.get("arm") not in ARM_CONDITIONS:
         raise ValueError("unsupported pilot arm")
     if config.get("node") not in {"an12", "an29"}:
         raise ValueError("queue may target only permanent nodes an12 or an29")
@@ -74,8 +89,14 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         or any(not isinstance(gpu, int) or not 0 <= gpu <= 7 for gpu in gpu_ids)
     ):
         raise ValueError("queue requires four unique GPU ids in [0, 7]")
-    if config.get("global_step") != 100:
-        raise ValueError("this queue is pinned to global step 100")
+    global_step = config.get("global_step")
+    if _is_followup(config):
+        if config.get("seed") not in {2, 3}:
+            raise ValueError("follow-up queue seed must be 2 or 3")
+        if global_step not in {60, 100}:
+            raise ValueError("follow-up queue endpoint must be step 60 or 100")
+    elif global_step != 100:
+        raise ValueError("seed-1 queue is pinned to global step 100")
     if config.get("image_mode") != "real" or config.get("max_new_tokens") != 32:
         raise ValueError("pilot FlipTrack queue requires real images and 32 tokens")
     if config.get("num_shards") != 4:
@@ -93,13 +114,18 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         if not isinstance(config.get(field), str):
             raise ValueError(f"missing path field: {field}")
         _resolve(root, config[field])
+    if _is_followup(config):
+        release_value = config.get("cohort_release_training_run")
+        if not isinstance(release_value, str):
+            raise ValueError("follow-up queue requires a cohort release training run")
+        _resolve(root, release_value)
     if "retention_run" in config:
         if not isinstance(config["retention_run"], str):
             raise ValueError("retention_run must be a path when provided")
         _resolve(root, config["retention_run"])
     training_run = _resolve(root, config["training_run"])
     marker = _resolve(root, config["marker"])
-    expected_marker = training_run / "step100_fliptrack_complete.json"
+    expected_marker = training_run / f"step{global_step}_fliptrack_complete.json"
     if marker != expected_marker:
         raise ValueError("marker is not bound to the pinned training run and step")
     manifest = _resolve(root, config["r19_manifest"])
@@ -159,23 +185,69 @@ def _inspect_merged_checkpoint(checkpoint: Path) -> dict[str, Any]:
 
 
 def inspect_dependencies(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
+    if _is_followup(config):
+        release_run = _resolve(root, config["cohort_release_training_run"])
+        release_manifest_path = release_run / "run_manifest.json"
+        if not release_manifest_path.is_file():
+            return {"status": "failed", "reason": "cohort_release_manifest_absent"}
+        release = _read_json(release_manifest_path)
+        release_expected = {
+            "job_type": "m3_mechanical_pilot_arm",
+            "arm": "a3_caption",
+            "seed": config["seed"],
+        }
+        release_errors = {
+            key: {"expected": value, "observed": release.get(key)}
+            for key, value in release_expected.items()
+            if release.get(key) != value
+        }
+        if release_errors:
+            return {
+                "status": "failed",
+                "reason": "cohort_release_identity_mismatch",
+                "details": release_errors,
+            }
+        release_status = release.get("status")
+        if release_status in TERMINAL_FAILURES:
+            return {
+                "status": "failed",
+                "reason": f"cohort_release_terminal_{release_status}",
+            }
+        if release_status != "complete":
+            return {"status": "waiting_cohort_release", "reason": str(release_status)}
+        if release.get("exit_code") != 0 or release.get("artifacts_exist") is not True:
+            return {"status": "failed", "reason": "cohort_release_unverified"}
+
     training_run = _resolve(root, config["training_run"])
     checkpoint = _resolve(root, config["checkpoint_path"])
     training_path = training_run / "run_manifest.json"
     if not training_path.is_file():
         return {"status": "failed", "reason": "training_manifest_absent"}
     training = _read_json(training_path)
+    expected_training = {
+        "job_type": (
+            "m3_mechanical_pilot_arm"
+            if _is_followup(config)
+            else "l13_mechanical_pilot_arm"
+        ),
+        "arm": config["arm"],
+    }
+    if _is_followup(config):
+        expected_training.update(
+            {
+                "seed": config["seed"],
+                "image_condition": ARM_CONDITIONS[config["arm"]],
+            }
+        )
+    else:
+        expected_training["node"] = config["node"]
     training_errors = {
         key: {"expected": value, "observed": training.get(key)}
-        for key, value in {
-            "job_type": "l13_mechanical_pilot_arm",
-            "arm": config["arm"],
-            "node": config["node"],
-        }.items()
+        for key, value in expected_training.items()
         if training.get(key) != value
     }
     expected_checkpoint = Path(str(training.get("checkpoint_path", ""))) / (
-        "global_step_100/actor/huggingface"
+        f"global_step_{config['global_step']}/actor/huggingface"
     )
     if expected_checkpoint.resolve() != checkpoint.resolve():
         training_errors["checkpoint_path"] = {
@@ -258,7 +330,7 @@ def validate_marker(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any]
     expected = {
         "schema_version": MARKER_SCHEMA_VERSION,
         "status": "complete",
-        "global_step": 100,
+        "global_step": config["global_step"],
         "r19_manifest_sha256": R19_MANIFEST_SHA256,
     }
     errors = {
@@ -275,14 +347,14 @@ def validate_marker(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any]
     if not isinstance(checks, dict) or not checks or not all(checks.values()):
         errors["checks"] = {"expected": "all true", "observed": checks}
     if errors:
-        raise ValueError(f"step-100 marker validation failed: {errors}")
+        raise ValueError(f"pilot endpoint marker validation failed: {errors}")
     return marker
 
 
 def _launch_evaluation(config: dict[str, Any], root: Path) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
     environment["BLIND_GAINS_PILOT_SOURCE_RUN"] = config["training_run"]
-    environment["BLIND_GAINS_PILOT_GLOBAL_STEP"] = "100"
+    environment["BLIND_GAINS_PILOT_GLOBAL_STEP"] = str(config["global_step"])
     gpu_list = " ".join(str(gpu) for gpu in config["gpu_ids"])
     return subprocess.run(
         [
@@ -334,7 +406,7 @@ def _launch_finalize_watcher(config: dict[str, Any], root: Path) -> Path:
             "scripts/launch_pilot_step_evaluation_watch.sh",
             config["evaluation_run"],
             config["training_run"],
-            "100",
+            str(config["global_step"]),
             config["marker"],
             config["aggregate_tag"],
         ],
@@ -369,7 +441,11 @@ def run_queue(
     validate_config(config, root)
     state_path = _resolve(root, config["state_path"])
     state = _read_json(state_path) if state_path.is_file() else {
-        "schema_version": "blind-gains.pilot-step100-eval-queue-state.v1",
+        "schema_version": (
+            "blind-gains.pilot-followup-r19-eval-queue-state.v1"
+            if _is_followup(config)
+            else "blind-gains.pilot-step100-eval-queue-state.v1"
+        ),
         "created_utc": _now(),
         "status": "initialized",
         "poll_count": 0,

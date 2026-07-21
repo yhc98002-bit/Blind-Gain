@@ -50,6 +50,8 @@ EVALUATION_SCOPE_JSON=null
 SOURCE_MANIFEST_SHA256_JSON=null
 CHECKPOINT_INDEX_SHA256_JSON=null
 SOURCE_MANIFEST_PATH=""
+SOURCE_TRAINING_JOB_TYPE_JSON=null
+SOURCE_TRAINING_SEED_JSON=null
 if [[ -n "${PILOT_SOURCE_RUN_INPUT}" && -n "${M5_SOURCE_RUN_INPUT}" ]]; then
   echo "Pilot and M5 checkpoint bindings are mutually exclusive" >&2
   exit 2
@@ -65,7 +67,22 @@ if [[ -n "${PILOT_SOURCE_RUN_INPUT}" || -n "${PILOT_GLOBAL_STEP}" ]]; then
   esac
   PILOT_MANIFEST="${PILOT_SOURCE_RUN}/run_manifest.json"
   [[ -f "${PILOT_MANIFEST}" ]] || { echo "Pilot source manifest absent" >&2; exit 2; }
-  [[ "$(jq -r '.job_type' "${PILOT_MANIFEST}")" == "l13_mechanical_pilot_arm" ]] || { echo "Pilot source is not an L13 arm" >&2; exit 2; }
+  PILOT_JOB_TYPE="$(jq -r '.job_type' "${PILOT_MANIFEST}")"
+  case "${PILOT_JOB_TYPE}" in
+    l13_mechanical_pilot_arm)
+      EVALUATION_SCOPE_JSON='"registered M2 pilot FlipTrack checkpoint endpoint"'
+      ;;
+    m3_mechanical_pilot_arm)
+      PILOT_SEED="$(jq -r '.seed' "${PILOT_MANIFEST}")"
+      [[ "${PILOT_SEED}" == "2" || "${PILOT_SEED}" == "3" ]] || { echo "M3 pilot source seed must be 2 or 3" >&2; exit 2; }
+      EVALUATION_SCOPE_JSON='"registered M3 pilot FlipTrack checkpoint endpoint"'
+      SOURCE_TRAINING_SEED_JSON="${PILOT_SEED}"
+      ;;
+    *)
+      echo "Pilot source must be an L13 seed-1 or M3 follow-up arm" >&2
+      exit 2
+      ;;
+  esac
   [[ "$(jq -r '.status' "${PILOT_MANIFEST}")" == "complete" ]] || { echo "Pilot source run must be complete" >&2; exit 2; }
   DIRECT_MODEL="$(realpath -m "$(jq -er '.checkpoint_path' "${PILOT_MANIFEST}")/global_step_${PILOT_GLOBAL_STEP}/actor/huggingface")"
   EXPECTED_MODELS=("${DIRECT_MODEL}")
@@ -78,8 +95,8 @@ if [[ -n "${PILOT_SOURCE_RUN_INPUT}" || -n "${PILOT_GLOBAL_STEP}" ]]; then
   [[ -f "${RESOLVED_MODEL}/model.safetensors.index.json" ]] || { echo "Pilot merged checkpoint index absent" >&2; exit 2; }
   PILOT_SOURCE_REL="${PILOT_SOURCE_RUN#"${ROOT}/"}"
   SOURCE_RUN_JSON="$(jq -Rn --arg value "${PILOT_SOURCE_REL}" '$value')"
+  SOURCE_TRAINING_JOB_TYPE_JSON="$(jq -Rn --arg value "${PILOT_JOB_TYPE}" '$value')"
   GLOBAL_STEP_JSON="${PILOT_GLOBAL_STEP}"
-  EVALUATION_SCOPE_JSON='"registered M2 pilot FlipTrack checkpoint endpoint"'
   SOURCE_MANIFEST_SHA256_JSON="$(jq -Rn --arg value "$(sha256sum "${PILOT_MANIFEST}" | awk '{print $1}')" '$value')"
   CHECKPOINT_INDEX_SHA256_JSON="$(jq -Rn --arg value "$(sha256sum "${RESOLVED_MODEL}/model.safetensors.index.json" | awk '{print $1}')" '$value')"
   SOURCE_MANIFEST_PATH="${PILOT_MANIFEST}"
@@ -231,6 +248,8 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
   "prompt_contract_id": "${PROMPT_CONTRACT_ID}",
   "prompt_contract_sha256": "${PROMPT_CONTRACT_SHA256}",
   "source_training_run": ${SOURCE_RUN_JSON},
+  "source_training_job_type": ${SOURCE_TRAINING_JOB_TYPE_JSON},
+  "source_training_seed": ${SOURCE_TRAINING_SEED_JSON},
   "source_training_manifest_snapshot": ${SOURCE_MANIFEST_SNAPSHOT_JSON},
   "source_training_manifest_sha256": ${SOURCE_MANIFEST_SHA256_JSON},
   "global_step": ${GLOBAL_STEP_JSON},

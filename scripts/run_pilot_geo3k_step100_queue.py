@@ -26,6 +26,8 @@ ARM_CONDITIONS = {
     "a3_caption": "caption",
 }
 TERMINAL_FAILURES = {"fail", "failed", "error", "cancelled", "canceled"}
+SEED1_CONFIG_SCHEMA = "blind-gains.pilot-geo3k-step100-queue.v1"
+FOLLOWUP_CONFIG_SCHEMA = "blind-gains.pilot-followup-geo3k-queue.v1"
 
 
 def _now() -> str:
@@ -67,8 +69,15 @@ def _write_state(path: Path, payload: dict[str, Any]) -> None:
     os.replace(temporary, path)
 
 
+def _is_followup(config: dict[str, Any]) -> bool:
+    return config.get("schema_version") == FOLLOWUP_CONFIG_SCHEMA
+
+
 def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
-    if config.get("schema_version") != "blind-gains.pilot-geo3k-step100-queue.v1":
+    if config.get("schema_version") not in {
+        SEED1_CONFIG_SCHEMA,
+        FOLLOWUP_CONFIG_SCHEMA,
+    }:
         raise ValueError("unsupported Geometry3K queue config schema")
     arm = config.get("arm")
     if arm not in ARM_CONDITIONS:
@@ -80,8 +89,16 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
     gpu = config.get("gpu_id")
     if not isinstance(gpu, int) or not 0 <= gpu <= 7:
         raise ValueError("gpu_id must be an integer in [0, 7]")
-    if config.get("global_step") != 100 or config.get("expected_row_count") != 601:
-        raise ValueError("queue is pinned to step 100 and the 601-row test split")
+    global_step = config.get("global_step")
+    if _is_followup(config):
+        if config.get("seed") not in {2, 3}:
+            raise ValueError("follow-up Geometry3K queue seed must be 2 or 3")
+        if global_step not in {60, 100}:
+            raise ValueError("follow-up Geometry3K endpoint must be step 60 or 100")
+    elif global_step != 100:
+        raise ValueError("seed-1 Geometry3K queue is pinned to step 100")
+    if config.get("expected_row_count") != 601:
+        raise ValueError("Geometry3K queue requires the 601-row test split")
     if config.get("caption_run") != "-" and arm != "a3_caption":
         raise ValueError("only A3 may provide a caption store")
     if arm == "a3_caption" and config.get("caption_run") == "-":
@@ -100,25 +117,32 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
             _resolve(root, config[field])
     training_run = _resolve(root, config["training_run"])
     marker = _resolve(root, config["r19_marker"])
-    if marker != training_run / "step100_fliptrack_complete.json":
+    if marker != training_run / f"step{global_step}_fliptrack_complete.json":
         raise ValueError("R19 marker is not bound to the exact training run")
     training_manifest_path = training_run / "run_manifest.json"
     if not training_manifest_path.is_file():
         raise ValueError("training manifest is absent")
     training = _read_json(training_manifest_path)
     identity = {
-        "job_type": "l13_mechanical_pilot_arm",
+        "job_type": (
+            "m3_mechanical_pilot_arm"
+            if _is_followup(config)
+            else "l13_mechanical_pilot_arm"
+        ),
         "arm": arm,
-        "node": config["node"],
         "image_condition": config["condition"],
     }
+    if _is_followup(config):
+        identity["seed"] = config["seed"]
+    else:
+        identity["node"] = config["node"]
     mismatches = {
         key: {"expected": value, "observed": training.get(key)}
         for key, value in identity.items()
         if training.get(key) != value
     }
     expected_checkpoint = Path(str(training.get("checkpoint_path", ""))) / (
-        "global_step_100/actor/huggingface"
+        f"global_step_{global_step}/actor/huggingface"
     )
     checkpoint = _resolve(root, config["checkpoint_path"])
     if expected_checkpoint.resolve() != checkpoint:
@@ -144,7 +168,7 @@ def validate_r19_marker(config: dict[str, Any], root: Path = ROOT) -> dict[str, 
     expected = {
         "schema_version": MARKER_SCHEMA_VERSION,
         "status": "complete",
-        "global_step": 100,
+        "global_step": config["global_step"],
         "r19_manifest_sha256": R19_MANIFEST_SHA256,
         "checkpoint_path": str(checkpoint),
     }
@@ -184,6 +208,10 @@ def _parse_run_path(output: str, root: Path) -> Path:
 
 
 def launch_evaluation(config: dict[str, Any], root: Path = ROOT) -> Path:
+    environment = os.environ.copy()
+    if _is_followup(config):
+        environment["BLIND_GAINS_PILOT_FOLLOWUP_SEED"] = str(config["seed"])
+        environment["BLIND_GAINS_PILOT_GLOBAL_STEP"] = str(config["global_step"])
     result = subprocess.run(
         [
             "bash",
@@ -197,6 +225,7 @@ def launch_evaluation(config: dict[str, Any], root: Path = ROOT) -> Path:
             config["caption_run"],
         ],
         cwd=root,
+        env=environment,
         text=True,
         capture_output=True,
         check=False,
@@ -232,12 +261,16 @@ def launch_audit(evaluation_run: Path, root: Path = ROOT) -> Path:
 def _validate_evaluation(config: dict[str, Any], run: Path) -> dict[str, Any]:
     manifest = _read_json(run / "run_manifest.json")
     expected = {
-        "job_type": "m2_pilot_geo3k_step100_eval",
+        "job_type": (
+            "m3_pilot_geo3k_checkpoint_eval"
+            if _is_followup(config)
+            else "m2_pilot_geo3k_step100_eval"
+        ),
         "arm": config["arm"],
         "condition": config["condition"],
         "node": config["node"],
         "gpu_ids": [config["gpu_id"]],
-        "global_step": 100,
+        "global_step": config["global_step"],
         "expected_row_count": 601,
     }
     errors = {
@@ -251,13 +284,19 @@ def _validate_evaluation(config: dict[str, Any], run: Path) -> dict[str, Any]:
 
 
 def _validate_audit(
+    config: dict[str, Any],
     run: Path,
     evaluation_run: Path,
     *,
     root: Path = ROOT,
 ) -> dict[str, Any]:
     manifest = _read_json(run / "run_manifest.json")
-    if manifest.get("job_type") != "m2_pilot_geo3k_step100_audit":
+    expected_job_type = (
+        "m3_pilot_geo3k_checkpoint_audit"
+        if _is_followup(config)
+        else "m2_pilot_geo3k_step100_audit"
+    )
+    if manifest.get("job_type") != expected_job_type:
         raise ValueError("unexpected audit job type")
     evaluation_manifest_path = evaluation_run / "run_manifest.json"
     evaluation_manifest = _read_json(evaluation_manifest_path)
@@ -306,7 +345,11 @@ def run_queue(
     validate_config(config, root)
     state_path = _resolve(root, config["state_path"])
     state = _read_json(state_path) if state_path.is_file() else {
-        "schema_version": "blind-gains.pilot-geo3k-step100-queue-state.v1",
+        "schema_version": (
+            "blind-gains.pilot-followup-geo3k-queue-state.v1"
+            if _is_followup(config)
+            else "blind-gains.pilot-geo3k-step100-queue-state.v1"
+        ),
         "created_utc": _now(),
         "status": "initialized",
         "poll_count": 0,
@@ -331,7 +374,9 @@ def run_queue(
                     if not isinstance(evaluation_value, str):
                         raise RuntimeError("audit state is missing its evaluation binding")
                     evaluation_run = _resolve(root, evaluation_value)
-                    audit = _validate_audit(audit_run, evaluation_run, root=root)
+                    audit = _validate_audit(
+                        config, audit_run, evaluation_run, root=root
+                    )
                     state.update(
                         {
                             "status": "complete",

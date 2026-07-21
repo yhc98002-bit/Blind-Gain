@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.run_pilot_geo3k_step100_eval import (
+    FOLLOWUP_ROW_SCHEMA_VERSION,
     REGISTERED_DECODING,
     ROW_SCHEMA_VERSION,
 )
@@ -85,6 +86,16 @@ def audit_run(
     run_dir = run_dir.resolve()
     manifest_path = run_dir / "run_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    is_followup = manifest.get("job_type") == "m3_pilot_geo3k_checkpoint_eval"
+    expected_job_type = (
+        "m3_pilot_geo3k_checkpoint_eval"
+        if is_followup
+        else "m2_pilot_geo3k_step100_eval"
+    )
+    expected_global_step = manifest.get("global_step") if is_followup else 100
+    expected_row_schema = (
+        FOLLOWUP_ROW_SCHEMA_VERSION if is_followup else ROW_SCHEMA_VERSION
+    )
     output_paths = manifest.get("expected_artifacts", [])
     output_path = _resolve(root, output_paths[0]) if len(output_paths) == 1 else run_dir / "missing"
     source_path = _resolve(root, str(manifest.get("data_manifest", "missing")))
@@ -102,11 +113,13 @@ def audit_run(
     )
 
     manifest_checks = {
-        "job_type": manifest.get("job_type") == "m2_pilot_geo3k_step100_eval",
+        "job_type": manifest.get("job_type") == expected_job_type,
         "complete": manifest.get("status") == "complete",
         "exit_zero": manifest.get("exit_code") == 0,
         "artifacts_exist": manifest.get("artifacts_exist") is True,
-        "global_step": manifest.get("global_step") == 100,
+        "global_step": expected_global_step in {60, 100}
+        and manifest.get("global_step") == expected_global_step,
+        "followup_seed": (not is_followup) or manifest.get("pilot_seed") in {2, 3},
         "arm_condition": ARM_CONDITIONS.get(str(manifest.get("arm")))
         == manifest.get("condition"),
         "expected_rows": manifest.get("expected_row_count") == expected_row_count,
@@ -132,7 +145,11 @@ def audit_run(
     if not all(input_checks.values()):
         checks = {**manifest_checks, **input_checks}
         return {
-            "schema_version": "blind-gains.pilot-geo3k-step100-audit.v1",
+            "schema_version": (
+                "blind-gains.pilot-followup-geo3k-audit.v1"
+                if is_followup
+                else "blind-gains.pilot-geo3k-step100-audit.v1"
+            ),
             "status": "fail",
             "checks": checks,
             "errors": [key for key, value in checks.items() if not value],
@@ -144,7 +161,7 @@ def audit_run(
     r19_checks = r19.get("checks")
     r19_bound = (
         r19.get("status") == "complete"
-        and r19.get("global_step") == 100
+        and r19.get("global_step") == expected_global_step
         and Path(str(r19.get("checkpoint_path", ""))).resolve() == checkpoint_path
         and r19.get("checkpoint_index_sha256") == manifest.get("checkpoint_index_sha256")
         and isinstance(r19_checks, dict)
@@ -231,9 +248,9 @@ def audit_run(
     strict_identity_mismatches = 0
     for source, stored in zip(source_rows, parsed_rows):
         expected_static = {
-            "schema_version": ROW_SCHEMA_VERSION,
+            "schema_version": expected_row_schema,
             "arm": manifest.get("arm"),
-            "global_step": 100,
+            "global_step": expected_global_step,
             "split": source["split"],
             "row_index": source["row_index"],
             "qid": source.get("qid"),
@@ -276,7 +293,11 @@ def audit_run(
         "strict_identity": strict_identity_mismatches == 0,
     }
     return {
-        "schema_version": "blind-gains.pilot-geo3k-step100-audit.v1",
+        "schema_version": (
+            "blind-gains.pilot-followup-geo3k-audit.v1"
+            if is_followup
+            else "blind-gains.pilot-geo3k-step100-audit.v1"
+        ),
         "status": "pass" if all(checks.values()) else "fail",
         "run_id": manifest.get("run_id"),
         "run_manifest": str(manifest_path),

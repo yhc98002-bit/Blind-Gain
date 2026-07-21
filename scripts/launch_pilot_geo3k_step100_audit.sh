@@ -15,7 +15,8 @@ if [[ ! -s "${SOURCE_MANIFEST}" ]]; then
   exit 2
 fi
 if ! jq -e \
-  '(.job_type == "m2_pilot_geo3k_step100_eval") and
+  '(.job_type == "m2_pilot_geo3k_step100_eval" or
+    .job_type == "m3_pilot_geo3k_checkpoint_eval") and
    (.status == "complete") and (.exit_code == 0) and (.artifacts_exist == true)' \
   "${SOURCE_MANIFEST}" >/dev/null; then
   echo "evaluation run is not structurally complete" >&2
@@ -24,7 +25,14 @@ fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 SOURCE_RUN_ID="$(jq -r '.run_id' "${SOURCE_MANIFEST}")"
-RUN_ID="pilot_geo3k_step100_audit_${SOURCE_RUN_ID}_${STAMP}"
+SOURCE_JOB_TYPE="$(jq -r '.job_type' "${SOURCE_MANIFEST}")"
+if [[ "${SOURCE_JOB_TYPE}" == "m3_pilot_geo3k_checkpoint_eval" ]]; then
+  AUDIT_JOB_TYPE="m3_pilot_geo3k_checkpoint_audit"
+  RUN_ID="pilot_followup_geo3k_audit_${SOURCE_RUN_ID}_${STAMP}"
+else
+  AUDIT_JOB_TYPE="m2_pilot_geo3k_step100_audit"
+  RUN_ID="pilot_geo3k_step100_audit_${SOURCE_RUN_ID}_${STAMP}"
+fi
 RUN_DIR="experiments/runs/${RUN_ID}"
 LOG="${RUN_DIR}/logs/login.log"
 PID_FILE="${RUN_DIR}/pids/login.pid"
@@ -35,6 +43,7 @@ COMMAND="PYTHONPATH=${ROOT}:${ROOT}/artifacts/repos/EasyR1 .venv/bin/python scri
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
   --arg run_id "${RUN_ID}" \
+  --arg job_type "${AUDIT_JOB_TYPE}" \
   --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "$(printf '%s' "${COMMAND}" | sha256sum | awk '{print $1}')" \
   --arg data_hash "$(sha256sum "${SOURCE_MANIFEST}" "$(jq -r '.expected_artifacts[0]' "${SOURCE_MANIFEST}")" | sort -k2 | sha256sum | awk '{print $1}')" \
@@ -47,7 +56,7 @@ jq -n \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
-    job_type: "m2_pilot_geo3k_step100_audit",
+    job_type: $job_type,
     node: "login",
     gpu_allocation: [],
     gpu_ids: [],

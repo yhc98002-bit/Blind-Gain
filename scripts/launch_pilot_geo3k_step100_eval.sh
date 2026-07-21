@@ -21,6 +21,27 @@ SOURCE_MANIFEST="data/geometry3k_caption_images_manifest.jsonl"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 MAX_TOKENS=2048
 SEED=20260710
+GLOBAL_STEP="${BLIND_GAINS_PILOT_GLOBAL_STEP:-100}"
+FOLLOWUP_SEED="${BLIND_GAINS_PILOT_FOLLOWUP_SEED:-}"
+FOLLOWUP_ROW_SCHEMA_VERSION="blind-gains.pilot-followup-geo3k-checkpoint-eval.v1"
+
+if [[ ! "${GLOBAL_STEP}" =~ ^(60|100)$ ]]; then
+  echo "pilot Geometry3K global step must be 60 or 100" >&2
+  exit 2
+fi
+if [[ -n "${FOLLOWUP_SEED}" ]]; then
+  [[ "${FOLLOWUP_SEED}" =~ ^(2|3)$ ]] || { echo "follow-up pilot seed must be 2 or 3" >&2; exit 2; }
+  TRAINING_JOB_TYPE="m3_mechanical_pilot_arm"
+  EVALUATION_JOB_TYPE="m3_pilot_geo3k_checkpoint_eval"
+  RUN_SCOPE="m3"
+  ROW_SCHEMA_ARGS="--row-schema-version ${FOLLOWUP_ROW_SCHEMA_VERSION}"
+else
+  [[ "${GLOBAL_STEP}" == "100" ]] || { echo "seed-1 Geometry3K endpoint is pinned to step 100" >&2; exit 2; }
+  TRAINING_JOB_TYPE="l13_mechanical_pilot_arm"
+  EVALUATION_JOB_TYPE="m2_pilot_geo3k_step100_eval"
+  RUN_SCOPE="m2"
+  ROW_SCHEMA_ARGS=""
+fi
 
 case "${ARM}" in
   a1_real) CONDITION="real" ;;
@@ -59,14 +80,17 @@ TRAINING_MANIFEST="${TRAINING_RUN}/run_manifest.json"
 if ! jq -e \
   --arg arm "${ARM}" \
   --arg condition "${CONDITION}" \
-  '(.job_type == "l13_mechanical_pilot_arm") and
+  --arg job_type "${TRAINING_JOB_TYPE}" \
+  --argjson followup_seed "${FOLLOWUP_SEED:-null}" \
+  '(.job_type == $job_type) and
    (.arm == $arm) and (.image_condition == $condition) and
+   ($followup_seed == null or .seed == $followup_seed) and
    (.status == "complete") and (.exit_code == 0) and (.artifacts_exist == true)' \
   "${TRAINING_MANIFEST}" >/dev/null; then
   echo "training run is not a complete matching pilot arm" >&2
   exit 3
 fi
-EXPECTED_CHECKPOINT="$(jq -r '.checkpoint_path' "${TRAINING_MANIFEST}")/global_step_100/actor/huggingface"
+EXPECTED_CHECKPOINT="$(jq -r '.checkpoint_path' "${TRAINING_MANIFEST}")/global_step_${GLOBAL_STEP}/actor/huggingface"
 if [[ "$(realpath "${CHECKPOINT}")" != "$(realpath "${EXPECTED_CHECKPOINT}")" ]]; then
   echo "checkpoint is not the exact completed arm step-100 merge" >&2
   exit 3
@@ -74,8 +98,9 @@ fi
 CHECKPOINT_REAL="$(realpath "${CHECKPOINT}")"
 if ! jq -e \
   --arg checkpoint "${CHECKPOINT_REAL}" \
+  --argjson global_step "${GLOBAL_STEP}" \
   '(.schema_version == "blind-gains.pilot-step-eval-marker.v1") and
-   (.status == "complete") and (.global_step == 100) and
+   (.status == "complete") and (.global_step == $global_step) and
    (.checkpoint_path == $checkpoint) and
    (.checks | type == "object" and length > 0 and all(.[]; . == true))' \
   "${MARKER}" >/dev/null; then
@@ -124,7 +149,8 @@ if [[ -n "${ACTIVE_PIDS}" ]]; then
 fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_ID="m2_geo3k_${ARM}_seed1_step100_${NODE}_gpu${GPU}_${STAMP}"
+PILOT_SEED_LABEL="${FOLLOWUP_SEED:-1}"
+RUN_ID="${RUN_SCOPE}_geo3k_${ARM}_seed${PILOT_SEED_LABEL}_step${GLOBAL_STEP}_${NODE}_gpu${GPU}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 RUN_MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}_gpu${GPU}.log"
@@ -166,11 +192,12 @@ PROMPT_CONTRACT_SHA256="$(PYTHONPATH=.:artifacts/repos/EasyR1 .venv/bin/python -
 PARSER_VERSION="$(PYTHONPATH=.:artifacts/repos/EasyR1 .venv/bin/python -c 'from src.rewards.answer_reward import PARSER_VERSION; print(PARSER_VERSION)')"
 REWARD_VERSION="$(PYTHONPATH=.:artifacts/repos/EasyR1 .venv/bin/python -c 'from src.rewards.pilot_reward import PILOT_REWARD_VERSION; print(PILOT_REWARD_VERSION)')"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=${ROOT}:${ROOT}/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm ${ARM} --condition ${CONDITION} --model-path ${CHECKPOINT_REAL} --manifest ${SOURCE_MANIFEST} --format-prompt ${FORMAT_PROMPT} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} --source-training-manifest ${TRAINING_MANIFEST} --checkpoint-index-sha256 ${CHECKPOINT_INDEX_SHA256} ${CAPTION_ARGS}${RESUME_ARGS} --batch-size ${BATCH_SIZE} --max-model-len 8192 --max-tokens ${MAX_TOKENS} --seed ${SEED}"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=${ROOT}:${ROOT}/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm ${ARM} --condition ${CONDITION} --model-path ${CHECKPOINT_REAL} --manifest ${SOURCE_MANIFEST} --format-prompt ${FORMAT_PROMPT} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} --source-training-manifest ${TRAINING_MANIFEST} --checkpoint-index-sha256 ${CHECKPOINT_INDEX_SHA256} ${CAPTION_ARGS}${RESUME_ARGS} --batch-size ${BATCH_SIZE} --max-model-len 8192 --max-tokens ${MAX_TOKENS} --seed ${SEED} --global-step ${GLOBAL_STEP} ${ROW_SCHEMA_ARGS}"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
   --arg run_id "${RUN_ID}" \
+  --arg job_type "${EVALUATION_JOB_TYPE}" \
   --arg arm "${ARM}" \
   --arg condition "${CONDITION}" \
   --arg node "${NODE}" \
@@ -204,12 +231,15 @@ jq -n \
   --argjson batch_size "${BATCH_SIZE}" \
   --argjson max_tokens "${MAX_TOKENS}" \
   --argjson seed "${SEED}" \
+  --argjson pilot_seed "${PILOT_SEED_LABEL}" \
+  --argjson global_step "${GLOBAL_STEP}" \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
-    job_type: "m2_pilot_geo3k_step100_eval",
+    job_type: $job_type,
     arm: $arm,
-    global_step: 100,
+    pilot_seed: $pilot_seed,
+    global_step: $global_step,
     condition: $condition,
     node: $node,
     gpu_allocation: [$gpu],

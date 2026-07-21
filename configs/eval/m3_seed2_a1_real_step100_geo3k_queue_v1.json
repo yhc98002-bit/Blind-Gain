@@ -1,0 +1,16 @@
+{
+  "schema_version": "blind-gains.pilot-followup-geo3k-queue.v1",
+  "arm": "a1_real",
+  "condition": "real",
+  "seed": 2,
+  "node": "an29",
+  "gpu_id": 4,
+  "global_step": 100,
+  "expected_row_count": 601,
+  "training_run": "experiments/runs/mech_a1_real_seed2_an29_20260716T164827Z",
+  "r19_marker": "experiments/runs/mech_a1_real_seed2_an29_20260716T164827Z/step100_fliptrack_complete.json",
+  "checkpoint_path": "checkpoints/pilot/mech_a1_real_seed2/global_step_100/actor/huggingface",
+  "caption_run": "-",
+  "poll_seconds": 60,
+  "stable_free_polls": 2
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "blind-gains.pilot-followup-r19-eval-queue.v1",
+  "arm": "a2b_noimage",
+  "seed": 2,
+  "node": "an29",
+  "gpu_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "global_step": 100,
+  "num_shards": 4,
+  "image_mode": "real",
+  "max_new_tokens": 32,
+  "cohort_release_training_run": "experiments/runs/mech_a3_caption_seed2_an29_20260720T125144Z",
+  "training_run": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z",
+  "checkpoint_path": "checkpoints/pilot/mech_a2b_noimage_seed2_resume20/global_step_100/actor/huggingface",
+  "r19_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+  "r19_manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+  "marker": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z/step100_fliptrack_complete.json",
+  "poll_seconds": 60,
+  "stable_free_polls": 2
+}

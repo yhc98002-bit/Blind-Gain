@@ -17,6 +17,10 @@ from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 
 ROOT = Path(__file__).resolve().parents[1]
 AGGREGATE_TAG_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+PILOT_TRAINING_JOB_TYPES = {
+    "l13_mechanical_pilot_arm",
+    "m3_mechanical_pilot_arm",
+}
 
 
 def _now() -> str:
@@ -101,6 +105,14 @@ def checkpoint_candidates(training: dict[str, Any], global_step: int) -> tuple[P
     return tuple(candidates)
 
 
+def validate_training_source(training: dict[str, Any]) -> None:
+    job_type = training.get("job_type")
+    if job_type not in PILOT_TRAINING_JOB_TYPES or training.get("status") != "complete":
+        raise ValueError("training source must be a complete registered pilot arm")
+    if job_type == "m3_mechanical_pilot_arm" and training.get("seed") not in {2, 3}:
+        raise ValueError("M3 training source seed must be 2 or 3")
+
+
 def launch_aggregate(source_run: Path, tag: str, root: Path = ROOT) -> Path:
     result = subprocess.run(
         ["bash", "scripts/launch_fliptrack_aggregate.sh", str(source_run), tag, "sync"],
@@ -140,8 +152,7 @@ def main() -> None:
     if not evaluation_manifest.is_file() or not training_manifest.is_file():
         raise FileNotFoundError("evaluation or training manifest absent")
     training = _read(training_manifest)
-    if training.get("job_type") != "l13_mechanical_pilot_arm" or training.get("status") != "complete":
-        raise ValueError("training source must be a complete L13 pilot arm")
+    validate_training_source(training)
     expected_checkpoints = checkpoint_candidates(training, args.global_step)
     if args.checkpoint_path.resolve() not in {path.resolve() for path in expected_checkpoints}:
         raise ValueError("checkpoint path does not match training run and global step")

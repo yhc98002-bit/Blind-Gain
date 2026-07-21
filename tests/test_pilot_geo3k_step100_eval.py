@@ -157,7 +157,9 @@ def test_launcher_records_locked_tp1_contract() -> None:
         encoding="utf-8"
     )
 
-    assert 'job_type: "m2_pilot_geo3k_step100_eval"' in source
+    assert 'EVALUATION_JOB_TYPE="m2_pilot_geo3k_step100_eval"' in source
+    assert 'EVALUATION_JOB_TYPE="m3_pilot_geo3k_checkpoint_eval"' in source
+    assert "job_type: $job_type" in source
     assert "tensor_parallel_width: 1" in source
     assert "replica_count: 1" in source
     assert "expected_row_count: 601" in source

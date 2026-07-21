@@ -26,6 +26,7 @@ from src.eval.prompt_contract import (
 
 
 ROW_SCHEMA_VERSION = "blind-gains.pilot-geo3k-step100-eval.v1"
+FOLLOWUP_ROW_SCHEMA_VERSION = "blind-gains.pilot-followup-geo3k-checkpoint-eval.v1"
 M5_ROW_SCHEMA_VERSION = "blind-gains.m5-geo3k-checkpoint-eval.v1"
 M5_REGISTERED_STEPS = frozenset({150, 200, 300, 400})
 REGISTERED_MAX_TOKENS = 2048
@@ -150,7 +151,11 @@ def main() -> None:
         raise ValueError("pilot Geometry3K decoding contract drift")
     if args.batch_size <= 0 or args.max_model_len <= 0:
         raise ValueError("batch size and max model length must be positive")
-    if args.global_step == 100:
+    if args.row_schema_version == FOLLOWUP_ROW_SCHEMA_VERSION:
+        if args.global_step not in {60, 100}:
+            raise ValueError("follow-up pilot endpoint must be global step 60 or 100")
+        expected_schema_version = FOLLOWUP_ROW_SCHEMA_VERSION
+    elif args.global_step == 100:
         expected_schema_version = ROW_SCHEMA_VERSION
     elif args.global_step in M5_REGISTERED_STEPS:
         expected_schema_version = M5_ROW_SCHEMA_VERSION
