@@ -6,7 +6,7 @@ from src.rewards.answer_reward import (
     extract_final_answer,
     normalize_answer,
 )
-from src.rewards.cp_grpo_reward import cp_pair_reward
+from src.rewards.cp_grpo_reward import compute_score as compute_cp_score
 
 
 def test_extract_answer_tag_wins():
@@ -34,8 +34,25 @@ def test_reward_is_binary():
 
 
 def test_cp_pair_reward_requires_both_members():
-    assert cp_pair_reward("left", "left", "right", "right") == 1.0
-    assert cp_pair_reward("left", "left", "left", "right") == 0.0
+    rows = [
+        {
+            "response": "left",
+            "ground_truth": "left",
+            "pair_group_uid": "pair-1",
+            "pair_member": "a",
+            "pair_rollout_index": 0,
+        },
+        {
+            "response": "right",
+            "ground_truth": "right",
+            "pair_group_uid": "pair-1",
+            "pair_member": "b",
+            "pair_rollout_index": 0,
+        },
+    ]
+    assert [item["overall"] for item in compute_cp_score(rows)] == [1.0, 1.0]
+    rows[1]["response"] = "left"
+    assert [item["overall"] for item in compute_cp_score(rows)] == [0.0, 0.0]
 
 
 def test_normalize_strips_terminal_punctuation():
