@@ -17,3 +17,17 @@ def test_queue_launcher_is_gpu_inert_registered_and_no_peek() -> None:
     assert 'performance_values_opened: false' in source
     assert "main_optimizer_steps_authorized: 0" in source
     assert "refusing duplicate Mini-A5 smoke queue" in source
+
+
+def test_smoke_queue_v2_binds_current_structural_dependencies() -> None:
+    source = (ROOT / "scripts/launch_mini_a5_smoke_queue_v2.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "pilot_seed2_locked_eval_lifecycle_login_20260721T163341Z" in source
+    assert "m11_reconciled_final_report_login_20260718T153539Z" in source
+    assert "m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z" in source
+    assert 'preferred_child_node: "an29"' in source
+    assert "child_gpu_count: 8" in source
+    assert "main_optimizer_steps_authorized: 0" in source
+    assert "smoke_optimizer_steps_authorized_per_arm: 1" in source
