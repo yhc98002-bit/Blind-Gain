@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from scripts.watch_anchor_checkpoints import valid_evaluation_marker
-from scripts.watch_pilot_checkpoints import PILOT_STEPS, relocation_plan
+from scripts.watch_pilot_checkpoints import PILOT_STEPS, execution_plan, relocation_plan
 
 
 def _sha256(path: Path) -> str:
@@ -19,6 +19,22 @@ def test_pilot_plan_retains_only_final_merged_checkpoint_on_shared() -> None:
     assert plan[20] == plan[40] == plan[80] == "relocate_after_merge"
     assert plan[60] == "relocate_after_registered_evaluation"
     assert plan[100] == "retain_final_on_shared"
+
+
+def test_step60_evaluation_wait_does_not_block_later_checkpoint_retention() -> None:
+    plan = execution_plan()
+
+    assert plan == (
+        (20, "relocate_after_merge"),
+        (40, "relocate_after_merge"),
+        (60, "retain_for_registered_evaluation"),
+        (80, "relocate_after_merge"),
+        (100, "retain_final_on_shared"),
+        (60, "relocate_after_registered_evaluation"),
+    )
+    assert plan.index((80, "relocate_after_merge")) < plan.index(
+        (60, "relocate_after_registered_evaluation")
+    )
 
 
 def test_step60_marker_binds_evaluation_to_exact_merged_checkpoint(tmp_path: Path) -> None:

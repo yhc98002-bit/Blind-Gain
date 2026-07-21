@@ -8,7 +8,10 @@ from scripts.watch_anchor_checkpoints import (
     CODE_BUNDLE_PATHS,
     code_bundle_hash,
     process_step,
+    refresh_usage_snapshot_if_needed,
+    relocate_merged,
     require_code_bundle,
+    wait_for_evaluation_marker,
 )
 
 
@@ -31,6 +34,18 @@ def relocation_plan() -> dict[int, str]:
     }
 
 
+def execution_plan() -> tuple[tuple[int, str], ...]:
+    """Keep the evaluated step on shared without blocking later raw retention."""
+    return (
+        (20, "relocate_after_merge"),
+        (40, "relocate_after_merge"),
+        (60, "retain_for_registered_evaluation"),
+        (80, "relocate_after_merge"),
+        (100, "retain_final_on_shared"),
+        (60, "relocate_after_registered_evaluation"),
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-root", type=Path, required=True)
@@ -42,24 +57,40 @@ def main() -> None:
     parser.add_argument("--expected-code-hash", required=True)
     args = parser.parse_args()
     require_code_bundle(args.expected_code_hash, PILOT_CODE_BUNDLE_PATHS)
-    plan = relocation_plan()
-    for step in PILOT_STEPS:
+    for step, action in execution_plan():
+        if action == "relocate_after_registered_evaluation":
+            actor_dir = args.run_root / f"global_step_{step}" / "actor"
+            wait_for_evaluation_marker(
+                args.step60_evaluation_marker,
+                step=step,
+                actor_dir=actor_dir,
+            )
+            require_code_bundle(args.expected_code_hash, PILOT_CODE_BUNDLE_PATHS)
+            relocate_merged(
+                actor_dir,
+                args.archive_root,
+                step,
+                scope="pilot",
+                run_label=args.run_label,
+            )
+            refresh_usage_snapshot_if_needed(
+                step,
+                "post_evaluation_relocation",
+                scope="pilot",
+            )
+            continue
         process_step(
             run_root=args.run_root,
             archive_root=args.archive_root,
             anchor_manifest=args.run_manifest,
             step=step,
             node=args.node,
-            relocate_merged_output=step != 100,
+            relocate_merged_output=action == "relocate_after_merge",
             expected_code_hash=args.expected_code_hash,
             scope="pilot",
             run_label=args.run_label,
             retention_report=ROOT / "reports/pilot_raw_checkpoint_retention.md",
-            evaluation_marker=(
-                args.step60_evaluation_marker
-                if plan[step] == "relocate_after_registered_evaluation"
-                else None
-            ),
+            evaluation_marker=None,
             code_bundle_paths=PILOT_CODE_BUNDLE_PATHS,
         )
 

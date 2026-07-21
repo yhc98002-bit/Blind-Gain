@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from scripts.watch_pilot_resume_checkpoints import RESUME_STEPS, relocation_plan
+from scripts.watch_pilot_resume_checkpoints import RESUME_STEPS, execution_plan, relocation_plan
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +19,21 @@ def test_resume_watcher_starts_at_next_registered_checkpoint() -> None:
     }
 
 
+def test_resume_step60_evaluation_wait_does_not_block_steps_80_and_100() -> None:
+    plan = execution_plan()
+
+    assert plan == (
+        (40, "relocate_after_merge"),
+        (60, "retain_for_registered_evaluation"),
+        (80, "relocate_after_merge"),
+        (100, "retain_final_on_shared"),
+        (60, "relocate_after_registered_evaluation"),
+    )
+    barrier = plan.index((60, "relocate_after_registered_evaluation"))
+    assert plan.index((80, "relocate_after_merge")) < barrier
+    assert plan.index((100, "retain_final_on_shared")) < barrier
+
+
 def test_resume_watcher_launcher_is_valid_and_fail_closed() -> None:
     path = ROOT / "scripts/launch_pilot_resume_checkpoint_watch.sh"
     subprocess.run(["bash", "-n", str(path)], check=True)
@@ -28,4 +43,5 @@ def test_resume_watcher_launcher_is_valid_and_fail_closed() -> None:
     assert '"${ARM}" == "a2_gray"' in source
     assert '"${ARM}" == "a2b_noimage"' in source
     assert '"${RUN_LABEL}" == "mech_a3_caption_resume20"' in source
+    assert '"${PARENT_STATUS}" == "complete"' in source
     assert "resume_schedule: [40,60,80,100]" in source

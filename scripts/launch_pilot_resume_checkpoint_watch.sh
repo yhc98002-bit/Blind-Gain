@@ -18,7 +18,10 @@ ARM="$(jq -er '.arm' "${MANIFEST_IN}")"
 [[ "${ARM}" == "a1_real" || "${ARM}" == "a2_gray" || "${ARM}" == "a2b_noimage" || "${ARM}" == "a3_caption" ]] || { echo "unsupported pilot arm" >&2; exit 2; }
 [[ "$(jq -r '.resumed_from_global_step' "${MANIFEST_IN}")" == "20" ]] || { echo "parent is not a step-20 resume" >&2; exit 2; }
 [[ "$(jq -r '.node' "${MANIFEST_IN}")" == "${NODE}" ]] || { echo "node mismatch" >&2; exit 2; }
-[[ "$(jq -r '.status' "${MANIFEST_IN}")" == "running" ]] || { echo "resume parent is not running" >&2; exit 2; }
+PARENT_STATUS="$(jq -r '.status' "${MANIFEST_IN}")"
+[[ "${PARENT_STATUS}" == "running" || "${PARENT_STATUS}" == "complete" ]] || {
+  echo "resume parent is neither running nor complete" >&2; exit 2;
+}
 
 PARENT_RUN_ID="$(jq -er '.run_id' "${MANIFEST_IN}")"
 RUN_LABEL="$(jq -er '.arm_run_name' "${MANIFEST_IN}")"
