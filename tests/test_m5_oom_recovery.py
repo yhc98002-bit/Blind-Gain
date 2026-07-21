@@ -78,6 +78,11 @@ def test_m5_recovery_launcher_is_fail_closed_and_preserves_terminal_rule() -> No
     assert ".expected_world_size" not in source
     assert '[[ ! -e "${SAVE_ROOT}" ]]' in source
     assert "launch_m5_checkpoint_evaluation_queue.sh" in source
+    assert "M5 Ray preflight is older than 15 minutes" in source
+    assert "M5 recovery did not reach four-GPU startup readiness in 10 minutes" in source
+    assert source.index("M5 Ray preflight manifest identity is invalid") < source.index(
+        'mkdir -p "${RUN_DIR}/logs"'
+    )
     assert source.index("step-150 raw state is not restored") < source.index(
         'mkdir -p "${RUN_DIR}/logs"'
     )

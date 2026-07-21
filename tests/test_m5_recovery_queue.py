@@ -31,6 +31,8 @@ def test_m5_recovery_queue_is_fail_closed_before_launch() -> None:
     assert source.index("stable_polls < 2") < source.index(
         '"scripts/launch_m5_anchor_recovery150.sh"'
     )
+    assert '"--ray-preflight-run"' in source
+    assert "str(args.ray_preflight_run)" in source
 
 
 def test_m5_recovery_queue_only_resumes_the_cpu_seed_queue() -> None:
@@ -45,3 +47,5 @@ def test_m5_recovery_queue_only_resumes_the_cpu_seed_queue() -> None:
 def test_m5_recovery_queue_launchers_parse() -> None:
     for name in ("launch_m5_recovery_queue.sh", "launch_m5_anchor_recovery150.sh"):
         subprocess.run(["bash", "-n", str(ROOT / "scripts" / name)], check=True)
+    launcher = (ROOT / "scripts/launch_m5_recovery_queue.sh").read_text(encoding="utf-8")
+    assert "--ray-preflight-run '${RAY_PREFLIGHT_RUN}'" in launcher

@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <ray-preflight-run-dir>" >&2
+  exit 2
+fi
+RAY_PREFLIGHT_RUN="$1"
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 RESTORE_RUN="experiments/runs/m5_step150_raw_restore_login_20260718T015846Z"
@@ -10,6 +16,9 @@ HOLD="${SEED_QUEUE_RUN}/m5_recovery_operational_hold.json"
 for path in "${RESTORE_RUN}/run_manifest.json" "${A1_RUN}/run_manifest.json" "${HOLD}"; do
   [[ -f "${path}" ]] || { echo "M5 recovery queue input absent: ${path}" >&2; exit 2; }
 done
+[[ -s "${RAY_PREFLIGHT_RUN}/run_manifest.json" && -s "${RAY_PREFLIGHT_RUN}/preflight.json" ]] || {
+  echo "M5 Ray preflight input absent: ${RAY_PREFLIGHT_RUN}" >&2; exit 2;
+}
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="m5_recovery_queue_login_${STAMP}"
@@ -18,12 +27,12 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 PID_FILE="${RUN_DIR}/pids/login.pid"
 STATE="${RUN_DIR}/queue_state.json"
-COMMAND="PYTHONPATH=. .venv/bin/python scripts/run_m5_recovery_queue.py --run-dir '${RUN_DIR}' --restore-run '${RESTORE_RUN}' --a1-run '${A1_RUN}' --seed-queue-hold '${HOLD}' --node an29 --gpu-ids 2,5,6,7 --poll-seconds 120"
+COMMAND="PYTHONPATH=. .venv/bin/python scripts/run_m5_recovery_queue.py --run-dir '${RUN_DIR}' --restore-run '${RESTORE_RUN}' --a1-run '${A1_RUN}' --seed-queue-hold '${HOLD}' --ray-preflight-run '${RAY_PREFLIGHT_RUN}' --node an29 --gpu-ids 2,5,6,7 --poll-seconds 120"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n --arg run_id "${RUN_ID}" --arg git_hash "$(git rev-parse HEAD)" \
-  --arg config_hash "$({ sha256sum scripts/run_m5_recovery_queue.py scripts/launch_m5_recovery_queue.sh scripts/launch_m5_anchor_recovery150.sh; } | sort -k2 | sha256sum | awk '{print $1}')" \
-  --arg data_hash "$({ sha256sum "${RESTORE_RUN}/run_manifest.json" "${A1_RUN}/run_manifest.json" "${HOLD}"; } | sort -k2 | sha256sum | awk '{print $1}')" \
+  --arg config_hash "$({ sha256sum scripts/run_m5_recovery_queue.py scripts/launch_m5_recovery_queue.sh scripts/launch_m5_anchor_recovery150.sh scripts/probe_m5_ray_startup.py; } | sort -k2 | sha256sum | awk '{print $1}')" \
+  --arg data_hash "$({ sha256sum "${RESTORE_RUN}/run_manifest.json" "${A1_RUN}/run_manifest.json" "${HOLD}" "${RAY_PREFLIGHT_RUN}/run_manifest.json" "${RAY_PREFLIGHT_RUN}/preflight.json"; } | sort -k2 | sha256sum | awk '{print $1}')" \
   --arg command "${COMMAND}" --arg start "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg log "${LOG}" --arg state "${STATE}" --arg restore "${RESTORE_RUN}" --arg a1 "${A1_RUN}" \
   '{schema_version:"blind-gains.run-manifest.v1",run_id:$run_id,job_type:"m5_step150_recovery_capacity_queue",

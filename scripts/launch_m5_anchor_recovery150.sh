@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 3 ]]; then
-  echo "usage: $0 <an12|an29> <gpu0,gpu1,gpu2,gpu3> <step150-restore-run-dir>" >&2
+if [[ $# -ne 4 ]]; then
+  echo "usage: $0 <an12|an29> <gpu0,gpu1,gpu2,gpu3> <step150-restore-run-dir> <ray-preflight-run-dir>" >&2
   exit 2
 fi
 NODE="$1"
 GPU_LIST="$2"
 RESTORE_RUN="$3"
+PREFLIGHT_RUN="$4"
 [[ "${NODE}" == "an12" || "${NODE}" == "an29" ]] || { echo "invalid node" >&2; exit 2; }
 IFS=',' read -r -a GPUS <<< "${GPU_LIST}"
 [[ "${#GPUS[@]}" -eq 4 && "$(printf '%s\n' "${GPUS[@]}" | sort -u | wc -l)" -eq 4 ]] || {
@@ -31,9 +32,12 @@ SAVE_ROOT="${ROOT}/checkpoints/m5_anchor_longhorizon_400_resume150"
 LOCK="/dev/shm/blind_gains_${NODE}_m5_anchor_longhorizon_400.lock"
 RESTORE_MANIFEST="${RESTORE_RUN}/run_manifest.json"
 RESTORE_AUDIT="${RESTORE_RUN}/restored_checkpoint_audit.json"
+PREFLIGHT_MANIFEST="${PREFLIGHT_RUN}/run_manifest.json"
+PREFLIGHT_OUTPUT="${PREFLIGHT_RUN}/preflight.json"
 
 for FILE in "${BASE_CONFIG}" "${REGISTRATION}" "${INCIDENT}" \
   scripts/build_m5_recovery_config.py scripts/launch_m5_anchor_recovery150.sh \
+  scripts/probe_m5_ray_startup.py scripts/launch_m5_ray_startup_preflight.sh \
   scripts/watch_m5_checkpoints.py scripts/watch_m5_merged_relocation.py \
   scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh \
   scripts/run_m5_checkpoint_evaluation_queue.py scripts/launch_m5_checkpoint_evaluation_queue.sh \
@@ -44,6 +48,7 @@ for FILE in "${BASE_CONFIG}" "${REGISTRATION}" "${INCIDENT}" \
 done
 git diff --quiet HEAD -- "${BASE_CONFIG}" "${REGISTRATION}" "${INCIDENT}" \
   scripts/build_m5_recovery_config.py scripts/launch_m5_anchor_recovery150.sh \
+  scripts/probe_m5_ray_startup.py scripts/launch_m5_ray_startup_preflight.sh \
   scripts/watch_m5_checkpoints.py scripts/watch_m5_merged_relocation.py \
   scripts/launch_m5_checkpoint_watch.sh scripts/launch_m5_merged_relocation_watch.sh \
   scripts/run_m5_checkpoint_evaluation_queue.py scripts/launch_m5_checkpoint_evaluation_queue.sh \
@@ -65,6 +70,18 @@ jq -e '(.status=="complete") and (.exit_code==0) and (.job_type=="m5_step150_raw
   "${RESTORE_MANIFEST}" >/dev/null || { echo "step-150 restore run is incomplete" >&2; exit 3; }
 jq -e '(.status=="pass") and (.expected_step==150) and (.world_size==4)' \
   "${RESTORE_AUDIT}" >/dev/null || { echo "step-150 restore audit is invalid" >&2; exit 3; }
+[[ -s "${PREFLIGHT_MANIFEST}" && -s "${PREFLIGHT_OUTPUT}" ]] || { echo "M5 Ray preflight artifacts are absent" >&2; exit 3; }
+PREFLIGHT_AGE="$(( $(date -u +%s) - $(date -u -d "$(jq -er '.end_time_utc' "${PREFLIGHT_MANIFEST}")" +%s) ))"
+PREFLIGHT_GPUS="$(jq -c '.gpu_ids|sort' "${PREFLIGHT_MANIFEST}")"
+REQUESTED_GPUS="$(printf '%s\n' "${GPUS[@]}" | jq -sc 'map(tonumber)|sort')"
+jq -e --arg node "${NODE}" --arg head "$(git rev-parse HEAD)" \
+  '(.job_type=="m5_ray_startup_preflight") and (.status=="complete") and (.exit_code==0) and
+   (.node==$node) and (.git_hash==$head) and (.performance_values_opened==false)' \
+  "${PREFLIGHT_MANIFEST}" >/dev/null || { echo "M5 Ray preflight manifest identity is invalid" >&2; exit 3; }
+[[ "${PREFLIGHT_GPUS}" == "${REQUESTED_GPUS}" ]] || { echo "M5 Ray preflight GPU set differs from launch" >&2; exit 3; }
+[[ "${PREFLIGHT_AGE}" -ge 0 && "${PREFLIGHT_AGE}" -le 900 ]] || { echo "M5 Ray preflight is older than 15 minutes" >&2; exit 3; }
+jq -e '(.status=="pass") and (.expected_rounds==2) and (.rounds|length==2) and ([.checks[]]|all)' \
+  "${PREFLIGHT_OUTPUT}" >/dev/null || { echo "M5 Ray preflight result is not pass" >&2; exit 3; }
 jq -e '(.status=="restored_for_optimizer_resume") and (.files|length==8)' \
   "${SOURCE_MARKER}" >/dev/null || { echo "step-150 raw state is not restored" >&2; exit 3; }
 [[ "$(find "${SOURCE_ACTOR}" -maxdepth 1 -type f \( -name 'model_world_size_4_rank_*.pt' -o -name 'optim_world_size_4_rank_*.pt' \) | wc -l)" -eq 8 ]] || {
@@ -102,6 +119,8 @@ CONFIG_AUDIT="${ROOT}/${RUN_DIR}/effective_config_audit.json"
 REGISTRATION_SNAPSHOT="${ROOT}/${RUN_DIR}/registered_extensions_v1.md"
 INCIDENT_SNAPSHOT="${ROOT}/${RUN_DIR}/m5_host_memory_incident_v1.json"
 RESTORE_AUDIT_SNAPSHOT="${ROOT}/${RUN_DIR}/step150_restore_audit.json"
+PREFLIGHT_MANIFEST_SNAPSHOT="${ROOT}/${RUN_DIR}/ray_preflight_manifest.json"
+PREFLIGHT_OUTPUT_SNAPSHOT="${ROOT}/${RUN_DIR}/ray_preflight.json"
 EASYR1_DIR="${ROOT}/artifacts/repos/EasyR1"
 EASYR1_PATCH="${ROOT}/${RUN_DIR}/easyr1_worktree.patch"
 RAY_ROOT="/dev/shm/bg-ray-$(printf '%s' "${RUN_ID}" | sha256sum | awk '{print substr($1,1,12)}')"
@@ -115,6 +134,8 @@ mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids" "${RUN_DIR}/evaluations"
 install -m 0444 "${REGISTRATION}" "${REGISTRATION_SNAPSHOT}"
 install -m 0444 "${INCIDENT}" "${INCIDENT_SNAPSHOT}"
 install -m 0444 "${RESTORE_AUDIT}" "${RESTORE_AUDIT_SNAPSHOT}"
+install -m 0444 "${PREFLIGHT_MANIFEST}" "${PREFLIGHT_MANIFEST_SNAPSHOT}"
+install -m 0444 "${PREFLIGHT_OUTPUT}" "${PREFLIGHT_OUTPUT_SNAPSHOT}"
 git -C "${EASYR1_DIR}" diff --binary --no-ext-diff > "${EASYR1_PATCH}"
 chmod 0444 "${EASYR1_PATCH}"
 COMMAND="python -u -m verl.trainer.main config=${CONFIG_SNAPSHOT}"
@@ -127,6 +148,8 @@ jq -n --arg run_id "${RUN_ID}" --arg node "${NODE}" --arg allocation "${GPU_LIST
   --arg source_marker "${SOURCE_MARKER}" --arg restore_run "${RESTORE_RUN}" \
   --arg restore_hash "$(sha256sum "${RESTORE_AUDIT}" | awk '{print $1}')" \
   --arg prior_run "${PRIOR_RUN}" --arg prior_hash "$(sha256sum "${PRIOR_MANIFEST}" | awk '{print $1}')" \
+  --arg preflight_run "${PREFLIGHT_RUN}" --arg preflight_manifest_hash "$(sha256sum "${PREFLIGHT_MANIFEST}" | awk '{print $1}')" \
+  --arg preflight_output_hash "$(sha256sum "${PREFLIGHT_OUTPUT}" | awk '{print $1}')" \
   --arg incident "${RUN_DIR}/m5_host_memory_incident_v1.json" \
   --arg registration "${RUN_DIR}/registered_extensions_v1.md" \
   --arg easyr1_revision "$(git -C "${EASYR1_DIR}" rev-parse HEAD)" \
@@ -144,6 +167,8 @@ jq -n --arg run_id "${RUN_ID}" --arg node "${NODE}" --arg allocation "${GPU_LIST
     model_revision:"Qwen/Qwen2.5-VL-3B-Instruct@66285546d2b821cf421d4f5eb2576359d3770cd3",seed:1,
     resumed_from_global_step:150,target_global_step:400,source_checkpoint:$source,source_restore_marker:$source_marker,
     restore_run:$restore_run,restore_audit_sha256:$restore_hash,prior_failed_run:$prior_run,prior_failed_manifest_sha256:$prior_hash,
+    ray_startup_preflight_run:$preflight_run,ray_startup_preflight_manifest_sha256:$preflight_manifest_hash,
+    ray_startup_preflight_output_sha256:$preflight_output_hash,
     incident_snapshot:$incident,registration_snapshot:$registration,easyr1_revision:$easyr1_revision,
     easyr1_worktree_patch:$easyr1_patch,easyr1_worktree_patch_sha256:$easyr1_patch_hash,
     command:$command,start_time_utc:$start,end_time_utc:null,status:"running",checkpoint_path:$checkpoint,
@@ -163,6 +188,30 @@ sleep 20
 REMOTE_PID="$(cat "${PID_FILE}")"
 # shellcheck disable=SC2029
 ssh "${NODE}" "kill -0 '${REMOTE_PID}' 2>/dev/null" || { echo "M5 recovery exited during startup" >&2; exit 1; }
+STARTUP_READY=0
+for _ in $(seq 1 40); do
+  if ! ssh "${NODE}" "kill -0 '${REMOTE_PID}' 2>/dev/null"; then
+    echo "M5 recovery exited before startup readiness" >&2
+    tail -n 120 "${LOG}" >&2 || true
+    exit 1
+  fi
+  if rg -q 'runtime_env_agent.*timed out|ActorDiedError|Owner.s node has crashed' "${LOG}"; then
+    echo "M5 recovery reported a Ray startup failure" >&2
+    exit 1
+  fi
+  ACTIVE_GPU_COUNT=0
+  for GPU in "${GPUS[@]}"; do
+    if [[ -n "$(ssh "${NODE}" "nvidia-smi -i '${GPU}' --query-compute-apps=pid --format=csv,noheader,nounits" | sed '/^[[:space:]]*$/d')" ]]; then
+      ACTIVE_GPU_COUNT=$((ACTIVE_GPU_COUNT + 1))
+    fi
+  done
+  if rg -q 'Started a local Ray instance' "${LOG}" && [[ "${ACTIVE_GPU_COUNT}" -eq 4 ]]; then
+    STARTUP_READY=1
+    break
+  fi
+  sleep 15
+done
+[[ "${STARTUP_READY}" -eq 1 ]] || { echo "M5 recovery did not reach four-GPU startup readiness in 10 minutes" >&2; exit 1; }
 CHECKPOINT_WATCH="$(bash scripts/launch_m5_checkpoint_watch.sh "${NODE}" "${RUN_DIR}")"
 RELOCATION_WATCH="$(bash scripts/launch_m5_merged_relocation_watch.sh "${RUN_DIR}")"
 printf '%s\n' "${CHECKPOINT_WATCH}" > "${RUN_DIR}/checkpoint_watcher_run.txt"

@@ -120,6 +120,7 @@ def main() -> None:
     parser.add_argument("--restore-run", type=Path, required=True)
     parser.add_argument("--a1-run", type=Path, required=True)
     parser.add_argument("--seed-queue-hold", type=Path, required=True)
+    parser.add_argument("--ray-preflight-run", type=Path, required=True)
     parser.add_argument("--node", choices=("an12", "an29"), default="an29")
     parser.add_argument("--gpu-ids", default="2,5,6,7")
     parser.add_argument("--poll-seconds", type=int, default=120)
@@ -196,6 +197,7 @@ def main() -> None:
                 args.node,
                 ",".join(map(str, gpu_ids)),
                 str(args.restore_run),
+                str(args.ray_preflight_run),
             ],
             cwd=ROOT,
             text=True,
