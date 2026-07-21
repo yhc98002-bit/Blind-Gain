@@ -53,15 +53,23 @@ def _run_round(root: Path, timeout: int) -> dict[str, Any]:
     import ray
 
     started = time.monotonic()
-    ray.init(
-        address="local",
-        num_cpus=8,
-        num_gpus=4,
-        include_dashboard=False,
-        _temp_dir=str(ray_tmp),
-        object_store_memory=256 * 1024 * 1024,
-        logging_level="ERROR",
-    )
+    try:
+        ray.init(
+            address="local",
+            num_cpus=8,
+            num_gpus=4,
+            include_dashboard=False,
+            _temp_dir=str(ray_tmp),
+            object_store_memory=256 * 1024 * 1024,
+            logging_level="ERROR",
+        )
+    except Exception as error:  # pragma: no cover - live startup failure path
+        return {
+            "status": "fail",
+            "error_type": type(error).__name__,
+            "error": str(error),
+            "elapsed_seconds": round(time.monotonic() - started, 3),
+        }
 
     @ray.remote(runtime_env={"env_vars": {"BLIND_GAINS_RAY_PREFLIGHT": "m5-ray-preflight"}})
     def runtime_env_task() -> str | None:

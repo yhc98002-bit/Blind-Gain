@@ -48,7 +48,7 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 OUTPUT="${RUN_DIR}/preflight.json"
 CLEANUP="${RUN_DIR}/runtime_cleanup.json"
-RAY_ROOT="/dev/shm/bg-${RUN_ID}"
+RAY_ROOT="/dev/shm/bg-m5pf-$(printf '%s' "${RUN_ID}" | sha256sum | awk '{print substr($1,1,12)}')"
 COMMAND="CUDA_VISIBLE_DEVICES=${GPU_LIST} PYTHONUNBUFFERED=1 RAY_DEDUP_LOGS=0 ${ROOT}/.venv/bin/python ${ROOT}/scripts/probe_m5_ray_startup.py --runtime-root ${RAY_ROOT} --output ${ROOT}/${OUTPUT} --rounds 2 --timeout 120"
 GPU_IDS_JSON="$(printf '%s\n' "${GPUS[@]}" | jq -sc 'map(tonumber)')"
 mkdir -p "${RUN_DIR}/logs"
@@ -72,7 +72,7 @@ set +e
 ssh "${NODE}" "cd '${ROOT}' && '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}'"
 RC=$?
 set -e
-ssh "${NODE}" "case '${RAY_ROOT}' in /dev/shm/bg-m5_ray_startup_preflight_*) rm -rf -- '${RAY_ROOT}' ;; *) exit 2 ;; esac"
+ssh "${NODE}" "case '${RAY_ROOT}' in /dev/shm/bg-m5pf-????????????) rm -rf -- '${RAY_ROOT}' ;; *) exit 2 ;; esac"
 jq -n --arg root "${RAY_ROOT}" --arg deleted "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '{schema_version:"blind-gains.ephemeral-cleanup.v1",path:$root,status:"deleted",deleted_utc:$deleted}' > "${CLEANUP}"
 [[ "${RC}" -eq 0 ]] || exit "${RC}"

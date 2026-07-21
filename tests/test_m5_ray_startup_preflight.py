@@ -53,3 +53,5 @@ def test_preflight_launcher_parses_and_is_fail_closed() -> None:
     assert "another project EasyR1 trainer is active" in source
     assert "M5 preflight needs 650 GiB host memory" in source
     assert "runtime_cleanup.json" in source
+    assert 'RAY_ROOT="/dev/shm/bg-m5pf-' in source
+    assert "/dev/shm/bg-${RUN_ID}" not in source
