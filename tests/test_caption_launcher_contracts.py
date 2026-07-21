@@ -237,9 +237,10 @@ def test_image_eval_launcher_binds_registered_pilot_checkpoint_metadata() -> Non
     assert "Pilot source run must be complete" in launcher
     assert "Pilot checkpoint path does not match the registered source run and step" in launcher
     assert "load_checkpoint_path" in launcher
-    assert "Pilot evaluation manifest is not the locked R19 manifest" in launcher
-    assert '"source_training_run": ${PILOT_SOURCE_JSON}' in launcher
-    assert '"global_step": ${PILOT_STEP_JSON}' in launcher
+    assert "Registered checkpoint evaluation manifest is not the locked R19 manifest" in launcher
+    assert '"source_training_run": ${SOURCE_RUN_JSON}' in launcher
+    assert '"source_training_job_type": ${SOURCE_TRAINING_JOB_TYPE_JSON}' in launcher
+    assert '"global_step": ${GLOBAL_STEP_JSON}' in launcher
 
 
 def test_image_eval_maps_noncontiguous_gpus_by_replica_ordinal() -> None:

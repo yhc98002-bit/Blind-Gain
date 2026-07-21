@@ -38,6 +38,15 @@ REGISTERED_SEED1_FAMILIES = {
     "3B Geometry3K seed 1: A2-gray R19 geometry delta",
     "3B Geometry3K seed 1: `D_caption^final`",
 }
+REGISTERED_DIAGNOSTIC_STATUS = (
+    "complete; not an original pilot endpoint; branch unassigned"
+)
+REGISTERED_DIAGNOSTIC_VALUES = {
+    "Seed-1 post-registered visual-evidence ranking diagnostic": (
+        "geometry margin DiD +0.150142 [0.144849,0.155388]; "
+        "pair-success effect 0.000000; top-1 effect +0.008333"
+    )
+}
 
 
 def _sha256(path: Path) -> str:
@@ -125,7 +134,10 @@ def build_audit(root: Path) -> dict[str, Any]:
     errors.extend(result_row_errors)
     pending_rows = [row for row in result_rows if row["status"] == "pending"]
     seed1_rows = [row for row in result_rows if row["status"] == REGISTERED_SEED1_STATUS]
-    known_status_rows = pending_rows + seed1_rows
+    diagnostic_rows = [
+        row for row in result_rows if row["status"] == REGISTERED_DIAGNOSTIC_STATUS
+    ]
+    known_status_rows = pending_rows + seed1_rows + diagnostic_rows
     seed1_artifacts_exist = all(
         (root / row["artifact"]).is_file() and (root / row["artifact"]).stat().st_size > 0
         for row in seed1_rows
@@ -136,6 +148,13 @@ def build_audit(root: Path) -> dict[str, Any]:
             float(row["value"])
         except ValueError:
             seed1_values_numeric = False
+    diagnostic_artifacts_exist = all(
+        (root / row["artifact"]).is_file() and (root / row["artifact"]).stat().st_size > 0
+        for row in diagnostic_rows
+    )
+    diagnostic_values_exact = {
+        row["family"]: row["value"] for row in diagnostic_rows
+    } == REGISTERED_DIAGNOSTIC_VALUES
 
     checks = {
         "all_expected_documents_nonempty": all(
@@ -155,6 +174,8 @@ def build_audit(root: Path) -> dict[str, Any]:
         and {row["family"] for row in seed1_rows} == REGISTERED_SEED1_FAMILIES
         and seed1_artifacts_exist
         and seed1_values_numeric,
+        "registered_diagnostic_row_is_exact": diagnostic_artifacts_exist
+        and diagnostic_values_exact,
         "required_terminology_present": "caption-mediated accessibility" in lower_markdown,
         "prohibited_claims_absent": not any(
             phrase in lower_markdown for phrase in PROHIBITED_CLAIMS

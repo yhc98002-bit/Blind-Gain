@@ -1,0 +1,176 @@
+{
+  "checks": {
+    "all_expected_documents_nonempty": true,
+    "all_required_plotters_implemented": true,
+    "exact_registered_figure_set": true,
+    "figure_builder_and_tests_present": true,
+    "pending_figures_fail_closed": true,
+    "prohibited_claims_absent": true,
+    "registered_diagnostic_row_is_exact": true,
+    "required_terminology_present": true,
+    "result_registry_rows_follow_registered_state_contract": true
+  },
+  "errors": [],
+  "figures": {
+    "audits": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "table",
+      "status_pending": true
+    },
+    "decomposition": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "grouped_bar",
+      "status_pending": true
+    },
+    "dissociation": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "scatter",
+      "status_pending": true
+    },
+    "hurdle": {
+      "pending_refuses_render": true,
+      "plotter_implemented": true,
+      "present": true,
+      "registered_plotter": "hurdle",
+      "status_pending": true
+    }
+  },
+  "files": {
+    "README.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "2a1b6d88c29630bea69061251fabc127e0236b91835576e8978998b405b08be0",
+      "size_bytes": 1022
+    },
+    "contribution_nonoverlap.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "84983be53e742d43eeb6a524bec23c409276a17965bd237f5d45dda867bfe90e",
+      "size_bytes": 645
+    },
+    "data_card.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "573cfb695e1132001e2602c8125fd44566dd4d86463f7576aab217fa22b1ce13",
+      "size_bytes": 2121
+    },
+    "figure_registry.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "fb0d2a746b65a33bfc05d20d83890f36c3225ae25d6553a621b3d2ffcf4cdb25",
+      "size_bytes": 836
+    },
+    "figure_specs.json": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "501742cfe79c9c96ef3a38fe592585bbae2d3784333c4f58f73e8557ac301059",
+      "size_bytes": 2042
+    },
+    "master_result_table.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "75508789c5ee0b0b50c6779f2985e4156144eb58968857b6f429874445cd713b",
+      "size_bytes": 1652
+    },
+    "methods_appendix.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "47ad53ad661dbee727e5c4ab23b1529c0b7ff36c2fdca8e940aad735f4c7fb6d",
+      "size_bytes": 6778
+    },
+    "outline.md": {
+      "nonempty": true,
+      "present": true,
+      "sha256": "989531e1fb59c096c529b7d877122b2708768856faf4f1cda5bb5846f6b700bc",
+      "size_bytes": 821
+    }
+  },
+  "result_rows": [
+    {
+      "artifact": "reports/pilot_4arm_seed1_results_v1.md",
+      "family": "3B Geometry3K seed 1: A2-gray R19 geometry delta",
+      "status": "registered seed-1 result; confirmation pending seeds 2\u20133",
+      "value": "-0.045"
+    },
+    {
+      "artifact": "reports/pilot_4arm_seed1_results_v1.md",
+      "family": "3B Geometry3K seed 1: `D_caption^final`",
+      "status": "registered seed-1 result; confirmation pending seeds 2\u20133",
+      "value": "-0.108"
+    },
+    {
+      "artifact": "reports/pilot_3seed_summary_v1.md",
+      "family": "3B Geometry3K three seeds",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/seed1_visual_evidence_ranking_results_v1.md",
+      "family": "Seed-1 post-registered visual-evidence ranking diagnostic",
+      "status": "complete; not an original pilot endpoint; branch unassigned",
+      "value": "geometry margin DiD +0.150142 [0.144849,0.155388]; pair-success effect 0.000000; top-1 effect +0.008333"
+    },
+    {
+      "artifact": "reports/virl_3b_decomposition_results_v1.md",
+      "family": "ViRL 3B",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/flagship_7b_results_v1.md",
+      "family": "7B flagship seed 1",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/flagship_7b_3seed_v1.md",
+      "family": "7B flagship three seeds",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/anchor_longhorizon_400_results_v1.md",
+      "family": "Long horizon",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/mini_a5_control_results_v1.md",
+      "family": "Mini-A5",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/generalization_audits_v1.md",
+      "family": "Non-Qwen inference audit",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/chart_v08_calibration.md",
+      "family": "Chart v08 calibration",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/chart_v08_confirmatory.md",
+      "family": "Chart v08 confirmatory",
+      "status": "pending",
+      "value": "{result-pending}"
+    },
+    {
+      "artifact": "reports/mergeback_gate_readouts_v1.md",
+      "family": "Merge-back",
+      "status": "pending",
+      "value": "{result-pending}"
+    }
+  ],
+  "schema_version": "blind-gains.paper1-pipeline-audit.v2",
+  "status": "pass"
+}

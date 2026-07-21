@@ -198,4 +198,7 @@ def test_current_repository_refuses_duplicate_after_pi_approved_launch() -> None
     assert result["checks"]["final_preregistration_exists"] is True
     assert result["checks"]["merge_signoff_and_registration_content_exact"] is True
     assert result["checks"]["selected_checkpoint_namespace_absent"] is False
-    assert result["errors"] == ["selected_checkpoint_namespace_absent"]
+    assert result["errors"] == [
+        "M2_not_predeclared",
+        "selected_checkpoint_namespace_absent",
+    ]
