@@ -21,14 +21,14 @@ git diff --quiet HEAD -- "${CRITICAL[@]}" || {
 }
 
 node_ready() {
-  ssh "${NODE}" "
-    set -euo pipefail
-    test \"\$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '\$1 >= 1024 {bad=1} END {print bad+0}')\" = 0
-    test \"\$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '\$1 > 10 {bad=1} END {print bad+0}')\" = 0
-    ! ps -eo args= | awk -v root='${ROOT}' '\$0 ~ /[p]ython.*verl[.]trainer[.]main/ && index(\$0, root) {found=1} END {exit found ? 0 : 1}'
-    test \"\$(awk '/MemAvailable:/{print \$2}' /proc/meminfo)\" -ge 681574400
-    test \"\$(df -Pk /dev/shm | awk 'NR==2 {print \$4}')\" -ge 41943040
-  "
+  ssh "${NODE}" bash -s <<REMOTE
+set -euo pipefail
+test "\$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '\$1 >= 1024 {bad=1} END {print bad+0}')" = 0
+test "\$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '\$1 > 10 {bad=1} END {print bad+0}')" = 0
+! ps -eo args= | awk -v root='${ROOT}' '\$0 ~ /[p]ython.*verl[.]trainer[.]main/ && index(\$0, root) {found=1} END {exit found ? 0 : 1}'
+test "\$(awk '/MemAvailable:/{print \$2}' /proc/meminfo)" -ge 681574400
+test "\$(df -Pk /dev/shm | awk 'NR==2 {print \$4}')" -ge 41943040
+REMOTE
 }
 node_ready || { echo "${NODE} is not ready for an isolated eight-GPU preflight" >&2; exit 75; }
 sleep 30
@@ -62,20 +62,20 @@ jq -n \
     expected_artifacts:[$output],scientific_gate_decision:null,deviations:[]}' > "${MANIFEST}"
 
 set +e
-ssh "${NODE}" "
-  set -euo pipefail
-  cd '${ROOT}'
-  timeout --signal=TERM --kill-after=30s 300s env -u GLOO_SOCKET_IFNAME -u NCCL_SOCKET_IFNAME \
-    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 TORCH_NCCL_ASYNC_ERROR_HANDLING=1 \
-    OMP_NUM_THREADS=2 '${ROOT}/.venv/bin/torchrun' --standalone --nnodes=1 \
-    --nproc-per-node=8 '${ROOT}/scripts/probe_single_node_collectives.py' worker \
-    --output-dir '${ROOT}/${DEFAULT_DIR}' --round-name default
-  timeout --signal=TERM --kill-after=30s 300s env GLOO_SOCKET_IFNAME=ib0 NCCL_SOCKET_IFNAME=ib0 \
-    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 TORCH_NCCL_ASYNC_ERROR_HANDLING=1 \
-    OMP_NUM_THREADS=2 '${ROOT}/.venv/bin/torchrun' --standalone --nnodes=1 \
-    --nproc-per-node=8 '${ROOT}/scripts/probe_single_node_collectives.py' worker \
-    --output-dir '${ROOT}/${IB0_DIR}' --round-name ib0
-" > "${LOG}" 2>&1
+ssh "${NODE}" bash -s > "${LOG}" 2>&1 <<REMOTE
+set -euo pipefail
+cd '${ROOT}'
+timeout --signal=TERM --kill-after=30s 300s env -u GLOO_SOCKET_IFNAME -u NCCL_SOCKET_IFNAME \
+  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 TORCH_NCCL_ASYNC_ERROR_HANDLING=1 \
+  OMP_NUM_THREADS=2 '${ROOT}/.venv/bin/torchrun' --standalone --nnodes=1 \
+  --nproc-per-node=8 '${ROOT}/scripts/probe_single_node_collectives.py' worker \
+  --output-dir '${ROOT}/${DEFAULT_DIR}' --round-name default
+timeout --signal=TERM --kill-after=30s 300s env GLOO_SOCKET_IFNAME=ib0 NCCL_SOCKET_IFNAME=ib0 \
+  CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 TORCH_NCCL_ASYNC_ERROR_HANDLING=1 \
+  OMP_NUM_THREADS=2 '${ROOT}/.venv/bin/torchrun' --standalone --nnodes=1 \
+  --nproc-per-node=8 '${ROOT}/scripts/probe_single_node_collectives.py' worker \
+  --output-dir '${ROOT}/${IB0_DIR}' --round-name ib0
+REMOTE
 RC=$?
 if [[ "${RC}" -eq 0 ]]; then
   "${ROOT}/.venv/bin/python" scripts/probe_single_node_collectives.py combine \

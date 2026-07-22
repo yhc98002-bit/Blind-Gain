@@ -123,10 +123,11 @@ echo __SHM__ $(df -Pk /dev/shm | awk 'NR==2 {print $4}')
 if ps -eo args= | awk -v root='__BLIND_GAINS_ROOT__' '$0 ~ /[p]ython.*verl[.]trainer[.]main/ && index($0, root) {found=1} END {exit found ? 0 : 1}'; then exit 42; fi
 '''.replace("__BLIND_GAINS_ROOT__", str(ROOT))
     result = subprocess.run(
-        ["ssh", node, command],
+        ["ssh", node, "bash", "-s"],
         cwd=ROOT,
         capture_output=True,
         text=True,
+        input=command,
         timeout=30,
     )
     lines = result.stdout.splitlines()

@@ -132,3 +132,5 @@ def test_node_checks_ignore_foreign_ray_and_avoid_nested_grep_pipeline() -> None
         assert "[g]cs_server" not in source
         assert "grep -F" not in source
         assert "[p]ython.*verl[.]trainer[.]main" in source
+    assert 'ssh "${NODE}" bash -s' in launcher
+    assert '["ssh", node, "bash", "-s"]' in recovery_source
