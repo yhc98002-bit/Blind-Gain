@@ -150,7 +150,8 @@ def test_seed3_launcher_is_registered_gpu_inert_and_syntax_valid() -> None:
 
     subprocess.run(["bash", "-n", str(launcher)], check=True)
     assert "registered_pilot_seed23_v1.md" in source
-    assert "pilot_seed2_locked_eval_lifecycle_login_20260721T163341Z" in source
-    assert "mini_a5_smoke_queue_v2_login_20260721T164001Z" in source
-    assert 'job_type: "m3_seed3_training_capacity_queue_v2"' in source
+    assert "sealed-seed2-lifecycle-manifest" in source
+    assert "m6-smoke-queue-manifest" in source
+    assert "pilot_followup_evaluation_recovery_lifecycle" in source
+    assert 'job_type: "m3_seed3_training_capacity_queue_v3"' in source
     assert "performance_values_opened: false" in source

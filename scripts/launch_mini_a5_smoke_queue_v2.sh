@@ -4,14 +4,23 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
 
-SEED2="experiments/runs/pilot_seed2_locked_eval_lifecycle_login_20260721T163341Z/run_manifest.json"
+if [[ $# -ne 1 ]]; then
+  echo "usage: $0 <sealed-seed2-lifecycle-manifest>" >&2
+  exit 2
+fi
+SEED2="$(realpath -m "$1")"
+case "${SEED2}" in
+  "${ROOT}"/experiments/runs/*/run_manifest.json) ;;
+  *) echo "seed-2 lifecycle manifest must be under experiments/runs" >&2; exit 2 ;;
+esac
 M11="experiments/runs/m11_reconciled_final_report_login_20260718T153539Z/run_manifest.json"
 M5="experiments/runs/m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z/run_manifest.json"
 REGISTRATION="reports/mini_a5_smoke_registration_marker_v1.json"
 for path in "${SEED2}" "${M11}" "${M5}" "${REGISTRATION}"; do
   [[ -s "${path}" ]] || { echo "Mini-A5 v2 queue input is absent: ${path}" >&2; exit 2; }
 done
-jq -e '(.job_type == "pilot_followup_evaluation_lifecycle") and
+jq -e '((.job_type == "pilot_followup_evaluation_lifecycle") or
+        (.job_type == "pilot_followup_evaluation_recovery_lifecycle")) and
        (.pilot_seed == 2) and (.performance_values_opened == false)' "${SEED2}" >/dev/null
 jq -e '(.job_type == "m11_reconciled_final_report") and
        (.status == "complete") and (.exit_code == 0) and (.artifacts_exist == true)' "${M11}" >/dev/null
@@ -49,7 +58,7 @@ if [[ -e reports/mini_a5_plumbing_smoke_audit_v1.json || -e reports/mini_a5_plum
 fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_ID="mini_a5_smoke_queue_v2_login_${STAMP}"
+RUN_ID="mini_a5_smoke_queue_v3_login_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
@@ -71,7 +80,7 @@ jq -n \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
-    job_type: "m6_registered_smoke_priority_queue_v2",
+    job_type: "m6_registered_smoke_priority_queue_v3",
     status: "running",
     node: "login",
     gpu_ids: [],
@@ -107,7 +116,7 @@ jq -n \
     main_optimizer_steps_authorized: 0,
     smoke_optimizer_steps_authorized_per_arm: 1,
     scientific_gate_decision: null,
-    deviations: ["Supersedes the failed v1 queue dependency paths; the registered smoke commands, data, configs, and one-step authorization are unchanged."]
+    deviations: ["Supersedes the failed v2 queue after the seed-2 evaluation-relocation race; the registered smoke commands, data, configs, and one-step authorization are unchanged."]
   }' > "${MANIFEST}"
 
 nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \

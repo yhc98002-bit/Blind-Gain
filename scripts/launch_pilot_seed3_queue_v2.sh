@@ -3,16 +3,28 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
-SEED2="experiments/runs/pilot_seed2_locked_eval_lifecycle_login_20260721T163341Z/run_manifest.json"
-M6="experiments/runs/mini_a5_smoke_queue_v2_login_20260721T164001Z/run_manifest.json"
+if [[ $# -ne 2 ]]; then
+  echo "usage: $0 <sealed-seed2-lifecycle-manifest> <m6-smoke-queue-manifest>" >&2
+  exit 2
+fi
+SEED2="$(realpath -m "$1")"
+M6="$(realpath -m "$2")"
+for manifest in "${SEED2}" "${M6}"; do
+  case "${manifest}" in
+    "${ROOT}"/experiments/runs/*/run_manifest.json) ;;
+    *) echo "queue dependency must be under experiments/runs" >&2; exit 2 ;;
+  esac
+done
 M5="experiments/runs/m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z/run_manifest.json"
 REGISTRATION="docs/registered_pilot_seed23_v1.md"
 for path in "${SEED2}" "${M6}" "${M5}" "${REGISTRATION}"; do
   [[ -s "${path}" ]] || { echo "seed-3 queue input is absent: ${path}" >&2; exit 2; }
 done
-jq -e '(.job_type == "pilot_followup_evaluation_lifecycle") and
+jq -e '((.job_type == "pilot_followup_evaluation_lifecycle") or
+        (.job_type == "pilot_followup_evaluation_recovery_lifecycle")) and
        (.pilot_seed == 2) and (.performance_values_opened == false)' "${SEED2}" >/dev/null
-jq -e '(.job_type == "m6_registered_smoke_priority_queue_v2") and
+jq -e '((.job_type == "m6_registered_smoke_priority_queue_v2") or
+        (.job_type == "m6_registered_smoke_priority_queue_v3")) and
        (.main_optimizer_steps_authorized == 0)' "${M6}" >/dev/null
 jq -e '(.job_type == "m5_anchor_longhorizon_400") and
        (.target_global_step == 400) and (.status == "running" or .status == "complete")' "${M5}" >/dev/null
@@ -57,7 +69,7 @@ for FILE in "${CRITICAL_FILES[@]}"; do
 done
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_ID="pilot_seed3_queue_v2_login_${STAMP}"
+RUN_ID="pilot_seed3_queue_v3_login_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
@@ -75,7 +87,7 @@ jq -n \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
-    job_type: "m3_seed3_training_capacity_queue_v2",
+    job_type: "m3_seed3_training_capacity_queue_v3",
     node: "login",
     gpu_allocation: [],
     gpu_ids: [],
@@ -102,7 +114,7 @@ jq -n \
     expected_artifacts: [$state],
     performance_values_opened: false,
     scientific_gate_decision: null,
-    deviations: []
+    deviations: ["Supersedes the failed v2 dependency queue; registered seed-3 configs and launch order are unchanged."]
   }' > "${MANIFEST}"
 
 nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \
