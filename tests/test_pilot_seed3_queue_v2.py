@@ -144,6 +144,65 @@ def test_arm_release_waits_for_step100_merge_and_retention(
     )
 
 
+def test_attached_watcher_is_adopted_without_second_launch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(queue, "ROOT", tmp_path)
+    training = "experiments/runs/mech_a1_real_seed3_fixture"
+    watcher = "experiments/runs/pilot_checkpoint_watch_fixture"
+    training_path = tmp_path / training
+    training_path.mkdir(parents=True)
+    (training_path / "checkpoint_watcher_run.txt").write_text(
+        watcher + "\n", encoding="utf-8"
+    )
+    _write(
+        tmp_path / watcher / "run_manifest.json",
+        {
+            "job_type": "pilot_checkpoint_retention_watch",
+            "parent_training_run": training,
+            "compute_node": "an29",
+            "status": "running",
+        },
+    )
+    assert queue.attached_watcher_run(training, "an29") == watcher
+
+
+def test_adversarial_attached_watcher_parent_mismatch_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(queue, "ROOT", tmp_path)
+    training = "experiments/runs/mech_a1_real_seed3_fixture"
+    watcher = "experiments/runs/pilot_checkpoint_watch_fixture"
+    training_path = tmp_path / training
+    training_path.mkdir(parents=True)
+    (training_path / "checkpoint_watcher_run.txt").write_text(watcher, encoding="utf-8")
+    _write(
+        tmp_path / watcher / "run_manifest.json",
+        {
+            "job_type": "pilot_checkpoint_retention_watch",
+            "parent_training_run": "experiments/runs/different-parent",
+            "compute_node": "an29",
+            "status": "running",
+        },
+    )
+    with pytest.raises(RuntimeError, match="identity mismatch"):
+        queue.attached_watcher_run(training, "an29")
+
+
+def test_adversarial_watcher_path_traversal_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(queue, "ROOT", tmp_path)
+    training = "experiments/runs/mech_a1_real_seed3_fixture"
+    training_path = tmp_path / training
+    training_path.mkdir(parents=True)
+    (training_path / "checkpoint_watcher_run.txt").write_text(
+        "experiments/runs/pilot_checkpoint_watch_../../outside", encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="outside the immutable run namespace"):
+        queue.attached_watcher_run(training, "an29")
+
+
 def test_seed3_launcher_is_registered_gpu_inert_and_syntax_valid() -> None:
     launcher = ROOT / "scripts/launch_pilot_seed3_queue_v2.sh"
     source = launcher.read_text(encoding="utf-8")
@@ -156,3 +215,22 @@ def test_seed3_launcher_is_registered_gpu_inert_and_syntax_valid() -> None:
     assert 'job_type: "m3_seed3_training_capacity_queue_v4"' in source
     assert '(.job_type == "m6_registered_smoke_member_recovery_v1")' in source
     assert "performance_values_opened: false" in source
+
+
+def test_seed3_recovery_launcher_is_fail_closed_and_syntax_valid() -> None:
+    launcher = ROOT / "scripts/launch_pilot_seed3_queue_recovery.sh"
+    source = launcher.read_text(encoding="utf-8")
+
+    subprocess.run(["bash", "-n", str(launcher)], check=True)
+    assert "checkpoint watcher failed to launch (73)" in source
+    assert 'job_type:"m3_seed3_training_capacity_queue_v5"' in source
+    assert "--adopted-arm a1_real" in source
+    assert "no optimizer trajectory is restarted or reconstructed" in source
+
+
+def test_seed3_scheduler_never_launches_a_second_watcher() -> None:
+    source = (ROOT / "scripts/run_pilot_seed3_queue_v2.py").read_text(
+        encoding="utf-8"
+    )
+    assert '"scripts/launch_pilot_checkpoint_watch.sh"' not in source
+    assert "attached_watcher_run(training_run, node)" in source

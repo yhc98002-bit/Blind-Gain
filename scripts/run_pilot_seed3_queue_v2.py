@@ -131,6 +131,41 @@ def _parse_run(output: str, prefix: str) -> str:
     return values[0]
 
 
+def attached_watcher_run(training_run: str, node: str) -> str:
+    training_path = ROOT / training_run
+    pointer = training_path / "checkpoint_watcher_run.txt"
+    if not pointer.is_file():
+        raise RuntimeError(f"training launcher did not publish its watcher pointer: {pointer}")
+    values = [line.strip() for line in pointer.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(values) != 1:
+        raise RuntimeError(f"ambiguous watcher pointer: {pointer}")
+    watcher_run = values[0]
+    watcher_relative = Path(watcher_run)
+    expected_root = (ROOT / "experiments/runs").resolve()
+    watcher_resolved = (ROOT / watcher_relative).resolve()
+    if (
+        watcher_relative.is_absolute()
+        or ".." in watcher_relative.parts
+        or not watcher_run.startswith("experiments/runs/pilot_checkpoint_watch_")
+        or not watcher_resolved.is_relative_to(expected_root)
+        or watcher_resolved.parent != expected_root
+    ):
+        raise RuntimeError(f"watcher pointer is outside the immutable run namespace: {watcher_run}")
+    watcher_manifest_path = watcher_resolved / "run_manifest.json"
+    if not watcher_manifest_path.is_file():
+        raise RuntimeError(f"attached watcher manifest is absent: {watcher_manifest_path}")
+    watcher = _read(watcher_manifest_path)
+    checks = {
+        "job_type": watcher.get("job_type") == "pilot_checkpoint_retention_watch",
+        "parent": watcher.get("parent_training_run") == training_run,
+        "node": watcher.get("compute_node") == node,
+        "status": watcher.get("status") in {"running", "complete"},
+    }
+    if not all(checks.values()):
+        raise RuntimeError(f"attached watcher identity mismatch: {checks}")
+    return watcher_run
+
+
 def launch_arm(arm: str, node: str, gpu_ids: list[int]) -> tuple[str, str]:
     result = subprocess.run(
         [
@@ -152,19 +187,54 @@ def launch_arm(arm: str, node: str, gpu_ids: list[int]) -> tuple[str, str]:
             f"seed-3 {arm} launch failed ({result.returncode}): {result.stderr.strip()}"
         )
     training_run = _parse_run(result.stdout, "experiments/runs/mech_")
-    watcher = subprocess.run(
-        ["bash", "scripts/launch_pilot_checkpoint_watch.sh", node, training_run],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-    if watcher.returncode != 0:
-        raise RuntimeError(
-            f"seed-3 {arm} checkpoint watcher failed to launch "
-            f"({watcher.returncode}): {watcher.stderr.strip()}"
-        )
-    watcher_run = _parse_run(watcher.stdout, "experiments/runs/pilot_checkpoint_watch_")
+    watcher_run = attached_watcher_run(training_run, node)
     return training_run, watcher_run
+
+
+def validate_adopted_record(
+    arm: str, training_run: str, watcher_run: str
+) -> dict[str, Any]:
+    if arm not in ARMS:
+        raise ValueError(f"unknown adopted seed-3 arm: {arm}")
+    training_relative = Path(training_run)
+    training_resolved = (ROOT / training_relative).resolve()
+    expected_root = (ROOT / "experiments/runs").resolve()
+    if (
+        training_relative.is_absolute()
+        or ".." in training_relative.parts
+        or not training_run.startswith("experiments/runs/mech_")
+        or not training_resolved.is_relative_to(expected_root)
+        or training_resolved.parent != expected_root
+    ):
+        raise ValueError(f"adopted training run is outside the immutable run namespace: {training_run}")
+    training_manifest_path = training_resolved / "run_manifest.json"
+    if not training_manifest_path.is_file():
+        raise ValueError(f"adopted training manifest is absent: {training_manifest_path}")
+    training = _read(training_manifest_path)
+    expected_watcher = attached_watcher_run(training_run, str(training.get("node")))
+    checks = {
+        "job_type": training.get("job_type") == "m3_mechanical_pilot_arm",
+        "seed": training.get("seed") == 3,
+        "arm": training.get("arm") == arm,
+        "status": training.get("status") in {"running", "complete"},
+        "node": training.get("node") in NODES,
+        "four_gpu_tp1": len(training.get("gpu_ids", [])) == 4
+        and len(set(training.get("gpu_ids", []))) == 4
+        and training.get("tensor_parallel_width") == 1
+        and training.get("replica_count") == 4,
+        "watcher_pointer_exact": expected_watcher == watcher_run,
+    }
+    if not all(checks.values()):
+        raise ValueError(f"adopted seed-3 run identity mismatch: {checks}")
+    return {
+        "status": "running",
+        "training_run": training_run,
+        "watcher_run": watcher_run,
+        "node": training["node"],
+        "gpu_ids": training["gpu_ids"],
+        "launched_utc": training.get("start_time_utc"),
+        "adopted_from_failed_queue": True,
+    }
 
 
 def arm_checkpoint_ready(record: dict[str, Any]) -> tuple[bool, str]:
@@ -198,14 +268,20 @@ def run_queue(
     m5_manifest: Path,
     poll_seconds: int,
     stable_polls: int,
+    adopted_record: tuple[str, str, str] | None = None,
 ) -> int:
     state_path = run_dir / "queue_state.json"
     records: dict[str, dict[str, Any]] = {
         arm: {"status": "pending", "training_run": None, "watcher_run": None}
         for arm in ARMS
     }
+    if adopted_record is not None:
+        adopted_arm, adopted_training, adopted_watcher = adopted_record
+        records[adopted_arm] = validate_adopted_record(
+            adopted_arm, adopted_training, adopted_watcher
+        )
     state: dict[str, Any] = {
-        "schema_version": "blind-gains.pilot-seed3-capacity-queue.v2",
+        "schema_version": "blind-gains.pilot-seed3-capacity-queue.v3",
         "status": "waiting_dependencies",
         "seed": 3,
         "arms": records,
@@ -218,6 +294,7 @@ def run_queue(
         "created_utc": _now(),
         "performance_values_opened": False,
         "scientific_gate_decision": None,
+        "adopted_arm": adopted_record[0] if adopted_record is not None else None,
     }
     _write(state_path, state)
     while True:
@@ -334,9 +411,20 @@ def main() -> None:
     parser.add_argument("--m5-manifest", type=Path, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
     parser.add_argument("--stable-polls", type=int, default=2)
+    parser.add_argument("--adopted-arm", choices=ARMS)
+    parser.add_argument("--adopted-training-run")
+    parser.add_argument("--adopted-watcher-run")
     args = parser.parse_args()
     if args.poll_seconds < 10 or args.stable_polls < 2:
         raise ValueError("seed-3 queue requires poll_seconds >= 10 and stable_polls >= 2")
+    adoption_values = (
+        args.adopted_arm,
+        args.adopted_training_run,
+        args.adopted_watcher_run,
+    )
+    if any(adoption_values) and not all(adoption_values):
+        raise ValueError("seed-3 adoption requires arm, training run, and watcher run")
+    adopted = adoption_values if all(adoption_values) else None
     raise SystemExit(
         run_queue(
             args.run_dir,
@@ -345,6 +433,7 @@ def main() -> None:
             m5_manifest=args.m5_manifest,
             poll_seconds=args.poll_seconds,
             stable_polls=args.stable_polls,
+            adopted_record=adopted,
         )
     )
 
