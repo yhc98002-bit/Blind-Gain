@@ -24,7 +24,8 @@ jq -e '((.job_type == "pilot_followup_evaluation_lifecycle") or
         (.job_type == "pilot_followup_evaluation_recovery_lifecycle")) and
        (.pilot_seed == 2) and (.performance_values_opened == false)' "${SEED2}" >/dev/null
 jq -e '((.job_type == "m6_registered_smoke_priority_queue_v2") or
-        (.job_type == "m6_registered_smoke_priority_queue_v3")) and
+        (.job_type == "m6_registered_smoke_priority_queue_v3") or
+        (.job_type == "m6_registered_smoke_member_recovery_v1")) and
        (.main_optimizer_steps_authorized == 0)' "${M6}" >/dev/null
 jq -e '(.job_type == "m5_anchor_longhorizon_400") and
        (.target_global_step == 400) and (.status == "running" or .status == "complete")' "${M5}" >/dev/null
@@ -69,7 +70,7 @@ for FILE in "${CRITICAL_FILES[@]}"; do
 done
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_ID="pilot_seed3_queue_v3_login_${STAMP}"
+RUN_ID="pilot_seed3_queue_v4_login_${STAMP}"
 RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
@@ -87,7 +88,7 @@ jq -n \
   '{
     schema_version: "blind-gains.run-manifest.v1",
     run_id: $run_id,
-    job_type: "m3_seed3_training_capacity_queue_v3",
+    job_type: "m3_seed3_training_capacity_queue_v4",
     node: "login",
     gpu_allocation: [],
     gpu_ids: [],
@@ -114,7 +115,7 @@ jq -n \
     expected_artifacts: [$state],
     performance_values_opened: false,
     scientific_gate_decision: null,
-    deviations: ["Supersedes the failed v2 dependency queue; registered seed-3 configs and launch order are unchanged."]
+    deviations: ["Supersedes failed dependency queues. Registered seed-3 configs and launch order are unchanged; the accepted M6 dependency may be the explicit member-smoke recovery artifact."]
   }' > "${MANIFEST}"
 
 nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \

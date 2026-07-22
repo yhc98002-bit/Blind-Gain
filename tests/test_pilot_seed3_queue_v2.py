@@ -153,5 +153,6 @@ def test_seed3_launcher_is_registered_gpu_inert_and_syntax_valid() -> None:
     assert "sealed-seed2-lifecycle-manifest" in source
     assert "m6-smoke-queue-manifest" in source
     assert "pilot_followup_evaluation_recovery_lifecycle" in source
-    assert 'job_type: "m3_seed3_training_capacity_queue_v3"' in source
+    assert 'job_type: "m3_seed3_training_capacity_queue_v4"' in source
+    assert '(.job_type == "m6_registered_smoke_member_recovery_v1")' in source
     assert "performance_values_opened: false" in source
