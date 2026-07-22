@@ -1,7 +1,7 @@
 # Seed-3 Remaining-Arms an29 Queue V1
 
 Status:
-- Implementation complete and tested; launch is pending the code commit.
+- Implementation complete, tested, committed, and launched as `experiments/runs/pilot_seed3_remaining_an29_queue_login_20260722T160247Z`.
 - The queue adopts the exact running seed-3 A1 and A2 records. It may launch only A2b followed by A3, and only on `an29` GPUs 0-3.
 - This is operational scheduling. It opens no performance values and makes no scientific gate decision.
 
@@ -13,6 +13,9 @@ Evidence:
 - Adopted A1: `experiments/runs/mech_a1_real_seed3_an29_20260722T050330Z` plus `experiments/runs/pilot_checkpoint_watch_mech_a1_real_seed3_login_20260722T050427Z`.
 - Adopted A2: `experiments/runs/mech_a2_gray_seed3_an12_20260722T145916Z` plus `experiments/runs/pilot_checkpoint_watch_mech_a2_gray_seed3_login_20260722T150017Z`.
 - Independent M5 reservation: `experiments/runs/m5_after_seed3_a2_lifecycle_login_20260722T154457Z`, fixed to `an12:0-3`.
+- Launch commit: `95aa293`.
+- Initial machine state: A1/A2 adopted, `launch_nodes=[an29]`, `reserved_training_nodes=[an12,an29]`, A2b/A3 pending, and `performance_values_opened=false`.
+- No A2b or A3 training directory existed after launch. The independent M5 lifecycle contract hash remained unchanged.
 
 Problems:
 - Retiring the superseded v5 outer scheduler removed the unsafe an12 race but also removed automatic launch coverage for A2b/A3.
@@ -33,6 +36,6 @@ Adversarial fixtures:
 - The dedicated launcher is syntax-checked and contains the exact two-adoption/an29-only command.
 
 Next actions:
-- Commit and launch the CPU-only queue while A1/A2 continue.
-- Verify its initial state adopts both runs, reserves an29, leaves A2b/A3 pending, and launches no child.
+- Keep the CPU-only queue waiting while A1/A2 continue; its initial adoption, reservation, and no-child checks pass.
+- When A1 plus its watcher finish, verify two stable an29 capacity polls and the exact A2b launch record.
 - Keep the M5 lifecycle and this queue independent; investigate rather than override any fail-closed condition.
