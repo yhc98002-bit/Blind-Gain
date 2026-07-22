@@ -1,0 +1,34 @@
+{
+  "schema_version": "blind-gains.failed-parent-watchers-retired.v2",
+  "status": "pass",
+  "retired_at_utc": "2026-07-22T15:13:33Z",
+  "parent_run": "experiments/runs/m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z",
+  "parent_status": "fail",
+  "parent_resume_boundary": 200,
+  "watchers": [
+    {
+      "run": "experiments/runs/m5_checkpoint_watch_login_20260721T161055Z",
+      "wrapper_pid": 2436180,
+      "worker_pid": 2436197,
+      "terminal_exit_code": -15
+    },
+    {
+      "run": "experiments/runs/m5_merged_relocation_watch_login_20260721T161055Z",
+      "wrapper_pid": 2436229,
+      "worker_pid": 2436234,
+      "terminal_exit_code": -15
+    }
+  ],
+  "checks": {
+    "exact_user_pxy1289": true,
+    "exact_process_group_match": true,
+    "exact_parent_run_in_command": true,
+    "step200_merge_complete": true,
+    "step200_evaluation_complete": true,
+    "step200_archive_complete": true,
+    "no_sigkill": true,
+    "seed3_a1_untouched": true
+  },
+  "performance_values_opened": false,
+  "reason": "The parent process ended at the verified step-200 operational boundary. Fresh bounded watchers must own each natural recovery segment to prevent duplicate step-250 processing."
+}

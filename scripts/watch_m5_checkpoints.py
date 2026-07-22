@@ -14,11 +14,22 @@ from scripts.watch_anchor_checkpoints import (
 
 ROOT = Path(__file__).resolve().parents[1]
 M5_STEPS = (150, 200, 250, 300, 350, 400)
+M5_RESUME_STEPS = frozenset({0, 100, 150, 200, 250, 300, 350})
 M5_CODE_BUNDLE_PATHS = (*CODE_BUNDLE_PATHS, ROOT / "scripts/watch_m5_checkpoints.py")
 
 
 def m5_code_bundle_hash() -> str:
     return code_bundle_hash(M5_CODE_BUNDLE_PATHS)
+
+
+def pending_m5_steps(resume_after_step: int, stop_after_step: int) -> tuple[int, ...]:
+    if resume_after_step not in M5_RESUME_STEPS:
+        raise ValueError("unsupported M5 resume-after step")
+    if stop_after_step not in M5_STEPS or stop_after_step <= resume_after_step:
+        raise ValueError("invalid M5 watcher stop step")
+    return tuple(
+        step for step in M5_STEPS if resume_after_step < step <= stop_after_step
+    )
 
 
 def main() -> None:
@@ -30,14 +41,13 @@ def main() -> None:
     parser.add_argument("--run-label", required=True)
     parser.add_argument("--expected-code-hash", required=True)
     parser.add_argument("--resume-after-step", type=int, default=0)
+    parser.add_argument("--stop-after-step", type=int, default=400)
     args = parser.parse_args()
     require_code_bundle(args.expected_code_hash, M5_CODE_BUNDLE_PATHS)
 
     # Evaluation and merged-checkpoint relocation are intentionally separate.
     # This queue only makes an immutable merge and enforces latest-raw retention.
-    if args.resume_after_step not in {0, 100, 150}:
-        raise ValueError("M5 resume-after step must be 0, 100, or 150")
-    for step in (item for item in M5_STEPS if item > args.resume_after_step):
+    for step in pending_m5_steps(args.resume_after_step, args.stop_after_step):
         process_step(
             run_root=args.run_root,
             archive_root=args.archive_root,

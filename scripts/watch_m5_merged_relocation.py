@@ -16,6 +16,19 @@ from scripts.watch_anchor_checkpoints import (
 ROOT = Path(__file__).resolve().parents[1]
 INTERMEDIATE_STEPS = (150, 200, 250, 300, 350)
 EVALUATED_STEPS = (150, 200, 300)
+RESUME_STEPS = frozenset({0, 100, 150, 200, 250, 300, 350})
+
+
+def pending_relocation_steps(resume_after_step: int, stop_after_step: int) -> tuple[int, ...]:
+    if resume_after_step not in RESUME_STEPS:
+        raise ValueError("unsupported M5 relocation resume step")
+    if stop_after_step not in {150, 200, 250, 300, 350, 400} or stop_after_step <= resume_after_step:
+        raise ValueError("invalid M5 relocation stop step")
+    return tuple(
+        step
+        for step in INTERMEDIATE_STEPS
+        if resume_after_step < step <= stop_after_step
+    )
 
 
 def _sha256(path: Path) -> str:
@@ -65,13 +78,11 @@ def main() -> None:
     parser.add_argument("--evaluation-marker-dir", type=Path, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
     parser.add_argument("--resume-after-step", type=int, default=0)
+    parser.add_argument("--stop-after-step", type=int, default=400)
     args = parser.parse_args()
     if args.poll_seconds < 10:
         raise ValueError("poll interval must be at least 10 seconds")
-    if args.resume_after_step not in {0, 100, 150}:
-        raise ValueError("M5 resume-after step must be 0, 100, or 150")
-
-    for step in (item for item in INTERMEDIATE_STEPS if item > args.resume_after_step):
+    for step in pending_relocation_steps(args.resume_after_step, args.stop_after_step):
         actor_dir = args.run_root / f"global_step_{step}" / "actor"
         wait_for_merge(actor_dir, args.poll_seconds)
         if step in EVALUATED_STEPS:

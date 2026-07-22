@@ -48,10 +48,12 @@ def test_m5_watchers_skip_the_already_archived_resume_step() -> None:
     relocation = (ROOT / "scripts/watch_m5_merged_relocation.py").read_text(encoding="utf-8")
     checkpoint_launcher = (ROOT / "scripts/launch_m5_checkpoint_watch.sh").read_text(encoding="utf-8")
     relocation_launcher = (ROOT / "scripts/launch_m5_merged_relocation_watch.sh").read_text(encoding="utf-8")
-    assert "item > args.resume_after_step" in checkpoint
-    assert "item > args.resume_after_step" in relocation
+    assert "pending_m5_steps(args.resume_after_step, args.stop_after_step)" in checkpoint
+    assert "pending_relocation_steps(args.resume_after_step, args.stop_after_step)" in relocation
     assert "--resume-after-step ${RESUME_AFTER}" in checkpoint_launcher
     assert "--resume-after-step ${RESUME_AFTER}" in relocation_launcher
+    assert "--stop-after-step ${STOP_AFTER}" in checkpoint_launcher
+    assert "--stop-after-step ${STOP_AFTER}" in relocation_launcher
 
 
 def test_m5_recovery_shell_files_parse() -> None:

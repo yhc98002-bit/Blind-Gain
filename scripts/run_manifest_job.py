@@ -8,8 +8,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.finalize_run_manifest import finalize_manifest  # noqa: E402
 
 
 def run_manifest_job(manifest_path: Path, log_path: Path) -> int:
@@ -21,21 +23,35 @@ def run_manifest_job(manifest_path: Path, log_path: Path) -> int:
     environment["PYTHONPATH"] = "."
     environment["PYTHONUNBUFFERED"] = "1"
     with log_path.open("ab", buffering=0) as log:
-        result = subprocess.run(
-            command,
-            shell=True,
-            executable="/bin/bash",
-            cwd=ROOT,
-            env=environment,
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            check=False,
-        )
-    subprocess.run(
-        [sys.executable, str(ROOT / "scripts" / "finalize_run_manifest.py"), str(manifest_path), str(result.returncode)],
-        cwd=ROOT,
-        check=True,
-    )
+        try:
+            result = subprocess.run(
+                command,
+                shell=True,
+                executable="/bin/bash",
+                cwd=ROOT,
+                env=environment,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+        except OSError as error:
+            exit_code = 126
+            message = (
+                f"run_manifest_job could not spawn the registered command: "
+                f"{type(error).__name__}: {error}\n"
+            )
+            log.write(message.encode("utf-8", errors="replace"))
+            finalize_manifest(
+                manifest_path,
+                exit_code,
+                runner_error={
+                    "phase": "spawn_registered_command",
+                    "error_type": type(error).__name__,
+                    "message": str(error),
+                },
+            )
+            return exit_code
+    finalize_manifest(manifest_path, result.returncode)
     return result.returncode
 
 
