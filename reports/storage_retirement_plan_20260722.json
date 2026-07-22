@@ -1,0 +1,33 @@
+{
+  "schema_version": "blind-gains.superseded-archive-retirement-plan.v1",
+  "status": "approved_for_exact_retirement",
+  "created_at_utc": "2026-07-22T05:28:01Z",
+  "reason": "Reclaim shared quota from two failed and superseded seed-1 archives before preserving completed seed-2 scratch archives.",
+  "entries": [
+    {
+      "destination": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive/login_tmp_checkpoint_archive/mech_a1_real_an12_20260713T031454Z",
+      "source_symlink": "/tmp/blindgain_checkpoint_archive/mech_a1_real_an12_20260713T031454Z",
+      "checksum_manifest": "reports/storage_relocations/20260716/login_tmp_mech_a1_real_an12_20260713T031454Z_source.sha256",
+      "failed_run_manifest": "experiments/runs/mech_a1_real_an12_20260713T031454Z/run_manifest.json",
+      "replacement_run_manifest": "experiments/runs/mech_a1_real_resume60_an12_20260714T080855Z/run_manifest.json",
+      "expected_files": 39,
+      "expected_bytes": 57249533660,
+      "classification": "failed seed-1 A1 run superseded by the complete seed-1 A1 resume60 run"
+    },
+    {
+      "destination": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive/login_tmp_checkpoint_archive/mech_a3_caption_an29_20260713T033039Z",
+      "source_symlink": "/tmp/blindgain_checkpoint_archive/mech_a3_caption_an29_20260713T033039Z",
+      "checksum_manifest": "reports/storage_relocations/20260716/login_tmp_mech_a3_caption_an29_20260713T033039Z_source.sha256",
+      "failed_run_manifest": "experiments/runs/mech_a3_caption_an29_20260713T033039Z/run_manifest.json",
+      "replacement_run_manifest": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z/run_manifest.json",
+      "expected_files": 24,
+      "expected_bytes": 49101916160,
+      "classification": "failed seed-1 A3 run superseded by the complete seed-1 A3 resume20 run"
+    }
+  ],
+  "total_files": 63,
+  "total_bytes": 106351449820,
+  "total_gib": 99.0475,
+  "active_run_paths_included": false,
+  "model_or_dataset_paths_included": false
+}
