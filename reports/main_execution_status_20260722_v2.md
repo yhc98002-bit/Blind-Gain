@@ -4,6 +4,7 @@ Status:
 - Seed 2 remains structurally complete. M3 remains open because seed 3 and the registered three-seed summary are pending.
 - Seed-3 A1 is running on `an29` GPUs 0-3 and had reached logged step 25 at `2026-07-22T15:22Z`. Seed-3 A2-gray is running on `an12` GPUs 0-3; it was in its first rollout/optimizer cycle with logged step 0 at the same check. Both logs advanced and neither tail matched the registered fatal patterns.
 - M5 step 200 is fully saved, merged, evaluated, hash-verified, and archived. The former process was deliberately handed off at that boundary without `SIGKILL`; M5 is now waiting for A2 to release `an12`, not failed at the checkpoint level.
+- The dedicated M5 lifecycle queue is active on the login node in `waiting_seed3_a2_release`; it has launched no GPU child.
 - A2b and A3 are pending. No seed-3 performance value has been opened.
 
 Evidence:
@@ -15,6 +16,7 @@ Evidence:
 - M5 boundary handoff: `experiments/runs/m5_step200_handoff_login_20260722T145418Z`.
 - Segmented recovery design: `reports/m5_segmented_recovery_plan_v1.md`; focused segment/recovery tests pass.
 - New M5-after-A2 lifecycle implementation: `scripts/run_m5_after_seed3_a2_queue.py`, `scripts/launch_m5_after_seed3_a2_queue.sh`, and `tests/test_m5_after_seed3_a2_queue.py`; 64 focused queue/segment/watcher/guard tests pass.
+- Active lifecycle: `experiments/runs/m5_after_seed3_a2_lifecycle_login_20260722T154457Z`; launch commit `b374463ca1bc34aa4d9daf265fd9667dc53e3876`.
 - Shared Lustre project-quota snapshot at `2026-07-22T15:22:52Z`: 1,358,143,307,776 bytes used and 252,469,428,224 bytes free under the conservative 1,500-GiB allocation.
 - A2-node host memory at the same check: 705,972,724 KiB available. A1-node host memory: 463,862,164 KiB available.
 - Seed-2 archive preservation: `experiments/runs/seed2_archive_preservation_execute_login_20260722T143937Z` and `reports/storage_preservation_seed2_20260722.md`.
@@ -32,6 +34,6 @@ Decision:
 - Any child failure, identity mismatch, contract-hash change, storage refusal, insufficient host memory, missing watcher, or incomplete registered evaluation stops the queue without signaling a trainer or launching another pilot arm.
 
 Next actions:
-- Commit the lifecycle queue and launch it in waiting state while A1/A2 continue.
-- Observe its initial state and confirm it has launched no child job before A2 release.
+- Keep the lifecycle in waiting state while A1/A2 continue; its initial noninterference and no-child checks pass.
+- At A2 release, verify the first storage-refresh, restore, preflight, and segment-200-to-250 transition from immutable queue artifacts.
 - After A1 frees `an29`, schedule remaining seed-3 A2b/A3 without disturbing M5; keep values closed until all four arms complete and the unified readout opens them.

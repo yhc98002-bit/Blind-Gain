@@ -1,7 +1,7 @@
 # M5 After Seed-3 A2 Lifecycle V1
 
 Status:
-- Implementation complete and tested; launch remains pending the code commit.
+- Implementation complete, tested, committed, and launched as `experiments/runs/m5_after_seed3_a2_lifecycle_login_20260722T154457Z`.
 - The lifecycle is GPU-inert while A2 runs. It cannot launch a pilot arm and cannot signal or terminate a process.
 - This is an operational recovery mechanism. It does not alter M5's model, data, native reward, optimizer state, registered evaluations, or terminal step 400.
 
@@ -12,6 +12,9 @@ Evidence:
 - Verification: 64 tests pass across the new queue, segmented M5 recovery, checkpoint/evaluation watchers, storage guards, and in-process run-manifest finalization.
 - Exact source boundary: `experiments/runs/m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z`, step 200.
 - Exact handoff: `experiments/runs/m5_step200_handoff_login_20260722T145418Z`.
+- Launch commit: `b374463ca1bc34aa4d9daf265fd9667dc53e3876`.
+- Initial queue state: `waiting_seed3_a2_release`; exact A2 trainer and watcher liveness both pass, every M5 segment is pending, and no restore/preflight/segment child exists.
+- Post-launch noninterference check: A1 advanced from logged step 25 to 26 and A2 advanced from step 0 to 1; their original four-GPU allocations remained unchanged.
 
 Problems:
 - The previous uninterrupted M5 process accumulated about 7.25 GiB of host memory per optimizer step. Continuing from step 200 to 400 in one process is unsafe even when GPU memory is available.
@@ -34,6 +37,6 @@ Adversarial fixtures:
 - A `running` child whose exact wrapper identity is absent for three consecutive polls is failed closed instead of being watched forever.
 
 Next actions:
-- Commit the implementation and launch the queue against the exact active A2 and verified M5 inputs.
-- Confirm the initial state is `waiting_seed3_a2_release` and no M5 restore/preflight/segment child exists.
 - Continue read-only A1/A2 monitoring; inspect queue artifacts if any fail-closed condition fires.
+- After successful A2 plus watcher completion, verify that the queue refreshes storage, restores step 200, passes the new Ray preflight, and launches only segment 200-250.
+- Keep A2b/A3 scheduling separate from this queue.
