@@ -1,0 +1,162 @@
+{
+  "checks": {
+    "configs_differ_only_in_registered_fields": true,
+    "cp_run_passed": true,
+    "member_run_passed": true,
+    "same_single_node_and_gpu_set": true,
+    "sequential_nonoverlapping_runs": true
+  },
+  "cp": {
+    "artifact_sha256": {
+      "effective_config": "3dfcd9d8f2a9f654d51a0441166820d7b06ca4cf083bff97f781a065c00e4014",
+      "experiment_log": "6a7faa6b9eee6eb82cb93a1da1a9ac1b46fd7cf80090f326003348961fc057b2",
+      "manifest": "89fa4db09316f21b72cbc5a6e26533ce3ba0f2016ac1804edb43670fa38e532d",
+      "training_log": "a848be86913c57341b4cef17d22e7a95d147c496a5722098cee6e98ecbab6cf8"
+    },
+    "checkpoint_inventory": {
+      "bytes": 16282047374,
+      "files": 20,
+      "sha256": {
+        "actor/huggingface/added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "actor/huggingface/chat_template.jinja": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb",
+        "actor/huggingface/config.json": "67bebe299d8c1738a78882055b931d1fe04f36fa73949544971da2dfa5c6f41f",
+        "actor/huggingface/generation_config.json": "aa3fc9f0125d42f4658eb4f1b71f25051c33d2bf40540b0aecb4f850a042e67a",
+        "actor/huggingface/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "actor/huggingface/preprocessor_config.json": "276e1dbe46dd567fce6e587665266ede535f42ab08d46f3d7febea17cb37abcd",
+        "actor/huggingface/special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+        "actor/huggingface/tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "actor/huggingface/tokenizer_config.json": "f64d944a98d2d9901581be7a5f36b626ff2dc0d5b7d5dedb412412ca39606df0",
+        "actor/huggingface/video_preprocessor_config.json": "2e82d384445cd3056b851d36b6481b9a9df99362b85e9d666317c1f0331fc6aa",
+        "actor/huggingface/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+        "actor/model_world_size_8_rank_0.pt": "c29601d028417be9019cfd232f70fa51b3b9cb3f21c852896ea04b5dc5ec6591",
+        "actor/model_world_size_8_rank_1.pt": "c00c58a4a9a978339808f2f812ce564c0579e4050e1bc5d2460aafc2660dcfaa",
+        "actor/model_world_size_8_rank_2.pt": "030786d053257ad2fe6f87f21c04fab0a33099c12e52e1d1a60df7173613f4f0",
+        "actor/model_world_size_8_rank_3.pt": "8112f15182d1cc29f2c3ae7cd4f7b66fe8f5bf99286c8e7284391cca374f0dad",
+        "actor/model_world_size_8_rank_4.pt": "c36871d380823a492f0a9072dbd25bd20e56c02f65850dc54d180b01762b7023",
+        "actor/model_world_size_8_rank_5.pt": "2ad7079a3c15fd9550792ddcb38c9eb79b5bc3dadbc8db08305dad60f573ab0f",
+        "actor/model_world_size_8_rank_6.pt": "0f56b1d9d1a3800b8edd05179ee2954b60d69093e13096001a4b652e381867a4",
+        "actor/model_world_size_8_rank_7.pt": "469ed06d149a7b264adb29f8d8b8c5f02ecea3d8a23bb3b9088dec069fc7d4df",
+        "dataloader.pt": "a9496fdc0e599af27e46957929556fdbde6075cd80bef0c8f073791487a8f47f"
+      }
+    },
+    "checks": {
+      "actor_update_metrics_present": true,
+      "config_mode_reward_and_budget_exact": true,
+      "easyr1_revision_and_patch_exact": true,
+      "effective_config_hash_exact": true,
+      "expected_reward_metrics_present": true,
+      "fixed_data_hash_exact": true,
+      "manifest_complete_exit0": true,
+      "manifest_job_and_mode_exact": true,
+      "model_only_checkpoint_nonempty": true,
+      "one_finite_actor_reward_training_row": true,
+      "one_optimizer_step_only": true,
+      "registration_marker_exact": true,
+      "runtime_advantage_branch_evidence_exact": true,
+      "single_node_eight_gpu_tp1": true,
+      "training_log_present_without_fatal_signature": true
+    },
+    "end_time_utc": "2026-07-22T04:16:35Z",
+    "errors": [],
+    "gpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "manifest": "experiments/runs/mini_a5_cp_plumbing_smoke_an29_20260722T041049Z/run_manifest.json",
+    "mode": "cp",
+    "node": "an29",
+    "runtime_markers": [
+      {
+        "advantages_finite": true,
+        "pair_count": 8,
+        "rollout_counts": [
+          5
+        ],
+        "row_count": 80
+      }
+    ],
+    "start_time_utc": "2026-07-22T04:10:49Z",
+    "status": "pass",
+    "training_log_rows": 1
+  },
+  "main_optimizer_steps_authorized_by_this_audit": 0,
+  "member": {
+    "artifact_sha256": {
+      "effective_config": "f94f8b4426d11f9eb8f183640bfeeca8c6258801125477f759b46e488ef2e118",
+      "experiment_log": "80a799e789430e5f9a1b547dad137498318cb903db66d3dae5c4ab8699f5d17b",
+      "manifest": "7fe6962322fde13693ca1820f89c0b5569d3a4ec7ffe60501b827caa4a035b6f",
+      "training_log": "324c98028ccff67669f6a2ed5eac4f9cedc8b2f74e06f56972fbb87cac01c641"
+    },
+    "checkpoint_inventory": {
+      "bytes": 16282047374,
+      "files": 20,
+      "sha256": {
+        "actor/huggingface/added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "actor/huggingface/chat_template.jinja": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb",
+        "actor/huggingface/config.json": "67bebe299d8c1738a78882055b931d1fe04f36fa73949544971da2dfa5c6f41f",
+        "actor/huggingface/generation_config.json": "aa3fc9f0125d42f4658eb4f1b71f25051c33d2bf40540b0aecb4f850a042e67a",
+        "actor/huggingface/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "actor/huggingface/preprocessor_config.json": "276e1dbe46dd567fce6e587665266ede535f42ab08d46f3d7febea17cb37abcd",
+        "actor/huggingface/special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+        "actor/huggingface/tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "actor/huggingface/tokenizer_config.json": "f64d944a98d2d9901581be7a5f36b626ff2dc0d5b7d5dedb412412ca39606df0",
+        "actor/huggingface/video_preprocessor_config.json": "2e82d384445cd3056b851d36b6481b9a9df99362b85e9d666317c1f0331fc6aa",
+        "actor/huggingface/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+        "actor/model_world_size_8_rank_0.pt": "44a43a9aeede08a6021035128168b237ce92559237540e54641ee10ade3bc123",
+        "actor/model_world_size_8_rank_1.pt": "3407571bbcbcd008af9719be7547c9c34ce806f950edcd61807ebf9bd75d9a66",
+        "actor/model_world_size_8_rank_2.pt": "ec5b6ab6f8c2b3f1fc8790a602c5a3f352d4db9edd575592bd55a8632f83fc10",
+        "actor/model_world_size_8_rank_3.pt": "80dd08229f9df6a48a35483a728fa63304756fcadfbb5cac6e326f099a815a29",
+        "actor/model_world_size_8_rank_4.pt": "8a35ce16570f772fd607d3534009ab0cac3c226433c5019509bb0b5b7695f493",
+        "actor/model_world_size_8_rank_5.pt": "241a2d63ae8a8d146596ee3c87feb8794600f0208018f8da084b321c7a2dfb3d",
+        "actor/model_world_size_8_rank_6.pt": "97401b9d8500062bbbdf6b5663c33a34aeae3cd79c0bff049ef7ffdecd6326e2",
+        "actor/model_world_size_8_rank_7.pt": "3b15d9612a532752f0932277d1402ccaf8e9e72d6948257fc8b4e19da2596d94",
+        "dataloader.pt": "35c445e48c9111df3efb6b19951fd659615b5fcc011872e3086d047e9a2295cb"
+      }
+    },
+    "checks": {
+      "actor_update_metrics_present": true,
+      "config_mode_reward_and_budget_exact": true,
+      "easyr1_revision_and_patch_exact": true,
+      "effective_config_hash_exact": true,
+      "expected_reward_metrics_present": true,
+      "fixed_data_hash_exact": true,
+      "manifest_complete_exit0": true,
+      "manifest_job_and_mode_exact": true,
+      "model_only_checkpoint_nonempty": true,
+      "one_finite_actor_reward_training_row": true,
+      "one_optimizer_step_only": true,
+      "registration_marker_exact": true,
+      "runtime_advantage_branch_evidence_exact": true,
+      "single_node_eight_gpu_tp1": true,
+      "training_log_present_without_fatal_signature": true
+    },
+    "end_time_utc": "2026-07-22T04:59:23Z",
+    "errors": [],
+    "gpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "manifest": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/mini_a5_member_plumbing_smoke_an29_20260722T045328Z/run_manifest.json",
+    "mode": "member",
+    "node": "an29",
+    "runtime_markers": [],
+    "start_time_utc": "2026-07-22T04:53:29Z",
+    "status": "pass",
+    "training_log_rows": 1
+  },
+  "schema_version": "blind-gains.mini-a5-plumbing-smoke-audit.v1",
+  "scientific_gate_decision": null,
+  "status": "pass"
+}
