@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 import pytest
 import yaml
@@ -41,6 +42,128 @@ def test_missing_arm_fails_before_any_scientific_row_is_opened(
             root=tmp_path,
             artifact_dir=tmp_path / "artifacts",
         )
+
+
+def _followup_config(lifecycle_manifest: str, children_hash: str) -> dict:
+    return {
+        "schema_version": builder.FOLLOWUP_CONFIG_SCHEMA_VERSION,
+        "seed": 2,
+        "bootstrap_draws": 5000,
+        "bootstrap_seed": 20260716,
+        "evaluation_lifecycle_manifest": lifecycle_manifest,
+        "evaluation_lifecycle_children_sha256": children_hash,
+        "support_sharpening_candidates": False,
+        "training_runs": {arm: "missing" for arm in builder.ARMS},
+        "training_metric_segments": {
+            arm: [
+                {
+                    "path": "missing",
+                    "sha256": "0" * 64,
+                    "start_step": 1,
+                    "end_step": 100,
+                }
+            ]
+            for arm in builder.ARMS
+        },
+        "geo_baselines": {arm: "missing" for arm in builder.ARMS},
+        "geo_audits": {arm: "missing" for arm in builder.ARMS},
+        "r19_markers": {
+            arm: {"60": "missing", "100": "missing"} for arm in builder.ARMS
+        },
+        "r19_base_run": "missing",
+    }
+
+
+def test_running_followup_lifecycle_fails_before_prediction_rows_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = tmp_path / "experiments" / "runs" / "lifecycle"
+    run.mkdir(parents=True)
+    manifest = run / "run_manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "job_type": "pilot_followup_evaluation_recovery_lifecycle",
+                "pilot_seed": 2,
+                "status": "running",
+                "performance_values_opened": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+    config = _followup_config(str(manifest.relative_to(tmp_path)), "0" * 64)
+    monkeypatch.setattr(
+        builder,
+        "_read_jsonl",
+        lambda _path: pytest.fail("prediction row opened before lifecycle completion"),
+    )
+
+    with pytest.raises(ValueError, match="lifecycle is not complete"):
+        builder.preflight_inputs(config, tmp_path)
+
+
+def test_duplicate_endpoint_lifecycle_cannot_open_prediction_rows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = tmp_path / "experiments" / "runs" / "lifecycle"
+    run.mkdir(parents=True)
+    children = run / "children.json"
+    output = run / "lifecycle_complete.json"
+    manifest = run / "run_manifest.json"
+    children.write_text("{}\n", encoding="utf-8")
+    children_hash = builder._sha256(children)
+    duplicate = {
+        "arm": "a1_real",
+        "global_step": 60,
+        "geo3k_row_count": 601,
+        "r19_queue_manifest_sha256": "1" * 64,
+        "r19_state_sha256": "2" * 64,
+        "r19_marker_sha256": "3" * 64,
+        "geo3k_queue_manifest_sha256": "4" * 64,
+        "geo3k_state_sha256": "5" * 64,
+        "geo3k_audit_sha256": "6" * 64,
+    }
+    output.write_text(
+        json.dumps(
+            {
+                "status": "complete",
+                "seed": 2,
+                "performance_values_opened": False,
+                "children_manifest": str(children.relative_to(tmp_path)),
+                "children_manifest_sha256": children_hash,
+                "endpoints": [duplicate] * 8,
+                "checks": {"eight_endpoint_matrix": True},
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest.write_text(
+        json.dumps(
+            {
+                "job_type": "pilot_followup_evaluation_recovery_lifecycle",
+                "pilot_seed": 2,
+                "status": "complete",
+                "exit_code": 0,
+                "artifacts_exist": True,
+                "performance_values_opened": False,
+                "data_manifest_hash": children_hash,
+                "expected_artifacts": [
+                    str(children.relative_to(tmp_path)),
+                    str(output.relative_to(tmp_path)),
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    config = _followup_config(str(manifest.relative_to(tmp_path)), children_hash)
+    monkeypatch.setattr(
+        builder,
+        "_read_jsonl",
+        lambda _path: pytest.fail("prediction row opened through forged lifecycle"),
+    )
+
+    with pytest.raises(ValueError, match="sealed 8/8 gate"):
+        builder.preflight_inputs(config, tmp_path)
 
 
 def test_paired_difference_uses_item_level_changes() -> None:

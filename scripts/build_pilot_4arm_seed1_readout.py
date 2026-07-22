@@ -31,6 +31,7 @@ from src.eval.scorer_accounting import strict_gain_decomposition
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = "blind-gains.pilot-fourarm-seed1-readout.v1"
 CONFIG_SCHEMA_VERSION = "blind-gains.pilot-fourarm-seed1-readout-config.v1"
+FOLLOWUP_CONFIG_SCHEMA_VERSION = "blind-gains.pilot-fourarm-followup-readout-config.v1"
 ARMS = ("a1_real", "a2_gray", "a2b_noimage", "a3_caption")
 CONDITIONS = {
     "a1_real": "real",
@@ -142,12 +143,16 @@ def _exact_arms(value: Any, label: str) -> dict[str, Any]:
 
 
 def validate_config_structure(config: dict[str, Any]) -> None:
-    if config.get("schema_version") != CONFIG_SCHEMA_VERSION:
+    schema_version = config.get("schema_version")
+    seed = config.get("seed")
+    if schema_version not in {CONFIG_SCHEMA_VERSION, FOLLOWUP_CONFIG_SCHEMA_VERSION}:
         raise ValueError("unsupported four-arm readout config schema")
-    if config.get("seed") != 1:
-        raise ValueError("M2 readout is pinned to seed 1")
+    if schema_version == CONFIG_SCHEMA_VERSION and seed != 1:
+        raise ValueError("seed-1 readout config is pinned to seed 1")
+    if schema_version == FOLLOWUP_CONFIG_SCHEMA_VERSION and seed not in {2, 3}:
+        raise ValueError("follow-up readout config requires seed 2 or 3")
     if config.get("bootstrap_draws") != 5000:
-        raise ValueError("M2 readout is pinned to 5000 bootstrap draws")
+        raise ValueError("pilot readout is pinned to 5000 bootstrap draws")
     for label in (
         "training_runs",
         "training_metric_segments",
@@ -175,6 +180,14 @@ def validate_config_structure(config: dict[str, Any]) -> None:
             raise ValueError(f"{arm} requires exact R19 markers at steps 60 and 100")
     if not isinstance(config.get("r19_base_run"), str):
         raise ValueError("r19_base_run is required")
+    if schema_version == FOLLOWUP_CONFIG_SCHEMA_VERSION:
+        if not isinstance(config.get("evaluation_lifecycle_manifest"), str):
+            raise ValueError("follow-up readout requires an evaluation lifecycle manifest")
+        children_hash = config.get("evaluation_lifecycle_children_sha256")
+        if not isinstance(children_hash, str) or len(children_hash) != 64:
+            raise ValueError("follow-up readout requires the lifecycle children hash")
+        if config.get("support_sharpening_candidates") is not False:
+            raise ValueError("follow-up seeds must not mint new M10 candidate sets")
 
 
 def _validate_complete_manifest(path: Path, expected_job_type: str) -> dict[str, Any]:
@@ -190,13 +203,111 @@ def _validate_complete_manifest(path: Path, expected_job_type: str) -> dict[str,
     return manifest
 
 
+def _validate_followup_lifecycle_gate(
+    config: dict[str, Any], root: Path
+) -> dict[str, Any] | None:
+    """Validate the sealed 8/8 gate before any prediction row can be opened."""
+    if config["schema_version"] == CONFIG_SCHEMA_VERSION:
+        return None
+    seed = int(config["seed"])
+    manifest_path = _resolve(root, str(config["evaluation_lifecycle_manifest"]))
+    manifest = _read_json(manifest_path)
+    expected_job_types = {
+        "pilot_followup_evaluation_lifecycle",
+        "pilot_followup_evaluation_recovery_lifecycle",
+    }
+    expected_artifacts = manifest.get("expected_artifacts")
+    checks = {
+        "job_type": manifest.get("job_type") in expected_job_types,
+        "pilot_seed": manifest.get("pilot_seed") == seed,
+        "status": manifest.get("status") == "complete",
+        "exit_code": manifest.get("exit_code") == 0,
+        "artifacts_exist": manifest.get("artifacts_exist") is True,
+        "performance_values_unopened": manifest.get("performance_values_opened") is False,
+        "two_expected_artifacts": isinstance(expected_artifacts, list)
+        and len(expected_artifacts) == 2,
+    }
+    if not all(checks.values()):
+        raise ValueError(f"follow-up evaluation lifecycle is not complete: {checks}")
+
+    children_path = _resolve(root, str(expected_artifacts[0]))
+    output_path = _resolve(root, str(expected_artifacts[1]))
+    expected_children_hash = str(config["evaluation_lifecycle_children_sha256"])
+    children_hash = _sha256(children_path)
+    if (
+        children_hash != expected_children_hash
+        or manifest.get("data_manifest_hash") != expected_children_hash
+    ):
+        raise ValueError("follow-up lifecycle children hash mismatch")
+    output = _read_json(output_path)
+    output_checks = output.get("checks")
+    endpoints = output.get("endpoints")
+    observed_endpoints = (
+        {
+            (item.get("arm"), item.get("global_step"))
+            for item in endpoints
+            if isinstance(item, dict)
+        }
+        if isinstance(endpoints, list)
+        else set()
+    )
+    expected_endpoints = {(arm, step) for arm in ARMS for step in (60, 100)}
+    if (
+        output.get("status") != "complete"
+        or output.get("seed") != seed
+        or output.get("performance_values_opened") is not False
+        or not isinstance(endpoints, list)
+        or len(endpoints) != 8
+        or observed_endpoints != expected_endpoints
+        or not all(
+            isinstance(item, dict)
+            and item.get("geo3k_row_count") == 601
+            and all(
+                isinstance(item.get(field), str) and len(item[field]) == 64
+                for field in (
+                    "r19_queue_manifest_sha256",
+                    "r19_state_sha256",
+                    "r19_marker_sha256",
+                    "geo3k_queue_manifest_sha256",
+                    "geo3k_state_sha256",
+                    "geo3k_audit_sha256",
+                )
+            )
+            for item in endpoints
+        )
+        or not isinstance(output_checks, dict)
+        or not output_checks
+        or not all(output_checks.values())
+        or _resolve(root, str(output.get("children_manifest"))) != children_path
+        or output.get("children_manifest_sha256") != expected_children_hash
+    ):
+        raise ValueError("follow-up lifecycle output did not pass the sealed 8/8 gate")
+    return {
+        "manifest": manifest_path,
+        "children": children_path,
+        "output": output_path,
+        "payload": output,
+    }
+
+
 def preflight_inputs(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
     """Validate every arm before any scientific per-item row is opened."""
     validate_config_structure(config)
+    lifecycle = _validate_followup_lifecycle_gate(config, root)
+    seed = int(config["seed"])
+    training_job_type = (
+        "l13_mechanical_pilot_arm" if seed == 1 else "m3_mechanical_pilot_arm"
+    )
+    geo_job_type = (
+        "m2_pilot_geo3k_step100_eval"
+        if seed == 1
+        else "m3_pilot_geo3k_checkpoint_eval"
+    )
     resolved: dict[str, Any] = {
         "training": {},
         "geo": {},
         "r19": {},
+        "lifecycle": lifecycle,
     }
     prereg = root / "reports/preregistration_pilot_v1.md"
     expected_prereg = str(config.get("preregistration_sha256", ""))
@@ -207,12 +318,12 @@ def preflight_inputs(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any
         training_run = _resolve(root, str(config["training_runs"][arm]))
         training_manifest_path = training_run / "run_manifest.json"
         training = _validate_complete_manifest(
-            training_manifest_path, "l13_mechanical_pilot_arm"
+            training_manifest_path, training_job_type
         )
         identity = {
             "arm": arm,
             "image_condition": CONDITIONS[arm],
-            "seed": 1,
+            "seed": seed,
         }
         if any(training.get(key) != value for key, value in identity.items()):
             raise ValueError(f"training identity mismatch for {arm}")
@@ -258,7 +369,7 @@ def preflight_inputs(config: dict[str, Any], root: Path = ROOT) -> dict[str, Any
         if _sha256(evaluation_manifest_path) != audit.get("run_manifest_sha256"):
             raise ValueError(f"Geometry3K manifest hash mismatch for {arm}")
         evaluation = _validate_complete_manifest(
-            evaluation_manifest_path, "m2_pilot_geo3k_step100_eval"
+            evaluation_manifest_path, geo_job_type
         )
         if (
             evaluation.get("arm") != arm
@@ -825,6 +936,12 @@ def _fmt_estimate(summary: dict[str, Any]) -> str:
     return f"{summary['estimate']:.4f} [{low:.4f}, {high:.4f}]"
 
 
+def _output_schema_version(seed: int) -> str:
+    if seed == 1:
+        return SCHEMA_VERSION
+    return f"blind-gains.pilot-fourarm-seed{seed}-readout.v1"
+
+
 def _primary_geometry_scope(r19: dict[str, Any]) -> str:
     scope = str(
         r19.get("primary_endpoint_scope", f"category:{R19_GEOMETRY_CATEGORY}")
@@ -840,15 +957,16 @@ def _primary_geometry_scope(r19: dict[str, Any]) -> str:
 
 
 def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
+    seed = int(payload["seed"])
     geo = payload["geo3k"]
     r19 = payload["fliptrack_r19"]
     resources = payload["training_resources"]
     geometry_scope = _primary_geometry_scope(r19)
     lines = [
-        "# Pilot Four-Arm Seed-1 Results V1",
+        f"# Pilot Four-Arm Seed-{seed} Results V1",
         "",
         "Status:",
-        "- Registered seed-1 readout: `complete`.",
+        f"- Registered seed-{seed} readout: `complete`.",
         "- This report computes registered analyses only and makes no PI gate decision.",
         "- Proposal-A4 text-only transfer was not launched and is outside Paper-1 scope.",
         "",
@@ -1007,31 +1125,48 @@ def render_markdown(payload: dict[str, Any], machine_path: Path) -> str:
     lines.extend(
         [
             "",
-            "## Support-Sharpening Candidates",
-            "",
-            "| Arm | Base 0/16, greedy wrong -> step-100 correct | Candidate artifact |",
-            "|---|---:|---|",
         ]
     )
-    for arm in ARMS:
-        row = payload["support_sharpening"][arm]
-        lines.append(
-            f"| {DISPLAY_NAMES[arm]} | {row['candidate_count']} | `{row['candidate_artifact']}` |"
+    if seed == 1:
+        lines.extend(
+            [
+                "## Support-Sharpening Candidates",
+                "",
+                "| Arm | Base 0/16, greedy wrong -> step-100 correct | Candidate artifact |",
+                "|---|---:|---|",
+            ]
+        )
+        for arm in ARMS:
+            row = payload["support_sharpening"][arm]
+            lines.append(
+                f"| {DISPLAY_NAMES[arm]} | {row['candidate_count']} | "
+                f"`{row['candidate_artifact']}` |"
+            )
+        lines.extend(
+            [
+                "",
+                "The registered 64-sample frozen-base follow-up is reported separately under M10; candidate selection here does not claim that RL created or taught a capability.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "## Support-Sharpening",
+                "",
+                "- No new M10 candidate set is minted from a follow-up seed; the registered frozen seed-1 candidate sets remain authoritative.",
+            ]
         )
     lines.extend(
         [
             "",
-            "The registered 64-sample frozen-base follow-up is reported separately under M10; candidate selection here does not claim that RL created or taught a capability.",
-            "",
             "Problems:",
-            "- Seed dispersion is unavailable in this one-seed pilot and item-level intervals do not quantify run-to-run RL variance.",
-            "- M10 64-sample support-sharpening follow-up remains pending for the listed candidates.",
+            "- This single-seed report does not by itself quantify run-to-run RL variance; the registered multi-seed summary remains pending.",
             "",
             "Decision:",
             "- None. PIs interpret the registered estimands and decide subsequent gates.",
             "",
             "Next actions:",
-            "- Run the registered M10 follow-up and launch seed-2 plus M5 according to PI priority.",
+            "- Complete the remaining registered pilot seeds and build the pooled descriptive summary.",
             "- Keep R19/R20 unpooled and preserve all raw per-item artifacts.",
         ]
     )
@@ -1066,37 +1201,41 @@ def build_readout(
     if artifact_dir.exists():
         raise FileExistsError(f"refusing to overwrite artifact directory: {artifact_dir}")
     artifact_dir.mkdir(parents=True)
-    support: dict[str, Any] = {}
-    for arm in ARMS:
-        baseline, post = geo_rows[arm]
-        adapted = [
-            {
-                **row,
-                "step0_acc_final": bool(before["greedy_canonical_correct"]),
-                "target_step": 100,
-                "target_acc_final": bool(row["acc_final"]),
+    generate_support = bool(config.get("support_sharpening_candidates", True))
+    support: dict[str, Any] = (
+        {} if generate_support else {"status": "seed1_candidate_sets_remain_authoritative"}
+    )
+    if generate_support:
+        for arm in ARMS:
+            baseline, post = geo_rows[arm]
+            adapted = [
+                {
+                    **row,
+                    "step0_acc_final": bool(before["greedy_canonical_correct"]),
+                    "target_step": 100,
+                    "target_acc_final": bool(row["acc_final"]),
+                }
+                for before, row in zip(baseline, post)
+            ]
+            candidates = build_resampling_candidates(
+                baseline,
+                adapted,
+                arm=arm,
+                condition=CONDITIONS[arm],
+                target_step=100,
+            )
+            candidate_path = artifact_dir / f"support_candidates_{arm}.jsonl"
+            candidate_path.write_text(
+                "".join(json.dumps(row, sort_keys=True) + "\n" for row in candidates),
+                encoding="utf-8",
+            )
+            support[arm] = {
+                "candidate_count": len(candidates),
+                "candidate_artifact": str(candidate_path.relative_to(root)),
+                "candidate_sha256": _sha256(candidate_path),
+                "followup_samples_per_candidate": 64,
+                "followup_status": "pending",
             }
-            for before, row in zip(baseline, post)
-        ]
-        candidates = build_resampling_candidates(
-            baseline,
-            adapted,
-            arm=arm,
-            condition=CONDITIONS[arm],
-            target_step=100,
-        )
-        candidate_path = artifact_dir / f"support_candidates_{arm}.jsonl"
-        candidate_path.write_text(
-            "".join(json.dumps(row, sort_keys=True) + "\n" for row in candidates),
-            encoding="utf-8",
-        )
-        support[arm] = {
-            "candidate_count": len(candidates),
-            "candidate_artifact": str(candidate_path.relative_to(root)),
-            "candidate_sha256": _sha256(candidate_path),
-            "followup_samples_per_candidate": 64,
-            "followup_status": "pending",
-        }
 
     joined_path = artifact_dir / "geo3k_joined_items.jsonl"
     joined_path.write_text(
@@ -1136,11 +1275,22 @@ def build_readout(
             for arm in ARMS
         },
     }
+    if resolved["lifecycle"] is not None:
+        provenance["evaluation_lifecycle"] = {
+            "manifest": str(resolved["lifecycle"]["manifest"].relative_to(root)),
+            "manifest_sha256": _sha256(resolved["lifecycle"]["manifest"]),
+            "children": str(resolved["lifecycle"]["children"].relative_to(root)),
+            "children_sha256": _sha256(resolved["lifecycle"]["children"]),
+            "output": str(resolved["lifecycle"]["output"].relative_to(root)),
+            "output_sha256": _sha256(resolved["lifecycle"]["output"]),
+            "performance_values_opened_before_gate": False,
+        }
+    seed = int(config["seed"])
     payload = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": _output_schema_version(seed),
         "status": "complete",
         "scientific_gate_decision": None,
-        "seed": 1,
+        "seed": seed,
         "registered_arms": list(ARMS),
         "proposal_a4_launched": False,
         "bootstrap": {

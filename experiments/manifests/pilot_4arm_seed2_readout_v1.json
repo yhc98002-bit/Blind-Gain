@@ -1,0 +1,93 @@
+{
+  "schema_version": "blind-gains.pilot-fourarm-followup-readout-config.v1",
+  "seed": 2,
+  "bootstrap_draws": 5000,
+  "bootstrap_seed": 20260716,
+  "preregistration_sha256": "fb7e220f1dee62a01a0ce9ee8c4a9f1f1543f189239eb0e83466ed64ad1c1edb",
+  "evaluation_lifecycle_manifest": "experiments/runs/pilot_seed2_recovery_eval_lifecycle_login_20260722T034139Z/run_manifest.json",
+  "evaluation_lifecycle_children_sha256": "891b10ada9084c68504ee599cd152e1a59979e787a6f581b22de5176b3db9bfb",
+  "support_sharpening_candidates": false,
+  "training_runs": {
+    "a1_real": "experiments/runs/mech_a1_real_seed2_an29_20260716T164827Z",
+    "a2_gray": "experiments/runs/mech_a2_gray_seed2_resume20_an12_20260719T125918Z",
+    "a2b_noimage": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z",
+    "a3_caption": "experiments/runs/mech_a3_caption_seed2_an29_20260720T125144Z"
+  },
+  "training_metric_segments": {
+    "a1_real": [
+      {
+        "path": "checkpoints/pilot/mech_a1_real_seed2/experiment_log.jsonl",
+        "sha256": "340c69ddae756ada5c76c59a630ba04654d6a2a111aede14462324b5b48b6f25",
+        "start_step": 1,
+        "end_step": 100
+      }
+    ],
+    "a2_gray": [
+      {
+        "path": "checkpoints/pilot/mech_a2_gray_seed2/experiment_log.jsonl",
+        "sha256": "5eb11edbdf4b4852632d51cdc78a58ebcb1b1b8d0deae4fafaceed08341dc5c5",
+        "start_step": 1,
+        "end_step": 20
+      },
+      {
+        "path": "checkpoints/pilot/mech_a2_gray_seed2_resume20/experiment_log.jsonl",
+        "sha256": "f58b935ea60c199bd86a0ef5cd50671e3f2fb5eef58b3629c7db499e59b4cd35",
+        "start_step": 21,
+        "end_step": 100
+      }
+    ],
+    "a2b_noimage": [
+      {
+        "path": "checkpoints/pilot/mech_a2b_noimage_seed2/experiment_log.jsonl",
+        "sha256": "166a5ede47a20c5824171133bf36a6ae0cffee727f61faaac8d2ab34d0ac9cb4",
+        "start_step": 1,
+        "end_step": 20
+      },
+      {
+        "path": "checkpoints/pilot/mech_a2b_noimage_seed2_resume20/experiment_log.jsonl",
+        "sha256": "f86ffb3548de9d321d2c2d8209e7e3901c4f22b5b821448b3f07059af86ef52c",
+        "start_step": 21,
+        "end_step": 100
+      }
+    ],
+    "a3_caption": [
+      {
+        "path": "checkpoints/pilot/mech_a3_caption_seed2/experiment_log.jsonl",
+        "sha256": "be0a9fe09528ab46f8075348e2ee3c762bfb37b4cd505bc69696a8b26f87f13b",
+        "start_step": 1,
+        "end_step": 100
+      }
+    ]
+  },
+  "geo_baselines": {
+    "a1_real": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",
+    "a2_gray": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_gray_login_20260712T050908Z/per_item.jsonl",
+    "a2b_noimage": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z/per_item.jsonl",
+    "a3_caption": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_caption_login_20260712T050913Z/per_item.jsonl"
+  },
+  "geo_audits": {
+    "a1_real": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a1_real_seed2_step100_an29_gpu4_20260721T204051Z_20260721T205600Z/audit.json",
+    "a2_gray": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2_gray_seed2_step100_an29_gpu5_20260721T195900Z_20260721T201316Z/audit.json",
+    "a2b_noimage": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2b_noimage_seed2_step100_an29_gpu6_20260721T203109Z_20260721T204620Z/audit.json",
+    "a3_caption": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a3_caption_seed2_step100_an29_gpu7_20260721T200716Z_20260721T203136Z/audit.json"
+  },
+  "r19_markers": {
+    "a1_real": {
+      "60": "experiments/runs/mech_a1_real_seed2_an29_20260716T164827Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a1_real_seed2_an29_20260716T164827Z/step100_fliptrack_complete.json"
+    },
+    "a2_gray": {
+      "60": "experiments/runs/mech_a2_gray_seed2_resume20_an12_20260719T125918Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a2_gray_seed2_resume20_an12_20260719T125918Z/step100_fliptrack_complete.json"
+    },
+    "a2b_noimage": {
+      "60": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z/step100_fliptrack_complete.json"
+    },
+    "a3_caption": {
+      "60": "experiments/runs/mech_a3_caption_seed2_an29_20260720T125144Z/step60_fliptrack_complete.json",
+      "100": "experiments/runs/mech_a3_caption_seed2_an29_20260720T125144Z/step100_fliptrack_complete.json"
+    }
+  },
+  "r19_base_run": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z"
+}
