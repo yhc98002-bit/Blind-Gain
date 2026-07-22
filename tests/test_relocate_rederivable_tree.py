@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from scripts.relocate_rederivable_tree import inventory_tree, relocate_tree
+from scripts.relocate_rederivable_tree import (
+    inventory_tree,
+    prepare_relocation_plan,
+    relocate_tree,
+)
 from src.ops.storage_guard import GuardResult
 
 
@@ -117,3 +121,66 @@ def test_shared_destination_uses_quota_guard_not_scratch_guard(
     assert observed["shared_quota_root"] == tmp_path / "shared"
     assert "usage_probe" in observed
     assert "scratch_floor_bytes" not in observed
+
+
+def test_persistent_relocation_rejects_source_changed_after_plan(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "scratch" / "seed2_raw"
+    source.mkdir(parents=True)
+    payload = source / "optim.pt"
+    payload.write_bytes(b"hash-before-plan")
+    source.joinpath("raw.source.sha256").write_text(
+        f"{hashlib.sha256(payload.read_bytes()).hexdigest()}  optim.pt\n",
+        encoding="utf-8",
+    )
+    destination = tmp_path / "shared" / "seed2_raw"
+    plan = tmp_path / "plan.json"
+    manifest = tmp_path / "manifest.json"
+    prepare_relocation_plan(
+        source=source,
+        destination=destination,
+        plan_path=plan,
+        operation="preserve_seed2_raw",
+        artifact_class="persistent_training_state",
+    )
+
+    # This is the adversarial state the old one-pass mover could not distinguish
+    # from the reviewed dry-run: the source changed after approval.
+    payload.write_bytes(b"different-after-plan")
+    monkeypatch.setattr(
+        "scripts.relocate_rederivable_tree.check_storage",
+        lambda **_: pytest.fail("guard must not run after plan mismatch"),
+    )
+    with pytest.raises(RuntimeError, match="immutable relocation plan"):
+        relocate_tree(
+            source=source,
+            destination=destination,
+            manifest_path=manifest,
+            operation="preserve_seed2_raw",
+            destination_tier="S",
+            artifact_class="persistent_training_state",
+            expected_plan_path=plan,
+        )
+
+    assert source.is_dir() and not source.is_symlink()
+    assert not destination.exists()
+    assert not manifest.exists()
+
+
+def test_persistent_plan_rejects_stale_embedded_checksum(tmp_path: Path) -> None:
+    source = tmp_path / "seed2_raw"
+    source.mkdir()
+    source.joinpath("model.pt").write_bytes(b"current")
+    source.joinpath("raw.source.sha256").write_text(
+        f"{hashlib.sha256(b'old').hexdigest()}  model.pt\n", encoding="utf-8"
+    )
+
+    with pytest.raises(RuntimeError, match="embedded checksum"):
+        prepare_relocation_plan(
+            source=source,
+            destination=tmp_path / "persistent" / "seed2_raw",
+            plan_path=tmp_path / "plan.json",
+            operation="preserve_seed2_raw",
+            artifact_class="persistent_training_state",
+        )
