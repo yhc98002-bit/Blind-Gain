@@ -11,12 +11,12 @@ CRITICAL=(
   scripts/execute_m5_step200_handoff.py
   scripts/launch_m5_step200_handoff.sh
   scripts/relocate_rederivable_tree.py
-  "${SOURCE_MANIFEST}"
 )
 for FILE in "${CRITICAL[@]}"; do
   git ls-files --error-unmatch "${FILE}" >/dev/null 2>&1 || { echo "untracked M5 handoff contract: ${FILE}" >&2; exit 2; }
 done
 git diff --quiet HEAD -- "${CRITICAL[@]}" || { echo "M5 handoff contract differs from HEAD" >&2; exit 2; }
+[[ -s "${SOURCE_MANIFEST}" ]] || { echo "M5 runtime manifest is absent" >&2; exit 2; }
 jq -e '(.job_type=="m5_anchor_longhorizon_400") and (.status=="running") and
        (.node=="an12") and (.resumed_from_global_step==150) and
        (.target_global_step==400) and (.performance_values_opened==false)' \

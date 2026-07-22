@@ -33,5 +33,8 @@ def test_m5_step200_handoff_launcher_parses_and_pins_source() -> None:
     source = launcher.read_text(encoding="utf-8")
     assert "m5_anchor_longhorizon_400_resume150_an12_20260721T160431Z" in source
     assert "git diff --quiet HEAD" in source
+    assert '[[ -s "${SOURCE_MANIFEST}" ]]' in source
+    critical_block = source.split("CRITICAL=(", 1)[1].split(")", 1)[0]
+    assert "SOURCE_MANIFEST" not in critical_block
     assert "--slope-threshold 2.0" in source
     assert "--available-threshold-gib 350" in source
