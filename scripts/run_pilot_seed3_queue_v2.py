@@ -252,12 +252,25 @@ def arm_checkpoint_ready(record: dict[str, Any]) -> tuple[bool, str]:
         return False, "training_running"
     if training.get("exit_code") != 0 or training.get("artifacts_exist") is not True:
         raise RuntimeError("training completion is not artifact-verified")
+    if watcher_status != "complete":
+        return False, "waiting_checkpoint_watcher_completion"
+    if watcher.get("exit_code") != 0 or watcher.get("artifacts_exist") is not True:
+        raise RuntimeError("checkpoint watcher completion is not artifact-verified")
     checkpoint_root = Path(str(training["checkpoint_path"]))
     final_index = checkpoint_root / "global_step_100/actor/huggingface/model.safetensors.index.json"
     final_raw_marker = checkpoint_root / "global_step_100/actor/RAW_STATE_RELOCATED.json"
     if not final_index.is_file() or not final_raw_marker.is_file():
         return False, "waiting_step100_merge_and_retention"
     return True, "training_and_step100_retention_complete"
+
+
+def reserved_training_nodes(records: dict[str, dict[str, Any]]) -> set[str]:
+    return {
+        str(record["node"])
+        for record in records.values()
+        if record.get("status") in {"running", "checkpoint_finalizing"}
+        and record.get("node") in NODES
+    }
 
 
 def run_queue(
@@ -269,19 +282,35 @@ def run_queue(
     poll_seconds: int,
     stable_polls: int,
     adopted_record: tuple[str, str, str] | None = None,
+    additional_adopted_records: tuple[tuple[str, str, str], ...] = (),
+    launch_nodes: tuple[str, ...] = NODES,
 ) -> int:
+    if (
+        not launch_nodes
+        or len(set(launch_nodes)) != len(launch_nodes)
+        or any(node not in NODES for node in launch_nodes)
+    ):
+        raise ValueError(f"invalid seed-3 launch-node restriction: {launch_nodes}")
     state_path = run_dir / "queue_state.json"
     records: dict[str, dict[str, Any]] = {
         arm: {"status": "pending", "training_run": None, "watcher_run": None}
         for arm in ARMS
     }
+    adopted_records = list(additional_adopted_records)
     if adopted_record is not None:
-        adopted_arm, adopted_training, adopted_watcher = adopted_record
+        adopted_records.insert(0, adopted_record)
+    adopted_arms = [record[0] for record in adopted_records]
+    if any(arm not in ARMS for arm in adopted_arms):
+        raise ValueError(f"unknown adopted seed-3 arm: {adopted_arms}")
+    if len(set(adopted_arms)) != len(adopted_arms):
+        raise ValueError(f"duplicate adopted seed-3 arm: {adopted_arms}")
+    for adopted_record_value in adopted_records:
+        adopted_arm, adopted_training, adopted_watcher = adopted_record_value
         records[adopted_arm] = validate_adopted_record(
             adopted_arm, adopted_training, adopted_watcher
         )
     state: dict[str, Any] = {
-        "schema_version": "blind-gains.pilot-seed3-capacity-queue.v3",
+        "schema_version": "blind-gains.pilot-seed3-capacity-queue.v4",
         "status": "waiting_dependencies",
         "seed": 3,
         "arms": records,
@@ -294,7 +323,9 @@ def run_queue(
         "created_utc": _now(),
         "performance_values_opened": False,
         "scientific_gate_decision": None,
-        "adopted_arm": adopted_record[0] if adopted_record is not None else None,
+        "adopted_arm": adopted_arms[0] if adopted_arms else None,
+        "adopted_arms": adopted_arms,
+        "launch_nodes": list(launch_nodes),
     }
     _write(state_path, state)
     while True:
@@ -310,7 +341,7 @@ def run_queue(
         _write(state_path, state)
         time.sleep(poll_seconds)
 
-    streaks = {node: {gpu: 0 for gpu in range(8)} for node in NODES}
+    streaks = {node: {gpu: 0 for gpu in range(8)} for node in launch_nodes}
     while True:
         for arm, record in records.items():
             if record["status"] not in {"running", "checkpoint_finalizing"}:
@@ -325,7 +356,7 @@ def run_queue(
             if ready:
                 record.update({"status": "training_complete_pending_evaluation", "completed_utc": _now()})
             else:
-                record.update({"status": "checkpoint_finalizing" if reason.startswith("waiting_step100") else "running", "structural_state": reason})
+                record.update({"status": "checkpoint_finalizing" if reason.startswith("waiting_") else "running", "structural_state": reason})
 
         if all(
             record["status"] == "training_complete_pending_evaluation"
@@ -342,7 +373,7 @@ def run_queue(
             return 0
 
         snapshots: dict[str, Any] = {}
-        for node in NODES:
+        for node in launch_nodes:
             try:
                 snapshot = node_snapshot(node)
             except Exception as error:
@@ -359,9 +390,12 @@ def run_queue(
                 streaks[node][gpu] = streaks[node][gpu] + 1 if free else 0
 
         pending = [arm for arm in ARMS if records[arm]["status"] == "pending"]
-        for node in NODES:
+        reserved_nodes = reserved_training_nodes(records)
+        for node in launch_nodes:
             if not pending:
                 break
+            if node in reserved_nodes:
+                continue
             snapshot = snapshots.get(node, {})
             if snapshot.get("project_trainer_active") is not False:
                 continue
@@ -396,6 +430,7 @@ def run_queue(
                 "arms": records,
                 "node_snapshots": snapshots,
                 "free_streaks": streaks,
+                "reserved_training_nodes": sorted(reserved_nodes),
                 "updated_utc": _now(),
             }
         )
@@ -414,6 +449,13 @@ def main() -> None:
     parser.add_argument("--adopted-arm", choices=ARMS)
     parser.add_argument("--adopted-training-run")
     parser.add_argument("--adopted-watcher-run")
+    parser.add_argument(
+        "--additional-adopted-record",
+        action="append",
+        default=[],
+        help="ARM,TRAINING_RUN,WATCHER_RUN; repeatable",
+    )
+    parser.add_argument("--launch-nodes", default=",".join(NODES))
     args = parser.parse_args()
     if args.poll_seconds < 10 or args.stable_polls < 2:
         raise ValueError("seed-3 queue requires poll_seconds >= 10 and stable_polls >= 2")
@@ -425,6 +467,13 @@ def main() -> None:
     if any(adoption_values) and not all(adoption_values):
         raise ValueError("seed-3 adoption requires arm, training run, and watcher run")
     adopted = adoption_values if all(adoption_values) else None
+    additional_adopted: list[tuple[str, str, str]] = []
+    for raw in args.additional_adopted_record:
+        values = tuple(raw.split(",", 2))
+        if len(values) != 3 or values[0] not in ARMS or not all(values):
+            raise ValueError(f"invalid additional adopted record: {raw}")
+        additional_adopted.append(values)
+    launch_nodes = tuple(value for value in args.launch_nodes.split(",") if value)
     raise SystemExit(
         run_queue(
             args.run_dir,
@@ -434,6 +483,8 @@ def main() -> None:
             poll_seconds=args.poll_seconds,
             stable_polls=args.stable_polls,
             adopted_record=adopted,
+            additional_adopted_records=tuple(additional_adopted),
+            launch_nodes=launch_nodes,
         )
     )
 
