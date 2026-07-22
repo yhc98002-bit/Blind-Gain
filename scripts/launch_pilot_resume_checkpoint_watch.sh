@@ -37,6 +37,7 @@ fi
 [[ "${RUN_ROOT}" == "${ROOT}/checkpoints/pilot/${RUN_LABEL}" ]] || { echo "unapproved resume checkpoint root" >&2; exit 2; }
 ARCHIVE_ROOT="/tmp/blindgain_checkpoint_archive/${PARENT_RUN_ID}"
 STEP60_MARKER="${ROOT}/${TRAINING_RUN}/step60_fliptrack_complete.json"
+STEP60_GEO3K_MARKER="${ROOT}/${TRAINING_RUN}/step60_geo3k_complete.json"
 CODE_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from scripts.watch_pilot_resume_checkpoints import resume_code_bundle_hash; print(resume_code_bundle_hash())')"
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -45,7 +46,7 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
-COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_resume_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --run-manifest ${MANIFEST_IN} --node ${NODE} --run-label ${RUN_LABEL} --step60-evaluation-marker ${STEP60_MARKER} --expected-code-hash ${CODE_HASH}"
+COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_resume_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --run-manifest ${MANIFEST_IN} --node ${NODE} --run-label ${RUN_LABEL} --step60-evaluation-marker ${STEP60_MARKER} --step60-geo3k-marker ${STEP60_GEO3K_MARKER} --expected-code-hash ${CODE_HASH}"
 
 jq -n \
   --arg run_id "${RUN_ID}" --arg parent "${TRAINING_RUN}" --arg node "${NODE}" \
@@ -54,6 +55,7 @@ jq -n \
   --arg arm "${ARM}" --argjson seed "$(jq -er '.seed' "${MANIFEST_IN}")" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg root "${RUN_ROOT}" \
   --arg archive "${ARCHIVE_ROOT}" --arg marker "${STEP60_MARKER}" \
+  --arg geo3k_marker "${STEP60_GEO3K_MARKER}" \
   --arg final_index "${RUN_ROOT}/global_step_100/actor/huggingface/model.safetensors.index.json" \
   --arg final_raw "${RUN_ROOT}/global_step_100/actor/RAW_STATE_RELOCATED.json" \
   '{
@@ -67,7 +69,8 @@ jq -n \
     seed: $seed, command: $command, start_time_utc: $started, end_time_utc: null,
     status: "running", run_root: $root, archive_root: $archive,
     raw_retention: "latest raw state only", resume_schedule: [40,60,80,100],
-    step60_evaluation_marker: $marker, expected_artifacts: [$final_index, $final_raw], deviations: []
+    step60_evaluation_marker: $marker, step60_geo3k_marker: $geo3k_marker,
+    expected_artifacts: [$final_index, $final_raw], deviations: []
   }' > "${MANIFEST}"
 
 nohup setsid "${ROOT}/.venv/bin/python" "${ROOT}/scripts/run_manifest_job.py" \

@@ -50,6 +50,7 @@ fi
 
 ARCHIVE_ROOT="/tmp/blindgain_checkpoint_archive/${PARENT_RUN_ID}"
 STEP60_MARKER="${ROOT}/${TRAINING_RUN}/step60_fliptrack_complete.json"
+STEP60_GEO3K_MARKER="${ROOT}/${TRAINING_RUN}/step60_geo3k_complete.json"
 EXPECTED_CODE_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from scripts.watch_pilot_completed_parent_checkpoints import recovery_code_bundle_hash; print(recovery_code_bundle_hash())')"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="pilot_completed_checkpoint_recovery_${RUN_LABEL}_login_${STAMP}"
@@ -57,13 +58,14 @@ RUN_DIR="experiments/runs/${RUN_ID}"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/login.log"
 PID_FILE="${RUN_DIR}/pids/login.pid"
-COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_completed_parent_checkpoints.py --run-root '${RUN_ROOT}' --archive-root '${ARCHIVE_ROOT}' --run-manifest '${TRAINING_MANIFEST}' --failed-watcher-manifest '${FAILED_WATCHER_MANIFEST}' --node '${NODE}' --run-label '${RUN_LABEL}' --step60-evaluation-marker '${STEP60_MARKER}' --expected-code-hash '${EXPECTED_CODE_HASH}'"
+COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_completed_parent_checkpoints.py --run-root '${RUN_ROOT}' --archive-root '${ARCHIVE_ROOT}' --run-manifest '${TRAINING_MANIFEST}' --failed-watcher-manifest '${FAILED_WATCHER_MANIFEST}' --node '${NODE}' --run-label '${RUN_LABEL}' --step60-evaluation-marker '${STEP60_MARKER}' --step60-geo3k-marker '${STEP60_GEO3K_MARKER}' --expected-code-hash '${EXPECTED_CODE_HASH}'"
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n --arg run_id "${RUN_ID}" --arg parent "${TRAINING_RUN}" --arg failed "${FAILED_WATCHER_RUN}" \
   --arg git_hash "$(git rev-parse HEAD)" --arg config_hash "${EXPECTED_CODE_HASH}" \
   --arg data_hash "$({ sha256sum "${TRAINING_MANIFEST}" "${FAILED_WATCHER_MANIFEST}"; } | sort -k2 | sha256sum | awk '{print $1}')" \
   --arg command "${COMMAND}" --arg start "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg log "${LOG}" --arg compute_node "${NODE}" \
   --arg run_root "${RUN_ROOT}" --arg archive_root "${ARCHIVE_ROOT}" --arg marker "${STEP60_MARKER}" \
+  --arg geo3k_marker "${STEP60_GEO3K_MARKER}" \
   --argjson seed "$(jq -er '.seed' "${TRAINING_MANIFEST}")" \
   '{schema_version:"blind-gains.run-manifest.v1",run_id:$run_id,job_type:"pilot_completed_parent_checkpoint_recovery",
     parent_training_run:$parent,prior_failed_watcher:$failed,node:"login",compute_node:$compute_node,
@@ -73,6 +75,7 @@ jq -n --arg run_id "${RUN_ID}" --arg parent "${TRAINING_RUN}" --arg failed "${FA
     command:$command,start_time_utc:$start,end_time_utc:null,status:"running",stdout_stderr_log:$log,
     run_root:$run_root,archive_root:$archive_root,recovery_steps:[40,60,80,100],
     raw_retention:"latest raw state only",step60_evaluation_marker:$marker,
+    step60_geo3k_marker:$geo3k_marker,
     expected_artifacts:[($run_root+"/global_step_100/actor/huggingface/model.safetensors.index.json"),($run_root+"/global_step_100/actor/RAW_STATE_RELOCATED.json")],
     performance_values_opened:false,scientific_gate_decision:null,deviations:["Checkpoint-lifecycle recovery after the original watcher failed before step 40; the completed optimizer trajectory is unchanged."]}' > "${MANIFEST}"
 

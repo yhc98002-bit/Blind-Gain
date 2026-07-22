@@ -52,6 +52,8 @@ SEED="$(jq -er .seed "${BASE_CONFIG}")"
 GLOBAL_STEP="$(jq -er .global_step "${BASE_CONFIG}")"
 NODE="$(jq -er .node "${BASE_CONFIG}")"
 GPU="$(jq -er .gpu_id "${BASE_CONFIG}")"
+TRAINING_RUN="$(jq -er .training_run "${BASE_CONFIG}")"
+COMPLETION_MARKER="${TRAINING_RUN}/step${GLOBAL_STEP}_geo3k_complete.json"
 jq -e \
   --arg arm "${ARM}" \
   --argjson seed "${SEED}" --argjson global_step "${GLOBAL_STEP}" \
@@ -71,7 +73,12 @@ mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq \
   --arg r19_queue_run "${R19_QUEUE_RUN#"${ROOT}/"}" \
   --arg state_path "${STATE}" \
-  '. + {r19_queue_run: $r19_queue_run, state_path: $state_path}' \
+  --arg completion_marker "${COMPLETION_MARKER}" \
+  '. + {
+    r19_queue_run: $r19_queue_run,
+    state_path: $state_path,
+    completion_marker: $completion_marker
+  }' \
   "${BASE_CONFIG}" > "${CONFIG}"
 
 PYTHONPATH=. .venv/bin/python -c \
@@ -83,10 +90,12 @@ LOG="${RUN_DIR}/logs/login.log"
 COMMAND="PYTHONPATH=. .venv/bin/python scripts/run_pilot_geo3k_step100_queue.py --config '${CONFIG}'"
 CONFIG_HASH="$(sha256sum "${CONFIG}" | awk '{print $1}')"
 R19_MARKER="$(jq -er .r19_marker "${CONFIG}")"
+COMPLETION_MARKER="$(jq -er .completion_marker "${CONFIG}")"
 jq -n \
   --arg run_id "${RUN_ID}" --arg git_hash "$(git rev-parse HEAD)" \
   --arg config_hash "${CONFIG_HASH}" --arg command "${COMMAND}" \
-  --arg config "${CONFIG}" --arg state "${STATE}" --arg marker "${R19_MARKER}" \
+  --arg config "${CONFIG}" --arg state "${STATE}" \
+  --arg r19_marker "${R19_MARKER}" --arg completion_marker "${COMPLETION_MARKER}" \
   --arg r19_queue "${R19_QUEUE_RUN#"${ROOT}/"}" --arg log "${LOG}" \
   --arg arm "${ARM}" \
   --arg node "${NODE}" --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -120,7 +129,8 @@ jq -n \
     end_time_utc: null,
     status: "running",
     stdout_stderr_log: $log,
-    expected_artifacts: [$state, $marker],
+    source_r19_marker: $r19_marker,
+    expected_artifacts: [$state, $completion_marker],
     performance_values_opened: false,
     scientific_gate_decision: null,
     deviations: []

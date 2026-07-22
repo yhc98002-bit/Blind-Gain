@@ -106,6 +106,9 @@ def _followup_fixture(
         "checkpoint_path": str(checkpoint.relative_to(tmp_path)),
         "caption_run": "-",
         "state_path": "experiments/runs/geo_queue/state.json",
+        "completion_marker": str(
+            (training_run / "step60_geo3k_complete.json").relative_to(tmp_path)
+        ),
         "poll_seconds": 10,
         "stable_free_polls": 2,
     }
@@ -135,6 +138,30 @@ def test_followup_queue_rejects_unregistered_seed(
         r19_queue.validate_config(r19, tmp_path)
     with pytest.raises(ValueError, match="seed must be 2 or 3"):
         geo_queue.validate_config(geo, tmp_path)
+
+
+def test_followup_geo3k_queue_rejects_unbound_completion_marker(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, geo = _followup_fixture(tmp_path, monkeypatch)
+    geo["completion_marker"] = "experiments/runs/other/step60_geo3k_complete.json"
+
+    with pytest.raises(ValueError, match="completion marker"):
+        geo_queue.validate_config(geo, tmp_path)
+
+
+def test_followup_geo3k_completion_marker_is_immutable(tmp_path: Path) -> None:
+    marker = tmp_path / "step60_geo3k_complete.json"
+    payload = {
+        "schema_version": geo_queue.FOLLOWUP_COMPLETION_MARKER_SCHEMA,
+        "status": "complete",
+    }
+
+    geo_queue._write_completion_marker(marker, payload)
+    geo_queue._write_completion_marker(marker, payload)
+    with pytest.raises(FileExistsError, match="refusing to replace"):
+        geo_queue._write_completion_marker(marker, {**payload, "status": "changed"})
 
 
 def test_followup_queue_waits_for_full_cohort_release(

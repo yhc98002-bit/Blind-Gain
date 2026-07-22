@@ -5,7 +5,13 @@ import json
 from pathlib import Path
 
 from scripts.watch_anchor_checkpoints import valid_evaluation_marker
-from scripts.watch_pilot_checkpoints import PILOT_STEPS, execution_plan, relocation_plan
+from scripts.watch_pilot_checkpoints import (
+    GEO3K_MARKER_SCHEMA_VERSION,
+    PILOT_STEPS,
+    execution_plan,
+    pilot_evaluation_barriers_ready,
+    relocation_plan,
+)
 
 
 def _sha256(path: Path) -> str:
@@ -87,3 +93,82 @@ def test_step60_marker_rejects_success_claim_without_evaluation_hash(tmp_path: P
     )
 
     assert not valid_evaluation_marker(marker, step=60, actor_dir=actor)
+
+
+def test_step60_relocation_requires_r19_and_geo3k_audit_markers(
+    tmp_path: Path,
+) -> None:
+    actor = tmp_path / "checkpoints/pilot/run/global_step_60/actor"
+    merged = actor / "huggingface"
+    merged.mkdir(parents=True)
+    index = merged / "model.safetensors.index.json"
+    index.write_text("{}\n", encoding="utf-8")
+    r19_marker = tmp_path / "r19.json"
+    r19_marker.write_text(
+        json.dumps(
+            {
+                "schema_version": "blind-gains.pilot-step-eval-marker.v1",
+                "status": "complete",
+                "global_step": 60,
+                "checkpoint_path": str(merged),
+                "checkpoint_index_sha256": _sha256(index),
+                "evaluation_run": "experiments/runs/r19",
+                "evaluation_output_sha256": "a" * 64,
+            }
+        ),
+        encoding="utf-8",
+    )
+    geo3k_marker = tmp_path / "geo3k.json"
+
+    # This is the production race: R19 completed while Geometry3K had not.
+    assert not pilot_evaluation_barriers_ready(
+        r19_marker,
+        geo3k_marker,
+        step=60,
+        actor_dir=actor,
+        root=tmp_path,
+    )
+
+    evaluation = tmp_path / "experiments/runs/geo3k"
+    evaluation.mkdir(parents=True)
+    evaluation_manifest = evaluation / "run_manifest.json"
+    evaluation_manifest.write_text('{"status":"complete"}\n', encoding="utf-8")
+    audit_run = tmp_path / "experiments/runs/geo3k_audit"
+    audit_run.mkdir(parents=True)
+    audit = audit_run / "audit.json"
+    audit.write_text('{"status":"pass"}\n', encoding="utf-8")
+    geo3k_marker.write_text(
+        json.dumps(
+            {
+                "schema_version": GEO3K_MARKER_SCHEMA_VERSION,
+                "status": "complete",
+                "global_step": 60,
+                "checkpoint_path": str(merged),
+                "checkpoint_index_sha256": _sha256(index),
+                "evaluation_run": str(evaluation.relative_to(tmp_path)),
+                "evaluation_manifest_sha256": _sha256(evaluation_manifest),
+                "evaluation_output_sha256": "b" * 64,
+                "audit_run": str(audit_run.relative_to(tmp_path)),
+                "audit_sha256": _sha256(audit),
+                "row_count": 601,
+                "performance_values_opened": False,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert pilot_evaluation_barriers_ready(
+        r19_marker,
+        geo3k_marker,
+        step=60,
+        actor_dir=actor,
+        root=tmp_path,
+    )
+    audit.write_text('{"status":"changed"}\n', encoding="utf-8")
+    assert not pilot_evaluation_barriers_ready(
+        r19_marker,
+        geo3k_marker,
+        step=60,
+        actor_dir=actor,
+        root=tmp_path,
+    )

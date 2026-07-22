@@ -28,6 +28,9 @@ ARM_CONDITIONS = {
 TERMINAL_FAILURES = {"fail", "failed", "error", "cancelled", "canceled"}
 SEED1_CONFIG_SCHEMA = "blind-gains.pilot-geo3k-step100-queue.v1"
 FOLLOWUP_CONFIG_SCHEMA = "blind-gains.pilot-followup-geo3k-queue.v1"
+FOLLOWUP_COMPLETION_MARKER_SCHEMA = (
+    "blind-gains.pilot-followup-geo3k-eval-marker.v1"
+)
 
 
 def _now() -> str:
@@ -66,6 +69,21 @@ def _write_state(path: Path, payload: dict[str, Any]) -> None:
         json.dumps(payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    os.replace(temporary, path)
+
+
+def _write_completion_marker(path: Path, payload: dict[str, Any]) -> None:
+    """Publish an immutable marker only after the full audit has passed."""
+    if path.exists():
+        if _read_json(path) != payload:
+            raise FileExistsError(f"refusing to replace completion marker: {path}")
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.partial")
+    with temporary.open("x", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
     os.replace(temporary, path)
 
 
@@ -116,6 +134,18 @@ def validate_config(config: dict[str, Any], root: Path = ROOT) -> None:
         if field != "caption_run" or config[field] != "-":
             _resolve(root, config[field])
     training_run = _resolve(root, config["training_run"])
+    if _is_followup(config):
+        completion_value = config.get("completion_marker")
+        if not isinstance(completion_value, str):
+            raise ValueError("follow-up queue requires a completion_marker path")
+        completion_marker = _resolve(root, completion_value)
+        expected_completion = (
+            training_run / f"step{global_step}_geo3k_complete.json"
+        )
+        if completion_marker != expected_completion:
+            raise ValueError(
+                "Geometry3K completion marker is not bound to the exact training run"
+            )
     marker = _resolve(root, config["r19_marker"])
     if marker != training_run / f"step{global_step}_fliptrack_complete.json":
         raise ValueError("R19 marker is not bound to the exact training run")
@@ -385,6 +415,43 @@ def run_queue(
                         }
                     )
                     _write_state(state_path, state)
+                    if _is_followup(config):
+                        checkpoint = _resolve(root, config["checkpoint_path"])
+                        checkpoint_index = (
+                            checkpoint / "model.safetensors.index.json"
+                        )
+                        completion_marker = _resolve(
+                            root, config["completion_marker"]
+                        )
+                        _write_completion_marker(
+                            completion_marker,
+                            {
+                                "schema_version": FOLLOWUP_COMPLETION_MARKER_SCHEMA,
+                                "status": "complete",
+                                "arm": config["arm"],
+                                "seed": config["seed"],
+                                "global_step": config["global_step"],
+                                "checkpoint_path": str(checkpoint),
+                                "checkpoint_index_sha256": _sha256(
+                                    checkpoint_index
+                                ),
+                                "evaluation_run": str(
+                                    evaluation_run.relative_to(root)
+                                ),
+                                "evaluation_manifest_sha256": _sha256(
+                                    evaluation_run / "run_manifest.json"
+                                ),
+                                "evaluation_output_sha256": audit[
+                                    "output_sha256"
+                                ],
+                                "audit_run": str(audit_run.relative_to(root)),
+                                "audit_sha256": _sha256(
+                                    audit_run / "audit.json"
+                                ),
+                                "row_count": 601,
+                                "performance_values_opened": False,
+                            },
+                        )
                     return 0
                 state["status"] = "audit_running"
             elif isinstance(evaluation_value, str):

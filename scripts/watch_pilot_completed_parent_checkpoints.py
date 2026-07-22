@@ -11,9 +11,12 @@ from scripts.watch_anchor_checkpoints import (
     refresh_usage_snapshot_if_needed,
     relocate_merged,
     require_code_bundle,
-    wait_for_evaluation_marker,
 )
-from scripts.watch_pilot_checkpoints import PILOT_CODE_BUNDLE_PATHS, code_bundle_hash
+from scripts.watch_pilot_checkpoints import (
+    PILOT_CODE_BUNDLE_PATHS,
+    code_bundle_hash,
+    wait_for_pilot_evaluation_markers,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +75,7 @@ def main() -> None:
     parser.add_argument("--node", choices=("an12", "an29"), required=True)
     parser.add_argument("--run-label", required=True)
     parser.add_argument("--step60-evaluation-marker", type=Path, required=True)
+    parser.add_argument("--step60-geo3k-marker", type=Path, required=True)
     parser.add_argument("--expected-code-hash", required=True)
     args = parser.parse_args()
     errors = validate_recovery_inputs(
@@ -83,8 +87,9 @@ def main() -> None:
     for step, action in execution_plan():
         if action == "relocate_after_registered_evaluation":
             actor_dir = args.run_root / f"global_step_{step}" / "actor"
-            wait_for_evaluation_marker(
+            wait_for_pilot_evaluation_markers(
                 args.step60_evaluation_marker,
+                args.step60_geo3k_marker,
                 step=step,
                 actor_dir=actor_dir,
             )

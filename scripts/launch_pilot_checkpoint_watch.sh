@@ -44,6 +44,7 @@ if [[ "${RUN_ROOT}" != "${EXPECTED_PREFIX}"* ]]; then
 fi
 ARCHIVE_ROOT="/tmp/blindgain_checkpoint_archive/${PARENT_RUN_ID}"
 STEP60_MARKER="${ROOT}/${TRAINING_RUN}/step60_fliptrack_complete.json"
+STEP60_GEO3K_MARKER="${ROOT}/${TRAINING_RUN}/step60_geo3k_complete.json"
 EXPECTED_CODE_HASH="$(PYTHONPATH=. .venv/bin/python -c 'from scripts.watch_pilot_checkpoints import pilot_code_bundle_hash; print(pilot_code_bundle_hash())')"
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -58,7 +59,7 @@ if tmux has-session -t "${SESSION}" 2>/dev/null; then
   exit 73
 fi
 
-COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --run-manifest ${TRAINING_MANIFEST} --node ${NODE} --run-label ${RUN_LABEL} --step60-evaluation-marker ${STEP60_MARKER} --expected-code-hash ${EXPECTED_CODE_HASH}"
+COMMAND="PYTHONPATH=. .venv/bin/python scripts/watch_pilot_checkpoints.py --run-root ${RUN_ROOT} --archive-root ${ARCHIVE_ROOT} --run-manifest ${TRAINING_MANIFEST} --node ${NODE} --run-label ${RUN_LABEL} --step60-evaluation-marker ${STEP60_MARKER} --step60-geo3k-marker ${STEP60_GEO3K_MARKER} --expected-code-hash ${EXPECTED_CODE_HASH}"
 jq -n \
   --arg run_id "${RUN_ID}" \
   --arg parent_run "${TRAINING_RUN}" \
@@ -70,6 +71,7 @@ jq -n \
   --arg run_root "${RUN_ROOT}" \
   --arg archive_root "${ARCHIVE_ROOT}" \
   --arg step60_marker "${STEP60_MARKER}" \
+  --arg step60_geo3k_marker "${STEP60_GEO3K_MARKER}" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --argjson seed "$(jq -er '.seed' "${TRAINING_MANIFEST}")" \
   --arg final_index "${RUN_ROOT}/global_step_100/actor/huggingface/model.safetensors.index.json" \
@@ -102,7 +104,8 @@ jq -n \
     merged_retention: {
       intermediate_steps: [20, 40, 60, 80],
       final_shared_step: 100,
-      step60_requires_evaluation_marker: $step60_marker
+      step60_requires_r19_marker: $step60_marker,
+      step60_requires_geo3k_marker: $step60_geo3k_marker
     },
     expected_artifacts: [$final_index, $final_raw_marker],
     deviations: []
