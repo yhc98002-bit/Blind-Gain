@@ -21,10 +21,20 @@ def test_m5_step200_handoff_signals_only_after_evidence_and_recheck() -> None:
     boundary = source.index("boundary = validate_step200(")
     intent = source.index('"handoff_intent.json"')
     repeated = source.index("repeated = process_identity(")
-    signal = source.index("_ssh(args.node, f\"kill -INT")
-    assert boundary < intent < repeated < signal
+    selection = source.index("signal_selection = select_interrupt_signal(")
+    signal_call = source.index("signal_selection['selected_signal_number']")
+    assert boundary < intent < repeated < signal_call
+    assert repeated < selection < signal_call
     assert "SIGKILL" not in source
     assert 'target_counts != [8, 14]' in source
+
+
+def test_m5_step200_handoff_selects_term_when_sigint_is_ignored() -> None:
+    source = (ROOT / "scripts/execute_m5_step200_handoff.py").read_text(
+        encoding="utf-8"
+    )
+    assert "selected = signal.SIGTERM if sigint_ignored else signal.SIGINT" in source
+    assert "ignored_mask & (1 << (signal.SIGINT - 1))" in source
 
 
 def test_m5_step200_handoff_launcher_parses_and_pins_source() -> None:

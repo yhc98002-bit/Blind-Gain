@@ -6,6 +6,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import signal
 import subprocess
 import time
 from pathlib import Path
@@ -135,6 +136,22 @@ def process_identity(
     }
 
 
+def select_interrupt_signal(node: str, trainer_pid: int) -> dict[str, Any]:
+    status = _ssh(
+        node,
+        f"awk '/^SigIgn:/ {{print $2}}' /proc/{trainer_pid}/status",
+    ).strip()
+    ignored_mask = int(status, 16)
+    sigint_ignored = bool(ignored_mask & (1 << (signal.SIGINT - 1)))
+    selected = signal.SIGTERM if sigint_ignored else signal.SIGINT
+    return {
+        "ignored_mask_hex": status,
+        "sigint_ignored": sigint_ignored,
+        "selected_signal": signal.Signals(selected).name,
+        "selected_signal_number": int(selected),
+    }
+
+
 def validate_step200(
     checkpoint_root: Path, archive_root: Path, source_run: Path
 ) -> dict[str, Any]:
@@ -248,7 +265,11 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
     for key in ("wrapper_pid", "trainer_pid", "process_group_id", "user", "expected_config"):
         if repeated[key] != identity[key]:
             raise RuntimeError("M5 process identity changed before SIGINT")
-    _ssh(args.node, f"kill -INT {identity['trainer_pid']}")
+    signal_selection = select_interrupt_signal(args.node, identity["trainer_pid"])
+    _ssh(
+        args.node,
+        f"kill -{signal_selection['selected_signal_number']} {identity['trainer_pid']}",
+    )
     deadline = time.monotonic() + args.wait_seconds
     wrapper_exited = False
     while time.monotonic() < deadline:
@@ -269,11 +290,11 @@ def execute(args: argparse.Namespace) -> dict[str, Any]:
         **intent,
         "status": "handoff_complete" if wrapper_exited else "cleanup_required",
         "completed_at_utc": _now(),
-        "signal": "SIGINT",
+        "signal_selection": signal_selection,
         "wrapper_exited": wrapper_exited,
         "remaining_process_group_rows": [row.strip() for row in group_rows if row.strip()],
         "resume_required_from_step": 200,
-        "forced_signal_used": False,
+        "sigkill_used": False,
     }
 
 
