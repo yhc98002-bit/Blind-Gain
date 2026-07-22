@@ -25,7 +25,7 @@ node_ready() {
     set -euo pipefail
     test \"\$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '\$1 >= 1024 {bad=1} END {print bad+0}')\" = 0
     test \"\$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '\$1 > 10 {bad=1} END {print bad+0}')\" = 0
-    ! pgrep -af '[p]ython.*verl.trainer.main' | grep -F '${ROOT}'
+    ! ps -eo args= | awk -v root='${ROOT}' '\$0 ~ /[p]ython.*verl[.]trainer[.]main/ && index(\$0, root) {found=1} END {exit found ? 0 : 1}'
     test \"\$(awk '/MemAvailable:/{print \$2}' /proc/meminfo)\" -ge 681574400
     test \"\$(df -Pk /dev/shm | awk 'NR==2 {print \$4}')\" -ge 41943040
   "

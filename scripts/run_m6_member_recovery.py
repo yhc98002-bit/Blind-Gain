@@ -116,12 +116,12 @@ def validate_inputs(
 
 
 def node_ready(node: str) -> tuple[bool, dict[str, Any]]:
-    command = rf'''set -euo pipefail
+    command = r'''set -euo pipefail
 nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv,noheader,nounits
-echo __MEM__ $(awk '/MemAvailable:/{{print $2}}' /proc/meminfo)
-echo __SHM__ $(df -Pk /dev/shm | awk 'NR==2 {{print $4}}')
-if pgrep -af '[p]ython.*verl.trainer.main' | grep -F '{ROOT}'; then exit 42; fi
-'''
+echo __MEM__ $(awk '/MemAvailable:/{print $2}' /proc/meminfo)
+echo __SHM__ $(df -Pk /dev/shm | awk 'NR==2 {print $4}')
+if ps -eo args= | awk -v root='__BLIND_GAINS_ROOT__' '$0 ~ /[p]ython.*verl[.]trainer[.]main/ && index($0, root) {found=1} END {exit found ? 0 : 1}'; then exit 42; fi
+'''.replace("__BLIND_GAINS_ROOT__", str(ROOT))
     result = subprocess.run(
         ["ssh", node, command],
         cwd=ROOT,

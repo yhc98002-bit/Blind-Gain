@@ -9,6 +9,9 @@ import pytest
 from scripts import run_m6_member_recovery as recovery
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def _write(path: Path, payload: dict) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
@@ -115,3 +118,17 @@ def test_adversarial_stale_preflight_fails(
     result = recovery.validate_inputs(cp, failed, preflight)
     assert result["status"] == "fail"
     assert result["checks"]["collective_preflight_fresh"] is False
+
+
+def test_node_checks_ignore_foreign_ray_and_avoid_nested_grep_pipeline() -> None:
+    launcher = (ROOT / "scripts/launch_m6_collective_preflight.sh").read_text(
+        encoding="utf-8"
+    )
+    recovery_source = (ROOT / "scripts/run_m6_member_recovery.py").read_text(
+        encoding="utf-8"
+    )
+    for source in (launcher, recovery_source):
+        assert "[r]aylet" not in source
+        assert "[g]cs_server" not in source
+        assert "grep -F" not in source
+        assert "[p]ython.*verl[.]trainer[.]main" in source
