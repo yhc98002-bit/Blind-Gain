@@ -8,6 +8,12 @@ fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
+LAUNCH_LOCK="/tmp/blindgain_pilot_seed2_recovery_lifecycle.lock"
+exec 9>"${LAUNCH_LOCK}"
+flock -n 9 || {
+  echo "another seed-2 recovery lifecycle launcher is active" >&2
+  exit 73
+}
 FAILED_RUN="$(realpath -m "$1")"
 NEW_RUNS=("$(realpath -m "$2")" "$(realpath -m "$3")" "$(realpath -m "$4")" "$(realpath -m "$5")")
 ARMS=(a1_real a2_gray a2b_noimage a3_caption)
