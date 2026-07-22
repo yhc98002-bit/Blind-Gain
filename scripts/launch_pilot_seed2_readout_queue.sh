@@ -3,6 +3,12 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
+LAUNCH_LOCK="/tmp/blindgain_pilot_seed2_readout_queue.lock"
+exec 9>"${LAUNCH_LOCK}"
+flock -n 9 || {
+  echo "another seed-2 unified readout launcher is active" >&2
+  exit 73
+}
 
 CONFIG="experiments/manifests/pilot_4arm_seed2_readout_v1.json"
 CRITICAL=(
