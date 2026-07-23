@@ -1,0 +1,28 @@
+{
+  "components": {
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/.uv_cache": 38179536896,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe": 924188471296,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive": 106352746496,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/musiccql": 794624,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/source": 1776070656,
+    "__unmeasured_growth_reserve__": 429496729600
+  },
+  "free_bytes": 110618386432,
+  "measured_at_utc": "2026-07-18T14:33:39Z",
+  "measurement": "conservative upper bound from one exact snapshot plus an explicit unmeasured-growth reserve",
+  "provenance": {
+    "authorized_write_bytes": 55000000000,
+    "conservative_free_after_authorized_write_bytes": 55618386432,
+    "exact_refresh_attempt": "failed after its per-component timeout",
+    "guard_floor_bytes": 21474836480,
+    "source_measured_at_utc": "2026-07-17T05:48:46Z",
+    "source_snapshot_sha256": "421ec8020d058bd6a4407202fc63017b24887858beff43c1dbbbfd713da5eb92",
+    "source_used_bytes": 1070497619968,
+    "unmeasured_growth_reserve_bytes": 429496729600
+  },
+  "quota_bytes": 1610612736000,
+  "quota_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289",
+  "schema_version": 1,
+  "status": "pass",
+  "used_bytes": 1499994349568
+}

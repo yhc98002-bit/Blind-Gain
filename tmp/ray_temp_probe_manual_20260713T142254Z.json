@@ -1,0 +1,38 @@
+{
+  "checks": {
+    "all_driver_worker_and_ray_paths_under_expected_root": true,
+    "cuda_hidden_for_probe": true
+  },
+  "driver": {
+    "env": {
+      "RAY_TMPDIR": "/dev/shm/bg-temp-manual-20260713T142254Z",
+      "TEMP": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp",
+      "TMP": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp",
+      "TMPDIR": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp"
+    },
+    "hostname": "an29",
+    "multiprocessing": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp/pymp-e38kzu0d",
+    "pid": 538371,
+    "tempfile": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp"
+  },
+  "errors": [],
+  "expected_root": "/dev/shm/bg-temp-manual-20260713T142254Z",
+  "observed_at_utc": "2026-07-13T14:23:34Z",
+  "ray": {
+    "session_dir": "/dev/shm/bg-temp-manual-20260713T142254Z/ray/session_2026-07-13_22-23-08_394337_538371"
+  },
+  "schema_version": "blind-gains.ray-tempdir-probe.v1",
+  "status": "pass",
+  "worker": {
+    "env": {
+      "RAY_TMPDIR": "/dev/shm/bg-temp-manual-20260713T142254Z",
+      "TEMP": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp",
+      "TMP": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp",
+      "TMPDIR": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp"
+    },
+    "hostname": "an29",
+    "multiprocessing": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp/pymp-dhcb72jt",
+    "pid": 539686,
+    "tempfile": "/dev/shm/bg-temp-manual-20260713T142254Z/tmp"
+  }
+}

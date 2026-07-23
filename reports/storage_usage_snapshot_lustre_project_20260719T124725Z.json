@@ -1,16 +1,16 @@
 {
   "components": {
-    "lustre_project_id:2228473301": 1414947647488
+    "lustre_project_id:2228473301": 1254758649856
   },
-  "duration_seconds": 0.071,
-  "free_bytes": 195665088512,
-  "measured_at_utc": "2026-07-23T11:52:41Z",
+  "duration_seconds": 0.095,
+  "free_bytes": 355854086144,
+  "measured_at_utc": "2026-07-19T12:47:25Z",
   "measurement": "Lustre project-quota allocated KiB from lfs quota -p",
-  "project_file_count": 782492,
+  "project_file_count": 714988,
   "project_id": 2228473301,
   "quota_bytes": 1610612736000,
   "quota_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289",
   "schema_version": 1,
   "status": "pass",
-  "used_bytes": 1414947647488
+  "used_bytes": 1254758649856
 }

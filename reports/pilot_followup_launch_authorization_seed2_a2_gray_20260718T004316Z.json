@@ -1,0 +1,26 @@
+{
+  "arm": "a2_gray",
+  "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a2_gray_seed2",
+  "checks": {
+    "checkpoint_namespace_absent": true,
+    "checkpoint_path_exact": true,
+    "config_exact_allowed_diff": true,
+    "config_hash_registered": true,
+    "image_condition_seed_fixed": true,
+    "m2_seed1_complete": true,
+    "m3_not_already_complete": true,
+    "registration_exists": true,
+    "registration_merged_marker": true,
+    "seed_registered": true,
+    "seed_value_exact": true
+  },
+  "config": "configs/train/mech_a2_gray_seed2_3b_geo3k.yaml",
+  "config_sha256": "6fc6412f107d04e095ef9c0cff26c8635d3b8bc121719ac38cddf2a793d841fc",
+  "errors": [],
+  "registration": "docs/registered_pilot_seed23_v1.md",
+  "registration_sha256": "d914cfe2cc5d3ad9799c473a4f06ae6e5556bfe4a93bdb85100479bec42427b0",
+  "schema_version": "blind-gains.pilot-followup-launch-authorization.v1",
+  "scientific_gate_decision": null,
+  "seed": 2,
+  "status": "authorized"
+}

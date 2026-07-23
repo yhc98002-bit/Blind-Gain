@@ -1,0 +1,17 @@
+{
+  "components": {
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/.uv_cache": 38179536896,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe": 566606663680,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/musiccql": 794624,
+    "/XYFS02/HDD_POOL/paratera_xy/pxy1289/source": 1776070656
+  },
+  "duration_seconds": 246.971,
+  "free_bytes": 1004049670144,
+  "measured_at_utc": "2026-07-13T23:11:08Z",
+  "measurement": "parallel GNU du -sx --block-size=1 over every direct quota-root child",
+  "quota_bytes": 1610612736000,
+  "quota_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289",
+  "schema_version": 1,
+  "status": "pass",
+  "used_bytes": 606563065856
+}

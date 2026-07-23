@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "completed_at_utc": "2026-07-19T12:25:05Z",
+  "sounddecisions": {
+    "declared_abandoned": true,
+    "deletion_actor": "external_or_unknown",
+    "agent_claims_deletion": false,
+    "roots_missing": 7,
+    "preflight_bytes": 389039439872,
+    "preflight_gib": 362.321,
+    "retirement_package": "/HOME/paratera_xy/pxy1289/retired_projects/SoundDecisions_20260719",
+    "retirement_package_checksum_list_sha256": "efe4194ff910b4c84380afc4c9b86a124ce22f8c0ab82477fa0a0b68617489b8",
+    "restore_test": "pass"
+  },
+  "invalid_a2_step40": {
+    "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_40",
+    "bytes_deleted": 21832908800,
+    "gib_deleted": 20.333,
+    "status": "deleted",
+    "tracker_last_global_step": 20,
+    "valid_step20_preserved": true,
+    "sha256_inventory": "/HOME/paratera_xy/pxy1289/retired_projects/SoundDecisions_20260719/a2_gray_seed2_invalid_step40.sha256"
+  },
+  "login_tmp": {
+    "retention_expired_archives_deleted": 4,
+    "bytes_deleted": 245294313472,
+    "gib_deleted": 228.448,
+    "available_bytes_after": 415348269056,
+    "protected_seed2_and_m5_archives_preserved": true
+  },
+  "verification": {
+    "shared_write_probe_64m": "pass",
+    "shared_write_probe_1g": "pass",
+    "shared_write_probe_1g_sha256": "49bc20df15e412a64472421e13fe86ff1c5165e18b2afccf160d4dc19fe68a14",
+    "persistent_final_model_files_checked": 56,
+    "persistent_final_model_sha256": "pass",
+    "seed1_readout_sha256": "pass",
+    "cleanup_evidence_package": "/HOME/paratera_xy/pxy1289/storage_cleanup_20260719",
+    "cleanup_evidence_checksum_list_sha256": "deb22e47b8e218371eb5f07e2a77644e37145442fa02e14d5eb4b282f6e844fb"
+  },
+  "fallback_cleanup": {
+    "uv_cache_deleted": false,
+    "blindgain_archive_deleted": false,
+    "reason": "not required after successful shared write probes"
+  },
+  "remaining_issue": "Publish a fresh trustworthy guard-compatible quota snapshot before the next checkpoint save; the current recursive-du snapshot contradicts direct-write behavior."
+}
