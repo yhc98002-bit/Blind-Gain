@@ -1,0 +1,55 @@
+{
+  "checks": {
+    "all_registered_layers_complete": true,
+    "caption_image_index_exact": true,
+    "conservative_candidate_language": true,
+    "filter_complete": true,
+    "filter_source_count_exact": true,
+    "freeze_pass": true,
+    "freeze_uses_exact_filter": true,
+    "frozen_outputs_hashed": true,
+    "frozen_thresholds_exact": true,
+    "no_pending_layers": true,
+    "record_build_pass": true,
+    "seven_suite_record_counts_exact": true,
+    "source_item_count_exact": true,
+    "source_record_count_exact": true,
+    "whole_item_accounting_exact": true
+  },
+  "counts": {
+    "eval_image_records": 12683,
+    "inspect_edges": 199407,
+    "remove_edges": 54780,
+    "remove_image_records": 9182,
+    "remove_items": 9114,
+    "retained_image_references": 33249,
+    "retained_items": 29756,
+    "source_image_records": 42908,
+    "source_items": 38870
+  },
+  "filter_manifest": "experiments/manifests/decon_virl39k_vs_layer1_v1.json",
+  "filter_manifest_sha256": "bf32d808ba7cc46d557dfadfb253451b6540e131bac1725e731c90bea169c797",
+  "freeze_summary": "data/virl39k_main_filtered_manifest.json",
+  "freeze_summary_sha256": "3e5486c8a4f2fe1c1cb3e98147406955e8bf8ae6a442b6026a9d206e915c7922",
+  "frozen_outputs": {
+    "dataset": "data/virl39k_main_filtered.jsonl",
+    "dataset_sha256": "d4e0ef8733e0ff4e8604d5e7b15e7206f8e4eb3745ef16e523cdf26eb5c9c4a0",
+    "ids": "data/virl39k_main_filtered_ids.json",
+    "ids_sha256": "e76795d31f6e8f19976f98c4c901a3cf13226cccd267f5543d5e37b56ee9998c",
+    "image_index": "data/virl39k_main_filtered_images",
+    "image_index_manifest_sha256": "6e85882839fa5a774e34cb761397ff9c1cb45fe37600d65ea025ef4c78d8bcf2"
+  },
+  "record_summary": "experiments/runs/decon_virl39k_layer1_hash_text_login_20260716T193506Z/record_summary.json",
+  "record_summary_sha256": "36b3413abd575d7ba106f2c53a34cf5c4c86d85e20acf53e7dd3a90bed101b7a",
+  "remove_records_by_eval_dataset": {
+    "blink": 2018,
+    "hallusionbench": 2259,
+    "mathverse": 2314,
+    "mathvista": 4284,
+    "mmmu": 2333,
+    "mmstar": 5015,
+    "mmvp": 2
+  },
+  "schema_version": "blind-gains.virl39k-layer1-decon-audit.v1",
+  "status": "pass"
+}

@@ -1,0 +1,725 @@
+{
+  "candidates": [
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray/global_step_60",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a2_gray/global_step_60/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-14T08:06:27Z",
+      "preserved_in_place": [
+        "checkpoints/pilot/mech_a2_gray/global_step_60/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-1 A2 stub superseded by mech_a2_gray_resume60_retry2 (complete, merged, evaluated)"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a1_real/global_step_60",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a1_real/global_step_60/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a1_real_resume60/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-14T02:53:01Z",
+      "preserved_in_place": [
+        "checkpoints/pilot/mech_a1_real/global_step_60/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-1 A1 stub superseded by mech_a1_real_resume60 (complete, merged, evaluated); merged step-60 HF inside this dir is preserved for the registered ranking config"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a3_caption/global_step_20",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a3_caption/global_step_20/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a3_caption_resume20/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-13T14:40:25Z",
+      "preserved_in_place": [],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-1 A3 stub superseded by mech_a3_caption_resume20 (complete, merged, evaluated)"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a2_gray_seed2_resume20/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-19T12:55:36Z",
+      "preserved_in_place": [],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-2 A2 stub superseded by mech_a2_gray_seed2_resume20 (complete, merged, evaluated)"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a2b_noimage_seed2_resume20/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-19T07:16:46Z",
+      "preserved_in_place": [
+        "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-2 A2b stub superseded by mech_a2b_noimage_seed2_resume20 (complete, merged, evaluated)"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-16T01:03:55Z",
+      "preserved_in_place": [
+        "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-1 A2 final lineage complete; step-80 raw superseded by verified step-100"
+    },
+    {
+      "bytes": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 6172412241,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-16T08:55:23Z",
+      "preserved_in_place": [
+        "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "seed-1 A2 final lineage complete, merged and evaluated; raw optimizer state has no registered resume future"
+    },
+    {
+      "bytes": 16266164476,
+      "candidate_dir": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_0.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_1.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_2.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_3.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_4.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_5.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_6.pt"
+        },
+        {
+          "bytes": 2032119898,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_7.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/dataloader.pt"
+        }
+      ],
+      "merged_proof": null,
+      "merged_proof_present": false,
+      "newest_mtime_utc": "2026-07-22T04:16:23Z",
+      "preserved_in_place": [
+        "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "registered smoke checkpoint; docs/registered_mini_a5_smoke_v1.md declares retention-expired after the passed independent audit plus pre-deletion inventory"
+    },
+    {
+      "bytes": 16266164476,
+      "candidate_dir": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_0.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_1.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_2.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_3.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_4.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_5.pt"
+        },
+        {
+          "bytes": 2033434714,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_6.pt"
+        },
+        {
+          "bytes": 2032119898,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_7.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/dataloader.pt"
+        }
+      ],
+      "merged_proof": null,
+      "merged_proof_present": false,
+      "newest_mtime_utc": "2026-07-22T04:59:11Z",
+      "preserved_in_place": [
+        "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "registered smoke checkpoint; same retention rule as CP smoke"
+    },
+    {
+      "bytes": 46304855268,
+      "candidate_dir": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 7510004940,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/dataloader.pt"
+        }
+      ],
+      "merged_proof": null,
+      "merged_proof_present": false,
+      "newest_mtime_utc": "2026-07-16T17:21:04Z",
+      "preserved_in_place": [
+        "checkpoints/m5_anchor_resume_integrity_step101/global_step_101/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "M5 restore-integrity test artifact; test passed and is recorded in the M4 authorization; not a resume source for the 200-400 continuation"
+    },
+    {
+      "bytes": 46304855268,
+      "candidate_dir": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100",
+      "exists": true,
+      "files": [
+        {
+          "bytes": 14696,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 14696,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 4066162202,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 7510004940,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_0.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_1.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_2.pt"
+        },
+        {
+          "bytes": 7510047052,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_3.pt"
+        },
+        {
+          "bytes": 1580,
+          "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/dataloader.pt"
+        }
+      ],
+      "merged_proof": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface/model.safetensors.index.json",
+      "merged_proof_present": true,
+      "newest_mtime_utc": "2026-07-16T16:38:40Z",
+      "preserved_in_place": [
+        "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface"
+      ],
+      "project_ownership": "BlindGain repository checkpoints tree; run manifests and trackers in-repo",
+      "reason": "anchor A0 raw resume source superseded by the M5 long-horizon chain (durable verified step-200); merged step-100 HF endpoint preserved in place"
+    }
+  ],
+  "generated_utc": "20260723T151217Z",
+  "git_hash": "91bd00abe7cbe70e5202a207030a46809f79d01a",
+  "mode": "dry-run",
+  "protected_invariants": [
+    "no path outside the BlindGain checkpoints tree is read or modified",
+    "actor/huggingface merged weights preserved for every lineage",
+    "checkpoint_tracker.json, experiment logs, and configs untouched",
+    "no seed-3 lineage is a candidate",
+    "m5_anchor_longhorizon_400/global_step_150 raw retained as M5 fallback resume state",
+    "the /tmp checkpoint archive tier is not touched"
+  ],
+  "quota_before": {
+    "raw": [
+      "        /XYFS02     [0]     [0]     [0]       -     [0]     [0]     [0]       -",
+      "Some errors happened when getting quota info. Some devices may be not working or deactivated. The data in \"[]\" is inaccurate."
+    ]
+  },
+  "schema_version": "blind-gains.raw-checkpoint-cleanup.v1",
+  "total_candidate_bytes": 411822546440,
+  "total_candidate_gib": 383.54
+}
