@@ -36,6 +36,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--num-shards", type=int, default=1)
     parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--ocr-config", type=Path, default=None)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite OCR output: {args.output}")
@@ -44,7 +45,7 @@ def main() -> None:
 
     entities = _entities(args.inputs)
     selected = entities[args.shard_index :: args.num_shards]
-    engine = RapidOCR()
+    engine = RapidOCR(config_path=str(args.ocr_config)) if args.ocr_config else RapidOCR()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     started = time.monotonic()
     with args.output.open("w", encoding="utf-8") as handle:

@@ -13,13 +13,13 @@ CONDITION="$4"
 RUN_DIR="$5"
 LIMIT="${6:-}"
 ROOT="$(pwd)"
-CONFIG="configs/eval/seed1_visual_evidence_ranking_v1.json"
-REGISTRATION="docs/registered_seed1_visual_evidence_ranking_v1.md"
+CONFIG="${RANKING_CONFIG:-configs/eval/seed1_visual_evidence_ranking_v1.json}"
+REGISTRATION="${RANKING_REGISTRATION:-docs/registered_seed1_visual_evidence_ranking_v1.md}"
 
 [[ "${NODE}" == "an12" || "${NODE}" == "an29" ]] || { echo "unsupported node" >&2; exit 2; }
 [[ "${GPU}" =~ ^[0-7]$ ]] || { echo "GPU must be in [0,7]" >&2; exit 2; }
 [[ "${CONDITION}" =~ ^(real|gray|no_image)$ ]] || { echo "unsupported condition" >&2; exit 2; }
-[[ "${MODEL_KEY}" =~ ^(base|a1_step60|a1_step100)$ ]] || { echo "unsupported model key" >&2; exit 2; }
+[[ "${MODEL_KEY}" =~ ^(base|a1_step60|a1_step100|a2_step100|a2b_step100|a3_step100)$ ]] || { echo "unsupported model key" >&2; exit 2; }
 [[ -z "${LIMIT}" || "${LIMIT}" =~ ^[1-9][0-9]*$ ]] || { echo "LIMIT must be positive" >&2; exit 2; }
 [[ "${RUN_DIR}" != /* && "${RUN_DIR}" == experiments/runs/* ]] || { echo "RUN_DIR must be relative under experiments/runs" >&2; exit 2; }
 [[ ! -e "${RUN_DIR}" ]] || { echo "refusing to overwrite run directory" >&2; exit 73; }

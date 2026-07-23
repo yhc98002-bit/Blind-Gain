@@ -13,7 +13,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG = ROOT / "configs/eval/seed1_visual_evidence_ranking_v1.json"
+DEFAULT_CONFIG = ROOT / "configs/eval/seed1_visual_evidence_ranking_v1.json"
+CONFIG = DEFAULT_CONFIG
 
 
 def matrix_cells() -> list[dict[str, str]]:
@@ -260,7 +261,11 @@ def main() -> None:
     parser.add_argument("--gpu-ids", nargs="+", type=int, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--config", type=Path, default=None)
     args = parser.parse_args()
+    if args.config is not None:
+        global CONFIG
+        CONFIG = args.config.resolve()
     if len(set(args.gpu_ids)) != len(args.gpu_ids) or any(not 0 <= gpu <= 7 for gpu in args.gpu_ids):
         raise ValueError("GPU ids must be unique values in [0,7]")
     if args.poll_seconds < 15:
