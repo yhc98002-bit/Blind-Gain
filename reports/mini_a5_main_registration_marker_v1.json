@@ -1,0 +1,65 @@
+{
+  "arms_authorized": [
+    "cp",
+    "member"
+  ],
+  "artifact_sha256": {
+    "advantage_audit": "fc49b672828075e4456f89e47a7a12511bb2f2c1863ac599a20f4e699b99c45a",
+    "catch_audit": "37b9662c1f873c6b6cb7ee04a87a954dadef54ea974933c0e50e5ab8c60c2317",
+    "cp_config": "8d7736f5364bd8bfd5595584aa05917a71306888282eeb2a37682ebf02c325e8",
+    "fixed_subsets_manifest": "9d3ab38b639c7d9672404fd52c521abf040ca56c0cf0f297860b3a7ccf922b7d",
+    "member_config": "358e6d7cd40c3748e9e5dbae6715310611fcb295bab107e1138b4071ea0fcd9b",
+    "monitoring_val": "1ed1413f6ca92d67fdd9ea2f8bf9072d9126c97403ffcd9fef0f97d9cbb74475",
+    "overlay": "03a46cd00626b58d5a4e56c0c7d450330801ef5b05cb3e11e7243bff15614b86",
+    "pair_grouping": "6cb21c0a199d049780aa427aad1f51cd995db553433c1d2627431f0c1c1076e0",
+    "reward": "e8dea3e49c03c44a050881fba6e9bec5c8120977659f5a786f2bf4526b6213f0",
+    "smoke_audit": "f3d4d6337ed05e616ba3ca342c7caac02a795dc2dbda60d4bafde45ca69fe884",
+    "step0_audit": "debc84d4ae0c22f44f43345fb3510033aea6b8bfee09ed71f6f768bbbe97107f",
+    "train_corpus": "0b0f0965987d1c340c3ebd78da742c9d99b319b61524b5cb42960519fd9c9b28"
+  },
+  "checks": {
+    "all_registered_artifacts_present": true,
+    "document_authorizes_120_steps_per_arm": true,
+    "document_contains_every_registered_hash": true,
+    "document_registers_exact_commands": true,
+    "isolated_easyr1_diff_nonempty": true,
+    "isolated_easyr1_revision_exact": true,
+    "launcher_present": true,
+    "registered_files_identical_to_commit": true,
+    "registration_commit_exists": true,
+    "registration_commit_is_head": true,
+    "smoke_audit_authorized_zero_main_steps": true,
+    "smoke_audit_passed": true
+  },
+  "committed_identity": {
+    "advantage_audit": true,
+    "catch_audit": true,
+    "cp_config": true,
+    "fixed_subsets_manifest": true,
+    "member_config": true,
+    "monitoring_val": true,
+    "overlay": true,
+    "pair_grouping": true,
+    "registration_document": true,
+    "reward": true,
+    "smoke_audit": true,
+    "step0_audit": true,
+    "train_corpus": true
+  },
+  "easyr1_revision": "dd71bbd252694f5f850213eec15795b6b88d9fea",
+  "easyr1_worktree_diff_sha256": "c12ca1eaddf11d13b5206834490d71179596af89c58d37741cc2f8624602766a",
+  "head_at_marker_build": "a6209adada911d39a6082a5c351cefe2bd07e207",
+  "launcher_sha256": "15e1cfc719d21cfacc9832e31e518d772b770ac7e1debd77a8d6c820e61c1824",
+  "main_config_sha256": {
+    "cp": "8d7736f5364bd8bfd5595584aa05917a71306888282eeb2a37682ebf02c325e8",
+    "member": "358e6d7cd40c3748e9e5dbae6715310611fcb295bab107e1138b4071ea0fcd9b"
+  },
+  "main_optimizer_steps_authorized_per_arm": 120,
+  "registration_commit": "a6209adada911d39a6082a5c351cefe2bd07e207",
+  "registration_document": "docs/registered_mini_a5_main_v1.md",
+  "registration_document_sha256": "4174e8f9d8ebd4bf33cf4a95195020f01ebebb98d64f851866eaf9114635e3ef",
+  "schema_version": "blind-gains.mini-a5-main-registration-marker.v1",
+  "scientific_gate_decision": null,
+  "status": "registered",
+  "train_corpus_sha256": "0b0f0965987d1c340c3ebd78da742c9d99b319b61524b5cb42960519fd9c9b28"
+}
