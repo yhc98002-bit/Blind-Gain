@@ -18,10 +18,11 @@ CONFIG = DEFAULT_CONFIG
 
 
 def matrix_cells() -> list[dict[str, str]]:
+    config = _read(CONFIG)
     return [
         {"model_key": model, "condition": condition}
-        for model in ("base", "a1_step60", "a1_step100")
-        for condition in ("real", "no_image", "gray")
+        for model in config["models"]
+        for condition in config.get("conditions", ["real", "no_image", "gray"])
     ]
 
 
