@@ -120,7 +120,7 @@ def row_entropy_and_gap(row: dict[str, Any]) -> tuple[float, float]:
     entropies: list[float] = []
     gaps: list[float] = []
     for side in ("a", "b"):
-        scores = [float(value) for value in row[f"candidate_scores_{side}"]]
+        scores = [float(value) for value in row[f"candidate_scores_{side}"].values()]
         if len(scores) < 2:
             raise ValueError(f"candidate set too small in pair {row['pair_id']}")
         peak = max(scores)
