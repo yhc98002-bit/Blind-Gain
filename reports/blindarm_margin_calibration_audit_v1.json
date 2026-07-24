@@ -1,0 +1,12 @@
+{
+  "calibration_config_sha256": "9c330fc075fff4c57b79467fba3cde55ae6e513b602037c3cadba3e504665c85",
+  "calibration_verdict": "intermediate_pattern",
+  "cells_verified": 18,
+  "integrity_controls_pass": true,
+  "machine_output_sha256": "cee8bb0a05b40f7463176c129b7e1fefebcd17f49f9c2804035910c03dd4a260",
+  "markdown_output_sha256": "1c2d7155349301fcebaa74eef844a4ade2c284a6683b4f1e41afd392f3fd5cf0",
+  "performance_values_opened": true,
+  "schema_version": "blind-gains.blindarm-margin-calibration-audit.v1",
+  "seed1_config_sha256": "6abd53bbf7742167aaf672dcc74633465f7d9378220067c651ce4575375b67bf",
+  "status": "pass"
+}
