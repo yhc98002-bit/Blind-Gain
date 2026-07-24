@@ -1,0 +1,9 @@
+{
+  "cells_verified": 6,
+  "ladder_branch": "candidate_set_structure_realization_gap_measurement_methods_finding",
+  "machine_output_sha256": "98f72ed1d32a3fb0499745f2f4dddc0f41e53c026e077db879c9aa41851c2bce",
+  "markdown_output_sha256": "5e7f8447ab10b396719e772921a49a5942b841090f8b3fb01313f7de73f849ba",
+  "performance_values_opened": true,
+  "schema_version": "blind-gains.x2-hard-negative-audit.v1",
+  "status": "pass"
+}

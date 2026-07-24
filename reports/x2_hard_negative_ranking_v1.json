@@ -1,0 +1,190 @@
+{
+  "base_ladder_metric": {
+    "ci95": [
+      0.475,
+      0.5566666666666666
+    ],
+    "n_pairs": 600,
+    "rate": 0.5166666666666667
+  },
+  "comparison": {
+    "a1_step100": {
+      "v1_against_set_pair_success": {
+        "ci95": [
+          0.43666666666666665,
+          0.5166666666666667
+        ],
+        "n_pairs": 600,
+        "rate": 0.4766666666666667
+      },
+      "v1_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      },
+      "v2_against_set_pair_success": {
+        "ci95": [
+          0.47333333333333333,
+          0.5533333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.5133333333333333
+      },
+      "v2_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      }
+    },
+    "a1_step60": {
+      "v1_against_set_pair_success": {
+        "ci95": [
+          0.44166666666666665,
+          0.5216666666666666
+        ],
+        "n_pairs": 600,
+        "rate": 0.4816666666666667
+      },
+      "v1_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      },
+      "v2_against_set_pair_success": {
+        "ci95": [
+          0.4866666666666667,
+          0.5666666666666667
+        ],
+        "n_pairs": 600,
+        "rate": 0.5266666666666666
+      },
+      "v2_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      }
+    },
+    "base": {
+      "v1_against_set_pair_success": {
+        "ci95": [
+          0.4266666666666667,
+          0.5083333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.4683333333333333
+      },
+      "v1_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      },
+      "v2_against_set_pair_success": {
+        "ci95": [
+          0.475,
+          0.5566666666666666
+        ],
+        "n_pairs": 600,
+        "rate": 0.5166666666666667
+      },
+      "v2_margin_pair_success": {
+        "ci95": [
+          0.8833333333333333,
+          0.9283333333333333
+        ],
+        "n_pairs": 600,
+        "rate": 0.9066666666666666
+      }
+    }
+  },
+  "ladder_branch": "candidate_set_structure_realization_gap_measurement_methods_finding",
+  "ladder_metric_definition": "against-set pair-success: both members rank their own gold first within the frozen structured negative set (candidate_pair_top1)",
+  "margin_invariance": {
+    "a1_step100": {
+      "margin_pair_success_disagreements": 0,
+      "note": "the golds-only margin statistic is candidate-set-invariant by construction; disagreements measure recomputation determinism only"
+    },
+    "a1_step60": {
+      "margin_pair_success_disagreements": 0,
+      "note": "the golds-only margin statistic is candidate-set-invariant by construction; disagreements measure recomputation determinism only"
+    },
+    "base": {
+      "margin_pair_success_disagreements": 0,
+      "note": "the golds-only margin statistic is candidate-set-invariant by construction; disagreements measure recomputation determinism only"
+    }
+  },
+  "provenance": {
+    "cells": [
+      {
+        "manifest_sha256": "687641b2a908f4815b9a995cc564687a69c2ea5057f1df565ef3dd2f4006cf0d",
+        "model_key": "a1_step100",
+        "output_sha256": "a5f5fbb26331eea3a00c1b24ec62b8e760f0fe769eef17a488bfd59a6b44704e",
+        "registry": "v1_pinned",
+        "rows": 1200,
+        "run_dir": "experiments/runs/d1_visual_evidence_a1_step100_real_an12_gpu4_d1_visual_evidence_matrix_queue_login_20260717T175951Z"
+      },
+      {
+        "manifest_sha256": "716370e6206c62440084cd5e2de6fbfc48a0a9b7e4cdee92c4867c426f6491b2",
+        "model_key": "a1_step60",
+        "output_sha256": "dc412b5a15a7bfca49b5ad5ae95a2cca296ad829aa60b9aee337314629b9d607",
+        "registry": "v1_pinned",
+        "rows": 1200,
+        "run_dir": "experiments/runs/d1_visual_evidence_a1_step60_real_an12_gpu7_d1_visual_evidence_matrix_queue_login_20260717T175951Z"
+      },
+      {
+        "manifest_sha256": "67d09e4474ac638187a883b34335e164de37d45bdf48c88a56ca6f98ea247644",
+        "model_key": "base",
+        "output_sha256": "c42ad15fa31e7f9c4843ab9394b605549090113e99e04b898724f59322a08a73",
+        "registry": "v1_pinned",
+        "rows": 1200,
+        "run_dir": "experiments/runs/d1_visual_evidence_base_real_an12_gpu4_d1_visual_evidence_matrix_queue_login_20260717T175951Z"
+      },
+      {
+        "manifest_sha256": "8e389e7543038ed98f91095331b2f1d57969c024c3bd03e85e6a682de4572c82",
+        "model_key": "a1_step100",
+        "output_sha256": "175445e54093c2617a212e53d89c6a93ed19ecdd35e9da0363db527e64cad13a",
+        "registry": "v2_structured_negatives",
+        "rows": 600,
+        "run_dir": "experiments/runs/d1_visual_evidence_a1_step100_real_an29_gpu6_x2_ranking_matrix_queue_login_20260724T172219Z"
+      },
+      {
+        "manifest_sha256": "ddc9028eaef272a792e1a3737e9b7151f9810b77a176ca83e97178d15bf5d065",
+        "model_key": "a1_step60",
+        "output_sha256": "82fd722cd1c4295a905afd475e9d55a6d5b7cbcffb3b3b11ef1ed26342e8d486",
+        "registry": "v2_structured_negatives",
+        "rows": 600,
+        "run_dir": "experiments/runs/d1_visual_evidence_a1_step60_real_an29_gpu5_x2_ranking_matrix_queue_login_20260724T172219Z"
+      },
+      {
+        "manifest_sha256": "bf08bba0a0da2f508fce07f69a62f40b148170b5dc2e4b607a976f44e13d422b",
+        "model_key": "base",
+        "output_sha256": "b02821154cd7492e30abc8436b580f1e0b69712c2993919f8b7ddde896e4d844",
+        "registry": "v2_structured_negatives",
+        "rows": 600,
+        "run_dir": "experiments/runs/d1_visual_evidence_base_real_an29_gpu4_x2_ranking_matrix_queue_login_20260724T172219Z"
+      }
+    ],
+    "seed1_config_sha256": "6abd53bbf7742167aaf672dcc74633465f7d9378220067c651ce4575375b67bf",
+    "v2_registry_sha256": "666f0347647b21b16553a40c8381872247ebe9796493b07f058155a5cdf42be0",
+    "x2_config_sha256": "700a12658a40d24aa89943ec56abcdf2169e6a3111b8641636a6cf48d2f827a9"
+  },
+  "registration": "docs/registered_x2_ladder_v1.md",
+  "schema_version": "blind-gains.x2-hard-negative-results.v1",
+  "scorer_version": "visual-evidence-ranking-v1",
+  "status": "complete",
+  "template": "coordinate_register_twenty_point_x_v02"
+}
