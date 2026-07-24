@@ -36,3 +36,4 @@ Entries are written and fsynced before retention-expired bytes are removed.
 | 2026-07-23T15:06:00Z | 60 | `/tmp/blindgain_checkpoint_archive/mech_a2_gray_seed3_an12_20260722T145916Z/global_step_40/actor` | 40954297772 | `23795d9dddd07755bca882d28e984efe04024808d3159bc49abd83348dc8ce5b` |
 | 2026-07-23T21:48:33Z | 100 | `/tmp/blindgain_checkpoint_archive/mech_a1_real_seed3_an29_20260722T050330Z/global_step_80/actor` | 40954297772 | `d87d870f3644528aae80fef11230ac12b6fa16e1787a5f76b0b709f9c1c0372c` |
 | 2026-07-23T22:56:25Z | 80 | `/tmp/blindgain_checkpoint_archive/mech_a2_gray_seed3_an12_20260722T145916Z/global_step_60/actor` | 40954297772 | `47b8e731efab9b17bf0c444ce575ed510ba41308d14c1fdc3d74423264158d08` |
+| 2026-07-24T06:53:25Z | 100 | `/tmp/blindgain_checkpoint_archive/mech_a2_gray_seed3_an12_20260722T145916Z/global_step_80/actor` | 40954297772 | `a7d4514c04d42804092c34e64f6d50de4c235c5b76af4dd8e4b2de272961d1b8` |
