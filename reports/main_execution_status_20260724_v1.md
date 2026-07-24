@@ -78,8 +78,15 @@ registration: visual-evidence ranking; no perception claim.
 - Caption store artifact frozen: `data/virl39k_caption_store_3b_main_v2.jsonl`
   (28,768 rows, SHA256 `45b0ef5ab6da6b872e81e46215e28418563f08e20931d4d3cc6bf14cfce57d04`),
   concatenated deterministically from the four v2 worker shards.
-- Independent coverage audit (fresh image hashing on an12):
-  `reports/virl39k_caption_store_audit_v1.json` — see status line in §7.
+- Independent coverage audit passed:
+  `reports/virl39k_caption_store_audit_v1.json`, status `pass`, 28,768/28,768
+  image hashes covered with exactly one caption row each, model/revision/TP
+  contract verified against the run manifest. Note: the audit's run-manifest
+  mode aborted because this generator (`scripts/caption_image_store.py`) does
+  not stamp `source_roots_sha256` rows; the registered legacy mode
+  (frozen-manifest coverage + row-level hashes) was used instead, and
+  byte-level image provenance is already bound by the freeze's registered
+  `caption_image_index_exact` check.
 - Remaining before any M7 optimizer step: four matched hash-pinned arm
   configurations (+ per-arm train parquet build) and the fail-closed launcher
   required by `docs/registered_m7_amendment_v1.md`.
@@ -133,6 +140,6 @@ Human-blocked (unchanged):
 - First finalizer invocation failed fast on a schema mismatch
   (`candidate_scores_*` are id-keyed mappings, not arrays); fixed and rerun
   in a fresh run dir; the failed run dir records `fail` honestly.
-- Caption-store audit status at commit time: recorded in
-  `reports/virl39k_caption_store_audit_v1.json` (this file is the source of
-  truth; if absent or failing, M7 configs stay blocked).
+- Caption-store audit: passed in legacy mode (see §4); the run-manifest mode
+  is structurally incompatible with rows from `scripts/caption_image_store.py`
+  and its failure was a tooling mismatch, not a coverage defect.
