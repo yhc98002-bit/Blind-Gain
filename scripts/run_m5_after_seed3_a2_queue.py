@@ -210,7 +210,31 @@ def a2_release_state(training_run: str, watcher_run: str) -> tuple[str, dict[str
     else:
         completion_checks["raw_marker_status"] = False
     evidence["completion_checks"] = completion_checks
-    return ("ready" if all(completion_checks.values()) else "fail"), evidence
+    hard_keys = (
+        "training_exit_zero",
+        "training_artifacts_verified",
+        "watcher_nonterminal",
+        "watcher_exit_zero",
+        "watcher_artifacts_verified",
+    )
+    if not all(
+        completion_checks[key] for key in hard_keys if key in completion_checks
+    ):
+        return "fail", evidence
+    artifact_keys = (
+        "step100_index",
+        "step100_raw_marker",
+        "tracker_step100",
+        "raw_marker_status",
+    )
+    if all(completion_checks[key] for key in artifact_keys):
+        return "ready", evidence
+    if watcher_status == "complete":
+        return "fail", evidence
+    # The watcher is alive and has not yet merged/relocated step 100; the
+    # artifacts are expected to appear, so this state is a wait, not a failure.
+    evidence["waiting_reason"] = "step100_merge_and_retention_in_progress"
+    return "waiting", evidence
 
 
 def validate_initial_m5(source_run: str, handoff_run: str) -> tuple[Path, Path]:
