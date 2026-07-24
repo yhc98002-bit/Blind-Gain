@@ -1,0 +1,67 @@
+[
+ {
+  "bytes": 14696,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_0.pt",
+  "sha256": "ebbdd1db3e02553a45fbfe9656cd700d45539a1232a3c4b7d4ab16741244ccb2"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_1.pt",
+  "sha256": "2469c25ebdb73a8abe9644b258c2a72c7a54b8c3353014dc92f2b658151c1fd8"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_2.pt",
+  "sha256": "a20644c12ab53e4751bdc394caaf688f0f90ae057cceca4cdc8d95b889820a71"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/extra_state_world_size_4_rank_3.pt",
+  "sha256": "70fdd0b18e8b8aa223f0a2338974ebeeb2f3990223f3b9a089d92cb7ef1f48cf"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_0.pt",
+  "sha256": "11ddee50d3f3c9b1d34bce5edb7e657e98dc8eacffa84850dd42215048f14049"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_1.pt",
+  "sha256": "b088f0019363740735646aaa3113958e30d0fe1cd6623e9af4f8ea79766a9035"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_2.pt",
+  "sha256": "63b586fde8c1f9041ea58b97de3ad066bd9ba6823c7465d5d5c0e2e3993b191d"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/model_world_size_4_rank_3.pt",
+  "sha256": "18a4512ba4246828e5893a823240c005af3944a2377cd44115ccbb6fc233639b"
+ },
+ {
+  "bytes": 6172412241,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_0.pt",
+  "sha256": "f060f3415370167b9c0168a129071f7312a042efedfeac4d78784260714cf63d"
+ },
+ {
+  "bytes": 6172412241,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_1.pt",
+  "sha256": "08cccc838a9035ef152e24fcded4328a01d5c8650b3dc4955a5cf50da4bd05cc"
+ },
+ {
+  "bytes": 6172412241,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_2.pt",
+  "sha256": "00268cf70ebe3095299037722dbb965d5b3c697db0b1decc2cbdc0e1ce2a79b1"
+ },
+ {
+  "bytes": 6172412241,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/optim_world_size_4_rank_3.pt",
+  "sha256": "7ee7d94408fb4e365f8f95c5d3f4b411a3f7b0c02369f2ee775edef46d1e9af2"
+ },
+ {
+  "bytes": 1580,
+  "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/dataloader.pt",
+  "sha256": "cec855e0605760c2170913c385c78317dae8cd49666d10da3b7021244bd4f280"
+ }
+]

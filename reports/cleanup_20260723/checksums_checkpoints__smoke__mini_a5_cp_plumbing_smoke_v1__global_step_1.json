@@ -1,0 +1,47 @@
+[
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_0.pt",
+  "sha256": "c29601d028417be9019cfd232f70fa51b3b9cb3f21c852896ea04b5dc5ec6591"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_1.pt",
+  "sha256": "c00c58a4a9a978339808f2f812ce564c0579e4050e1bc5d2460aafc2660dcfaa"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_2.pt",
+  "sha256": "030786d053257ad2fe6f87f21c04fab0a33099c12e52e1d1a60df7173613f4f0"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_3.pt",
+  "sha256": "8112f15182d1cc29f2c3ae7cd4f7b66fe8f5bf99286c8e7284391cca374f0dad"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_4.pt",
+  "sha256": "c36871d380823a492f0a9072dbd25bd20e56c02f65850dc54d180b01762b7023"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_5.pt",
+  "sha256": "2ad7079a3c15fd9550792ddcb38c9eb79b5bc3dadbc8db08305dad60f573ab0f"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_6.pt",
+  "sha256": "0f56b1d9d1a3800b8edd05179ee2954b60d69093e13096001a4b652e381867a4"
+ },
+ {
+  "bytes": 2032119898,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_7.pt",
+  "sha256": "469ed06d149a7b264adb29f8d8b8c5f02ecea3d8a23bb3b9088dec069fc7d4df"
+ },
+ {
+  "bytes": 1580,
+  "path": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1/dataloader.pt",
+  "sha256": "a9496fdc0e599af27e46957929556fdbde6075cd80bef0c8f073791487a8f47f"
+ }
+]

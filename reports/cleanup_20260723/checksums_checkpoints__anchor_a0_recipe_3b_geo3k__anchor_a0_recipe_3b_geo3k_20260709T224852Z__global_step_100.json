@@ -1,0 +1,67 @@
+[
+ {
+  "bytes": 14696,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_0.pt",
+  "sha256": "e29a20072e1c41236b56f999a0ac66f943ee69b7cbe5ee7f0af807c7a82fd8d9"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_1.pt",
+  "sha256": "378615097c172e4ff062a99ff7f10d3c3b38547a495877612dbdd76e047687d7"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_2.pt",
+  "sha256": "a079c3c746b7e37c625c0953cdc662f41be920122fa8619e131af62b98f9670c"
+ },
+ {
+  "bytes": 14696,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/extra_state_world_size_4_rank_3.pt",
+  "sha256": "7ee35ff90f295655ac552df0f8fa524571312cec0a8efb73a337740b84401d27"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_0.pt",
+  "sha256": "b896b147b3ad7c576a8a561a25a34dce9188ce7f83d7522d6fbd0216328e027a"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_1.pt",
+  "sha256": "734e57b66ca852af3969e5d3ddde5d86636e910f7aca14fef758619bb3f7859f"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_2.pt",
+  "sha256": "afaafb8ee415070bbbfd0102ac1247b6c5fcbb106104324dd4755d5fb68e6648"
+ },
+ {
+  "bytes": 4066162202,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/model_world_size_4_rank_3.pt",
+  "sha256": "41f862ff71fc650172f22bdcd6969e3589a1ea278c401533fdcb779a1b885660"
+ },
+ {
+  "bytes": 7510004940,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_0.pt",
+  "sha256": "85012e3f3234c1c31320140649fc2777f70986cef63cfaf7b45c6ee8230a4080"
+ },
+ {
+  "bytes": 7510047052,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_1.pt",
+  "sha256": "b0b6779712542212ac8c7e8411209da5c6e5eac4bb7c2ef74c40fb2b6312cc3e"
+ },
+ {
+  "bytes": 7510047052,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_2.pt",
+  "sha256": "600c60c2fe825aa3cbe9bd03439d3b795c3661693e5efee354692a75f4853900"
+ },
+ {
+  "bytes": 7510047052,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/optim_world_size_4_rank_3.pt",
+  "sha256": "8f9c1068040467ca7684de3f6cbaebcfc763aebb9249629cab9ef73fe3e10fa4"
+ },
+ {
+  "bytes": 1580,
+  "path": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/dataloader.pt",
+  "sha256": "6a9f9a90dec4eca371e8a5cd873f6d093f897420040725a00a1dc2953bd56a8f"
+ }
+]

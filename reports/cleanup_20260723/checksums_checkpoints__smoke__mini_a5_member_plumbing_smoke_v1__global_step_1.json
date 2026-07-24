@@ -1,0 +1,47 @@
+[
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_0.pt",
+  "sha256": "44a43a9aeede08a6021035128168b237ce92559237540e54641ee10ade3bc123"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_1.pt",
+  "sha256": "3407571bbcbcd008af9719be7547c9c34ce806f950edcd61807ebf9bd75d9a66"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_2.pt",
+  "sha256": "ec5b6ab6f8c2b3f1fc8790a602c5a3f352d4db9edd575592bd55a8632f83fc10"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_3.pt",
+  "sha256": "80dd08229f9df6a48a35483a728fa63304756fcadfbb5cac6e326f099a815a29"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_4.pt",
+  "sha256": "8a35ce16570f772fd607d3534009ab0cac3c226433c5019509bb0b5b7695f493"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_5.pt",
+  "sha256": "241a2d63ae8a8d146596ee3c87feb8794600f0208018f8da084b321c7a2dfb3d"
+ },
+ {
+  "bytes": 2033434714,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_6.pt",
+  "sha256": "97401b9d8500062bbbdf6b5663c33a34aeae3cd79c0bff049ef7ffdecd6326e2"
+ },
+ {
+  "bytes": 2032119898,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/actor/model_world_size_8_rank_7.pt",
+  "sha256": "3b15d9612a532752f0932277d1402ccaf8e9e72d6948257fc8b4e19da2596d94"
+ },
+ {
+  "bytes": 1580,
+  "path": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1/dataloader.pt",
+  "sha256": "35c445e48c9111df3efb6b19951fd659615b5fcc011872e3086d047e9a2295cb"
+ }
+]

@@ -1,0 +1,79 @@
+{
+  "deleted": [
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray/global_step_60",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a2_gray__global_step_60.json",
+      "checksum_manifest_sha256": "b338f19da33b8af0836ba810435a77ea19ecc8cd5dcf80168a5080067403e6c7"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a1_real/global_step_60",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a1_real__global_step_60.json",
+      "checksum_manifest_sha256": "e9ff0ce8494ed17d897ece5270f6fb73ad2e3bded09f9712843a649a135def21"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a3_caption/global_step_20",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a3_caption__global_step_20.json",
+      "checksum_manifest_sha256": "22f6ec956e2b871e01feb81656345f25eb682838fe8e905478b6225bf6cf7949"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a2_gray_seed2__global_step_20.json",
+      "checksum_manifest_sha256": "0437a8516895b505e9044b9ae6fcd75afe3c40aec272b3f56818f6793dfd099a"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a2b_noimage_seed2__global_step_20.json",
+      "checksum_manifest_sha256": "d606e403a40a0dbab2469de0a533a2897350c8fae0f2710a8e6546f3282e8a66"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a2_gray_resume60_retry2__global_step_80.json",
+      "checksum_manifest_sha256": "7df7038ee299d626bbbfd3fa87f5b69b315268f0b560c0b06db434af2b8bd606"
+    },
+    {
+      "bytes_removed": 40954358136,
+      "candidate_dir": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__pilot__mech_a2_gray_resume60_retry2__global_step_100.json",
+      "checksum_manifest_sha256": "637669a04d855463e8c4a8138cefe5f42865b9f7cbb78a9be8af3307529c9a7f"
+    },
+    {
+      "bytes_removed": 16266164476,
+      "candidate_dir": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__smoke__mini_a5_cp_plumbing_smoke_v1__global_step_1.json",
+      "checksum_manifest_sha256": "e481cae8bff3154e2a65fba02508a1446d3d666e8a3b8855d6e6bbe6e1a0cc24"
+    },
+    {
+      "bytes_removed": 16266164476,
+      "candidate_dir": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__smoke__mini_a5_member_plumbing_smoke_v1__global_step_1.json",
+      "checksum_manifest_sha256": "610e83e45fb3f6936802075d873d084459b5a4e246a31472bbfa19daf388492e"
+    },
+    {
+      "bytes_removed": 46304855268,
+      "candidate_dir": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__m5_anchor_resume_integrity_step101__global_step_101.json",
+      "checksum_manifest_sha256": "c3d5e42603f70f04800cd48dedf9a84eb0dff0c4ff9dc3d468b4342e6f94f476"
+    },
+    {
+      "bytes_removed": 46304855268,
+      "candidate_dir": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100",
+      "checksum_manifest": "reports/cleanup_20260723/checksums_checkpoints__anchor_a0_recipe_3b_geo3k__anchor_a0_recipe_3b_geo3k_20260709T224852Z__global_step_100.json",
+      "checksum_manifest_sha256": "9c1a231e155cacd3cab9e0ac804bea45e6fd883f0139f53a8e87290d9d413aae"
+    }
+  ],
+  "dry_run_inventory": "reports/cleanup_20260723/cleanup_inventory_execute_20260723T151443Z.json",
+  "generated_utc": "20260723T153518Z",
+  "quota_after": {
+    "raw": [
+      "        /XYFS02     [0]     [0]     [0]       -     [0]     [0]     [0]       -",
+      "Some errors happened when getting quota info. Some devices may be not working or deactivated. The data in \"[]\" is inaccurate."
+    ]
+  },
+  "schema_version": "blind-gains.raw-checkpoint-cleanup-execution.v1"
+}
