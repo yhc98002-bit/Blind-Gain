@@ -1,0 +1,122 @@
+{
+  "schema_version": "blind-gains.x1-image-condition-ranking.v1",
+  "scope": "Registered X1 image-condition matrix (docs/registered_x1_matrix_v1.md): candidate-evidence ranking layer for the two novel image conditions on base plus the four seed-1 step-100 arms. The correct-image, gray, and no-image ranking cells are supplied by the audited seed-1 and blind-arm calibration matrices and are pinned by the X1 report, not re-measured.",
+  "candidate_registry": {
+    "path": "data/fliptrack_r19_visual_evidence_candidates_v1.jsonl",
+    "sha256": "fa9456941a730e174b1ed4bb4caefc151778e3f1adc0ca77db941955a4215f81",
+    "pair_count": 1200,
+    "source_manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+    "max_candidates": 16,
+    "selection_uses_model_outputs": false
+  },
+  "processor": {
+    "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "artifact_sha256": "bb6a1bfd88cb88a749ff1f86affa84907a70bfdf98c10e303368db5685c81544",
+    "artifact_files": [
+      "merges.txt",
+      "preprocessor_config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "vocab.json"
+    ],
+    "padding_side": "right",
+    "checkpoint_specific_tokenizer_allowed": false
+  },
+  "prompt_contract": {
+    "id": "answer-tags-v1",
+    "sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+  },
+  "image_override_map": {
+    "path": "data/x1_mismatched_derangement_v1.json",
+    "sha256": "4fe9c293144b3cda3178aff194ed0b62a44fd362bf2b9ed4ff6d91db1f339a12",
+    "seed": 20260724,
+    "method": "sattolo_cyclic_derangement_within_template_sorted_by_pair_id_side_preserving"
+  },
+  "models": {
+    "base": {
+      "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "global_step": 0,
+      "model_index_sha256": "c7dd78a4c6bea60b51332f1baf37b8f8124ecab2c35395a29a29825bf2619768"
+    },
+    "a1_step100": {
+      "path": "checkpoints/pilot/mech_a1_real_resume60/global_step_100/actor/huggingface",
+      "global_step": 100,
+      "model_index_sha256": "036e451c030b97b0b3d42c0719da861b5df191027888bbacb8b83648114860ff"
+    },
+    "a2_step100": {
+      "path": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface",
+      "global_step": 100,
+      "model_index_sha256": "aaaa35d80507383c70bd99342f769aac43fd9f1c0340f87e2a856dd9bd448cc9"
+    },
+    "a2b_step100": {
+      "path": "checkpoints/pilot/mech_a2b_noimage_retry4/global_step_100/actor/huggingface",
+      "global_step": 100,
+      "model_index_sha256": "76dad1d0e86994ff6a17c19eb3c4ce6923164ee49efe198a2b0298dc7c29f740"
+    },
+    "a3_step100": {
+      "path": "checkpoints/pilot/mech_a3_caption_resume20/global_step_100/actor/huggingface",
+      "global_step": 100,
+      "model_index_sha256": "de0fa2ed853c4b7595e087cb9ce225a9b3957b7b8ae91b2eed9d4783de6db17c"
+    }
+  },
+  "conditions": [
+    "mismatched_real",
+    "twin_counterfactual"
+  ],
+  "openform_conditions": [
+    "real",
+    "gray",
+    "no_image",
+    "mismatched_real",
+    "twin_counterfactual"
+  ],
+  "openform_contract": {
+    "manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+    "manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+    "max_new_tokens": 32,
+    "decoding": "greedy",
+    "seed": 0,
+    "num_shards": 4
+  },
+  "scoring": {
+    "version": "visual-evidence-ranking-v1",
+    "candidate_verbalization": "<answer>{verbatim_frozen_answer}</answer>",
+    "leading_or_trailing_text": "none",
+    "completion_eos_scored": false,
+    "primary_score": "mean conditional log probability over every exact completion token",
+    "raw_sum_score": "robustness only",
+    "candidate_batch_size": 4,
+    "logit_reduction_dtype": "float32",
+    "sum_storage_dtype": "float64",
+    "pair_success": "margin_a > 0 AND margin_b > 0",
+    "tie_policy": "ties lose for top-1 and take the conservative worst rank",
+    "mathematical_equivalence": "canonical-v2 symmetric equivalence; tolerance 1e-4; unit-changing answers remain distinct"
+  },
+  "analysis": {
+    "registered_readings": "docs/registered_x1_matrix_v1.md readings (a) image-presence gating for margin-inflation ratio in [0.8, 1.25]; (b) content-specific evidence sharpening for ratio > 1.25 with non-overlapping CIs; (c) twin-condition margin sign flip toward the twin's gold, reported as a flip rate; secondary wrong-item vs right-item margin-inflation ratio per arm",
+    "primary_template": "coordinate_register_twenty_point_x_v02",
+    "per_pair_margin": "(margin_a + margin_b) / 2",
+    "bootstrap": {
+      "unit": "FlipTrack pair",
+      "resamples": 10000,
+      "seed": 20260717,
+      "confidence": 0.95,
+      "method": "percentile paired bootstrap",
+      "rng": "NumPy Generator PCG64"
+    },
+    "automatic_branch_assignment": false,
+    "branch_reason": "The registered readings are pre-committed in docs/registered_x1_matrix_v1.md; no interpretation beyond them enters the report."
+  },
+  "interpretation": {
+    "layer_names": [
+      "candidate-evidence ranking",
+      "open-form realization"
+    ],
+    "required_terms": [
+      "candidate-evidence ranking",
+      "open-form realization",
+      "latent preference for the correct answer"
+    ],
+    "prohibited_phrase": "already perceived"
+  }
+}

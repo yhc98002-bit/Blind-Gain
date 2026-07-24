@@ -22,7 +22,29 @@ from src.eval.visual_evidence_ranking import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CONDITIONS = {"real", "gray", "no_image"}
+CONDITIONS = {"real", "gray", "no_image", "mismatched_real", "twin_counterfactual"}
+
+
+def select_source_image(
+    row: dict[str, Any],
+    side: str,
+    condition: str,
+    image_override: dict[str, Any] | None,
+) -> str:
+    if condition == "twin_counterfactual":
+        twin = "b" if side == "a" else "a"
+        return str(row[f"image_{twin}_path"])
+    if condition == "mismatched_real":
+        if image_override is None:
+            raise ValueError("mismatched_real requires an image override map")
+        entry = image_override["per_pair"][str(row["pair_id"])]
+        override_path = str(entry[side])
+        if override_path == str(row[f"image_{side}_path"]):
+            raise ValueError(
+                f"override equals own image for pair {row['pair_id']}"
+            )
+        return override_path
+    return str(row[f"image_{side}_path"])
 
 
 def _sha256(path: Path) -> str:
@@ -68,11 +90,12 @@ def _score_side(
     row: dict[str, Any],
     side: str,
     condition: str,
+    image_override: dict[str, Any] | None,
     cache_dir: Path,
     batch_size: int,
 ) -> tuple[dict[str, float], dict[str, float], dict[str, int]]:
-    source_image = _resolve(str(row[f"image_{side}_path"]))
-    if condition == "real":
+    source_image = _resolve(select_source_image(row, side, condition, image_override))
+    if condition in {"real", "mismatched_real", "twin_counterfactual"}:
         image_path = str(source_image)
     elif condition == "gray":
         image_path = materialize_image(
@@ -152,6 +175,7 @@ def main() -> None:
     parser.add_argument("--config", required=True)
     parser.add_argument("--model-key", required=True)
     parser.add_argument("--condition", choices=sorted(CONDITIONS), required=True)
+    parser.add_argument("--image-override-map", default=None)
     parser.add_argument("--output", required=True)
     parser.add_argument("--cache-dir", required=True)
     parser.add_argument("--num-shards", type=int, default=1)
@@ -163,6 +187,21 @@ def main() -> None:
 
     config_path = _resolve(args.config)
     config = json.loads(config_path.read_text(encoding="utf-8"))
+    image_override = None
+    image_override_sha256 = None
+    if args.condition == "mismatched_real":
+        if not args.image_override_map:
+            raise ValueError("mismatched_real requires --image-override-map")
+        override_path = _resolve(args.image_override_map)
+        image_override_sha256 = _sha256(override_path)
+        expected_override = config.get("image_override_map") or {}
+        if str(expected_override.get("path")) != str(args.image_override_map):
+            raise ValueError("override map path differs from configuration")
+        if str(expected_override.get("sha256")) != image_override_sha256:
+            raise ValueError("override map hash differs from configuration")
+        image_override = json.loads(override_path.read_text(encoding="utf-8"))
+    elif args.image_override_map:
+        raise ValueError("--image-override-map is only valid for mismatched_real")
     model_spec = config["models"].get(args.model_key)
     if not isinstance(model_spec, dict):
         raise ValueError(f"unknown model key: {args.model_key}")
@@ -220,6 +259,7 @@ def main() -> None:
                 row=row,
                 side="a",
                 condition=args.condition,
+                image_override=image_override,
                 cache_dir=cache_dir,
                 batch_size=int(config["scoring"]["candidate_batch_size"]),
             )
@@ -230,6 +270,7 @@ def main() -> None:
                 row=row,
                 side="b",
                 condition=args.condition,
+                image_override=image_override,
                 cache_dir=cache_dir,
                 batch_size=int(config["scoring"]["candidate_batch_size"]),
             )
@@ -246,6 +287,16 @@ def main() -> None:
                 "global_step": model_spec["global_step"],
                 "condition": args.condition,
                 "candidate_set_sha256": row["candidate_set_sha256"],
+                **(
+                    {
+                        "image_override_map_sha256": image_override_sha256,
+                        "mismatched_source_pair_id": image_override["per_pair"][
+                            str(row["pair_id"])
+                        ]["source_pair_id"],
+                    }
+                    if image_override is not None
+                    else {}
+                ),
                 "candidate_count": row["candidate_count"],
                 "candidate_scores_a": scores_a,
                 "candidate_scores_b": scores_b,

@@ -18,7 +18,7 @@ REGISTRATION="${RANKING_REGISTRATION:-docs/registered_seed1_visual_evidence_rank
 
 [[ "${NODE}" == "an12" || "${NODE}" == "an29" ]] || { echo "unsupported node" >&2; exit 2; }
 [[ "${GPU}" =~ ^[0-7]$ ]] || { echo "GPU must be in [0,7]" >&2; exit 2; }
-[[ "${CONDITION}" =~ ^(real|gray|no_image)$ ]] || { echo "unsupported condition" >&2; exit 2; }
+[[ "${CONDITION}" =~ ^(real|gray|no_image|mismatched_real|twin_counterfactual)$ ]] || { echo "unsupported condition" >&2; exit 2; }
 [[ "${MODEL_KEY}" =~ ^(base|a1_step60|a1_step100|a2_step100|a2b_step100|a3_step100)$ ]] || { echo "unsupported model key" >&2; exit 2; }
 [[ -z "${LIMIT}" || "${LIMIT}" =~ ^[1-9][0-9]*$ ]] || { echo "LIMIT must be positive" >&2; exit 2; }
 [[ "${RUN_DIR}" != /* && "${RUN_DIR}" == experiments/runs/* ]] || { echo "RUN_DIR must be relative under experiments/runs" >&2; exit 2; }
@@ -88,6 +88,11 @@ cat > "${RUN_DIR}/run_manifest.json" <<JSON
 }
 JSON
 
+OVERRIDE_ARG=""
+if [[ "${CONDITION}" == "mismatched_real" ]]; then
+  [[ -n "${RANKING_OVERRIDE_MAP:-}" && -f "${RANKING_OVERRIDE_MAP}" ]] || { echo "mismatched_real requires RANKING_OVERRIDE_MAP" >&2; exit 2; }
+  OVERRIDE_ARG="--image-override-map '${RANKING_OVERRIDE_MAP}'"
+fi
 cat > "${RUN_DIR}/worker.sh" <<EOF
 #!/usr/bin/env bash
 set +e
@@ -97,7 +102,7 @@ env CUDA_VISIBLE_DEVICES='${GPU}' TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifa
   python scripts/eval_qwen_vl_visual_evidence_ranking.py \
     --config '${CONFIG}' \
     --model-key '${MODEL_KEY}' \
-    --condition '${CONDITION}' \
+    --condition '${CONDITION}' ${OVERRIDE_ARG} \
     --output '${RUN_DIR}/scores.jsonl' \
     --cache-dir '${RUN_DIR}/image_cache' ${LIMIT_ARG}
 rc=\$?
