@@ -1,0 +1,9 @@
+{
+  "machine_output_sha256": "cb71b688cc4e6324dff91cef971cfad6b19ea7356c5e53521a7b9671a15bf507",
+  "markdown_output_sha256": "a07c30de68c28c7af510e6cd7b74d818ae6bf0bb438dc0e438e6dcf7da0a5ffc",
+  "openform_cells_verified": 25,
+  "performance_values_opened": true,
+  "ranking_cells_verified": 25,
+  "schema_version": "blind-gains.x1-image-condition-audit.v1",
+  "status": "pass"
+}
