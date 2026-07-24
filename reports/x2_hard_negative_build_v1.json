@@ -1,0 +1,13 @@
+{
+  "built_utc": "2026-07-24T17:21:12Z",
+  "candidate_set_size_max": 8,
+  "candidate_set_size_mean": 6.395,
+  "candidate_set_size_min": 4,
+  "output": "data/fliptrack_r19_hard_negative_candidates_v2.jsonl",
+  "output_sha256": "666f0347647b21b16553a40c8381872247ebe9796493b07f058155a5cdf42be0",
+  "pairs": 600,
+  "registry_input": "data/fliptrack_r19_visual_evidence_candidates_v1.jsonl",
+  "registry_input_sha256": "fa9456941a730e174b1ed4bb4caefc151778e3f1adc0ca77db941955a4215f81",
+  "scene_replays_verified": 600,
+  "schema_version": "blind-gains.x2-hard-negative-build-report.v1"
+}
