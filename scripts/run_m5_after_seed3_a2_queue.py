@@ -419,7 +419,7 @@ def _refresh_storage_snapshot(run_dir: Path, label: str) -> dict[str, Any]:
     shutil.copyfile(history, temporary)
     os.replace(temporary, canonical)
     return {
-        "path": str(history.relative_to(ROOT)),
+        "path": str(history.resolve().relative_to(ROOT.resolve())),
         "sha256": _sha256(history),
         "free_bytes": payload["free_bytes"],
         "measured_at_utc": payload["measured_at_utc"],
