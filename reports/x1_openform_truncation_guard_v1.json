@@ -1,0 +1,52 @@
+{
+  "any_condition_triggers_rerun": false,
+  "cap_tokens": 32,
+  "checked_utc": "2026-07-24T16:51:55Z",
+  "conditions": {
+    "gray": {
+      "examples": [],
+      "max_emitted_tokens_seen": 10,
+      "sampled_rows": 50,
+      "trigger_128_rerun": false,
+      "truncated_fraction": 0.0,
+      "truncated_rows": 0
+    },
+    "mismatched_real": {
+      "examples": [],
+      "max_emitted_tokens_seen": 8,
+      "sampled_rows": 50,
+      "trigger_128_rerun": false,
+      "truncated_fraction": 0.0,
+      "truncated_rows": 0
+    },
+    "no_image": {
+      "examples": [],
+      "max_emitted_tokens_seen": 9,
+      "sampled_rows": 50,
+      "trigger_128_rerun": false,
+      "truncated_fraction": 0.0,
+      "truncated_rows": 0
+    },
+    "real": {
+      "examples": [],
+      "max_emitted_tokens_seen": 8,
+      "sampled_rows": 50,
+      "trigger_128_rerun": false,
+      "truncated_fraction": 0.0,
+      "truncated_rows": 0
+    },
+    "twin_counterfactual": {
+      "examples": [],
+      "max_emitted_tokens_seen": 8,
+      "sampled_rows": 50,
+      "trigger_128_rerun": false,
+      "truncated_fraction": 0.0,
+      "truncated_rows": 0
+    }
+  },
+  "sample_per_condition": 50,
+  "schema_version": "blind-gains.x1-openform-truncation-guard.v1",
+  "seed": 20260724,
+  "threshold_fraction": 0.005,
+  "verdict": "32_token_budget_stands"
+}
