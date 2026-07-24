@@ -252,16 +252,19 @@ def arm_checkpoint_ready(record: dict[str, Any]) -> tuple[bool, str]:
         return False, "training_running"
     if training.get("exit_code") != 0 or training.get("artifacts_exist") is not True:
         raise RuntimeError("training completion is not artifact-verified")
-    if watcher_status != "complete":
-        return False, "waiting_checkpoint_watcher_completion"
-    if watcher.get("exit_code") != 0 or watcher.get("artifacts_exist") is not True:
-        raise RuntimeError("checkpoint watcher completion is not artifact-verified")
     checkpoint_root = Path(str(training["checkpoint_path"]))
     final_index = checkpoint_root / "global_step_100/actor/huggingface/model.safetensors.index.json"
     final_raw_marker = checkpoint_root / "global_step_100/actor/RAW_STATE_RELOCATED.json"
     if not final_index.is_file() or not final_raw_marker.is_file():
         return False, "waiting_step100_merge_and_retention"
-    return True, "training_and_step100_retention_complete"
+    if watcher_status == "complete":
+        if watcher.get("exit_code") != 0 or watcher.get("artifacts_exist") is not True:
+            raise RuntimeError("checkpoint watcher completion is not artifact-verified")
+        return True, "training_and_step100_retention_complete"
+    # Watcher stays running until step-60 eval markers exist; those evals run
+    # post-cohort under the registered lifecycle, so capacity release keys on
+    # the on-disk step-100 artifacts verified above.
+    return True, "training_and_step100_artifacts_complete_step60_retention_deferred_to_eval_lifecycle"
 
 
 def reserved_training_nodes(records: dict[str, dict[str, Any]]) -> set[str]:

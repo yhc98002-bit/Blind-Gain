@@ -176,14 +176,18 @@ def a2_release_state(training_run: str, watcher_run: str) -> tuple[str, dict[str
     }
     if training_status in TERMINAL_FAILURES or watcher_status in TERMINAL_FAILURES:
         return "fail", evidence
-    if training_status != "complete" or watcher_status != "complete":
+    if training_status != "complete":
         return "waiting", evidence
     completion_checks = {
         "training_exit_zero": training.get("exit_code") == 0,
         "training_artifacts_verified": training.get("artifacts_exist") is True,
-        "watcher_exit_zero": watcher.get("exit_code") == 0,
-        "watcher_artifacts_verified": watcher.get("artifacts_exist") is True,
+        "watcher_nonterminal": watcher_status in {"running", "complete"},
     }
+    if watcher_status == "complete":
+        completion_checks["watcher_exit_zero"] = watcher.get("exit_code") == 0
+        completion_checks["watcher_artifacts_verified"] = (
+            watcher.get("artifacts_exist") is True
+        )
     checkpoint_root = Path(str(training.get("checkpoint_path", "")))
     index = checkpoint_root / "global_step_100/actor/huggingface/model.safetensors.index.json"
     raw_marker = checkpoint_root / "global_step_100/actor/RAW_STATE_RELOCATED.json"
