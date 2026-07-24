@@ -1,0 +1,139 @@
+{
+  "base_pair_accuracy": 0.4716666666666667,
+  "cross_arm_on_shared_degraded_items": {
+    "a1": {
+      "seed1": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 33,
+        "wrong_on_shared_degraded_items": 28
+      },
+      "seed2": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 28,
+        "wrong_on_shared_degraded_items": 26
+      }
+    },
+    "a2b": {
+      "seed1": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 37,
+        "wrong_on_shared_degraded_items": 34
+      },
+      "seed2": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 43,
+        "wrong_on_shared_degraded_items": 38
+      }
+    },
+    "a3": {
+      "seed1": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 34,
+        "wrong_on_shared_degraded_items": 30
+      },
+      "seed2": {
+        "base_correct_items": 283,
+        "shared_degraded_items": 42,
+        "wrong_on_all_base_correct": 36,
+        "wrong_on_shared_degraded_items": 32
+      }
+    }
+  },
+  "generated_utc": "2026-07-24T21:22:50Z",
+  "overlap": {
+    "intersection": 42,
+    "jaccard": 0.7241379310344828,
+    "permutation_null_mean_jaccard": 0.09784741828408497,
+    "permutation_p_value": 9.999000099990002e-05,
+    "permutation_seed": 20260724,
+    "permutations": 10000,
+    "union": 58
+  },
+  "per_seed": {
+    "seed1": {
+      "a2_pair_accuracy": 0.4266666666666667,
+      "degraded_correct_to_wrong": 51,
+      "gained_wrong_to_correct": 24,
+      "member_direction": {
+        "both_members": 1,
+        "member_a_only": 36,
+        "member_b_only": 14
+      },
+      "net_delta_vs_base": -0.045,
+      "transition_taxonomy": {
+        "most_similar_label_x": 3,
+        "nearest_gridline": 19,
+        "nearest_neighbor_x": 6,
+        "non_scene_value": 1,
+        "other_scene_point_x": 14,
+        "same_point_y": 8,
+        "twin_member_gold": 1
+      }
+    },
+    "seed2": {
+      "a2_pair_accuracy": 0.4266666666666667,
+      "degraded_correct_to_wrong": 49,
+      "gained_wrong_to_correct": 22,
+      "member_direction": {
+        "both_members": 4,
+        "member_a_only": 33,
+        "member_b_only": 12
+      },
+      "net_delta_vs_base": -0.045,
+      "transition_taxonomy": {
+        "most_similar_label_x": 4,
+        "nearest_gridline": 20,
+        "nearest_neighbor_x": 12,
+        "other_scene_point_x": 13,
+        "same_point_y": 3,
+        "twin_member_gold": 1
+      }
+    }
+  },
+  "runs": {
+    "a1|seed1": "pilot_fliptrack_a1_real_seed1_step100_real_an12_20260715T195421Z",
+    "a1|seed2": "pilot_fliptrack_a1_real_seed2_step100_real_an29_20260721T163422Z",
+    "a2b|seed1": "pilot_fliptrack_mech_a2b_noimage_seed1_step100_real_an29_20260715T184448Z",
+    "a2b|seed2": "pilot_fliptrack_a2b_noimage_seed2_step100_real_an29_20260721T163439Z",
+    "a2|seed1": "pilot_fliptrack_a2_gray_seed1_step100_real_an12_20260716T152519Z",
+    "a2|seed2": "pilot_fliptrack_a2_gray_seed2_step100_real_an29_20260721T163431Z",
+    "a3|seed1": "pilot_fliptrack_a3_caption_seed1_step100_real_an29_20260715T191451Z",
+    "a3|seed2": "pilot_fliptrack_a3_caption_seed2_step100_real_an29_20260721T163448Z",
+    "base|shared": "fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z"
+  },
+  "same_wrong_answer": {
+    "rate": 0.9761904761904762,
+    "same_extracted_wrong_answer": 41,
+    "shared_wrong_member_slots": 42
+  },
+  "scene_features_degraded_vs_not": {
+    "crowding_within_3": {
+      "degraded_union_mean": 2.6206896551724137,
+      "non_degraded_mean": 2.5733333333333333,
+      "perm_p_two_sided": 0.834016598340166
+    },
+    "distance_to_nearest_point": {
+      "degraded_union_mean": 2.4950116580175097,
+      "non_degraded_mean": 2.5551387275143065,
+      "perm_p_two_sided": 0.5202479752024798
+    },
+    "min_label_levenshtein": {
+      "degraded_union_mean": 1.0,
+      "non_degraded_mean": 1.031111111111111,
+      "perm_p_two_sided": 0.35166483351664835
+    },
+    "target_x_negative": {
+      "degraded_union_mean": 0.896551724137931,
+      "non_degraded_mean": 0.8,
+      "perm_p_two_sided": 0.1255874412558744
+    }
+  },
+  "schema_version": "blind-gains.x3-a2-degradation-forensics.v1",
+  "scorer": "src.eval.fliptrack_metrics.pair_score (current canonical parser, uniform re-score of cached predictions)",
+  "template": "coordinate_register_twenty_point_x_v02"
+}
