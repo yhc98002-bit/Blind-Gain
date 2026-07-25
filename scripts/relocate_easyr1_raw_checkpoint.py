@@ -454,7 +454,18 @@ def relocate_raw_checkpoint(
         raise ValueError("archive directory must be outside the checkpoint actor directory")
 
     shards = _discover_complete_shards(actor_dir)
-    merged_records, merged_digest = _merged_checkpoint_records(actor_dir)
+    try:
+        merged_records, merged_digest = _merged_checkpoint_records(actor_dir)
+        merged_location = "actor_dir"
+    except FileNotFoundError:
+        # The boundary watcher may have relocated the merged checkpoint to the
+        # archive before the raw shards; accept it there, fully re-verified,
+        # when the actor dir carries the relocation marker.
+        relocation_marker = actor_dir / "MERGED_CHECKPOINT_RELOCATED.json"
+        if not relocation_marker.is_file():
+            raise
+        merged_records, merged_digest = _merged_checkpoint_records(archive_dir)
+        merged_location = "archive_dir"
     retention_records: list[dict[str, Any]] = []
     retention_args = (run_archive_root, run_manifest, retention_report)
     shared_guard_result = None
