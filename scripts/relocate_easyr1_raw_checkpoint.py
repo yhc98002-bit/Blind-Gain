@@ -388,9 +388,32 @@ def enforce_restored_shared_retention(
             actor_dir = step_dir / "actor"
             if step >= current_step or not actor_dir.is_dir():
                 continue
-            has_raw = any(actor_dir.glob("*_world_size_*_rank_*.pt"))
-            if has_raw and (actor_dir / RESTORE_MARKER_NAME).is_file():
+            if not (actor_dir / RESTORE_MARKER_NAME).is_file():
+                continue
+            heavy = [
+                path
+                for path in actor_dir.glob("*_world_size_*_rank_*.pt")
+                if path.name.startswith(("model_", "optim_"))
+            ]
+            if heavy:
                 candidates.append((step, actor_dir))
+                continue
+            # The trainer save rotation already removed the restored model and
+            # optimizer shards; only extra_state files and the restore marker
+            # remain. Record the terminal state instead of failing checksum
+            # verification against the orphaned marker.
+            rotation_marker = actor_dir / RESTORE_RETENTION_MARKER_NAME
+            if not rotation_marker.is_file():
+                _atomic_json(
+                    rotation_marker,
+                    {
+                        "status": "restored_raw_state_removed_by_trainer_rotation",
+                        "current_step": current_step,
+                        "noted_at_utc": dt.datetime.now(dt.timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%SZ"
+                        ),
+                    },
+                )
     if not candidates:
         return []
 
