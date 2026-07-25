@@ -695,6 +695,54 @@ def run_queue(
         end_step = start_step + 50
         label = f"{start_step}-{end_step}"
         assert_contract_unchanged(expected_contract_hash)
+        adopted_run = None
+        adoption_checks = None
+        for candidate in sorted(
+            (ROOT / "experiments/runs").glob(
+                f"m5_anchor_longhorizon_segment{start_step}_{end_step}_*"
+            )
+        ):
+            candidate_rel = f"experiments/runs/{candidate.name}"
+            try:
+                candidate_manifest = _read(candidate / "run_manifest.json")
+            except (OSError, json.JSONDecodeError):
+                continue
+            if candidate_manifest.get("status") != "complete":
+                continue
+            try:
+                adoption_checks = _validate_segment_completion(candidate_rel, end_step)
+            except RuntimeError:
+                continue
+            adopted_run = candidate_rel
+            break
+        if adopted_run is not None:
+            state["segments"][label].update(
+                {
+                    "status": "complete_adopted",
+                    "segment_run": adopted_run,
+                    "completion_checks": adoption_checks,
+                    "adopted_utc": _now(),
+                }
+            )
+            state["updated_utc"] = _now()
+            _atomic_write(state_path, state)
+            prior_run = adopted_run
+            boundary_run = None
+            continue
+        prior_path = Path(prior_run)
+        if not prior_path.is_absolute():
+            prior_path = ROOT / prior_run
+        tracker_path = (
+            Path(str(_read(prior_path / "run_manifest.json")["checkpoint_path"]))
+            / "checkpoint_tracker.json"
+        )
+        if tracker_path.is_file():
+            last_step = int(_read(tracker_path).get("last_global_step") or 0)
+            if last_step >= end_step:
+                raise RuntimeError(
+                    f"segment {label} is already trained to step {last_step} but no "
+                    "completed segment run validates for adoption; refusing to retrain"
+                )
         state["status"] = f"refreshing_storage_before_{label}"
         state["updated_utc"] = _now()
         _atomic_write(state_path, state)
