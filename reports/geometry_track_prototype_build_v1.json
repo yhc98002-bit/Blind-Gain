@@ -1,0 +1,16 @@
+{
+  "batch_seed": 20260725,
+  "declared_pairs": 100,
+  "manifest": "data/b1_geometry_track_v1/manifest.jsonl",
+  "manifest_sha256": "b5f01945bf5e1b3688cea80cdd18037abfec7413d1e996dcec7a30fe5af39c20",
+  "one_shot": "declared batch; no acceptance iteration per docs/EXPERIMENT_TODO.md",
+  "per_intervention": {
+    "binding_swap": 16,
+    "chained_premise": 20,
+    "distractor_only": 16,
+    "fact_read": 20,
+    "prior_conflict": 14,
+    "style_twin": 14
+  },
+  "schema_version": "blind-gains.b1-geometry-track-build.v1"
+}
