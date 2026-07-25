@@ -511,7 +511,9 @@ def relocate_raw_checkpoint(
         raise StorageGuardRefusal(guard_result)
 
     archive_dir.mkdir(parents=True, exist_ok=True)
-    allowed_existing = {path.name for path in shards} | {CHECKSUM_NAME}
+    # The boundary watcher may archive the merged checkpoint (huggingface/)
+    # before the raw shards; the sibling merged artifact is expected, not foreign.
+    allowed_existing = {path.name for path in shards} | {CHECKSUM_NAME, "huggingface"}
     unexpected = sorted(
         path.name for path in archive_dir.iterdir() if path.name not in allowed_existing
     )
