@@ -1,0 +1,24 @@
+{
+  "arm": "a2b_noimage",
+  "checkpoint_path": "checkpoints/pilot/mech_a2b_noimage_seed3/global_step_60/actor/huggingface",
+  "cohort_release_training_run": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z",
+  "global_step": 60,
+  "gpu_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "image_mode": "real",
+  "marker": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z/step60_fliptrack_complete.json",
+  "max_new_tokens": 32,
+  "node": "an29",
+  "num_shards": 4,
+  "poll_seconds": 60,
+  "r19_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+  "r19_manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+  "schema_version": "blind-gains.pilot-followup-r19-eval-queue.v1",
+  "seed": 3,
+  "stable_free_polls": 2,
+  "training_run": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z"
+}

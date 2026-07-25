@@ -1,0 +1,16 @@
+{
+  "arm": "a3_caption",
+  "caption_run": "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z",
+  "checkpoint_path": "checkpoints/pilot/mech_a3_caption_seed3/global_step_100/actor/huggingface",
+  "condition": "caption",
+  "expected_row_count": 601,
+  "global_step": 100,
+  "gpu_id": 7,
+  "node": "an29",
+  "poll_seconds": 60,
+  "r19_marker": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z/step100_fliptrack_complete.json",
+  "schema_version": "blind-gains.pilot-followup-geo3k-queue.v1",
+  "seed": 3,
+  "stable_free_polls": 2,
+  "training_run": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z"
+}
