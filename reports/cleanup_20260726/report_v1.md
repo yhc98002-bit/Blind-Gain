@@ -44,7 +44,7 @@ volatile.
   one miss was M5 merged-300, addressed below). Every registered readout's
   inputs and outputs (scores, predictions, manifests, reports) are on quota
   and in git.
-- M5 merged step-300: regenerated from the on-quota raw shards
+- M5 merged step-300: REGENERATED AND VERIFIED on quota (merge completed 2026-07-26; HF skeleton restored from the anchor_a0 merged checkpoint after the relocation had taken config artifacts with it; marker MERGED_CHECKPOINT_REGENERATED.json). Originally: regenerated from the on-quota raw shards
   (`easyr1_checkpoint_merge_m5_step300_regen_login_20260726T093656Z`) before
   the 350-boundary retention could remove them. The step-300 registered
   evaluation had already completed with results recorded in the segment run.
