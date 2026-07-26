@@ -1,0 +1,76 @@
+{
+  "files": [
+    {
+      "bytes": 605,
+      "file": "added_tokens.json",
+      "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+    },
+    {
+      "bytes": 1017,
+      "file": "chat_template.jinja",
+      "sha256": "a0bc6f6fc7a29a80017a433e8f03a1cc1236e838a944a2d034295a60c4f2fddb"
+    },
+    {
+      "bytes": 3391,
+      "file": "config.json",
+      "sha256": "67bebe299d8c1738a78882055b931d1fe04f36fa73949544971da2dfa5c6f41f"
+    },
+    {
+      "bytes": 147,
+      "file": "generation_config.json",
+      "sha256": "b12f4433fa536a72427ffcffd7caa5c5a9b334e40642af47bc514b14bf4b0c55"
+    },
+    {
+      "bytes": 1671853,
+      "file": "merges.txt",
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+    },
+    {
+      "bytes": 4993827096,
+      "file": "model-00001-of-00002.safetensors",
+      "sha256": "bac228d37bf86d11d3325b6aeab0fded86f1dae43acc42be812c57304c88ec82"
+    },
+    {
+      "bytes": 3137840896,
+      "file": "model-00002-of-00002.safetensors",
+      "sha256": "a3a4fb475d4e9a254ed574ff825e20b684ce71d7007134af9b71ad9e369d737f"
+    },
+    {
+      "bytes": 65542,
+      "file": "model.safetensors.index.json",
+      "sha256": "6f0b8d4d14f5831693ebc93d48a55fad6738fd1acb8618a99aee0346c9d31155"
+    },
+    {
+      "bytes": 791,
+      "file": "preprocessor_config.json",
+      "sha256": "276e1dbe46dd567fce6e587665266ede535f42ab08d46f3d7febea17cb37abcd"
+    },
+    {
+      "bytes": 613,
+      "file": "special_tokens_map.json",
+      "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+    },
+    {
+      "bytes": 11421896,
+      "file": "tokenizer.json",
+      "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+    },
+    {
+      "bytes": 4750,
+      "file": "tokenizer_config.json",
+      "sha256": "f64d944a98d2d9901581be7a5f36b626ff2dc0d5b7d5dedb412412ca39606df0"
+    },
+    {
+      "bytes": 935,
+      "file": "video_preprocessor_config.json",
+      "sha256": "2e82d384445cd3056b851d36b6481b9a9df99362b85e9d666317c1f0331fc6aa"
+    },
+    {
+      "bytes": 2776833,
+      "file": "vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    }
+  ],
+  "generated_utc": "2026-07-26T09:32:05Z",
+  "target": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/huggingface"
+}

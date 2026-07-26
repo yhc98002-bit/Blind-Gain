@@ -1,0 +1,33 @@
+{
+  "candidates": [
+    {
+      "id": "overflow_anchor_a0",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/anchor_a0_recipe_3b_geo3k_20260709T224852Z",
+      "status": "absent"
+    },
+    {
+      "id": "overflow_old_a2_seed2",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/mech_a2_gray_seed2_an12_20260718T004316Z",
+      "status": "absent"
+    },
+    {
+      "id": "overflow_old_m5",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/m5_anchor_longhorizon_400_an12_20260716T173030Z",
+      "status": "absent"
+    },
+    {
+      "id": "scratch_a2_seed2_resume20",
+      "path": "/tmp/blindgain_checkpoint_archive/mech_a2_gray_seed2_resume20_an12_20260719T125918Z",
+      "status": "absent"
+    },
+    {
+      "id": "scratch_a2b_seed2_resume20",
+      "path": "/tmp/blindgain_checkpoint_archive/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z",
+      "status": "absent"
+    }
+  ],
+  "generated_utc": "2026-07-26T09:32:38Z",
+  "mode": "execute",
+  "schema_version": "blind-gains.cleanup-20260726.inventory.v1",
+  "total_bytes": 0
+}
