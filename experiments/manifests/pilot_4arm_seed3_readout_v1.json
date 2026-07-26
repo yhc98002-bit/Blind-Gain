@@ -4,10 +4,10 @@
   "evaluation_lifecycle_children_sha256": "448c4efe8f7b1ab618a101f2870b4b3bc5e07eb8327c833b35eddddd55762aa8",
   "evaluation_lifecycle_manifest": "experiments/runs/pilot_seed3_locked_eval_lifecycle_login_20260725T092404Z/run_manifest.json",
   "geo_audits": {
-    "a1_real": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a1_real_seed2_step100_an29_gpu4_20260721T204051Z_20260721T205600Z/audit.json",
-    "a2_gray": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2_gray_seed2_step100_an29_gpu5_20260721T195900Z_20260721T201316Z/audit.json",
-    "a2b_noimage": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2b_noimage_seed2_step100_an29_gpu6_20260721T203109Z_20260721T204620Z/audit.json",
-    "a3_caption": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a3_caption_seed2_step100_an29_gpu7_20260721T200716Z_20260721T203136Z/audit.json"
+    "a1_real": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a1_real_seed3_step100_an29_gpu4_20260726T165353Z_20260726T170756Z/audit.json",
+    "a2_gray": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2_gray_seed3_step100_an29_gpu5_20260726T164007Z_20260726T165410Z/audit.json",
+    "a2b_noimage": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2b_noimage_seed3_step100_an29_gpu6_20260726T163906Z_20260726T165416Z/audit.json",
+    "a3_caption": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a3_caption_seed3_step100_an29_gpu7_20260726T192824Z_20260726T195036Z/audit.json"
   },
   "geo_baselines": {
     "a1_real": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",

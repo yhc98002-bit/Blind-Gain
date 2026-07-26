@@ -84,6 +84,21 @@ def main() -> None:
             if not (ROOT / path).is_file():
                 raise SystemExit(f"BLOCKED: R19 marker absent: {path}")
 
+    audits: dict[str, str] = {}
+    for arm in ARMS:
+        matches = sorted(
+            (ROOT / "experiments/runs").glob(
+                f"pilot_followup_geo3k_audit_m3_geo3k_{arm}_seed3_step100_*"
+            )
+        )
+        matches = [m for m in matches if (m / "audit.json").is_file()]
+        if len(matches) != 1:
+            raise SystemExit(
+                f"BLOCKED: expected exactly one seed-3 step-100 geo3k audit for {arm}, found {len(matches)}"
+            )
+        audits[arm] = f"experiments/runs/{matches[0].name}/audit.json"
+    config["geo_audits"] = audits
+
     config["training_runs"] = training_runs
     config["training_metric_segments"] = segments
     config["r19_markers"] = markers
