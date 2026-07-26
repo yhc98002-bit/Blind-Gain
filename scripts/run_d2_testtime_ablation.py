@@ -154,10 +154,11 @@ def launch_cell(node: str, gpu: int, model_key: str, condition: str, git_hash: s
         },
     )
     command = (
-        f"cd '{ROOT}' && TRANSFORMERS_OFFLINE=1 HF_HOME={ROOT}/artifacts/hf_home "
+        f"cd '{ROOT}' && "
+        f"(nohup env TRANSFORMERS_OFFLINE=1 HF_HOME={ROOT}/artifacts/hf_home "
         f"CUDA_VISIBLE_DEVICES={gpu} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 "
         f"PYTHONPATH={ROOT}:{ROOT}/artifacts/repos/EasyR1 "
-        f"(nohup .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py "
+        f".venv/bin/python scripts/run_pilot_geo3k_step100_eval.py "
         f"--arm {spec['arm']} --condition {condition} --model-path {spec['checkpoint']} "
         f"--manifest {MANIFEST} --format-prompt {FORMAT_PROMPT} --output {output} "
         f"--cache-dir experiments/runs/{run_id}/cache "
