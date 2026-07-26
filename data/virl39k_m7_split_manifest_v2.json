@@ -1,0 +1,580 @@
+{
+  "allocation_unit": "connected component under shared image sha256",
+  "generated_utc": "2026-07-26T15:13:44Z",
+  "heldout_fraction_target": 0.15,
+  "heldout_output": "data/virl39k_m7_heldout_v2.jsonl",
+  "heldout_sha256": "4d3325fcd03c2e47ddabc277aa419fe485316fa94d68ed051f7546095598cd7c",
+  "image_integrity": {
+    "guarantee": "image-disjoint by construction; builder refuses to write otherwise",
+    "heldout_unique_images": 4300,
+    "shared_images": 0,
+    "train_unique_images": 24468
+  },
+  "n_components": 25712,
+  "n_heldout": 4501,
+  "n_items": 29756,
+  "n_strata": 55,
+  "n_strata_rank_eligible": 21,
+  "n_train": 25255,
+  "realized_heldout_share": 0.1513,
+  "registration": "docs/registered_m7_heldout_split_v2.md",
+  "salt": "|m7-heldout-v2",
+  "schema_version": "blind-gains.m7-heldout-split.v2",
+  "source_subset": "data/virl39k_main_filtered.jsonl",
+  "source_subset_sha256": "d4e0ef8733e0ff4e8604d5e7b15e7206f8e4eb3745ef16e523cdf26eb5c9c4a0",
+  "strata": [
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 973,
+      "n_heldout": 147,
+      "n_items": 976,
+      "n_train": 829,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1506,
+      "source": "K12"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 39,
+      "n_heldout": 6,
+      "n_items": 39,
+      "n_train": 33,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1538,
+      "source": "M3CoT"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 71,
+      "n_heldout": 11,
+      "n_items": 71,
+      "n_train": 60,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1549,
+      "source": "M3CoT"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 431,
+      "n_heldout": 74,
+      "n_items": 488,
+      "n_train": 414,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1516,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 3,
+      "n_heldout": 1,
+      "n_items": 4,
+      "n_train": 3,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.25,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Commonsense",
+      "n_components": 80,
+      "n_heldout": 12,
+      "n_items": 80,
+      "n_train": 68,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.15,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Social Science",
+      "n_components": 338,
+      "n_heldout": 58,
+      "n_items": 384,
+      "n_train": 326,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.151,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 133,
+      "n_heldout": 20,
+      "n_items": 133,
+      "n_train": 113,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1504,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 48,
+      "n_heldout": 9,
+      "n_items": 60,
+      "n_train": 51,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.15,
+      "source": "M3CoT"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "M3CoTConverted"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 3,
+      "n_heldout": 1,
+      "n_items": 3,
+      "n_train": 2,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.3333,
+      "source": "M3CoTConverted"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 4353,
+      "n_heldout": 665,
+      "n_items": 4433,
+      "n_train": 3768,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.15,
+      "source": "MMK12"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 2964,
+      "n_heldout": 458,
+      "n_items": 3050,
+      "n_train": 2592,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1502,
+      "source": "MMK12"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 1358,
+      "n_heldout": 210,
+      "n_items": 1396,
+      "n_train": 1186,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1504,
+      "source": "MMK12"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 323,
+      "n_heldout": 58,
+      "n_items": 384,
+      "n_train": 326,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.151,
+      "source": "MMK12"
+    },
+    {
+      "category": "Social Science",
+      "n_components": 18,
+      "n_heldout": 3,
+      "n_items": 18,
+      "n_train": 15,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1667,
+      "source": "MMK12"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 726,
+      "n_heldout": 113,
+      "n_items": 753,
+      "n_train": 640,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1501,
+      "source": "MMK12"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 1516,
+      "n_heldout": 242,
+      "n_items": 1613,
+      "n_train": 1371,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.15,
+      "source": "MMK12"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 2,
+      "n_heldout": 1,
+      "n_items": 2,
+      "n_train": 1,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.5,
+      "source": "MMK12Converted"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 4,
+      "n_heldout": 1,
+      "n_items": 4,
+      "n_train": 3,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.25,
+      "source": "MMK12Converted"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "MMK12Converted"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 2,
+      "n_heldout": 1,
+      "n_items": 2,
+      "n_train": 1,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.5,
+      "source": "MMK12Converted"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "MMK12Converted"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 2447,
+      "n_heldout": 428,
+      "n_items": 2847,
+      "n_train": 2419,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1503,
+      "source": "MMMath"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 1170,
+      "n_heldout": 336,
+      "n_items": 2215,
+      "n_train": 1879,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1517,
+      "source": "Processed"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 3754,
+      "n_heldout": 722,
+      "n_items": 4811,
+      "n_train": 4089,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1501,
+      "source": "Processed"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 355,
+      "n_heldout": 73,
+      "n_items": 482,
+      "n_train": 409,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1515,
+      "source": "Processed"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 407,
+      "n_heldout": 64,
+      "n_items": 423,
+      "n_train": 359,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1513,
+      "source": "Processed"
+    },
+    {
+      "category": "Commonsense",
+      "n_components": 5,
+      "n_heldout": 1,
+      "n_items": 5,
+      "n_train": 4,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.2,
+      "source": "Processed"
+    },
+    {
+      "category": "Social Science",
+      "n_components": 15,
+      "n_heldout": 3,
+      "n_items": 16,
+      "n_train": 13,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1875,
+      "source": "Processed"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 487,
+      "n_heldout": 91,
+      "n_items": 597,
+      "n_train": 506,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1524,
+      "source": "Processed"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 1012,
+      "n_heldout": 173,
+      "n_items": 1150,
+      "n_train": 977,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1504,
+      "source": "Processed"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 64,
+      "n_heldout": 13,
+      "n_items": 84,
+      "n_train": 71,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1548,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 34,
+      "n_heldout": 8,
+      "n_items": 47,
+      "n_train": 39,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1702,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 331,
+      "n_heldout": 56,
+      "n_items": 370,
+      "n_train": 314,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1514,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 96,
+      "n_heldout": 16,
+      "n_items": 105,
+      "n_train": 89,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1524,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 117,
+      "n_heldout": 19,
+      "n_items": 124,
+      "n_train": 105,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1532,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 30,
+      "n_heldout": 6,
+      "n_items": 39,
+      "n_train": 33,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1538,
+      "source": "R1OneVision"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 2,
+      "n_heldout": 1,
+      "n_items": 2,
+      "n_train": 1,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.5,
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 4,
+      "n_heldout": 1,
+      "n_items": 4,
+      "n_train": 3,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.25,
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 6,
+      "n_heldout": 1,
+      "n_items": 6,
+      "n_train": 5,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1667,
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "category": "(GradeSchool) Science",
+      "n_components": 209,
+      "n_heldout": 34,
+      "n_items": 226,
+      "n_train": 192,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1504,
+      "source": "ScienceQA"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 12,
+      "n_heldout": 3,
+      "n_items": 17,
+      "n_train": 14,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1765,
+      "source": "ScienceQA"
+    },
+    {
+      "category": "Social Science",
+      "n_components": 17,
+      "n_heldout": 3,
+      "n_items": 18,
+      "n_train": 15,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1667,
+      "source": "ScienceQA"
+    },
+    {
+      "category": "Spatial Reasoning",
+      "n_components": 11,
+      "n_heldout": 8,
+      "n_items": 21,
+      "n_train": 13,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.381,
+      "source": "ScienceQA"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 14,
+      "n_heldout": 3,
+      "n_items": 19,
+      "n_train": 16,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1579,
+      "source": "ScienceQA"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 533,
+      "n_heldout": 107,
+      "n_items": 696,
+      "n_train": 589,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1537,
+      "source": "ai2d"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 55,
+      "n_heldout": 9,
+      "n_items": 55,
+      "n_train": 46,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.1636,
+      "source": "chartqa"
+    },
+    {
+      "category": "Broader STEM Topics",
+      "n_components": 1,
+      "n_heldout": 2,
+      "n_items": 2,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "dvqa"
+    },
+    {
+      "category": "Social Science",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "dvqa"
+    },
+    {
+      "category": "Tables/Diagrams/Charts",
+      "n_components": 450,
+      "n_heldout": 68,
+      "n_items": 450,
+      "n_train": 382,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1511,
+      "source": "dvqa"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 673,
+      "n_heldout": 153,
+      "n_items": 1016,
+      "n_train": 863,
+      "rank_statistic_eligible": true,
+      "realized_heldout_share": 0.1506,
+      "source": "geoqa_plus"
+    },
+    {
+      "category": "(GradeSchool) Geometric",
+      "n_components": 10,
+      "n_heldout": 2,
+      "n_items": 10,
+      "n_train": 8,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 0.2,
+      "source": "geoqa_plusConverted"
+    },
+    {
+      "category": "(GradeSchool) Non-Geo Math",
+      "n_components": 1,
+      "n_heldout": 1,
+      "n_items": 1,
+      "n_train": 0,
+      "rank_statistic_eligible": false,
+      "realized_heldout_share": 1.0,
+      "source": "geoqa_plusConverted"
+    }
+  ],
+  "supersedes": "docs/registered_m7_heldout_split_v1.md",
+  "train_output": "data/virl39k_m7_train_v2.jsonl",
+  "train_sha256": "4154752bdc53f5786314dc62d6997375c57b707b9335ef59fe85606ddb5efab3"
+}
