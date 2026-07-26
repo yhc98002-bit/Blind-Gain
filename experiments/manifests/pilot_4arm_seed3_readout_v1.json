@@ -1,0 +1,81 @@
+{
+  "bootstrap_draws": 5000,
+  "bootstrap_seed": 20260716,
+  "evaluation_lifecycle_children_sha256": "448c4efe8f7b1ab618a101f2870b4b3bc5e07eb8327c833b35eddddd55762aa8",
+  "evaluation_lifecycle_manifest": "experiments/runs/pilot_seed3_locked_eval_lifecycle_login_20260725T092404Z/run_manifest.json",
+  "geo_audits": {
+    "a1_real": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a1_real_seed2_step100_an29_gpu4_20260721T204051Z_20260721T205600Z/audit.json",
+    "a2_gray": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2_gray_seed2_step100_an29_gpu5_20260721T195900Z_20260721T201316Z/audit.json",
+    "a2b_noimage": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a2b_noimage_seed2_step100_an29_gpu6_20260721T203109Z_20260721T204620Z/audit.json",
+    "a3_caption": "experiments/runs/pilot_followup_geo3k_audit_m3_geo3k_a3_caption_seed2_step100_an29_gpu7_20260721T200716Z_20260721T203136Z/audit.json"
+  },
+  "geo_baselines": {
+    "a1_real": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",
+    "a2_gray": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_gray_login_20260712T050908Z/per_item.jsonl",
+    "a2b_noimage": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z/per_item.jsonl",
+    "a3_caption": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_caption_login_20260712T050913Z/per_item.jsonl"
+  },
+  "preregistration_sha256": "fb7e220f1dee62a01a0ce9ee8c4a9f1f1543f189239eb0e83466ed64ad1c1edb",
+  "r19_base_run": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z",
+  "r19_markers": {
+    "a1_real": {
+      "100": "experiments/runs/mech_a1_real_seed3_an29_20260722T050330Z/step100_fliptrack_complete.json",
+      "60": "experiments/runs/mech_a1_real_seed3_an29_20260722T050330Z/step60_fliptrack_complete.json"
+    },
+    "a2_gray": {
+      "100": "experiments/runs/mech_a2_gray_seed3_an12_20260722T145916Z/step100_fliptrack_complete.json",
+      "60": "experiments/runs/mech_a2_gray_seed3_an12_20260722T145916Z/step60_fliptrack_complete.json"
+    },
+    "a2b_noimage": {
+      "100": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z/step100_fliptrack_complete.json",
+      "60": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z/step60_fliptrack_complete.json"
+    },
+    "a3_caption": {
+      "100": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z/step100_fliptrack_complete.json",
+      "60": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z/step60_fliptrack_complete.json"
+    }
+  },
+  "schema_version": "blind-gains.pilot-fourarm-followup-readout-config.v1",
+  "seed": 3,
+  "support_sharpening_candidates": false,
+  "training_metric_segments": {
+    "a1_real": [
+      {
+        "end_step": 100,
+        "path": "checkpoints/pilot/mech_a1_real_seed3/experiment_log.jsonl",
+        "sha256": "56e75a98a4296e6a4dbe718d19dcc3cae1aa65a786294694247783fb322ea932",
+        "start_step": 1
+      }
+    ],
+    "a2_gray": [
+      {
+        "end_step": 100,
+        "path": "checkpoints/pilot/mech_a2_gray_seed3/experiment_log.jsonl",
+        "sha256": "ed5fefa2ba3f62d4d03c86c6ecf03ba5af7d394280607d085529e66fbdcaf451",
+        "start_step": 1
+      }
+    ],
+    "a2b_noimage": [
+      {
+        "end_step": 100,
+        "path": "checkpoints/pilot/mech_a2b_noimage_seed3/experiment_log.jsonl",
+        "sha256": "b2fe34a85179bc8c87ab3698c87ff3b4225e272838115ae71891a527146272f5",
+        "start_step": 1
+      }
+    ],
+    "a3_caption": [
+      {
+        "end_step": 100,
+        "path": "checkpoints/pilot/mech_a3_caption_seed3/experiment_log.jsonl",
+        "sha256": "6ac62c31bf7f4d277ff9d8da0b95a1f934862eb5845d7b9d60d3226c1f81f0c0",
+        "start_step": 1
+      }
+    ]
+  },
+  "training_runs": {
+    "a1_real": "experiments/runs/mech_a1_real_seed3_an29_20260722T050330Z",
+    "a2_gray": "experiments/runs/mech_a2_gray_seed3_an12_20260722T145916Z",
+    "a2b_noimage": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z",
+    "a3_caption": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z"
+  }
+}
