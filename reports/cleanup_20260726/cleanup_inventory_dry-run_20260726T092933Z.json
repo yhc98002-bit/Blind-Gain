@@ -1,0 +1,50 @@
+{
+  "candidates": [
+    {
+      "bytes": 78895327376,
+      "class": "archived_raw_complete_lineage",
+      "id": "overflow_anchor_a0",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/anchor_a0_recipe_3b_geo3k_20260709T224852Z",
+      "status": "candidate"
+    },
+    {
+      "bytes": 49101932440,
+      "class": "archived_raw_superseded_lineage",
+      "id": "overflow_old_a2_seed2",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/mech_a2_gray_seed2_an12_20260718T004316Z",
+      "status": "candidate"
+    },
+    {
+      "bytes": 46304807952,
+      "class": "archived_raw_superseded_lineage",
+      "id": "overflow_old_m5",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/checkpoint_archive_overflow/m5_anchor_longhorizon_400_an12_20260716T173030Z",
+      "status": "candidate"
+    },
+    {
+      "bytes": 65397200312,
+      "class": "archived_raw_completed_evaluated",
+      "id": "scratch_a2_seed2_resume20",
+      "path": "/tmp/blindgain_checkpoint_archive/mech_a2_gray_seed2_resume20_an12_20260719T125918Z",
+      "status": "candidate"
+    },
+    {
+      "bytes": 65397200472,
+      "class": "archived_raw_completed_evaluated",
+      "id": "scratch_a2b_seed2_resume20",
+      "path": "/tmp/blindgain_checkpoint_archive/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z",
+      "status": "candidate"
+    },
+    {
+      "bytes": 8147620461,
+      "class": "intermediate_merged_completed_seed12",
+      "id": "merged_mech_a2_gray_resume60_retry2_global_step_80",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80/actor/huggingface",
+      "status": "candidate"
+    }
+  ],
+  "generated_utc": "2026-07-26T09:29:33Z",
+  "mode": "dry-run",
+  "schema_version": "blind-gains.cleanup-20260726.inventory.v1",
+  "total_bytes": 313244089013
+}
