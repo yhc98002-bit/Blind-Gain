@@ -52,12 +52,30 @@ MODELS = {
         "training_run": "experiments/runs/mech_a2b_noimage_seed2_resume20_an29_20260719T125447Z",
         "arm": "a2b_noimage",
     },
+    "a1_seed3_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a1_real_seed3/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a1_real_seed3_an29_20260722T050330Z",
+        "arm": "a1_real",
+    },
+    "a2b_seed3_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a2b_noimage_seed3/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z",
+        "arm": "a2b_noimage",
+    },
 }
 CELLS = [
     (model, condition)
     for model in ("a1_seed1_step100", "a1_seed2_step100")
     for condition in ("real", "gray", "none")
-] + [("a2b_seed1_step100", "real"), ("a2b_seed2_step100", "real")]
+] + [
+    (model, condition)
+    for model in ("a1_seed3_step100",)
+    for condition in ("real", "gray", "none")
+] + [
+    ("a2b_seed1_step100", "real"),
+    ("a2b_seed2_step100", "real"),
+    ("a2b_seed3_step100", "real"),
+]
 
 
 def _now() -> str:

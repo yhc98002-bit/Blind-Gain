@@ -23,12 +23,14 @@ N_BOOT = 1000
 BOOT_SEED = 20260710
 # Pinned registered inputs (arm step-0 evaluations of the identical frozen base)
 BASE = {"real": 0.1747, "gray": 0.0899, "none": 0.0682}
-PUBLISHED_A1_REAL = {"a1_seed1_step100": 0.4276, "a1_seed2_step100": 0.4210}
-PUBLISHED_A2B_NONE = {"a2b_seed1_step100": 0.0982, "a2b_seed2_step100": 0.1231}
+PUBLISHED_A1_REAL = {"a1_seed1_step100": 0.4276, "a1_seed2_step100": 0.4210, "a1_seed3_step100": 0.4060}
+PUBLISHED_A2B_NONE = {"a2b_seed1_step100": 0.0982, "a2b_seed2_step100": 0.1231, "a2b_seed3_step100": 0.1215}
 REPRO_TOLERANCE = 0.01
 CELLS = [("a1_seed1_step100", c) for c in ("real", "gray", "none")] + \
         [("a1_seed2_step100", c) for c in ("real", "gray", "none")] + \
-        [("a2b_seed1_step100", "real"), ("a2b_seed2_step100", "real")]
+        [("a1_seed3_step100", c) for c in ("real", "gray", "none")] + \
+        [("a2b_seed1_step100", "real"), ("a2b_seed2_step100", "real"),
+         ("a2b_seed3_step100", "real")]
 
 
 def _sha256(path: Path) -> str:
@@ -127,7 +129,7 @@ def main() -> None:
 
     primary: dict[str, Any] = {}
     secondary: dict[str, Any] = {}
-    for seed, model_key in (("seed1", "a1_seed1_step100"), ("seed2", "a1_seed2_step100")):
+    for seed, model_key in (("seed1", "a1_seed1_step100"), ("seed2", "a1_seed2_step100"), ("seed3", "a1_seed3_step100")):
         acc_real = cells[f"{model_key}|real"]["acc_final"]
         acc_none = cells[f"{model_key}|none"]["acc_final"]
         acc_gray = cells[f"{model_key}|gray"]["acc_final"]
@@ -146,7 +148,7 @@ def main() -> None:
             "absolute_test_time_drop_real_minus_none": acc_real - acc_none,
             "acc_gray": acc_gray,
         }
-    for seed, model_key in (("seed1", "a2b_seed1_step100"), ("seed2", "a2b_seed2_step100")):
+    for seed, model_key in (("seed1", "a2b_seed1_step100"), ("seed2", "a2b_seed2_step100"), ("seed3", "a2b_seed3_step100")):
         acc_real = cells[f"{model_key}|real"]["acc_final"]
         published_none = PUBLISHED_A2B_NONE[model_key]
         secondary[seed]["a2b_real"] = acc_real
@@ -165,7 +167,7 @@ def main() -> None:
     bands = {seed: band(primary[seed]["retained_gain_blind"]) for seed in primary}
     if not repro_ok:
         verdict = "invalid_reproduction_check_failed"
-    elif bands["seed1"] == bands["seed2"]:
+    elif len(set(bands.values())) == 1:
         verdict = bands["seed1"]
     else:
         verdict = "no_branch_seeds_disagree"
