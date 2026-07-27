@@ -1,0 +1,54 @@
+{
+  "cells": {
+    "a1_seed1_step100": {
+      "final_member_accuracy": 0.1,
+      "final_pair_accuracy": 0.0,
+      "premise_member_accuracy": 0.225,
+      "premise_pair_accuracy": 0.2,
+      "premise_transition_accuracy": 0.2,
+      "reasoning_denominator": 9,
+      "reasoning_given_correct_premise": 0.2222222222222222
+    },
+    "a1_seed2_step100": {
+      "final_member_accuracy": 0.075,
+      "final_pair_accuracy": 0.0,
+      "premise_member_accuracy": 0.175,
+      "premise_pair_accuracy": 0.15,
+      "premise_transition_accuracy": 0.15,
+      "reasoning_denominator": 7,
+      "reasoning_given_correct_premise": 0.0
+    },
+    "a2b_seed1_step100": {
+      "final_member_accuracy": 0.125,
+      "final_pair_accuracy": 0.0,
+      "premise_member_accuracy": 0.3,
+      "premise_pair_accuracy": 0.2,
+      "premise_transition_accuracy": 0.2,
+      "reasoning_denominator": 12,
+      "reasoning_given_correct_premise": 0.25
+    },
+    "a3_seed1_step100": {
+      "final_member_accuracy": 0.075,
+      "final_pair_accuracy": 0.0,
+      "premise_member_accuracy": 0.25,
+      "premise_pair_accuracy": 0.2,
+      "premise_transition_accuracy": 0.2,
+      "reasoning_denominator": 10,
+      "reasoning_given_correct_premise": 0.2
+    },
+    "base": {
+      "final_member_accuracy": 0.15,
+      "final_pair_accuracy": 0.0,
+      "premise_member_accuracy": 0.275,
+      "premise_pair_accuracy": 0.2,
+      "premise_transition_accuracy": 0.2,
+      "reasoning_denominator": 11,
+      "reasoning_given_correct_premise": 0.2727272727272727
+    }
+  },
+  "n_items": 20,
+  "probe_run": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/b1_premise_probe_20260727T143725Z",
+  "registration": "docs/registered_b1_premise_probe_v1.md",
+  "schema_version": 1,
+  "scorer": "P0.2-fixed (equal-gold branch); premise manifest is equal-gold by construction"
+}

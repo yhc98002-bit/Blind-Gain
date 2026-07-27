@@ -19,7 +19,7 @@ from src.eval.fliptrack_metrics import pair_score
 
 ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain")
 PROBE = Path((ROOT / "tmp/b1_premise_probe.txt").read_text().strip())
-CONTRACT = "answer-tags-v1"
+CONTRACT = None  # resolves to DEFAULT_PROMPT_CONTRACT (contract_id=answer-tags-v1)
 
 FINAL_RUNS = {
     "a1_seed1_step100": "experiments/runs/b1_trained_a1_seed1_step100_real_an12_gpu4_20260726T155217Z",
@@ -27,7 +27,7 @@ FINAL_RUNS = {
     "a2b_seed1_step100": "experiments/runs/b1_trained_a2b_seed1_step100_real_an12_gpu6_20260726T155219Z",
     "a3_seed1_step100": "experiments/runs/b1_trained_a3_seed1_step100_real_an12_gpu7_20260726T155220Z",
 }
-BASE_FINAL_GLOB = "experiments/runs/b1_calibration_real_shard*/predictions.jsonl"
+BASE_FINAL_GLOB = open(ROOT / "tmp/b1_base_final.txt").read().strip() + "/predictions.jsonl"
 
 manifest = {json.loads(l)["pair_id"]: json.loads(l)
             for l in (ROOT / "data/b1_geometry_track_v1/manifest.jsonl").read_text().splitlines() if l.strip()}
