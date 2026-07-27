@@ -1,3 +1,7 @@
+> **Superseded 2026-07-27.** Split into `docs/PAPER1_RESEARCH_DOC.md` (diagnosis)
+> and `docs/PAPER2_RESEARCH_DOC.md` (method sequel). Retained because prior
+> registrations cite it. Do not edit.
+
 # Blind Gains — Research & Paper Strategy
 Living document; guides Paper-1 writing and directs experiments. PIs own §1–§9; Codex updates §4–§5 with each ledger pass. Operational detail lives in briefs/ledgers. Updated 2026-07-17 (post seed-1, post null/M10, post co-PI review).
 
