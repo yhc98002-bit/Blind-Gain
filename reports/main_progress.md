@@ -32,7 +32,7 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | M7 | ViRL39K stratified decomposition | blocked | Built; awaiting a full free node (an12 after M5). |
 | C5 | 7B access pair | blocked | Re-scoped to A1 and A2b only, one seed. Awaiting a node. |
 | M11 | Cross-family completion | blocked | State ambiguous in prior ledgers between "validity confirmed" and "full matrix pending"; must be resolved before any claim. |
-| CL | Cue ladder on existing checkpoints (F4b) | pending | Generation CPU; scoring inference-only, fits 4-GPU gaps. Register before scoring; invariants I12, I13. |
+| CL | Cue ladder on existing checkpoints (F4b) | running | Registered `docs/registered_cue_ladder_v1.md` before any scoring. Four rungs replayed from the frozen R19 nine-series `pair_seed`s, so the ladder is item-paired with R19; replay integrity gate passes 300/300. Scoring next on free GPUs. |
 | X6 | Related-work nine-column table | blocked | PI-owned, not a cluster task. |
 
 ## Paper 2 — Gate 0 (no GPUs, runs first)
@@ -50,8 +50,8 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 |---|---|---|---|
 | P0.1 | Premise-probe accuracy, five separate numbers | pass | Base premise member 0.275 (95% [0.137,0.413]); registered branch **(b)** fires — construct revised before release. Reasoning\|correct-premise 0.273 at base. `reports/p01_premise_probe_v1.*`. |
 | P0.2 | Equal-gold invariance scorer | pass | `acc_final = gold_tier > other_tier` was structurally false on equal-gold pairs. Fixed with an equal-gold branch; 7-case adversarial fixture the pre-fix code fails; R19 rescores to 0.4717/0.4433 unchanged; frozen R20 scorer untouched (I11). |
-| P0.3 | Freeze and version intervention-group schema + loader fixture | pending | I15. |
-| P0.4 | Fix task roles in all reports and text | pending | Primary visual anchor / saturated positive control + retention canary / oracle-localized readout control. No aggregate across roles (I13). |
+| P0.3 | Freeze and version intervention-group schema + loader fixture | pass | `src/train/intervention_group_schema.py` pins v1 and fails closed on unknown versions; rejects causal members sharing the original answer, groups without an invariance member (I5), and stale `delta_q`. 13-case fixture. |
+| P0.4 | Fix task roles in all reports and text | pass | `src/eval/task_roles.py` + 8-case I13 guard; unknown tasks fail closed. Registered primary endpoint already role-pure; only the `overall` key crosses roles and is now labelled an accounting identity. Registry records `SATURATION_CLAIM_IS_ACCURATE = False`. `reports/p04_task_roles_v1.md`. |
 
 ## Human items (Richard)
 
