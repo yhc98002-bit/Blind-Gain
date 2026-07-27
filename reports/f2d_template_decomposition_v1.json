@@ -1,0 +1,268 @@
+{
+  "arms": {
+    "a1_real": {
+      "overall_delta_mean": 0.025277777777777777,
+      "overall_delta_per_seed": [
+        0.028333333333333332,
+        0.020833333333333332,
+        0.02666666666666667
+      ],
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ci95": [
+            -0.018333333333333333,
+            0.029444444444444447
+          ],
+          "contribution_to_overall": 0.0027777777777777766,
+          "mean_delta": 0.005555555555555553,
+          "n_pairs": 600,
+          "per_seed_delta": [
+            -0.0016666666666666668,
+            0.008333333333333333,
+            0.01
+          ],
+          "role": "primary visual anchor (search + binding + read)",
+          "share_of_overall_pct": 10.989010989010985
+        },
+        "header_cued_table_code_v02": {
+          "ci95": [
+            -0.0022499999999999755,
+            0.042222222222222223
+          ],
+          "contribution_to_overall": 0.004722222222222222,
+          "mean_delta": 0.01888888888888889,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.03,
+            0.013333333333333334,
+            0.013333333333333334
+          ],
+          "role": "saturated positive control / retention canary",
+          "share_of_overall_pct": 18.681318681318682
+        },
+        "starred_series_value_nine_v07": {
+          "ci95": [
+            0.025555555555555554,
+            0.11666666666666667
+          ],
+          "contribution_to_overall": 0.01777777777777778,
+          "mean_delta": 0.07111111111111112,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.08666666666666667,
+            0.05333333333333334,
+            0.07333333333333333
+          ],
+          "role": "oracle-localized readout control",
+          "share_of_overall_pct": 70.32967032967035
+        }
+      }
+    },
+    "a2_gray": {
+      "overall_delta_mean": -0.001388888888888889,
+      "overall_delta_per_seed": [
+        0.0,
+        -0.005,
+        0.0008333333333333334
+      ],
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ci95": [
+            -0.06833333333333333,
+            -0.01611111111111111
+          ],
+          "contribution_to_overall": -0.021111111111111112,
+          "mean_delta": -0.042222222222222223,
+          "n_pairs": 600,
+          "per_seed_delta": [
+            -0.045,
+            -0.045,
+            -0.03666666666666667
+          ],
+          "role": "primary visual anchor (search + binding + read)",
+          "share_of_overall_pct": 1520.0
+        },
+        "header_cued_table_code_v02": {
+          "ci95": [
+            0.002222222222222221,
+            0.04666666666666667
+          ],
+          "contribution_to_overall": 0.005833333333333334,
+          "mean_delta": 0.023333333333333334,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.02666666666666667,
+            0.016666666666666666,
+            0.02666666666666667
+          ],
+          "role": "saturated positive control / retention canary",
+          "share_of_overall_pct": -420.0
+        },
+        "starred_series_value_nine_v07": {
+          "ci95": [
+            0.009999999999999997,
+            0.10111111111111112
+          ],
+          "contribution_to_overall": 0.013888888888888886,
+          "mean_delta": 0.055555555555555546,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.06333333333333334,
+            0.05333333333333334,
+            0.05
+          ],
+          "role": "oracle-localized readout control",
+          "share_of_overall_pct": -999.9999999999998
+        }
+      }
+    },
+    "a2b_noimage": {
+      "overall_delta_mean": -0.0019444444444444442,
+      "overall_delta_per_seed": [
+        -0.004166666666666667,
+        -0.004166666666666667,
+        0.0025
+      ],
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ci95": [
+            -0.052222222222222225,
+            -0.001666666666666667
+          ],
+          "contribution_to_overall": -0.013611111111111114,
+          "mean_delta": -0.027222222222222228,
+          "n_pairs": 600,
+          "per_seed_delta": [
+            -0.023333333333333334,
+            -0.025,
+            -0.03333333333333333
+          ],
+          "role": "primary visual anchor (search + binding + read)",
+          "share_of_overall_pct": 700.0000000000002
+        },
+        "header_cued_table_code_v02": {
+          "ci95": [
+            0.0,
+            0.04888888888888888
+          ],
+          "contribution_to_overall": 0.005833333333333333,
+          "mean_delta": 0.02333333333333333,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.023333333333333334,
+            0.02,
+            0.02666666666666667
+          ],
+          "role": "saturated positive control / retention canary",
+          "share_of_overall_pct": -300.0
+        },
+        "starred_series_value_nine_v07": {
+          "ci95": [
+            -0.02,
+            0.06777777777777777
+          ],
+          "contribution_to_overall": 0.005833333333333333,
+          "mean_delta": 0.02333333333333333,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.006666666666666667,
+            0.013333333333333334,
+            0.05
+          ],
+          "role": "oracle-localized readout control",
+          "share_of_overall_pct": -300.0
+        }
+      }
+    },
+    "a3_caption": {
+      "overall_delta_mean": 0.009166666666666667,
+      "overall_delta_per_seed": [
+        0.015,
+        0.009166666666666667,
+        0.0033333333333333335
+      ],
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ci95": [
+            -0.028333333333333332,
+            0.018888888888888886
+          ],
+          "contribution_to_overall": -0.002499999999999999,
+          "mean_delta": -0.004999999999999998,
+          "n_pairs": 600,
+          "per_seed_delta": [
+            -0.008333333333333333,
+            -0.011666666666666667,
+            0.005
+          ],
+          "role": "primary visual anchor (search + binding + read)",
+          "share_of_overall_pct": -27.272727272727263
+        },
+        "header_cued_table_code_v02": {
+          "ci95": [
+            -0.00111111111111111,
+            0.04444444444444444
+          ],
+          "contribution_to_overall": 0.005277777777777778,
+          "mean_delta": 0.021111111111111112,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.023333333333333334,
+            0.02666666666666667,
+            0.013333333333333334
+          ],
+          "role": "saturated positive control / retention canary",
+          "share_of_overall_pct": 57.57575757575758
+        },
+        "starred_series_value_nine_v07": {
+          "ci95": [
+            -0.02,
+            0.07111111111111112
+          ],
+          "contribution_to_overall": 0.006388888888888888,
+          "mean_delta": 0.025555555555555554,
+          "n_pairs": 300,
+          "per_seed_delta": [
+            0.05333333333333334,
+            0.03333333333333333,
+            -0.01
+          ],
+          "role": "oracle-localized readout control",
+          "share_of_overall_pct": 69.69696969696969
+        }
+      }
+    }
+  },
+  "base": {
+    "coordinate_register_twenty_point_x_v02": {
+      "member_accuracy": 0.645,
+      "n_pairs": 600,
+      "pair_accuracy": 0.4716666666666667,
+      "strict_pair_accuracy": 0.44333333333333336
+    },
+    "header_cued_table_code_v02": {
+      "member_accuracy": 0.9,
+      "n_pairs": 300,
+      "pair_accuracy": 0.8666666666666667,
+      "strict_pair_accuracy": 0.18
+    },
+    "starred_series_value_nine_v07": {
+      "member_accuracy": 0.6616666666666666,
+      "n_pairs": 300,
+      "pair_accuracy": 0.43666666666666665,
+      "strict_pair_accuracy": 0.42
+    }
+  },
+  "n_by_template": {
+    "coordinate_register_twenty_point_x_v02": 600,
+    "header_cued_table_code_v02": 300,
+    "starred_series_value_nine_v07": 300
+  },
+  "overall": {},
+  "roles": {
+    "coordinate_register_twenty_point_x_v02": "primary visual anchor (search + binding + read)",
+    "header_cued_table_code_v02": "saturated positive control / retention canary",
+    "starred_series_value_nine_v07": "oracle-localized readout control"
+  },
+  "schema_version": 1
+}
