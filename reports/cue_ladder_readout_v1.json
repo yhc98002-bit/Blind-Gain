@@ -1,0 +1,90 @@
+{
+  "base_pair_accuracy": {
+    "decoy": 0.6066666666666667,
+    "exact": 0.4533333333333333,
+    "named_exact": 0.3333333333333333,
+    "named_region": 0.61,
+    "none": 0.6166666666666667,
+    "region": 0.13666666666666666
+  },
+  "base_strict_pair_accuracy": {
+    "decoy": 0.4633333333333333,
+    "exact": 0.44,
+    "named_exact": 0.2633333333333333,
+    "named_region": 0.25,
+    "none": 0.4066666666666667,
+    "region": 0.12
+  },
+  "contrasts": {
+    "decoy_cost_named_question": {
+      "a": "decoy",
+      "b": "none",
+      "ci95": [
+        -0.06,
+        0.04
+      ],
+      "delta": -0.01,
+      "excludes_zero": false
+    },
+    "legend_star_value_named_question": {
+      "a": "named_region",
+      "b": "none",
+      "ci95": [
+        -0.05333333333333334,
+        0.04
+      ],
+      "delta": -0.006666666666666667,
+      "excludes_zero": false
+    },
+    "occlusion_cost_named_question": {
+      "a": "named_exact",
+      "b": "named_region",
+      "ci95": [
+        -0.3433333333333333,
+        -0.20666666666666667
+      ],
+      "delta": -0.27666666666666667,
+      "excludes_zero": true
+    },
+    "point_star_needed_when_star_is_the_identifier": {
+      "a": "exact",
+      "b": "region",
+      "ci95": [
+        0.25333333333333335,
+        0.38
+      ],
+      "delta": 0.31666666666666665,
+      "excludes_zero": true
+    },
+    "question_form_with_legend_only": {
+      "a": "region",
+      "b": "named_region",
+      "ci95": [
+        -0.5333333333333333,
+        -0.41
+      ],
+      "delta": -0.47333333333333333,
+      "excludes_zero": true
+    },
+    "question_form_with_point_mark": {
+      "a": "exact",
+      "b": "named_exact",
+      "ci95": [
+        0.056666666666666664,
+        0.18333333333333332
+      ],
+      "delta": 0.12,
+      "excludes_zero": true
+    }
+  },
+  "gates": {
+    "v2_gate_base_monotone": {
+      "criterion": "named_exact >= named_region >= none",
+      "named_exact": 0.3333333333333333,
+      "named_region": 0.61,
+      "none": 0.6166666666666667,
+      "passes": false
+    }
+  },
+  "n_items": 300
+}
