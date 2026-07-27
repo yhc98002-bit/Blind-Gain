@@ -62,19 +62,42 @@ MODELS = {
         "training_run": "experiments/runs/mech_a2b_noimage_seed3_an29_20260724T033754Z",
         "arm": "a2b_noimage",
     },
+    "a2_seed1_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a2_gray_resume60_retry2_an12_20260715T165701Z",
+        "arm": "a2_gray",
+    },
+    "a2_seed2_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a2_gray_seed2_resume20/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a2_gray_seed2_resume20_an12_20260719T125918Z",
+        "arm": "a2_gray",
+    },
+    "a2_seed3_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a2_gray_seed3/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a2_gray_seed3_an12_20260722T145916Z",
+        "arm": "a2_gray",
+    },
+    "a3_seed1_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a3_caption_resume20/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a3_caption_resume20_an29_20260713T144233Z",
+        "arm": "a3_caption",
+    },
+    "a3_seed2_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a3_caption_seed2/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a3_caption_seed2_an29_20260720T125144Z",
+        "arm": "a3_caption",
+    },
+    "a3_seed3_step100": {
+        "checkpoint": "checkpoints/pilot/mech_a3_caption_seed3/global_step_100/actor/huggingface",
+        "training_run": "experiments/runs/mech_a3_caption_seed3_an29_20260725T092128Z",
+        "arm": "a3_caption",
+    },
 }
 CELLS = [
-    (model, condition)
-    for model in ("a1_seed1_step100", "a1_seed2_step100")
+    (f"{arm}_seed{seed}_step100", condition)
+    for arm in ("a1", "a2", "a2b", "a3")
+    for seed in (1, 2, 3)
     for condition in ("real", "gray", "none")
-] + [
-    (model, condition)
-    for model in ("a1_seed3_step100",)
-    for condition in ("real", "gray", "none")
-] + [
-    ("a2b_seed1_step100", "real"),
-    ("a2b_seed2_step100", "real"),
-    ("a2b_seed3_step100", "real"),
 ]
 
 
