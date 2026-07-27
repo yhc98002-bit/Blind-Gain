@@ -77,8 +77,15 @@ registered for the **Δ_A2gray − Δ_A2b** contrast, not for A1. On the seconda
 overall-pair endpoint A1 *does* move (+0.0283 / +0.0208 / +0.0267, CIs excluding
 zero in all three seeds).
 
-Caveat carried: the step-0 minuend is a single pinned legacy run shared by all
-three seeds, so seed spread reflects step-100 variation only.
+**Baseline verified (2026-07-27).** The audit flagged that the step-0 minuend
+was a single pinned legacy run, shared across all three seeds and measured
+under a possibly different harness build. It has now been re-measured from
+scratch on the locked 1,200-pair R19 manifest with the current harness and
+reproduces **exactly**: geometry lenient 0.4717 and strict 0.4433, matching
+the pinned values to four decimals (run `fliptrack_base_remeasure_an12_20260727T124803Z`).
+The minuend is therefore verified rather than inherited. The residual caveat
+stands that it is still a single measurement, so seed-level spread reflects
+step-100 variation only.
 
 ---
 
