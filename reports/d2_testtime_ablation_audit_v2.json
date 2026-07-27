@@ -1,0 +1,10 @@
+{
+  "cells_verified": 12,
+  "machine_output_sha256": "12fead22e14d5a11170c3256bc22f508b037b782e4b84e46550c2e884ca2ca4f",
+  "markdown_output_sha256": "5f6a99fecbf50e1105426d3af9805593d6502b8715874fac005a0658f02a7b6e",
+  "performance_values_opened": true,
+  "registered_verdict": "a_image_mediated_at_test_time",
+  "reproduction_check_passed": true,
+  "schema_version": "blind-gains.d2-testtime-ablation-audit.v1",
+  "status": "pass"
+}
