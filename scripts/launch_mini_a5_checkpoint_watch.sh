@@ -13,7 +13,7 @@ TRAINING_RUN="${1%/}"
 
 RUN_ROOT="$(jq -er '.checkpoint_path' "${TRAINING_RUN}/run_manifest.json")"
 NODE="$(jq -er '.node' "${TRAINING_RUN}/run_manifest.json")"
-MODE="$(jq -er '.mini_a5_mode // .mode // empty' "${TRAINING_RUN}/run_manifest.json")"
+MODE="$(jq -r '.mini_a5_mode // .mode // ""' "${TRAINING_RUN}/run_manifest.json" 2>/dev/null || true)"
 [[ -n "${MODE}" ]] || MODE="$(basename "${TRAINING_RUN}" | grep -oE 'cp|member' | head -1)"
 [[ "${MODE}" =~ ^(cp|member)$ ]] || { echo "cannot determine Mini-A5 mode for ${TRAINING_RUN}" >&2; exit 2; }
 LABEL="mini_a5_${MODE}_main"
