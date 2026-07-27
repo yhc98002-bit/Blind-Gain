@@ -28,7 +28,7 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | B1 | Geometry track declared batch + trained scoring | pass | Six intervention types; chained premise 0.000 pair / 0.150 member. |
 | F2d | Template decomposition of overall R19 movement | pass | Movement concentrates on the oracle-localized readout control (70% of A1's overall); primary anchor flat (CI spans zero). **Correction: the header table is not saturated at 1.000 — base 0.8667, contributes 18.7%.** Blind arms decline on the anchor while rising on the cued control. `reports/f2d_template_decomposition_v1.*`. |
 | M5 | Long-horizon to step 400 | running | Step 366/400 on an12:0–3. Terminal rule merged; no extension under any outcome. |
-| A5 | Mini-A5 CP vs matched same-data GRPO | running | CP arm 47/120 on an29:0–7. Matched arm queued; 4-arm Gate-1 registration to be prepared in parallel. |
+| A5 | Mini-A5 CP vs matched same-data GRPO | running | CP arm on an29:0–7. Matched same-data standard GRPO arm queued next. **Gate-1 four-arm registration merged** (`docs/registered_gate1_four_arm_v1.md`) so arms 3–4 can launch without registration lag if F7 is positive; it does not launch until Mini-A5 completes and a node is free. |
 | M7 | ViRL39K stratified decomposition | blocked | Built; awaiting a full free node (an12 after M5). |
 | C5 | 7B access pair | blocked | Re-scoped to A1 and A2b only, one seed. Awaiting a node. |
 | M11 | Cross-family completion | blocked | **Ambiguity resolved 2026-07-27.** Both readings were partly right: six *smoke* cells validate the instrument cross-family (no-image collapse, caption ≤0.013) and are what PAPER1 §5's dossier cites; the **18-cell full matrix never ran**. Queue `m11_generalization_full_recovery_login_20260715T182317Z` has manifest status `fail` and its watcher (pid 177427) is dead, despite status report v10 describing it as running. No model performance may be reported from M11 until the full matrix and machine audit complete. Relaunch needs a node and is not scheduled. |
@@ -43,6 +43,13 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | G0.2 | A2b image-present gain vs blind solvability | pass | **Opposite of the hypothesis**: concentrates on blind-*answerable* items — 84% of A1's gain there vs 42% where no blind success was observed (91% vs 61% base-wrong control). Title claim survives with a scope qualifier; direct support for H1. |
 | G0.3 | A1/A2b newly-correct overlap (Jaccard + permutation null) | pass | Jaccard 0.363–0.423 vs null 0.157–0.177, p ≤ 0.004 all seeds. Overlapping policies, ~60% of the union arm-specific. |
 | G0.4 | Answer-gain vs format-gain split of A2b's gain | pass | Format gain **exactly +0.1148 for all four arms** by identity (every trained arm has acc_strict == acc_final, so it collapses to base_final − base_strict). The access matrix is format-free by construction. |
+
+
+## Paper 2 — Gate 1 (gated on F7)
+
+| ID | Task | Status | Note |
+|---|---|---|---|
+| Gate 1 | Four-arm decomposition (standard / paired-data / necessity / IGPO) | blocked | Registered before any optimizer step (I9). Blocked on F7 and on a free node. Success is held-out-template pair accuracy at the scene-program level; margins explicitly excluded (X2 bottom branch), chained premise excluded (P0.1 branch (b)); no branch reads as success unless VAG is positive (I8). |
 
 ## Paper 2 — Phase 0 (no GPU training; blocking)
 
