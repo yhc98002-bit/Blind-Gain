@@ -1,0 +1,149 @@
+{
+  "bootstrap_draws": 20000,
+  "estimand": "TrainShare (PAPER1 \u00a78)",
+  "n_items": 601,
+  "ordering_disclosure": "Declared post-hoc recomputation. All 36 D3 cells were read under the ratio-based registration docs/registered_d3_condition_matrix_v1.md before this estimand was computed. Not pre-registered; does not satisfy I9.",
+  "per_seed": {
+    "a2_gray": [
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.3717948717948718,
+          0.6405228758169934
+        ],
+        "denominator_gain": 0.2529118136439268,
+        "numerator_gain": 0.1281198003327787,
+        "seed": 1,
+        "train_share": 0.506578947368421
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.3945578231292517,
+          0.6624203821656052
+        ],
+        "denominator_gain": 0.24625623960066556,
+        "numerator_gain": 0.129783693843594,
+        "seed": 2,
+        "train_share": 0.527027027027027
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.27199190751445085,
+          0.5746268656716418
+        ],
+        "denominator_gain": 0.23128119800332778,
+        "numerator_gain": 0.09816971713810316,
+        "seed": 3,
+        "train_share": 0.4244604316546763
+      }
+    ],
+    "a2b_noimage": [
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.43870967741935485,
+          0.7108457266566264
+        ],
+        "denominator_gain": 0.2529118136439268,
+        "numerator_gain": 0.1447587354409318,
+        "seed": 1,
+        "train_share": 0.5723684210526316
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.36024223602484473,
+          0.6265822784810127
+        ],
+        "denominator_gain": 0.24625623960066556,
+        "numerator_gain": 0.12146422628951747,
+        "seed": 2,
+        "train_share": 0.49324324324324326
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.3671804743705036,
+          0.6714285714285715
+        ],
+        "denominator_gain": 0.23128119800332778,
+        "numerator_gain": 0.11980033277870217,
+        "seed": 3,
+        "train_share": 0.5179856115107914
+      }
+    ],
+    "a3_caption": [
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.607843137254902,
+          0.8875000000000001
+        ],
+        "denominator_gain": 0.2529118136439268,
+        "numerator_gain": 0.18801996672212978,
+        "seed": 1,
+        "train_share": 0.743421052631579
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.5734265734265733,
+          0.875
+        ],
+        "denominator_gain": 0.24625623960066556,
+        "numerator_gain": 0.17637271214642264,
+        "seed": 2,
+        "train_share": 0.7162162162162162
+      },
+      {
+        "branch": "headline at full strength",
+        "ci95": [
+          0.5527909447531874,
+          0.8344827586206895
+        ],
+        "denominator_gain": 0.23128119800332778,
+        "numerator_gain": 0.15973377703826955,
+        "seed": 3,
+        "train_share": 0.6906474820143885
+      }
+    ]
+  },
+  "pooled": {
+    "a2_gray": {
+      "all_seeds_same_branch": true,
+      "branch": "headline at full strength",
+      "ci95": [
+        0.3832901262035121,
+        0.5877382750140224
+      ],
+      "max_seed": 0.527027027027027,
+      "min_seed": 0.4244604316546763,
+      "train_share": 0.4874715261958998
+    },
+    "a2b_noimage": {
+      "all_seeds_same_branch": true,
+      "branch": "headline at full strength",
+      "ci95": [
+        0.42403140063972605,
+        0.6289167529847898
+      ],
+      "max_seed": 0.5723684210526316,
+      "min_seed": 0.49324324324324326,
+      "train_share": 0.5284738041002278
+    },
+    "a3_caption": {
+      "all_seeds_same_branch": true,
+      "branch": "headline at full strength",
+      "ci95": [
+        0.6169262263293775,
+        0.8205142231947482
+      ],
+      "max_seed": 0.743421052631579,
+      "min_seed": 0.6906474820143885,
+      "train_share": 0.7175398633257404
+    }
+  },
+  "schema_version": 1
+}
