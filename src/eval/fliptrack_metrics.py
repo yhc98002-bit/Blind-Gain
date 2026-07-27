@@ -46,6 +46,28 @@ def is_correct(prediction: Any, answer: Any) -> bool:
     return match_tier(extract_answer_span(prediction).span, answer) > 0
 
 
+def golds_equivalent(gold: Any, other_gold: Any, numeric_tol: float = 1e-4) -> bool:
+    """True when a pair's two golds are the same answer (an invariance item).
+
+    Invariance members share a gold by construction, so there is no competing
+    answer to discriminate against. The discriminative criterion used for causal
+    pairs is structurally unsatisfiable on such items and must not be applied to
+    them. Matching is done with the same semantics as `match_tier` so that "3"
+    and "3.0" count as one gold.
+    """
+    left = normalize_text(gold)
+    right = normalize_text(other_gold)
+    if not left or not right:
+        return False
+    if left == right:
+        return True
+    left_num = numeric_value(left)
+    right_num = numeric_value(right)
+    if left_num is not None and right_num is not None:
+        return math.isclose(left_num, right_num, rel_tol=numeric_tol, abs_tol=numeric_tol)
+    return False
+
+
 def _score_member(
     prediction: Any,
     gold: Any,
@@ -58,8 +80,18 @@ def _score_member(
     gold_tier = match_tier(span, gold)
     other_tier = match_tier(span, other_gold)
     highest = max(gold_tier, other_tier)
-    ambiguous = highest > 0 and gold_tier == other_tier
-    acc_final = gold_tier > other_tier and gold_tier > 0
+    equal_gold = golds_equivalent(gold, other_gold)
+    if equal_gold:
+        # Invariance item: both members share one gold, so `gold_tier > other_tier`
+        # can never hold and the discriminative criterion would score every
+        # response wrong regardless of content. Success here is matching the
+        # single gold, and there is no second answer for a response to be
+        # ambiguous between.
+        ambiguous = False
+        acc_final = gold_tier > 0
+    else:
+        ambiguous = highest > 0 and gold_tier == other_tier
+        acc_final = gold_tier > other_tier and gold_tier > 0
     extractor_valid = extracted.extractor_valid
     contract_valid = response_satisfies_contract(prediction, prompt_contract)
     acc_strict = contract_valid and acc_final
@@ -75,6 +107,7 @@ def _score_member(
         f"format_valid_{prefix}": contract_valid,
         f"parser_version_{prefix}": PARSER_VERSION,
         f"ambiguous_{prefix}": ambiguous,
+        f"equal_gold_{prefix}": equal_gold,
         f"full_text_mentions_both_{prefix}": full_text_mentions_both,
         f"match_tier_{prefix}": gold_tier,
         f"other_match_tier_{prefix}": other_tier,
