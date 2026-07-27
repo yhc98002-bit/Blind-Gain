@@ -9,7 +9,7 @@ Supersedes `reports/x_diagnostics_progress.md` (retained, not deleted).
 Source of truth for the three guide documents is the PI's local machine; the
 `docs/` copies are reference.
 
-Updated 2026-07-27.
+Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare landed).
 
 ## Paper 1
 
@@ -20,13 +20,13 @@ Updated 2026-07-27.
 | — | Base FlipTrack endpoint re-measurement | pass | Reproduces pinned 0.4717 lenient / 0.4433 strict exactly under the current harness. Minuend verified, not inherited. |
 | D2 | Test-time access, three seeds | pass | Only 12–17% of A1's gain survives image removal. |
 | D3 | Train×test grid | pass | **36/36 cells complete.** Registered branch (a): blind arms recover 42–57% when tested with images vs 4–23% matched. |
-| D3b | TrainShare estimand + paired item-level CIs | pending | PAPER1 §8 branches. Must be labeled a declared post-hoc recomputation — all 36 cells were read under the ratio-based D3 registration. |
+| D3b | TrainShare estimand + paired item-level CIs | pass | Pooled 0.487 / 0.528 / 0.718, every CI entirely above 0.35 → **headline at full strength**. Labeled a declared post-hoc recomputation (does not satisfy I9). `reports/d3_trainshare_v1.*`. |
 | X1/X5 | Image-condition matrix, seeds 1–2 | pass | Mismatched-image inflation statistically zero in every arm. |
 | X2 | Hard-negative ranking v2 | pass | Registered bottom branch fired: 0.9067 is predominantly candidate-set structure. |
 | X3 | A2 −0.045 item forensics | pass | Jaccard 0.724 vs null 0.098; 41/42 same wrong answer. |
 | X4 | Calibration (exploratory) | pass | Confidence tracks image presence, not correctness. |
 | B1 | Geometry track declared batch + trained scoring | pass | Six intervention types; chained premise 0.000 pair / 0.150 member. |
-| F2d | Template decomposition of overall R19 movement | pending | Cached predictions, no new inference. |
+| F2d | Template decomposition of overall R19 movement | pass | Movement concentrates on the oracle-localized readout control (70% of A1's overall); primary anchor flat (CI spans zero). **Correction: the header table is not saturated at 1.000 — base 0.8667, contributes 18.7%.** Blind arms decline on the anchor while rising on the cued control. `reports/f2d_template_decomposition_v1.*`. |
 | M5 | Long-horizon to step 400 | running | Step 366/400 on an12:0–3. Terminal rule merged; no extension under any outcome. |
 | A5 | Mini-A5 CP vs matched same-data GRPO | running | CP arm 47/120 on an29:0–7. Matched arm queued; 4-arm Gate-1 registration to be prepared in parallel. |
 | M7 | ViRL39K stratified decomposition | blocked | Built; awaiting a full free node (an12 after M5). |
@@ -39,10 +39,10 @@ Updated 2026-07-27.
 
 | ID | Analysis | Status | Note |
 |---|---|---|---|
-| G0.1 | A1 gains vs Δq concentration | pending | Δq source = blind-solvability audit (real vs none, 2,702 items). Base step-0 geo3k eval running to supply per-item base under the arm harness. |
-| G0.2 | A2b image-present gain vs blind solvability | pending | **Freezes Paper 1's title claim.** |
-| G0.3 | A1/A2b newly-correct overlap (Jaccard + permutation null) | pending | |
-| G0.4 | Answer-gain vs format-gain split of A2b's gain | pending | Per-arm `strict_gain_accounting` already carries AnswerGain / G_format with `identity_exact`. |
+| G0.1 | A1 gains vs Δq concentration | pass | Monotone across Δq terciles for **both** A1 and A2b (ρ +0.198 / +0.192, perm p ≤ 0.0005). H1 supported; C1 necessity sampling earns its place. |
+| G0.2 | A2b image-present gain vs blind solvability | pass | **Opposite of the hypothesis**: concentrates on blind-*answerable* items — 84% of A1's gain there vs 42% where no blind success was observed (91% vs 61% base-wrong control). Title claim survives with a scope qualifier; direct support for H1. |
+| G0.3 | A1/A2b newly-correct overlap (Jaccard + permutation null) | pass | Jaccard 0.363–0.423 vs null 0.157–0.177, p ≤ 0.004 all seeds. Overlapping policies, ~60% of the union arm-specific. |
+| G0.4 | Answer-gain vs format-gain split of A2b's gain | pass | Format gain **exactly +0.1148 for all four arms** by identity (every trained arm has acc_strict == acc_final, so it collapses to base_final − base_strict). The access matrix is format-free by construction. |
 
 ## Paper 2 — Phase 0 (no GPU training; blocking)
 
