@@ -68,7 +68,12 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 - The 9 failing tests in `tests/` at HEAD are orchestration/queue/manifest tests
   and predate the P0.2 change; all 74 scorer-touching tests pass.
 - B1 invariance types (`style_twin` 14/14, `distractor_only` 16/16) were scored
-  with a single-gold workaround before P0.2 and must be rescored before reuse.
+  with a single-gold workaround before P0.2. **Rescored under the fixed scorer:
+  0 of 30 cells move** — all differences are 3-dp rounding in the published
+  table — so the published B1 numbers stand. The workaround was fragile in
+  principle (never validated against the two-gold path; a response matching the
+  other member's gold would have been mis-scored) but was equivalent on these
+  items. `reports/b1_rescored_p02_v1.json`. **Closed.**
 - The B1 premise probe's on-disk `metrics.json` files read 0.000 for every cell
   under the pre-fix scorer and are void; cite the rescored readout instead.
 - `reports/m11_execution_queue_status_v10.md` describes its queue as `running`;
