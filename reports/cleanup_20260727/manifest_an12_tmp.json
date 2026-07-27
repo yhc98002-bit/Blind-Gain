@@ -1,0 +1,494 @@
+{
+  "accepted": [
+    {
+      "bytes": 3438788483,
+      "file_count": 12066,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T15:23:21Z",
+      "path": "/tmp/blind-gains",
+      "removed": true
+    },
+    {
+      "bytes": 2031413468,
+      "file_count": 638,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:49:08Z",
+      "path": "/tmp/bg-ray-03d1403f0e77",
+      "removed": true
+    },
+    {
+      "bytes": 443522564,
+      "file_count": 638,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T15:06:45Z",
+      "path": "/tmp/bg-ray-fd66b14298f5",
+      "removed": true
+    },
+    {
+      "bytes": 82987482,
+      "file_count": 16644,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T15:56:35Z",
+      "path": "/tmp/pytest-of-pxy1289",
+      "removed": true
+    },
+    {
+      "bytes": 56023524,
+      "file_count": 3540,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T15:12:11Z",
+      "path": "/tmp/pxy1289-sao-cpu-v2-002",
+      "removed": true
+    },
+    {
+      "bytes": 53497092,
+      "file_count": 3375,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T11:00:39Z",
+      "path": "/tmp/pxy1289-benchmark-tests-pycache",
+      "removed": true
+    },
+    {
+      "bytes": 51473167,
+      "file_count": 3224,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T15:03:06Z",
+      "path": "/tmp/pxy1289-sao-cpu-v2-001",
+      "removed": true
+    },
+    {
+      "bytes": 34053127,
+      "file_count": 2194,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T16:01:38Z",
+      "path": "/tmp/pxy1289-sao-live-v2-003-pycache",
+      "removed": true
+    },
+    {
+      "bytes": 25970821,
+      "file_count": 3108,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T21:53:11Z",
+      "path": "/tmp/ray",
+      "removed": true
+    },
+    {
+      "bytes": 9577636,
+      "file_count": 638,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:27:16Z",
+      "path": "/tmp/bg-ray-f0f003e540ca",
+      "removed": true
+    },
+    {
+      "bytes": 5691341,
+      "file_count": 638,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T21:59:06Z",
+      "path": "/tmp/bg-ray-3043422b1cc8",
+      "removed": true
+    },
+    {
+      "bytes": 2763015,
+      "file_count": 639,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:23:25Z",
+      "path": "/tmp/bg-ray-42ff3b27e275",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T06:28:41Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-h3zea1rg",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T06:28:41Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-_ugecc7i",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T06:28:41Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-7se96by9",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T06:28:42Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-46fgntnb",
+      "removed": true
+    },
+    {
+      "bytes": 1999,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-07T21:29:55Z",
+      "path": "/tmp/blindgain_ray_stop.log",
+      "removed": true
+    },
+    {
+      "bytes": 871,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-23T14:16:37Z",
+      "path": "/tmp/bg_smoke_out.jsonl",
+      "removed": true
+    },
+    {
+      "bytes": 442,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T04:35:56Z",
+      "path": "/tmp/blindgain_storage_guard_an12_probe.jsonl",
+      "removed": true
+    },
+    {
+      "bytes": 139,
+      "file_count": 2,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T21:57:29Z",
+      "path": "/tmp/ray_pxy1289_anchor_a0_recipe_3b_geo3k_20260709T215715Z",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-23T15:18:14Z",
+      "path": "/tmp/blind_gains_an12_caption_store_launch.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T15:47:36Z",
+      "path": "/tmp/pxy1289-stage1-audit-probe.wM9ZEK",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-21T08:44:10Z",
+      "path": "/tmp/pxy1289-b2-ace-duration-confirmation-v1-an12-gpu-4.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-20T17:20:19Z",
+      "path": "/tmp/pxy1289-b2-mini-smoke-v2-an12-gpu-4.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-20T14:00:27Z",
+      "path": "/tmp/pxy1289-sa3-smoke-e-gpu-4.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-16T16:44:05Z",
+      "path": "/tmp/blind_gains_an12_m5_anchor_integrity.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-15T18:01:00Z",
+      "path": "/tmp/bolt_heartbeat_an12.out",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:29:26Z",
+      "path": "/tmp/a3817773-1f73-415f-a1ac-3a7a28e5b6cc",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:29:26Z",
+      "path": "/tmp/6e914499-9d62-4c78-9a26-61ab7b8b9734",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:14Z",
+      "path": "/tmp/dfc0cce2-8bac-4b19-a777-bb74d2ceb38c",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:40Z",
+      "path": "/tmp/d9f5d62a-cd15-4ea6-ae4f-f3b62ecc336d",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:39Z",
+      "path": "/tmp/cdb0c039-c02c-4ce0-8a20-8b1f9cb455af",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:39Z",
+      "path": "/tmp/c69dcdb3-6e85-4118-a0d4-89c6aab2e9da",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:20Z",
+      "path": "/tmp/adbf5e85-d62c-4474-89c3-939ec480628c",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:40Z",
+      "path": "/tmp/4b88d09e-3d65-45c3-bcac-b500020d82e9",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:28:35Z",
+      "path": "/tmp/2ba3b4ec-8777-4b78-b952-f47a7d9215df",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T05:21:56Z",
+      "path": "/tmp/pymp-r69ljpzf",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T05:21:56Z",
+      "path": "/tmp/pymp-fgiie9f1",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T05:11:44Z",
+      "path": "/tmp/pymp-g9cl_ue3",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T05:11:43Z",
+      "path": "/tmp/pymp-ccb6sv9b",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T03:39:59Z",
+      "path": "/tmp/blind_gains_an12_mech_a2_gray.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T03:15:03Z",
+      "path": "/tmp/blind_gains_an12_mech_a1_real.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T13:15:54Z",
+      "path": "/tmp/pymp-g1lnt877",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T13:15:54Z",
+      "path": "/tmp/pymp-b_6tuncx",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T13:15:54Z",
+      "path": "/tmp/pymp-_hkd0q5d",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T13:15:53Z",
+      "path": "/tmp/pymp-01crvhea",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T02:43:11Z",
+      "path": "/tmp/librosa_de32881f26ea65982696ef007c4dedcda0fbb3cb",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T02:43:11Z",
+      "path": "/tmp/core_e057493836bb1dd7b3a0a23f62a9f91bc1d1ff5d",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T23:44:23Z",
+      "path": "/tmp/0917e9fc-099a-4840-b94f-634bda4230f4_output_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T23:44:23Z",
+      "path": "/tmp/0917e9fc-099a-4840-b94f-634bda4230f4_input_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T23:44:23Z",
+      "path": "/tmp/0917e9fc-099a-4840-b94f-634bda4230f4_health_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T23:44:23Z",
+      "path": "/tmp/0917e9fc-099a-4840-b94f-634bda4230f4_data_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:29:11Z",
+      "path": "/tmp/pymp-_kh1x17o",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:25:18Z",
+      "path": "/tmp/pymp-foiaacn9",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T21:57:19Z",
+      "path": "/tmp/blind_gains_an12_anchor_a0_recipe.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:34:35Z",
+      "path": "/tmp/torchelastic_tely8w2s",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:33:09Z",
+      "path": "/tmp/torchelastic_o5ml2n1k",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:33:47Z",
+      "path": "/tmp/torchelastic_16k7k4af",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:32:45Z",
+      "path": "/tmp/torchelastic_o2rhgsxz",
+      "removed": true
+    }
+  ],
+  "accepted_bytes": 6235834707,
+  "accepted_count": 59,
+  "accepted_gib": 5.808,
+  "failures": [],
+  "generated_at_utc": "2026-07-27T04:04:25Z",
+  "mode": "execute",
+  "node": "an12",
+  "rejected": [
+    {
+      "path": "/tmp/tmux-22847",
+      "reason": "inside protected path /tmp/tmux-22847"
+    }
+  ],
+  "rejected_count": 1,
+  "removed_count": 59,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "an12-tmp",
+  "uid": 22847
+}

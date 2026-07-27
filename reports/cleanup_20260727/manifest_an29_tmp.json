@@ -1,0 +1,398 @@
+{
+  "accepted": [
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-12T21:39:20Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-tgxckrsq",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-12T21:39:20Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-9l6lqspg",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-12T21:39:19Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-7ur9h0o8",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-12T21:39:19Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-61ul01fb",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T11:54:40Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-xdc2srsk",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T11:54:40Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-nps5_bwg",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T11:54:40Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-h_uljvan",
+      "removed": true
+    },
+    {
+      "bytes": 17384,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T11:54:40Z",
+      "path": "/tmp/tvm-ffi-torch-c-dlpack-g44riqir",
+      "removed": true
+    },
+    {
+      "bytes": 440,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T04:35:56Z",
+      "path": "/tmp/blindgain_storage_guard_an29_probe.jsonl",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T04:51:07Z",
+      "path": "/tmp/torchelastic_edzrncuw",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T04:50:54Z",
+      "path": "/tmp/torchelastic_kwp7obna",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T11:15:02Z",
+      "path": "/tmp/blind_gains_an29_mech_a2b_noimage_retry2.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T10:04:39Z",
+      "path": "/tmp/blind_gains_an29_mech_a2b_noimage_retry1.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T03:16:04Z",
+      "path": "/tmp/blind_gains_an29_mech_a3_caption.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-13T03:15:36Z",
+      "path": "/tmp/blind_gains_an29_mech_a2b_noimage.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:40:34Z",
+      "path": "/tmp/bf051971-d4c2-4791-ac48-661d0d9918dd",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:40:34Z",
+      "path": "/tmp/8c48b356-8fb6-4795-97c0-9586ccd71a2c",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:39:16Z",
+      "path": "/tmp/e06bf468-2ac9-4e3d-89c7-62330f0176d8",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:39:01Z",
+      "path": "/tmp/ba92f6c3-4ae1-406f-ac20-0ef238cd5f52",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:39:17Z",
+      "path": "/tmp/465fc931-a17c-445f-8dc5-735c18aeec05",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:39:16Z",
+      "path": "/tmp/29de13eb-8205-41be-aa04-248e68b0f831",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:39:15Z",
+      "path": "/tmp/0ea1c18b-f62e-4320-93a2-1f46a57d7d63",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:38:47Z",
+      "path": "/tmp/71da676b-4fb5-40f0-80e0-8f9634187e00",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-12T21:38:37Z",
+      "path": "/tmp/703e2189-4544-4fa3-9bd9-aa1f1ded74b2",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T15:29:22Z",
+      "path": "/tmp/blindgain_none_2471116.strace",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T11:11:37Z",
+      "path": "/tmp/blind_gains_an29_pilot_reward_smoke.lock",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T16:10:02Z",
+      "path": "/tmp/blind-gains",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:56:40Z",
+      "path": "/tmp/fe7651ff-af49-42b8-8fce-2d6ca33055de",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:56:40Z",
+      "path": "/tmp/645f8c07-e21e-4ebd-bfa9-72cab09cfb60",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:38Z",
+      "path": "/tmp/fe4cf4ea-5984-4b24-8f4e-dd88802ff179",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:38Z",
+      "path": "/tmp/fb9ea720-92fb-40a8-b86c-4a0a6467bc14",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:33Z",
+      "path": "/tmp/df25359e-c744-4c44-809a-1d0398978f9e",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:38Z",
+      "path": "/tmp/a49b069b-7f93-4810-97c9-e6d257497079",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:38Z",
+      "path": "/tmp/8289570d-c31c-4421-8378-37dfaa3c5d7d",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:19Z",
+      "path": "/tmp/65268350-4637-4842-9645-dd492e144f8f",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T11:54:25Z",
+      "path": "/tmp/3f4bbdb8-270a-4599-a688-4d43db1e68ce",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T08:09:07Z",
+      "path": "/tmp/ADSR_QWEN3_OMNI_MODELS",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T02:09:51Z",
+      "path": "/tmp/a16d8bbe-4ed8-4d8d-a22c-4270c36fb098_output_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T02:09:51Z",
+      "path": "/tmp/a16d8bbe-4ed8-4d8d-a22c-4270c36fb098_input_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T02:09:51Z",
+      "path": "/tmp/a16d8bbe-4ed8-4d8d-a22c-4270c36fb098_health_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-10T02:09:51Z",
+      "path": "/tmp/a16d8bbe-4ed8-4d8d-a22c-4270c36fb098_data_socket",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:34:35Z",
+      "path": "/tmp/torchelastic_72ay_rjc",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:33:09Z",
+      "path": "/tmp/torchelastic_puqa1onb",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:33:47Z",
+      "path": "/tmp/torchelastic__wcdib7o",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:32:44Z",
+      "path": "/tmp/torchelastic_k2foqinj",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T19:57:20Z",
+      "path": "/tmp/librosa_de32881f26ea65982696ef007c4dedcda0fbb3cb",
+      "removed": true
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T19:57:20Z",
+      "path": "/tmp/core_e057493836bb1dd7b3a0a23f62a9f91bc1d1ff5d",
+      "removed": true
+    }
+  ],
+  "accepted_bytes": 139512,
+  "accepted_count": 47,
+  "accepted_gib": 0.0,
+  "failures": [],
+  "generated_at_utc": "2026-07-27T04:04:44Z",
+  "mode": "execute",
+  "node": "an29",
+  "rejected": [
+    {
+      "path": "/tmp/tmux-22847",
+      "reason": "inside protected path /tmp/tmux-22847"
+    }
+  ],
+  "rejected_count": 1,
+  "removed_count": 47,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "an29-tmp",
+  "uid": 22847
+}

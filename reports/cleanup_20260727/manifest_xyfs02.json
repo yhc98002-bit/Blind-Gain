@@ -1,0 +1,81 @@
+{
+  "accepted": [
+    {
+      "bytes": 88251163,
+      "file_count": 9,
+      "is_dir": true,
+      "mtime_utc": "2026-07-08T04:55:34Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home/transformers/models--facebook--dinov2-small",
+      "removed": true
+    },
+    {
+      "bytes": 485297535,
+      "file_count": 10,
+      "is_dir": true,
+      "mtime_utc": "2026-07-08T04:43:15Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home/hub/datasets--mair-lab--vismin",
+      "removed": true
+    },
+    {
+      "bytes": 56581057,
+      "file_count": 423,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T01:14:33Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/datasets/hf_rayguan_HallusionBench",
+      "removed": true
+    },
+    {
+      "bytes": 3035381,
+      "file_count": 587,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T01:16:19Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/datasets/hf_MMVP_MMVP",
+      "removed": true
+    },
+    {
+      "bytes": 20125235,
+      "file_count": 682,
+      "is_dir": true,
+      "mtime_utc": "2026-07-09T22:06:07Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.tmp/p1_4_v01_dryrun_20260709T220424Z",
+      "removed": true
+    },
+    {
+      "bytes": 5998631,
+      "file_count": 4,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T21:33:26Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.pip_cache",
+      "removed": true
+    },
+    {
+      "bytes": 103515,
+      "file_count": 5,
+      "is_dir": true,
+      "mtime_utc": "2026-07-07T20:16:23Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.pytest_cache",
+      "removed": true
+    },
+    {
+      "bytes": 163577,
+      "file_count": 10,
+      "is_dir": true,
+      "mtime_utc": "2026-07-27T02:20:04Z",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/torchinductor_pxy1289",
+      "removed": true
+    }
+  ],
+  "accepted_bytes": 659556094,
+  "accepted_count": 8,
+  "accepted_gib": 0.614,
+  "failures": [],
+  "generated_at_utc": "2026-07-27T04:13:14Z",
+  "mode": "execute",
+  "node": "ln206",
+  "rejected": [],
+  "rejected_count": 0,
+  "removed_count": 8,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "xyfs02-blindgain",
+  "uid": 22847
+}

@@ -1,0 +1,330 @@
+{
+  "accepted": [
+    {
+      "bytes": 70530597320,
+      "file_count": 27,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T06:00:53Z",
+      "path": "/dev/shm/ADSR_QWEN3_OMNI_MODELS"
+    },
+    {
+      "bytes": 10214904762,
+      "file_count": 45504,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T09:49:11Z",
+      "path": "/dev/shm/adsr_qwen_omni_env"
+    },
+    {
+      "bytes": 4064641760,
+      "file_count": 30372,
+      "is_dir": true,
+      "mtime_utc": "2026-06-09T16:45:45Z",
+      "path": "/dev/shm/foley_venv_arc4_gpu"
+    },
+    {
+      "bytes": 2238442714,
+      "file_count": 512,
+      "is_dir": true,
+      "mtime_utc": "2026-07-10T07:28:30Z",
+      "path": "/dev/shm/adsr_v15_replication"
+    },
+    {
+      "bytes": 2040662894,
+      "file_count": 748,
+      "is_dir": true,
+      "mtime_utc": "2026-07-22T15:04:10Z",
+      "path": "/dev/shm/bg-ray-9cc6b10a0f64"
+    },
+    {
+      "bytes": 1630209860,
+      "file_count": 747,
+      "is_dir": true,
+      "mtime_utc": "2026-07-19T13:03:46Z",
+      "path": "/dev/shm/bg-ray-a9dfeb20b5ce"
+    },
+    {
+      "bytes": 1598805110,
+      "file_count": 789,
+      "is_dir": true,
+      "mtime_utc": "2026-07-16T17:34:30Z",
+      "path": "/dev/shm/bg-ray-f06d83e04766"
+    },
+    {
+      "bytes": 1566990809,
+      "file_count": 753,
+      "is_dir": true,
+      "mtime_utc": "2026-07-18T00:45:53Z",
+      "path": "/dev/shm/bg-ray-6fc3307d8b09"
+    },
+    {
+      "bytes": 1352693623,
+      "file_count": 639,
+      "is_dir": true,
+      "mtime_utc": "2026-07-13T03:15:49Z",
+      "path": "/dev/shm/bg-ray-f792469acfe2"
+    },
+    {
+      "bytes": 1332544154,
+      "file_count": 639,
+      "is_dir": true,
+      "mtime_utc": "2026-07-13T03:40:13Z",
+      "path": "/dev/shm/bg-ray-b9ad0e989218"
+    },
+    {
+      "bytes": 1172007054,
+      "file_count": 803,
+      "is_dir": true,
+      "mtime_utc": "2026-07-21T16:09:09Z",
+      "path": "/dev/shm/bg-ray-6dde22a1dada"
+    },
+    {
+      "bytes": 1146990141,
+      "file_count": 839,
+      "is_dir": true,
+      "mtime_utc": "2026-07-25T10:08:06Z",
+      "path": "/dev/shm/bg-ray-76153c2e99f7"
+    },
+    {
+      "bytes": 1135431547,
+      "file_count": 800,
+      "is_dir": true,
+      "mtime_utc": "2026-07-24T07:16:46Z",
+      "path": "/dev/shm/bg-ray-0e3962d2c5cc"
+    },
+    {
+      "bytes": 839346392,
+      "file_count": 747,
+      "is_dir": true,
+      "mtime_utc": "2026-07-14T08:14:40Z",
+      "path": "/dev/shm/bg-ray-231adb58c6e8"
+    },
+    {
+      "bytes": 813810878,
+      "file_count": 749,
+      "is_dir": true,
+      "mtime_utc": "2026-07-15T17:07:36Z",
+      "path": "/dev/shm/bg-ray-981ef767b15b"
+    },
+    {
+      "bytes": 35331114,
+      "file_count": 789,
+      "is_dir": true,
+      "mtime_utc": "2026-07-16T16:45:12Z",
+      "path": "/dev/shm/bg-ray-1dd864ed52bc"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-25T10:15:47Z",
+      "path": "/dev/shm/psm_408cd77c"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-25T10:15:47Z",
+      "path": "/dev/shm/psm_18d28856"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-24T07:26:27Z",
+      "path": "/dev/shm/psm_e9ac7f54"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-24T07:26:27Z",
+      "path": "/dev/shm/psm_55b97ad6"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-21T16:22:27Z",
+      "path": "/dev/shm/psm_c7db83c8"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-21T16:22:26Z",
+      "path": "/dev/shm/psm_9c9c8375"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-16T17:44:07Z",
+      "path": "/dev/shm/psm_ca5ae903"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-16T17:44:07Z",
+      "path": "/dev/shm/psm_afee9530"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-16T16:55:20Z",
+      "path": "/dev/shm/psm_847e9361"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-16T16:55:20Z",
+      "path": "/dev/shm/psm_58979d97"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T15:16:09Z",
+      "path": "/dev/shm/psm_7ecb1f2d"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-11T15:16:09Z",
+      "path": "/dev/shm/psm_550bc81a"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T22:56:15Z",
+      "path": "/dev/shm/psm_3153158f"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-09T22:56:15Z",
+      "path": "/dev/shm/psm_17b31bee"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-08T04:39:02Z",
+      "path": "/dev/shm/psm_34e7cd7c"
+    },
+    {
+      "bytes": 25165836,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-07T21:44:21Z",
+      "path": "/dev/shm/psm_e97724f1"
+    },
+    {
+      "bytes": 3772722,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:03:09Z",
+      "path": "/dev/shm/adsr_t7_runtime_stage.log"
+    },
+    {
+      "bytes": 140,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:04:47Z",
+      "path": "/dev/shm/adsr_t7_runtime_verify.log"
+    },
+    {
+      "bytes": 126,
+      "file_count": 2,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T15:04:36Z",
+      "path": "/dev/shm/bg-ray-anchor-resume-20260711T150357Z"
+    },
+    {
+      "bytes": 12,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T06:05:34Z",
+      "path": "/dev/shm/adsr_t7_runtime_stage.status"
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-22T14:59:55Z",
+      "path": "/dev/shm/blind_gains_an12_mech_a2_gray_seed3.lock"
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-19T13:00:42Z",
+      "path": "/dev/shm/blind_gains_an12_mech_a2_gray_seed2_resume20.lock"
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-18T00:45:12Z",
+      "path": "/dev/shm/blind_gains_an12_mech_a2_gray_seed2.lock"
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T16:28:52Z",
+      "path": "/dev/shm/foley_venv_arc4_gpu.lock"
+    },
+    {
+      "bytes": 0,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-07-14T08:10:55Z",
+      "path": "/dev/shm/blind_gains_an12_pilot_resume60.lock"
+    },
+    {
+      "bytes": 0,
+      "file_count": 0,
+      "is_dir": true,
+      "mtime_utc": "2026-07-11T15:02:54Z",
+      "path": "/dev/shm/bg-ray-anchor-resume-20260711T150253Z"
+    }
+  ],
+  "accepted_bytes": 102119836508,
+  "accepted_count": 42,
+  "accepted_gib": 95.107,
+  "generated_at_utc": "2026-07-27T04:02:12Z",
+  "mode": "dry_run",
+  "node": "an12",
+  "rejected": [
+    {
+      "path": "/dev/shm/blind-gains",
+      "reason": "inside protected path /dev/shm/blind-gains"
+    },
+    {
+      "path": "/dev/shm/bg-ray-868dafa61268",
+      "reason": "inside protected path /dev/shm/bg-ray-868dafa61268"
+    },
+    {
+      "path": "/dev/shm/psm_8ccaca16",
+      "reason": "inside protected path /dev/shm/psm_8ccaca16"
+    },
+    {
+      "path": "/dev/shm/psm_1f3190a1",
+      "reason": "inside protected path /dev/shm/psm_1f3190a1"
+    },
+    {
+      "path": "/dev/shm/blind_gains_an12_m5_anchor_longhorizon_400.lock",
+      "reason": "held open by a live process: /dev/shm/blind_gains_an12_m5_anchor_longhorizon_400.lock"
+    }
+  ],
+  "rejected_count": 5,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "an12-devshm",
+  "uid": 22847
+}

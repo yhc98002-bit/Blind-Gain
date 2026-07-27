@@ -1,0 +1,52 @@
+{
+  "accepted": [
+    {
+      "bytes": 9679096806,
+      "file_count": 2942,
+      "is_dir": true,
+      "mtime_utc": "2026-06-09T17:11:00Z",
+      "path": "/HOME/paratera_xy/pxy1289/.cache/pip"
+    },
+    {
+      "bytes": 3087371615,
+      "file_count": 1,
+      "is_dir": true,
+      "mtime_utc": "2026-05-18T05:48:54Z",
+      "path": "/HOME/paratera_xy/pxy1289/.cache/whisper"
+    },
+    {
+      "bytes": 6309871458,
+      "file_count": 27519,
+      "is_dir": true,
+      "mtime_utc": "2026-07-19T12:39:25Z",
+      "path": "/HOME/paratera_xy/pxy1289/sa3_foundation_runtime/quarantine/repo-local-venv-20260719T205300+0800"
+    },
+    {
+      "bytes": 28788125,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2026-06-25T13:17:02Z",
+      "path": "/HOME/paratera_xy/pxy1289/mihomo.log",
+      "sha256": "05ec0cdb6d5e4c288a5eb88dd2c078e723e421882d65fb87b4d5d6e2a8d841cc"
+    },
+    {
+      "bytes": 9679136,
+      "file_count": 1,
+      "is_dir": false,
+      "mtime_utc": "2025-11-22T15:21:45Z",
+      "path": "/HOME/paratera_xy/pxy1289/gost_3.2.6_linux_amd64.tar.gz",
+      "sha256": "b39037b0380ea001fb3c0c28441c2e10bfc694f90682739a65b53e55dce5238b"
+    }
+  ],
+  "accepted_bytes": 19114807140,
+  "accepted_count": 5,
+  "accepted_gib": 17.802,
+  "generated_at_utc": "2026-07-27T04:06:56Z",
+  "mode": "dry_run",
+  "node": "ln207",
+  "rejected": [],
+  "rejected_count": 0,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "home",
+  "uid": 22847
+}
