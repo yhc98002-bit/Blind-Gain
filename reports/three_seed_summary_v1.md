@@ -42,3 +42,5 @@ The preregistered 30-70% blind-recovery interval is falsified in every seed for 
 
 No interpretation beyond the registered statistics; the pooled verdict uses
 the registered +/-0.05 band on seed-level variation with three seeds.
+
+> **CORRECTION (2026-07-27):** the A1 FlipTrack equivalence statement in this file is superseded by `reports/correction_three_seed_fliptrack_v1.md`. The null does not survive contract-strict scoring (A1 strict deltas -0.1267 / +0.0333 / -0.0267), the seed-level CI should have been the preregistered item-level paired CI, and the +/-0.05 margin was registered for the A2gray-A2b contrast rather than for A1. The +0.2435 task gain is unaffected.
