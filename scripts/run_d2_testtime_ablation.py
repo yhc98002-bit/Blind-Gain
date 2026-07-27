@@ -134,6 +134,65 @@ def gpu_free(node: str, gpu: int) -> bool:
     return not result.stdout.strip()
 
 
+def reconcile(node: str) -> dict[str, int]:
+    """Finalize orphaned cell manifests left by a dead orchestrator."""
+    stats = {"completed": 0, "failed": 0}
+    for manifest_path in (ROOT / "experiments/runs").glob("d2_testtime_*/run_manifest.json"):
+        try:
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if payload.get("job_type") != "d2_testtime_ablation_cell":
+            continue
+        if payload.get("status") != "running":
+            continue
+        run_dir = manifest_path.parent
+        predictions = run_dir / "predictions.jsonl"
+        rows = 0
+        if predictions.is_file():
+            rows = sum(1 for line in predictions.read_text(encoding="utf-8").splitlines() if line.strip())
+        if rows >= EXPECTED_ROWS:
+            payload.update({
+                "status": "complete", "exit_code": 0, "end_time_utc": _now(),
+                "artifacts_exist": True, "rows": rows,
+                "predictions_sha256": _sha256(predictions),
+                "reconciled": "finalized by reconcile() after an orchestrator restart",
+            })
+            _write(manifest_path, payload)
+            stats["completed"] += 1
+            continue
+        pid_file = run_dir / "logs/pid"
+        alive = False
+        if pid_file.is_file():
+            pid = pid_file.read_text().strip()
+            probe = _ssh(node, f"ps -o pid= -p {pid} | wc -l")
+            alive = probe.returncode == 0 and int(probe.stdout.strip() or 0) > 0
+        if not alive:
+            payload.update({
+                "status": "fail", "exit_code": 1, "end_time_utc": _now(),
+                "rows": rows,
+                "failure": "worker exited without complete output; orchestrator was not running to observe it",
+            })
+            _write(manifest_path, payload)
+            stats["failed"] += 1
+    return stats
+
+
+def in_flight_cells(node: str) -> set[tuple[str, str]]:
+    """(model, condition) pairs whose cell is still legitimately running."""
+    live: set[tuple[str, str]] = set()
+    for manifest_path in (ROOT / "experiments/runs").glob("d2_testtime_*/run_manifest.json"):
+        try:
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if payload.get("job_type") != "d2_testtime_ablation_cell":
+            continue
+        if payload.get("status") == "running":
+            live.add((str(payload.get("model_key")), str(payload.get("condition"))))
+    return live
+
+
 def completed_cells() -> set[tuple[str, str]]:
     done: set[tuple[str, str]] = set()
     for manifest_path in (ROOT / "experiments/runs").glob("d2_testtime_*/run_manifest.json"):
@@ -229,8 +288,11 @@ def main() -> None:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True
     ).stdout.strip()
 
+    recon = reconcile(args.node)
+    print(json.dumps({"reconciled": recon}))
     done = completed_cells()
-    pending = [cell for cell in CELLS if cell not in done]
+    live = in_flight_cells(args.node)
+    pending = [cell for cell in CELLS if cell not in done and cell not in live]
     print(json.dumps({"pending": len(pending), "already_complete": len(done)}))
     queue = list(pending)
     active: dict[int, tuple[Path, str, str]] = {}
