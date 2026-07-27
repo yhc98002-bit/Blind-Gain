@@ -34,7 +34,9 @@ from src.fliptrack.build_v02 import COLORS, _font, _procedural_labels
 ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain")
 R19_MANIFEST = ROOT / "data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl"
 TEMPLATE = "starred_series_value_nine_v07"
-RUNGS = ("exact", "region", "none", "decoy")
+RUNGS = ("exact", "region", "none", "decoy", "named_exact", "named_region")
+# v2 amendment: named_* rungs hold the question constant (named series) and vary
+# only the annotation layer, per docs/registered_cue_ladder_v2_amendment.md.
 
 
 def replay_scene(pair_seed: int) -> dict[str, Any]:
@@ -92,10 +94,12 @@ def render(labels, values, target_series, target_x, *, rung, decoy_series=None) 
     draw.text(((left + right) // 2, bottom + 54), "x", anchor="mm", font=_font(17, True), fill=(40, 40, 40))
 
     # which series carries the on-point mark and the legend star
-    marked = {"exact": target_series, "region": None,
-              "none": None, "decoy": decoy_series}[rung]
-    legend_star = {"exact": target_series, "region": target_series,
-                   "none": None, "decoy": decoy_series}[rung]
+    marked = {"exact": target_series, "region": None, "none": None,
+              "decoy": decoy_series, "named_exact": target_series,
+              "named_region": None}[rung]
+    legend_star = {"exact": target_series, "region": target_series, "none": None,
+                   "decoy": decoy_series, "named_exact": target_series,
+                   "named_region": target_series}[rung]
 
     for series_index, series_values in enumerate(values):
         points = [(x, bottom - round(v / 100 * (bottom - top)))
@@ -126,6 +130,8 @@ def render(labels, values, target_series, target_x, *, rung, decoy_series=None) 
         "region": "The black star in the legend marks the target series.",
         "none": None,
         "decoy": f"The black star marks the queried point at x = {target_x + 1}.",
+        "named_exact": f"The black star marks the queried point at x = {target_x + 1}.",
+        "named_region": "The black star in the legend marks the target series.",
     }[rung]
     if caption:
         draw.text((90, 714), caption, font=_font(14), fill=(75, 75, 75))
@@ -136,6 +142,8 @@ def question_for(rung: str, scene: dict[str, Any]) -> str:
     tx = scene["target_x"] + 1
     if rung in ("exact", "region"):
         return f"What is the value of the starred series at x = {tx}?"
+    # named_* rungs, `none` and `decoy` all use the identical named-series form
+    # so that only the annotation layer differs between them (I12)
     label = scene["labels"][scene["target_series"]]
     return f"What is the value of series {label} at x = {tx}?"
 
@@ -147,6 +155,7 @@ def sha256_file(p: Path) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="data/cue_ladder_v1")
+    ap.add_argument("--only", default="", help="comma-separated rungs to build")
     args = ap.parse_args()
     out_root = ROOT / args.out
 
@@ -179,7 +188,8 @@ def main() -> None:
           f"pair exactly ({n_swapped} adopted the frozen member order)")
 
     summary = {}
-    for rung in RUNGS:
+    wanted = [r for r in RUNGS if not args.only or r in args.only.split(",")]
+    for rung in wanted:
         img_dir = out_root / rung / "images"
         img_dir.mkdir(parents=True, exist_ok=True)
         rows = []
