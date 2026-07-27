@@ -1,0 +1,268 @@
+{
+  "arm_runs": {
+    "a1_real": {
+      "1": "experiments/runs/pilot_fliptrack_a1_real_seed1_step100_real_an12_20260715T195421Z",
+      "2": "experiments/runs/pilot_fliptrack_a1_real_seed2_step100_real_an29_20260721T163422Z",
+      "3": "experiments/runs/pilot_fliptrack_a1_real_seed3_step100_real_an29_20260725T092506Z"
+    },
+    "a2_gray": {
+      "1": "experiments/runs/pilot_fliptrack_a2_gray_seed1_step100_real_an12_20260716T152519Z",
+      "2": "experiments/runs/pilot_fliptrack_a2_gray_seed2_step100_real_an29_20260721T163431Z",
+      "3": "experiments/runs/pilot_fliptrack_a2_gray_seed3_step100_real_an29_20260725T092515Z"
+    },
+    "a2b_noimage": {
+      "1": "experiments/runs/pilot_fliptrack_mech_a2b_noimage_seed1_step100_real_an29_20260715T184448Z",
+      "2": "experiments/runs/pilot_fliptrack_a2b_noimage_seed2_step100_real_an29_20260721T163439Z",
+      "3": "experiments/runs/pilot_fliptrack_a2b_noimage_seed3_step100_real_an29_20260725T092523Z"
+    },
+    "a3_caption": {
+      "1": "experiments/runs/pilot_fliptrack_a3_caption_seed1_step100_real_an29_20260715T191451Z",
+      "2": "experiments/runs/pilot_fliptrack_a3_caption_seed2_step100_real_an29_20260721T163448Z",
+      "3": "experiments/runs/pilot_fliptrack_a3_caption_seed3_step100_real_an29_20260725T092532Z"
+    }
+  },
+  "arms": {
+    "a1_real": {
+      "contract_valid_delta_vs_base": -0.07333333333333336,
+      "contract_valid_mean": 0.8766666666666666,
+      "contract_valid_per_seed": [
+        0.7366666666666667,
+        0.9916666666666667,
+        0.9016666666666666
+      ],
+      "final": {
+        "bootstrap_se": 0.012412554722386147,
+        "ci90_tost": [
+          -0.015,
+          0.025555555555555557
+        ],
+        "ci95": [
+          -0.018888888888888886,
+          0.029444444444444447
+        ],
+        "ci95_excludes_zero": false,
+        "equivalence_established": true,
+        "min_detectable_effect_80pct_power": 0.03477997833212598,
+        "pooled_mean_delta": 0.005555555555555553,
+        "tost_p_lower": 0.0,
+        "tost_p_upper": 0.0002
+      },
+      "per_seed_delta_final": [
+        -0.0016666666666666668,
+        0.008333333333333333,
+        0.01
+      ],
+      "strict": {
+        "bootstrap_se": 0.013478699723048262,
+        "ci90_tost": [
+          -0.062222222222222213,
+          -0.017777777777777778
+        ],
+        "ci95": [
+          -0.06666666666666667,
+          -0.013875000000001206
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": false,
+        "min_detectable_effect_80pct_power": 0.03776731662398123,
+        "pooled_mean_delta": -0.039999999999999994,
+        "tost_p_lower": 0.2261,
+        "tost_p_upper": 0.0
+      }
+    },
+    "a2_gray": {
+      "contract_valid_delta_vs_base": -0.31833333333333325,
+      "contract_valid_mean": 0.6316666666666667,
+      "contract_valid_per_seed": [
+        0.6016666666666667,
+        0.8083333333333333,
+        0.485
+      ],
+      "final": {
+        "bootstrap_se": 0.013444357042062965,
+        "ci90_tost": [
+          -0.06444444444444444,
+          -0.020555555555555553
+        ],
+        "ci95": [
+          -0.06888888888888889,
+          -0.01611111111111111
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": false,
+        "min_detectable_effect_80pct_power": 0.03767108843186043,
+        "pooled_mean_delta": -0.042222222222222223,
+        "tost_p_lower": 0.2846,
+        "tost_p_upper": 0.0
+      },
+      "per_seed_delta_final": [
+        -0.045,
+        -0.045,
+        -0.03666666666666667
+      ],
+      "strict": {
+        "bootstrap_se": 0.01710315162838643,
+        "ci90_tost": [
+          -0.22166666666666668,
+          -0.16555555555555554
+        ],
+        "ci95": [
+          -0.2272222222222222,
+          -0.16
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": false,
+        "min_detectable_effect_80pct_power": 0.047923030862738775,
+        "pooled_mean_delta": -0.19333333333333333,
+        "tost_p_lower": 1.0,
+        "tost_p_upper": 0.0
+      }
+    },
+    "a2b_noimage": {
+      "contract_valid_delta_vs_base": -0.17722222222222217,
+      "contract_valid_mean": 0.7727777777777778,
+      "contract_valid_per_seed": [
+        0.9183333333333333,
+        0.9333333333333333,
+        0.4666666666666667
+      ],
+      "final": {
+        "bootstrap_se": 0.012851107144079284,
+        "ci90_tost": [
+          -0.04833333333333333,
+          -0.006111111111111111
+        ],
+        "ci95": [
+          -0.05277777777777777,
+          -0.001666666666666668
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": true,
+        "min_detectable_effect_80pct_power": 0.036008802217710155,
+        "pooled_mean_delta": -0.027222222222222228,
+        "tost_p_lower": 0.0393,
+        "tost_p_upper": 0.0
+      },
+      "per_seed_delta_final": [
+        -0.023333333333333334,
+        -0.025,
+        -0.03333333333333333
+      ],
+      "strict": {
+        "bootstrap_se": 0.013980903548167774,
+        "ci90_tost": [
+          -0.13055555555555554,
+          -0.08444444444444445
+        ],
+        "ci95": [
+          -0.13444444444444442,
+          -0.08
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": false,
+        "min_detectable_effect_80pct_power": 0.039174491741966105,
+        "pooled_mean_delta": -0.10722222222222222,
+        "tost_p_lower": 0.99995,
+        "tost_p_upper": 0.0
+      }
+    },
+    "a3_caption": {
+      "contract_valid_delta_vs_base": -0.1922222222222223,
+      "contract_valid_mean": 0.7577777777777777,
+      "contract_valid_per_seed": [
+        0.7716666666666666,
+        0.6133333333333333,
+        0.8883333333333333
+      ],
+      "final": {
+        "bootstrap_se": 0.012053372419467908,
+        "ci90_tost": [
+          -0.024444444444444446,
+          0.015
+        ],
+        "ci95": [
+          -0.028888888888888888,
+          0.01888888888888889
+        ],
+        "ci95_excludes_zero": false,
+        "equivalence_established": true,
+        "min_detectable_effect_80pct_power": 0.03377354951934908,
+        "pooled_mean_delta": -0.004999999999999998,
+        "tost_p_lower": 5e-05,
+        "tost_p_upper": 0.0
+      },
+      "per_seed_delta_final": [
+        -0.008333333333333333,
+        -0.011666666666666667,
+        0.005
+      ],
+      "strict": {
+        "bootstrap_se": 0.01509706785443071,
+        "ci90_tost": [
+          -0.13,
+          -0.08055555555555555
+        ],
+        "ci95": [
+          -0.13444444444444442,
+          -0.0761111111111111
+        ],
+        "ci95_excludes_zero": true,
+        "equivalence_established": false,
+        "min_detectable_effect_80pct_power": 0.04230198412811485,
+        "pooled_mean_delta": -0.105,
+        "tost_p_lower": 0.9999,
+        "tost_p_upper": 0.0
+      }
+    }
+  },
+  "base_shards": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z/shards/*.jsonl",
+  "bootstrap_draws": 20000,
+  "contract_validity": {
+    "a1_real": {
+      "delta_vs_base": -0.07333333333333336,
+      "mean": 0.8766666666666666,
+      "per_seed": [
+        0.7366666666666667,
+        0.9916666666666667,
+        0.9016666666666666
+      ]
+    },
+    "a2_gray": {
+      "delta_vs_base": -0.31833333333333325,
+      "mean": 0.6316666666666667,
+      "per_seed": [
+        0.6016666666666667,
+        0.8083333333333333,
+        0.485
+      ]
+    },
+    "a2b_noimage": {
+      "delta_vs_base": -0.17722222222222217,
+      "mean": 0.7727777777777778,
+      "per_seed": [
+        0.9183333333333333,
+        0.9333333333333333,
+        0.4666666666666667
+      ]
+    },
+    "a3_caption": {
+      "delta_vs_base": -0.1922222222222223,
+      "mean": 0.7577777777777777,
+      "per_seed": [
+        0.7716666666666666,
+        0.6133333333333333,
+        0.8883333333333333
+      ]
+    },
+    "base": {
+      "mean": 0.95,
+      "source": "2026-07-27 re-measurement (pinned shards predate contract_valid)",
+      "source_run": "experiments/runs/fliptrack_base_remeasure_an12_20260727T124803Z"
+    }
+  },
+  "method": "cluster bootstrap over pair_id on the seed-averaged paired delta; 600 clusters, 3 seeds each",
+  "n_pairs": 600,
+  "n_seeds": 3,
+  "schema_version": 1,
+  "sesoi": 0.05
+}
