@@ -127,10 +127,33 @@ def _ssh(node: str, command: str, timeout: int = 120) -> subprocess.CompletedPro
     return subprocess.run(["ssh", node, command], capture_output=True, text=True, timeout=timeout)
 
 
+def _ssh_retry(node: str, command: str, attempts: int = 5, timeout: int = 120):
+    """ssh with backoff. Returns None if every attempt failed.
+
+    The login node intermittently cannot exec ssh at all (shared-library mmap
+    failures under memory pressure). Such failures are transient and must never
+    terminate a long-running orchestration.
+    """
+    delay = 5
+    for attempt in range(attempts):
+        try:
+            result = _ssh(node, command, timeout=timeout)
+            if result.returncode == 0:
+                return result
+        except Exception:
+            result = None
+        if attempt < attempts - 1:
+            time.sleep(delay)
+            delay = min(delay * 2, 60)
+    return None
+
+
 def gpu_free(node: str, gpu: int) -> bool:
-    result = _ssh(node, f"nvidia-smi -i {gpu} --query-compute-apps=pid --format=csv,noheader,nounits")
-    if result.returncode != 0:
-        raise RuntimeError(f"GPU query failed {node}:{gpu}: {result.stderr.strip()}")
+    result = _ssh_retry(node, f"nvidia-smi -i {gpu} --query-compute-apps=pid --format=csv,noheader,nounits")
+    if result is None:
+        # Transient infrastructure failure: assume busy and try again next poll.
+        print(json.dumps({"warning": "gpu_query_unavailable", "node": node, "gpu": gpu}))
+        return False
     return not result.stdout.strip()
 
 
@@ -268,9 +291,9 @@ def launch_cell(node: str, gpu: int, model_key: str, condition: str, git_hash: s
         f"--max-tokens {MAX_TOKENS} --seed {SEED} --global-step 100 "
         f"> experiments/runs/{run_id}/logs/cell.log 2>&1 & echo $! > experiments/runs/{run_id}/logs/pid)"
     )
-    result = _ssh(node, command)
-    if result.returncode != 0:
-        raise RuntimeError(f"cell spawn failed {model_key}/{condition}: {result.stderr.strip()}")
+    result = _ssh_retry(node, command, attempts=3)
+    if result is None:
+        raise RuntimeError(f"cell spawn failed after retries {model_key}/{condition}")
     return run_dir
 
 
@@ -332,8 +355,8 @@ def main() -> None:
             pid_file = run_dir / "logs/pid"
             if pid_file.is_file():
                 pid = pid_file.read_text().strip()
-                alive = _ssh(args.node, f"ps -o pid= -p {pid} | wc -l")
-                if alive.returncode == 0 and int(alive.stdout.strip() or 0) == 0:
+                alive = _ssh_retry(args.node, f"ps -o pid= -p {pid} | wc -l", attempts=3)
+                if alive is not None and int(alive.stdout.strip() or 0) == 0:
                     payload.update(
                         {"status": "fail", "exit_code": 1, "end_time_utc": _now(),
                          "failure": "cell process exited without complete output"}
