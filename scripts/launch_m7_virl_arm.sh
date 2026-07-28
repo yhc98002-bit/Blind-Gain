@@ -19,6 +19,11 @@ CONFIG="configs/train/${LABEL}_3b.yaml"
 [[ "${SEED}" =~ ^[12]$ ]] || { echo "M7 registers exactly two seeds" >&2; exit 2; }
 [[ "${NODE}" =~ ^(an12|an29)$ ]] || { echo "unknown node" >&2; exit 2; }
 [[ "${GPU_IDS}" =~ ^[0-7](,[0-7])*$ ]] || { echo "invalid gpu ids" >&2; exit 2; }
+# the config fixes n_gpus_per_node; a mismatched list silently mis-shards
+GPU_COUNT="$(printf '%s' "${GPU_IDS}" | tr ',' '\n' | sort -u | grep -c .)"
+CFG_GPUS="$(grep -E '^[[:space:]]+n_gpus_per_node:' "${CONFIG}" | awk '{print $2}')"
+[[ "${GPU_COUNT}" == "${CFG_GPUS}" ]] || {
+  echo "gpu count ${GPU_COUNT} != config n_gpus_per_node ${CFG_GPUS}" >&2; exit 2; }
 
 # --- registration gates: the amendment and the split registration must be
 # --- tracked and byte-clean at HEAD before any optimizer step.
@@ -82,9 +87,30 @@ mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 EFFECTIVE="${RUN_DIR}/effective_config.yaml"
-cp "${CONFIG}" "${EFFECTIVE}"
+install -m 0444 "${CONFIG}" "${EFFECTIVE}"
+SHADOW="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
+STORAGE_LOG="${ROOT}/${RUN_DIR}/storage_guard.jsonl"
+RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
+RAY_TMP_DIR="/dev/shm/bg-ray-${RAY_DIGEST}"
+JOB_TMP_DIR="${RAY_TMP_DIR}/tmp"
+LOCK="/dev/shm/blind_gains_${NODE}_${LABEL}.lock"
 
-COMMAND="cd ${ROOT} && CUDA_VISIBLE_DEVICES=${GPU_IDS} PYTHONHASHSEED=${SEED} TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home PYTHONPATH=${ROOT}/artifacts/repos/EasyR1 .venv/bin/python -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}"
+ENV_VARS="PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 HYDRA_FULL_ERROR=1 \
+PYTHONHASHSEED=0 PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' \
+TMPDIR='${JOB_TMP_DIR}' TMP='${JOB_TMP_DIR}' TEMP='${JOB_TMP_DIR}' \
+RAY_TMPDIR='${RAY_TMP_DIR}' RAY_DEDUP_LOGS=0 \
+CUDA_VISIBLE_DEVICES='${GPU_IDS}' EASYR1_ATTN_IMPLEMENTATION=sdpa \
+BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' \
+BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S \
+BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=55000000000 \
+BLIND_GAINS_SHARED_QUOTA_ROOT='/XYFS02/HDD_POOL/paratera_xy/pxy1289' \
+BLIND_GAINS_SHARED_USAGE_SNAPSHOT='${ROOT}/reports/storage_usage_snapshot.json' \
+BLIND_GAINS_SHARED_USAGE_SNAPSHOT_MAX_AGE_SECONDS=21600 \
+BLIND_GAINS_STORAGE_GUARD_LOG='${STORAGE_LOG}' \
+BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0 \
+HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' \
+TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 \
+PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}'"
 jq -n \
   --arg run_id "${RUN_ID}" --arg git "$(git rev-parse HEAD)" --arg arm "${ARM}" \
   --argjson seed "${SEED}" --arg node "${NODE}" --arg config "${CONFIG}" \
@@ -106,6 +132,11 @@ jq -n \
     stdout_stderr_log:$log,performance_values_opened:false,
     scientific_gate_decision:null,deviations:[]}' > "${MANIFEST}"
 
-ssh "${NODE}" "cd ${ROOT} && (nohup bash -lc '${COMMAND}' > ${ROOT}/${LOG} 2>&1 & echo \$! > ${ROOT}/${RUN_DIR}/pids/${NODE}.pid)"
-sleep 5
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}' && (nohup setsid flock -n --no-fork '${LOCK}' env ${ENV_VARS} '${ROOT}/.venv/bin/python' -u -m verl.trainer.main config='${ROOT}/${EFFECTIVE}' > '${ROOT}/${LOG}' 2>&1 < /dev/null & echo \$! > '${ROOT}/${RUN_DIR}/pids/${NODE}.pid')"
+sleep 25
+REMOTE_PID="$(cat "${ROOT}/${RUN_DIR}/pids/${NODE}.pid" 2>/dev/null || true)"
+if [[ -z "${REMOTE_PID}" ]] || ! ssh "${NODE}" "kill -0 '${REMOTE_PID}' 2>/dev/null"; then
+  echo "M7 arm exited during startup; inspect ${LOG}" >&2
+  exit 1
+fi
 printf '%s\n' "${RUN_DIR}"
