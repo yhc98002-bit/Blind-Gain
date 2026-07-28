@@ -31,6 +31,7 @@ REGISTRATIONS=(
   docs/registered_m7_amendment_v1.md
   docs/registered_m7_heldout_split_v2.md
   docs/registered_extensions_v1.md
+  docs/registered_m7_single_image_v2.md
 )
 CRITICAL=("${REGISTRATIONS[@]}" "${CONFIG}" scripts/launch_m7_virl_arm.sh scripts/build_m7_heldout_split_v2.py scripts/build_m7_configs.py)
 for FILE in "${CRITICAL[@]}"; do
