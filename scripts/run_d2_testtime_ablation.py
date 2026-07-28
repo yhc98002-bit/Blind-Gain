@@ -93,12 +93,19 @@ MODELS = {
         "arm": "a3_caption",
     },
 }
-CELLS = [
-    (f"{arm}_seed{seed}_step100", condition)
-    for arm in ("a1", "a2", "a2b", "a3")
-    for seed in (1, 2, 3)
-    for condition in ("real", "gray", "none")
-]
+DEFAULT_CONDITIONS = ("real", "gray", "none")
+
+
+def build_cells(conditions=DEFAULT_CONDITIONS):
+    return [
+        (f"{arm}_seed{seed}_step100", condition)
+        for arm in ("a1", "a2", "a2b", "a3")
+        for seed in (1, 2, 3)
+        for condition in conditions
+    ]
+
+
+CELLS = build_cells()
 
 
 def _now() -> str:
@@ -302,9 +309,18 @@ def main() -> None:
     parser.add_argument("--node", choices=("an12", "an29"), required=True)
     parser.add_argument("--gpu-ids", nargs="+", type=int, required=True)
     parser.add_argument("--poll-seconds", type=int, default=60)
+    parser.add_argument(
+        "--conditions", nargs="+", default=list(DEFAULT_CONDITIONS),
+        help="test conditions to run; defaults to the original D3 three. "
+             "'caption' is registered in docs/registered_d3_caption_column_v1.md.",
+    )
     args = parser.parse_args()
-    if sorted(args.gpu_ids) != [4, 5, 6, 7]:
-        raise ValueError("D2 cells run on GPUs 4-7 only")
+    if not args.gpu_ids or not set(args.gpu_ids).issubset({4, 5, 6, 7}):
+        raise ValueError("D2/D3 cells run on GPUs 4-7 only (trainer GPUs 0-3 are never used)")
+    if "caption" in args.conditions and not (
+        ROOT / "docs/registered_d3_caption_column_v1.md"
+    ).is_file():
+        raise RuntimeError("caption column registration is absent")
     if not (ROOT / "docs/registered_d2_testtime_ablation_v1.md").is_file():
         raise RuntimeError("D2 registration is absent")
     git_hash = subprocess.run(
@@ -315,7 +331,8 @@ def main() -> None:
     print(json.dumps({"reconciled": recon}))
     done = completed_cells()
     live = in_flight_cells(args.node)
-    pending = [cell for cell in CELLS if cell not in done and cell not in live]
+    cells = build_cells(tuple(args.conditions))
+    pending = [cell for cell in cells if cell not in done and cell not in live]
     print(json.dumps({"pending": len(pending), "already_complete": len(done)}))
     queue = list(pending)
     active: dict[int, tuple[Path, str, str]] = {}
