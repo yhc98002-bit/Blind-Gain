@@ -1,0 +1,52 @@
+{
+  "ci95": [
+    -0.09333333333333334,
+    -0.04
+  ],
+  "delta": -0.06666666666666667,
+  "descriptive_only_steps": {
+    "150": {
+      "overall_pair_accuracy": 0.56,
+      "per_template_keys": [
+        "coordinate_register_twenty_point_x_v02",
+        "header_cued_table_code_v02",
+        "starred_series_value_nine_v07"
+      ]
+    },
+    "200": {
+      "overall_pair_accuracy": 0.5433333333333333,
+      "per_template_keys": [
+        "coordinate_register_twenty_point_x_v02",
+        "header_cued_table_code_v02",
+        "starred_series_value_nine_v07"
+      ]
+    },
+    "300": {
+      "overall_pair_accuracy": 0.5383333333333333,
+      "per_template_keys": [
+        "coordinate_register_twenty_point_x_v02",
+        "header_cued_table_code_v02",
+        "starred_series_value_nine_v07"
+      ]
+    }
+  },
+  "endpoint": "R19 geometry pair accuracy, step 400 minus step 100",
+  "n_pairs": 600,
+  "rule": "docs/MAIN_PHASE_RULING_20260716.md R1",
+  "schema_version": 1,
+  "sesoi": 0.05,
+  "step100_pair_accuracy": 0.48,
+  "step100_strict": 0.48,
+  "step400_pair_accuracy": 0.41333333333333333,
+  "step400_shards": "experiments/runs/m5_r19_step400_real_an12_20260728T052218Z/shards/*.jsonl",
+  "step400_strict": 0.41333333333333333,
+  "strict_secondary": {
+    "ci95": [
+      -0.09333333333333334,
+      -0.04
+    ],
+    "delta": -0.06666666666666667
+  },
+  "terminal": "step 400 is terminal; no extension or rerun under any outcome",
+  "verdict": "FALLING"
+}
