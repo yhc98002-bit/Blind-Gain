@@ -53,7 +53,10 @@ CHECKPOINT_PATH="$(python3 -c 'import yaml,sys; print(yaml.safe_load(open(sys.ar
 [[ ! -e "${CHECKPOINT_PATH}" ]] || { echo "refusing to overwrite M7 checkpoints: ${CHECKPOINT_PATH}" >&2; exit 73; }
 
 # --- one synchronous RL trainer per node
-if ssh "${NODE}" "pgrep -f 'verl.trainer.main' >/dev/null"; then
+# Bracketing the final character stops pgrep matching the very command line
+# that carries the pattern: the remote argv holds "verl.trainer.mai[n]",
+# which the regex does not match, while a real trainer argv does.
+if ssh "${NODE}" "pgrep -f 'verl.trainer.mai[n]' >/dev/null"; then
   echo "refusing to colocate a second RL trainer on ${NODE}" >&2
   exit 75
 fi
