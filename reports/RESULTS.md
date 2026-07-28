@@ -277,11 +277,12 @@ twin images where accuracy is 0.012 (+0.17–0.19 overconfidence gap).
 
 CP-GRPO vs matched same-data standard GRPO, 120 steps each, on held-out
 FlipTrack templates. CP arm **complete** (status complete, `global_step_120`);
-matched member arm at 17/120 on an29.
+matched member arm at 34/120 on an29.
 
 **No value from either arm has been opened.** The registration prohibits partial
 readouts until both arms and their endpoint evaluations complete. An acceptance
-audit of all six conditions (`scripts/audit_mini_a5_acceptance.py`) must return
+audit of all six conditions (`scripts/audit_mini_a5_acceptance.py`, emitting
+`reports/mini_a5_acceptance_audit_v1.json`) must return
 PASS before any endpoint is read; it currently fails on condition 1 alone
 (member arm still running), with the other five passing — including the
 structural check that the CP arm logged its advantage-audit events and the member
@@ -391,6 +392,8 @@ R20 scorer is byte-identical (I11). B1's 30 invariance items were rescored —
 **nothing moves** across all 30 equal-gold items (10 model×type cells), so the
 published B1 table stands.
 
+Artifacts: `reports/b1_rescored_p02_v1.json` (rescore), `reports/p04_task_roles_v1.md` (roles).
+
 **P0.3** intervention-group schema frozen and versioned with a 13-case loader
 fixture (I15). **P0.4** task roles canonicalised in `src/eval/task_roles.py` with
 an I13 guard that raises on any cross-role aggregate and fails closed on unknown
@@ -460,6 +463,38 @@ image-necessary by construction. (Dossier note: §5's "caption ≤0.013" should 
 
 ---
 
+## 13b. Standard benchmarks are largely answerable blind — our own model family
+
+`reports/base_external_benchmarks.md`. The frozen base evaluated on public
+benchmarks with and without the image, at two scales. Same locked contract and
+parser as everything else.
+
+| benchmark | model | with image | image removed | retained blind |
+|---|---|---|---|---|
+| MMStar (n=1,500) | 3B | 0.5540 | 0.2607 | **47%** |
+| MMStar | 7B | 0.6320 | 0.2880 | **46%** |
+| MathVista-testmini (n=999) | 3B | 0.6236 | 0.3293 | **53%** |
+| MathVista-testmini | 7B | 0.6627 | 0.3393 | **51%** |
+
+Roughly **half of standard-benchmark accuracy survives deleting the image
+entirely**, at both 3B and 7B. This is the blind reward-opportunity thesis
+measured on our own model family, and it is the reason the corpus audit exists:
+an RLVR run on these benchmarks can collect most of its available reward without
+consulting the image at all.
+
+Read together with §13, the point generalises across model families as well as
+scales — Gemma-3 retains 71% and InternVL3-9B 55% blind on the blind-sample
+benchmark, while FlipTrack collapses to exactly 0.0000 with collapse rate 1.0 for
+every model tested. **The contrast between those two lines is the case for the
+instrument**: it is not that FlipTrack is harder, but that it is image-necessary
+by construction where ordinary benchmarks are not.
+
+Also complete for the base at both scales, without blind variants: BLINK
+(0.4929 / 0.5565), HallusionBench (0.5979 / 0.6829), MMVP (0.6600 / 0.7433),
+MathVerse (0.2817 / 0.3406), MMMU dev+validation (0.4819 / 0.5133).
+
+---
+
 ## 14. The instrument (C4)
 
 **R19, frozen, 1,200 pairs, three tasks with three distinct roles** — reported
@@ -524,6 +559,8 @@ with R19.
 **Both monotonicity gates failed**, so branches (a)/(b) are void and the twelve
 arm cells were deliberately **not scored** — F3d's prediction about
 localization-specific corrosion is **untested, not refuted**.
+
+Artifacts: `reports/cue_ladder_readout_v1.{json,md}`, `reports/cue_ladder_base_gates_v1.json`.
 
 Base pair accuracy by rung: exact 0.4533, region 0.1367, none 0.6167, decoy
 0.6067, named_exact 0.3333, named_region 0.6100.
@@ -620,12 +657,9 @@ to us — the arms are sealed until both complete.
 
 ## 19. Still in flight
 
-- **D4 caption column** — 4/12 cells complete; 2 failed on CUDA OOM from a
-  scheduler double-booking and are queued for retry. Registered reading (ordering
-  under caption-at-test: pixel-specific vs evidence-general) filed before any
-  cell ran.
+- **D4 caption column** — **complete**, see §2b. Branch (a), evidence-general.
 - **F8 Mini-A5** — member arm 17/120; sealed until the acceptance gate passes.
-- **R3 M7** — ready; per-stratum estimands and the merged pre-launch prediction
-  verified present.
+- **R3 M7** — **launched** 2026-07-28 on an12 (arm 1 of 8, `a1_real` seed 1);
+  per-stratum estimands and the merged pre-launch prediction verified present.
 - **R4 C5 7B** — no 7B training configs exist yet; two must be authored (A1 and
   A2-gray) against the 3B recipe, with a registered sizing decision.
