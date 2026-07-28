@@ -111,6 +111,10 @@ BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS=300 BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMP
 HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home/datasets' \
 TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 \
 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}'"
+
+# recorded verbatim in the run manifest so the provenance shows the exact
+# environment the trainer ran under, not just the python invocation
+COMMAND="env ${ENV_VARS} ${ROOT}/.venv/bin/python -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}"
 jq -n \
   --arg run_id "${RUN_ID}" --arg git "$(git rev-parse HEAD)" --arg arm "${ARM}" \
   --argjson seed "${SEED}" --arg node "${NODE}" --arg config "${CONFIG}" \
