@@ -24,8 +24,8 @@ ARMS = {
     "a3_caption": ("mech_a3_caption_seed3_3b_geo3k.yaml", "caption"),
 }
 SEEDS = (1, 2)
-TRAIN_FILE = "data/virl39k_m7_train_v2.jsonl"
-VAL_FILE = "data/virl39k_m7_heldout_v2.jsonl"
+TRAIN_FILE = "data/virl39k_m7_train_v3.jsonl"
+VAL_FILE = "data/virl39k_m7_heldout_v3.jsonl"
 # The M7 manifests carry repo-root-relative image paths
 # ("data/virl39k/images/..."), so image_dir must be null exactly as it is
 # for every other config in this repo. The flat
@@ -33,8 +33,12 @@ VAL_FILE = "data/virl39k_m7_heldout_v2.jsonl"
 # none of them (measured 0/25712 train, 0/4524 heldout).
 IMAGE_DIR = None
 
-# max images per prompt across the registered M7 splits (train 8, heldout 7)
-LIMIT_IMAGES = 8
+# The M7 corpus is restricted to single-image rows per
+# docs/registered_m7_single_image_v2.md, so one image per prompt is both
+# sufficient and identical to the Geometry3K pilot recipe. Raising this to
+# cover multi-image rows made vLLM's worst-case multimodal profiling kill a
+# worker during init.
+LIMIT_IMAGES = 1
 CAPTION_STORE = str(ROOT / "data/virl39k_caption_store_3b_main_v2.jsonl")
 
 
@@ -119,9 +123,9 @@ def main() -> None:
             if got != want:
                 raise AssertionError(f"arm {record['arm']} deviates from the matched recipe in {key}")
         # arm-to-arm parity on the sanctioned key itself
-        if config["worker"]["rollout"]["limit_images"] != 8:
+        if config["worker"]["rollout"]["limit_images"] != LIMIT_IMAGES:
             raise AssertionError(f"arm {record['arm']} has limit_images "
-                                 f"{config['worker']['rollout']['limit_images']}, expected 8")
+                                 f"{config['worker']['rollout']['limit_images']}, expected {LIMIT_IMAGES}")
         if config["data"]["train_files"] != TRAIN_FILE or config["data"]["val_files"] != VAL_FILE:
             raise AssertionError("corpus pinning failed")
 

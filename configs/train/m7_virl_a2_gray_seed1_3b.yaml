@@ -1,6 +1,6 @@
 data:
-  train_files: data/virl39k_m7_train_v2.jsonl
-  val_files: data/virl39k_m7_heldout_v2.jsonl
+  train_files: data/virl39k_m7_train_v3.jsonl
+  val_files: data/virl39k_m7_heldout_v3.jsonl
   prompt_key: problem
   answer_key: answer
   image_key: images
@@ -66,7 +66,7 @@ worker:
     n: 5
     temperature: 1.0
     top_p: 1.0
-    limit_images: 8
+    limit_images: 1
     gpu_memory_utilization: 0.6
     enforce_eager: false
     enable_chunked_prefill: false

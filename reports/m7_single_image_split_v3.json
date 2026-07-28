@@ -1,0 +1,28 @@
+{
+  "registration": "docs/registered_m7_single_image_v2.md",
+  "splits": {
+    "heldout": {
+      "output": "virl39k_m7_heldout_v3.jsonl",
+      "retained_fraction": 0.9418,
+      "rows_after": 4239,
+      "rows_before": 4501,
+      "sha256": "50f3b85c11c4046ef2512c544faec04286648688bb6d47548995f18cab40716c",
+      "source": "virl39k_m7_heldout_v2.jsonl"
+    },
+    "train": {
+      "output": "virl39k_m7_train_v3.jsonl",
+      "retained_fraction": 0.9322,
+      "rows_after": 23542,
+      "rows_before": 25255,
+      "sha256": "a3d18c370958e1cfffa866b0d5f5be495fe1fcec8913b22240691156e7a4d6a9",
+      "source": "virl39k_m7_train_v2.jsonl"
+    }
+  },
+  "strata_check": {
+    "lost": [],
+    "min_items": 30,
+    "passes": true,
+    "qualifying_v2": 22,
+    "qualifying_v3": 22
+  }
+}
