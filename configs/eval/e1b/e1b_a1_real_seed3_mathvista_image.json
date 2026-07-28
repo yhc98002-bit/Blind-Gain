@@ -1,0 +1,47 @@
+{
+  "model": {
+    "E1b-a1_real-seed3": {
+      "class": "Qwen2VLChat",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_seed3/global_step_100/actor/huggingface",
+      "min_pixels": 200704,
+      "max_pixels": 1003520,
+      "max_new_tokens": 256,
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "top_k": 1,
+      "do_sample": false,
+      "use_custom_prompt": false,
+      "use_vllm": true,
+      "system_prompt": "Return only the final answer wrapped exactly in <answer>...</answer>."
+    }
+  },
+  "data": {
+    "MathVista_LOCAL": {
+      "class": "MathVista",
+      "dataset": "MathVista_LOCAL"
+    }
+  },
+  "_e1b": {
+    "arm": "a1_real",
+    "seed": 3,
+    "benchmark": "mathvista",
+    "condition": "image",
+    "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_seed3/global_step_100/actor/huggingface",
+    "template": "configs/eval/vlmevalkit_p1_2_mathvista_local_3b.json",
+    "resource_isolation": {
+      "allowed_gpus": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "forbidden_gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reason": "an12 GPUs 0-3 are held by M7 at its registered 4-GPU width (one synchronous RL trainer per node). E1b is inference-only and must never widen onto them."
+    }
+  }
+}

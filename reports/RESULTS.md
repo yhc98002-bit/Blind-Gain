@@ -20,6 +20,9 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | D3 train × test grid, 36 cells | **F1 central figure** | **complete**, registered branch (a) |
 | D4 caption test column (4×3 → 4×4) | F1 | **complete** — branch (a), evidence-general |
 | M5 long horizon → step 400 | **R2** | **complete — verdict FALLING** |
+| M5b two-axis trajectory | R2 / title upgrade | **complete** — dissociation holds; **upgrade condition not met** (§12b) |
+| CHANCE null-corrected retention | **F0 contract** | **complete** — §13/§13b rewritten; naive figures withdrawn |
+| E1b trained-arm external columns | F1 beyond geo3k | **running** — blind column on an12 GPUs 4–7, registered |
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
@@ -435,6 +438,81 @@ onward is monotone.
 
 ---
 
+## 12b. M5b — the two-axis trajectory (the "scissors")
+
+`reports/m5b_trajectory_v1.{json,md}`. Assembly and **recomputation** of existing
+artifacts — no new inference. Both axes rescored from stored responses through the
+canonical scorers, 2,000-draw paired item bootstrap, McNemar exact p on the same
+paired indicators. Benchmark axis: Geometry3K test, greedy, n = 601. Grounding
+axis: R19 `geometry_coordinate_indexing`, real images, n = 600 pairs.
+
+> **Metric-identity correction.** The planning-level benchmark series I circulated
+> (`0.4309 / 0.4692 / 0.4892 / 0.4742 / 0.4443`) **mixed two metrics**: the
+> step-100 entry is `canonical_correct`, steps 150–400 are `acc_final`. Every
+> step-vs-step-100 delta computed from it is **inflated by +0.0050**. The
+> single-metric series below supersedes it. The grounding series reproduced
+> exactly (all five residuals 0.0000).
+
+| step | geo3k `acc_final` | Δ vs step 100 [95% CI] | p | R19 geometry pair acc | Δ vs step 100 [95% CI] | p |
+|---|---|---|---|---|---|---|
+| frozen base | 0.1498 | −0.2862 [−0.3261, −0.2463] | 2e−38 | 0.4717 | −0.0083 [−0.0367, +0.0217] | 0.64 |
+| 100 | 0.4359 | — | — | 0.4800 | — | — |
+| 150 | 0.4692 | +0.0333 [−0.0033, +0.0699] | 0.085 | 0.4733 | −0.0067 [−0.0300, +0.0167] | 0.67 |
+| 200 | **0.4892** peak | +0.0532 [+0.0166, +0.0899] | **0.0086** | 0.4633 | −0.0167 [−0.0400, +0.0067] | 0.20 |
+| 300 | 0.4742 | +0.0383 [+0.0000, +0.0749] | 0.065 | 0.4467 | −0.0333 [−0.0600, −0.0067] | **0.019** |
+| 400 | 0.4443 | **+0.0083 [−0.0283, +0.0449]** | **0.73** | 0.4133 | **−0.0667 [−0.0933, −0.0400]** | **2.4e−06** |
+
+**The two axes have different shapes, and the difference matters.**
+
+- **Benchmark: rises, peaks at step 200, then reverses.** Monotone non-decreasing
+  over 100→400 is **false**. The only step significantly above step 100 is 200
+  (+0.0532). By step 400 the benchmark has returned to its step-100 level:
+  **+0.0083, CI containing zero, p = 0.73.**
+- **Grounding: monotone non-increasing throughout**, argmax at step 100, and the
+  decline is unambiguous by 400 (−0.0667, p = 2.4e−06). It first falls below the
+  frozen base at step 200; the benchmark never falls below the frozen base at all.
+
+Relative to the **frozen base** at step 400: benchmark **+0.2945** [+0.2512,
++0.3378] while grounding is **−0.0583** [−0.0900, −0.0267], p = 4.25e−04.
+*Strict qualifies this*: strict grounding vs frozen base is −0.0300 [−0.0633,
++0.0033], p = 0.11 — **not significant**. Lenient and strict are identical at
+every trained step; they differ only at the frozen base (0.4717 vs 0.4433), so the
+lenient-vs-base gap partly reflects the base's formatting failures, not content.
+
+**Title-upgrade verdict — the condition as I stated it is NOT met.** I previously
+reported that both conditions held. On the corrected single-metric series:
+
+| condition | verdict |
+|---|---|
+| geo3k step 400 > step 100 | **not supported** — +0.0083, CI [−0.0283, +0.0449], p = 0.73 |
+| grounding step 400 < frozen base | **supported lenient** (−0.0583, p = 4.25e−04); **not supported strict** (−0.0300, p = 0.11) |
+
+The honest description is **not** "benchmark keeps rising while grounding falls."
+It is that **benchmark accuracy rises, saturates, and returns to its early-training
+level, while grounding decays monotonically and significantly throughout** — a
+dissociation, but a weaker and differently-shaped one than the mixed-metric series
+implied. The upgrade decision is the PI's; my role here is that the arithmetic no
+longer supports the version I circulated.
+
+**Attribution clause (mandatory in every mention).** This is the **long-horizon
+anchor configuration** — unfrozen tower, native r1v reward, unfiltered corpus —
+**not pilot A1**, and it is **one trajectory, one seed**. Tier-3 promotion needs a
+second long-horizon seed (LH2).
+
+**Blind floors at step 400 hold exactly**: gray and noise both 0.0000 pair accuracy
+with collapse rate 1.0000, paired Δ vs real −0.4133, p = 4.4e−75. The model did not
+learn to answer the anchor blind.
+
+*Provenance/deviation.* Training lineage is continuous from step 100 across four
+resumed segments. All contract hashes, the greedy sub-contract (`n=1`, `T=0.0`,
+`top_p=1.0`, `max_tokens=2048`, `seed=20260710`), item-id sets and ground truths are
+identical across runs; recomputed metrics equal stored fields 601/601 and 600/600.
+One deviation: the raw `decoding` field is **not** byte-identical — base/step-100
+guarded-rescore rows carry a combined `{greedy, sampled}` record where M5 rows carry
+greedy only. The greedy sub-contract itself is identical.
+
+---
+
 ## 13. R5 — Cross-family generalization (complete)
 
 `reports/generalization_audits_v2.json`, from
@@ -449,45 +527,125 @@ opened only after the complete-queue gate.
 
 R20 reproduces R19 almost exactly across both families — one-shot private
 replication holding cross-family. But on the *ordinary* blind-sample benchmark
-the same models keep most of their accuracy with no image:
+(the ViRL39K audit sample, n = 4,096 — the corpus family an RLVR run actually
+trains on) the same models keep most of their accuracy with no image.
 
-| model | real | caption | none | none/real |
+The naive ratios first, then the corrected ones. **The naive ratios are not the
+result**; they are quoted only because earlier drafts used them.
+
+| model | condition | real | blind | naive blind/real |
 |---|---|---|---|---|
-| Gemma-3 | 0.3418 | 0.3091 | 0.2424 | **71%** |
-| InternVL3-9B | 0.2805 | 0.1951 | 0.1538 | **55%** |
+| Gemma-3 | none | 0.3418 | 0.2424 | 71% |
+| Gemma-3 | caption | 0.3418 | 0.3091 | 90% |
+| InternVL3-9B | none | 0.2805 | 0.1538 | 55% |
+| InternVL3-9B | caption | 0.2805 | 0.1951 | 70% |
+
+Chance-corrected, `(blind − null) / (with-image − null)`, split by answer format
+because the sample is mixed (`reports/chance_corrected_retention_v1.json`,
+10,000-draw paired item bootstrap):
+
+| model | condition | subset | n | null | corrected retention [95% CI] |
+|---|---|---|---|---|---|
+| Gemma-3 | none | MC, k determinable | 1,215 | 0.2679 | **1.371 [1.218, 1.574]** |
+| Gemma-3 | none | free-form pooled | 2,789 | 0.0 | **0.727 [0.690, 0.765]** |
+| Gemma-3 | caption | MC, k determinable | 1,215 | 0.2679 | **1.161 [1.028, 1.321]** |
+| Gemma-3 | caption | free-form pooled | 2,789 | 0.0 | **0.923 [0.885, 0.964]** |
+| InternVL3-9B | none | free-form pooled | 2,789 | 0.0 | **0.485 [0.439, 0.533]** |
+| InternVL3-9B | caption | free-form pooled | 2,789 | 0.0 | **0.749 [0.693, 0.811]** |
+| InternVL3-9B | either | MC, k determinable | 1,215 | 0.2679 | **not reportable** |
+
+Gemma-3's corrected MC retention **exceeds 1.0 with the interval clear of 1.0**:
+on the multiple-choice slice of this corpus, deleting the image does not cost it
+anything relative to chance — blind is at or above with-image. Its free-form
+retention is 0.727 even with no correction available (null = 0, so corrected =
+naive there by construction).
+
+InternVL3-9B's MC ratio is **withheld, not reported as a number**: its with-image
+MC accuracy sits essentially on the chance floor, so the denominator is near zero
+and the ratio is unstable (point estimate −2.44, CI [−17.96, +6.51]). A ratio
+whose denominator crosses zero carries no information and is not quoted.
+
+Two subsets are excluded by rule and named here rather than dropped silently:
+92 MC rows whose options appear only inside the image (k indeterminable, so no
+null can be assigned), and the whole-sample single-null figure, which the mixed
+format forbids.
 
 **This is the blind-reward-opportunity thesis measured on two foreign model
-families:** standard benchmarks are largely answerable blind, while FlipTrack is
-image-necessary by construction. (Dossier note: §5's "caption ≤0.013" should read
-≤0.0134 — the measured maximum is 0.01333.)
+families, and correction strengthens it here**: on the corpus family that RLVR
+actually trains on, most — for Gemma-3's MC slice, all — of the available reward
+is collectable without the image, while FlipTrack collapses to exactly 0.0000
+with collapse rate 1.0 for every model tested. (Dossier note: §5's "caption
+≤0.013" should read ≤0.0134 — the measured maximum is 0.01333.)
 
 ---
 
-## 13b. Standard benchmarks are largely answerable blind — our own model family
+## 13b. Blind solvability is benchmark-specific, not general — our own model family
 
-`reports/base_external_benchmarks.md`. The frozen base evaluated on public
-benchmarks with and without the image, at two scales. Same locked contract and
-parser as everything else.
+> **Correction (2026-07-28).** Every earlier version of this section reported
+> *naive* retention `blind / with-image` and concluded that "roughly half of
+> standard-benchmark accuracy survives deleting the image entirely." **That
+> conclusion was wrong for MMStar and it was my error.** MMStar is four-way
+> multiple choice: a model that has deleted the image and guesses scores ~0.25 by
+> construction, which is essentially all of the 0.2607 "retained" accuracy. The
+> corrected figures below replace it. The measurement was right; the inference
+> from it was not, and it sat in the paper's opening claim.
 
-| benchmark | model | with image | image removed | retained blind |
-|---|---|---|---|---|
-| MMStar (n=1,500) | 3B | 0.5540 | 0.2607 | **47%** |
-| MMStar | 7B | 0.6320 | 0.2880 | **46%** |
-| MathVista-testmini (n=999) | 3B | 0.6236 | 0.3293 | **53%** |
-| MathVista-testmini | 7B | 0.6627 | 0.3393 | **51%** |
+`reports/base_external_benchmarks.md`, recomputed in
+`reports/chance_corrected_retention_v1.json`. The frozen base on public
+benchmarks with and without the image, at two scales, same locked contract and
+parser as everything else. Retention is
+`(blind − null) / (with-image − null)`, with the null set by answer format —
+MC → 1/k using **that item's own k**, free-form → 0 — and 95% CIs from a
+10,000-draw paired item bootstrap that recomputes the ratio on every replicate
+(a ratio of differences; naive intervals do not apply).
 
-Roughly **half of standard-benchmark accuracy survives deleting the image
-entirely**, at both 3B and 7B. This is the blind reward-opportunity thesis
-measured on our own model family, and it is the reason the corpus audit exists:
-an RLVR run on these benchmarks can collect most of its available reward without
-consulting the image at all.
+| benchmark / subset | model | n | null | with image | blind | naive | **corrected [95% CI]** |
+|---|---|---|---|---|---|---|---|
+| MMStar, all items (MC pooled) | 3B | 1,500 | 0.2688 | 0.5540 | 0.2607 | 47% | **−0.029 [−0.108, +0.049]** |
+| MMStar, all items (MC pooled) | 7B | 1,500 | 0.2688 | 0.6320 | 0.2880 | 46% | **+0.053 [−0.010, +0.117]** |
+| MathVista, MC pooled | 3B | 539 | 0.3316 | 0.7254 | 0.5120 | 71% | **+0.458 [+0.351, +0.564]** |
+| MathVista, free-form | 3B | 460 | 0.0 | 0.5043 | 0.1152 | 23% | **+0.228 [+0.174, +0.287]** |
+| MathVista, MC pooled | 7B | 539 | 0.3316 | 0.7606 | 0.5306 | 70% | **+0.464 [+0.368, +0.561]** |
+| MathVista, free-form | 7B | 460 | 0.0 | 0.5478 | 0.1152 | 21% | **+0.210 [+0.160, +0.265]** |
 
-Read together with §13, the point generalises across model families as well as
-scales — Gemma-3 retains 71% and InternVL3-9B 55% blind on the blind-sample
-benchmark, while FlipTrack collapses to exactly 0.0000 with collapse rate 1.0 for
-every model tested. **The contrast between those two lines is the case for the
-instrument**: it is not that FlipTrack is harder, but that it is image-necessary
-by construction where ordinary benchmarks are not.
+**MathVista-testmini is deliberately not given a whole-benchmark number.** It is
+mixed — 539 MC and 460 free-form items — and the null rule forbids one global
+null across two formats. The old whole-benchmark "53% / 51%" figures were exactly
+that forbidden average, and they are withdrawn.
+
+The two benchmarks now say opposite things, and that is the finding:
+
+- **MMStar is genuinely image-necessary.** Corrected retention is **−0.029 at 3B
+  with the interval containing zero**, and **+0.053 at 7B**, also containing zero.
+  Blind MMStar accuracy is statistically indistinguishable from guessing at both
+  scales. (The one subset whose interval excludes zero is 7B on k = 4, +0.071
+  [+0.004, +0.138] — 1,323 of the 1,500 items, and a hair off the floor.)
+- **MathVista retains real blind-solvable structure.** Roughly **46% of the MC
+  headroom above chance** survives image deletion at both scales, and free-form —
+  where null = 0 and correction is a no-op, so the number was never inflated —
+  retains 21–23%.
+
+So the honest form of the claim is **not** "standard benchmarks are largely
+answerable blind." It is that **visual necessity is a property that varies by
+benchmark and by answer format, and it has to be measured rather than assumed** —
+which is precisely why F0's reporting contract exists. Two benchmarks with
+near-identical naive retention (47% and 53%) turn out to differ completely once
+the guessing floor is removed.
+
+Read together with §13, the surviving generalisation is about **the training
+corpus, not public benchmarks**: on the ViRL39K audit sample, Gemma-3's corrected
+MC retention exceeds 1.0 and its free-form retention is 0.727, while FlipTrack
+collapses to exactly 0.0000 with collapse rate 1.0 for every model tested. **That
+contrast is the case for the instrument** — not that FlipTrack is harder, but
+that it is image-necessary by construction where the training corpus is not.
+
+*Strict caveat (I7).* The same 1/k null is applied to `acc_strict`, which
+additionally requires the `<answer>` wrapper. Where with-image `acc_strict` falls
+below the null the denominator goes negative and the ratio is meaningless; those
+rows carry `denominator_crosses_zero=true` and `boot_denominator_nonpositive_frac`
+in the JSON and are not quoted here. MMStar strict with-image is 0.0013 (3B) —
+far below the 0.2688 null — so **no strict corrected retention exists for MMStar**
+and the naive strict ratio of 11.5 is an artifact of dividing by ~0.
 
 Also complete for the base at both scales, without blind variants: BLINK
 (0.4929 / 0.5565), HallusionBench (0.5979 / 0.6829), MMVP (0.6600 / 0.7433),
@@ -606,6 +764,31 @@ review.
    fixed to fail closed.
 8. **Duplicate D3 cells** from restarts were deduplicated, keeping the earliest
    and marking later ones superseded.
+9. **Naive retention reported as visual necessity — my error, and it sat in the
+   paper's opening claim.** §13/§13b asserted "roughly half of standard-benchmark
+   accuracy survives deleting the image." That divided blind by with-image without
+   subtracting the guessing floor. On MMStar — four-way MC, chance 0.25 — the
+   corrected retention is **−0.029 [−0.108, +0.049]**, i.e. indistinguishable from
+   zero, against a naive 47%. MathVista's "53%" was worse than merely uncorrected:
+   it averaged a single null across a **mixed** benchmark (539 MC + 460 free-form),
+   which the null rule forbids; it is withdrawn and split. Corrected in §13/§13b
+   from `reports/chance_corrected_retention_v1.json`. **The direction of the error
+   was to overstate blind solvability on public benchmarks**; the thesis survives,
+   but on the training corpus (§13), not on MMStar.
+10. **M5b planning series mixed two metrics.** The benchmark trajectory I
+   circulated took step 100 from `canonical_correct` and steps 150–400 from
+   `acc_final`, inflating every step-vs-100 delta by +0.0050. Recomputed on one
+   metric, the step-400-vs-100 gain is **+0.0083, p = 0.73** — not the increase I
+   reported, and **the title-upgrade condition as I stated it is not met** (§12b).
+   Caught by the readout's own recomputation rule, which forbids carrying
+   planning-level greps into a reported number.
+11. **E1b preflight raised a false comparability alarm.** It counted TSV *lines*
+   where the pinned TSVs embed newlines in question text (2,106 lines / 1,500
+   records), and a follow-up index check compared string ids to int ids and
+   reported 0/1500 overlap. Both were defects in my checks, not the data: the base
+   item sets are 1500/1500 and 999/999 intact. Fixed before any E1b cell ran.
+   Logged because the failure mode — a check that manufactures a problem — is as
+   costly as one that misses a real one.
 
 ---
 
@@ -663,3 +846,15 @@ to us — the arms are sealed until both complete.
   per-stratum estimands and the merged pre-launch prediction verified present.
 - **R4 C5 7B** — no 7B training configs exist yet; two must be authored (A1 and
   A2-gray) against the 3B recipe, with a registered sizing decision.
+- **E1b external access matrix** — registered
+  `docs/registered_e1b_external_access_matrix_v1.md` **before any cell was run**.
+  48 cells (4 arms × 3 seeds × 2 benchmarks × 2 conditions). The **blind column
+  (24 cells) is running** on an12 GPUs 4–7; the with-image column follows. Item
+  sets pinned to the E1a base items (1500/1500 MMStar, 999/999 MathVista verified
+  present). Reported under the CHANCE contract, never naive retention.
+  **Resource isolation is explicit and enforced**: M7 holds GPUs 0–3 at its
+  registered 4-GPU width and is not widened, paused, or touched; the orchestrator
+  aborts if GPUs 4–7 are not free.
+- **LH2 second long-horizon seed** — the staged sequence is *not* auto-triggered.
+  §12b weakens the case that motivated it (the benchmark axis is flat at 400, not
+  rising), so whether LH2 is worth multiple days is a PI decision, not mine.

@@ -1,0 +1,33 @@
+{
+  "dataset_type": "mmstar",
+  "input_tsv": "data/vlmevalkit/MMStar_VLMEVAL.tsv",
+  "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_seed2/global_step_100/actor/huggingface",
+  "system_prompt": "Return only the final answer wrapped exactly in <answer>...</answer>.",
+  "max_new_tokens": 256,
+  "max_model_len": 32768,
+  "gpu_memory_utilization": 0.85,
+  "seed": 20260710,
+  "_e1b": {
+    "arm": "a1_real",
+    "seed": 2,
+    "benchmark": "mmstar",
+    "condition": "blind",
+    "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/pilot/mech_a1_real_seed2/global_step_100/actor/huggingface",
+    "template": "configs/eval/layer1_blind_mmstar_3b.json",
+    "resource_isolation": {
+      "allowed_gpus": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "forbidden_gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "reason": "an12 GPUs 0-3 are held by M7 at its registered 4-GPU width (one synchronous RL trainer per node). E1b is inference-only and must never widen onto them."
+    }
+  }
+}

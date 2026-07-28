@@ -88,3 +88,30 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
   `m11_reconciled_backfill_v2`. The real lesson is stronger than "check the manifest, not the
   status report" — a failed run manifest does not mean the work never happened. Search for a
   successor run before recording anything as never-ran.
+
+## Implementation issues (not scientific results)
+
+- **M7 launcher requested 8 GPUs against a 4-GPU registered config.**
+  `scripts/launch_m7_virl_arm.sh` exported a visible-device list of 8 while the
+  effective config declared `n_gpus_per_node: 4`, so the launcher and the trainer
+  disagreed about the job's width. **Fixed**: the launcher now reads
+  `n_gpus_per_node` out of the effective config and fails loudly if the exported
+  device count does not match it. M7 runs at its registered 4-GPU width on an12
+  GPUs 0-3, which is the like-for-like condition for the Geometry3K pilot
+  comparison; the width was never widened.
+  This is an **implementation defect in the launcher, corrected before the
+  registered run produced any reported number** — it is not part of any scientific
+  result and no reported value depends on it. Recorded here so the fix is
+  traceable and is not mistaken for a design change to R3/M7.
+  The four idle GPUs it left behind (an12 4-7) are the resource E1b is registered
+  to use; see `docs/registered_e1b_external_access_matrix_v1.md`.
+
+- **E1b preflight counted TSV lines instead of parsed records.** The pinned TSVs
+  embed newlines inside question and option text, so `wc -l` reported 2106 rows for
+  MMStar and 4421 for MathVista where the parsed record counts are 1500 and 999 —
+  exactly the base item counts. The preflight raised a spurious comparability
+  failure, and a first index check compounded it by comparing string indices to int
+  indices and reporting 0/1500 overlap. Both were **measurement errors in my own
+  check, not defects in the data**: with correct parsing and type coercion the base
+  item sets are 1500/1500 and 999/999 present. `scripts/preflight_e1b.py` now parses
+  the TSV. No data was modified and no E1b cell was affected.
