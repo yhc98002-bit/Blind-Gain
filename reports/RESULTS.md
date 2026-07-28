@@ -21,8 +21,9 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | D4 caption test column (4×3 → 4×4) | F1 | **complete** — branch (a), evidence-general |
 | M5 long horizon → step 400 | **R2** | **complete — verdict FALLING** |
 | M5b two-axis trajectory | R2 / title upgrade | **complete** — dissociation holds; **upgrade condition not met** (§12b) |
-| CHANCE null-corrected retention | **F0 contract** | **complete** — §13/§13b rewritten; naive figures withdrawn |
-| E1b trained-arm external columns | F1 beyond geo3k | **running** — blind column on an12 GPUs 4–7, registered |
+| CHANCE null-corrected retention | **F0 contract** | **complete** (partial coverage: 5 benchmarks have no blind run) — §13/§13b rewritten |
+| SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
+| E1b trained-arm external columns | F1 beyond geo3k | **blind column complete (24/24)** — **P1 refuted**, P2 withheld (§13c); with-image column running |
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
@@ -259,6 +260,41 @@ nearest-gridline transition accounts for **19 wrong member slots in seed 1 and 2
 in seed 2** — i.e. roughly 37% of wrong slots in each seed (19/52 and 20/53), not
 a 95% rate. An earlier phrasing of "19/20" invited exactly that misreading and is
 corrected here.
+
+### 6a. Seed 3 replicates it (SEED3γ) — Tier 1 now reads "across seeds"
+
+`reports/x3_seed3_corrosion_replication_v1.*`. The seed-1/2 method was applied
+**unchanged** (helpers imported, not transcribed) to the seed-3 A2-gray arm from
+cached predictions; as a control the frozen v1 fields were recomputed and matched
+**19/19**. Permutation nulls were redrawn for seed 3 (10,000 permutations, seed
+20260728), not reused.
+
+| | seed 1 | seed 2 | **seed 3** |
+|---|---|---|---|
+| A2-gray pair acc (base 0.4717) | 0.4267 | 0.4267 | **0.4350** |
+| Δ vs base | −0.0450 [−0.0733, −0.0167] | −0.0450 [−0.0717, −0.0183] | **−0.0367 [−0.0633, −0.0100]** |
+| correct→wrong | 51 | 49 | **45** |
+| nearest-gridline wrong slots | 19 / 52 | 20 / 53 | **17 / 46** |
+
+**It is the same items, and the same wrong answers.**
+
+| overlap | Jaccard | null mean | p |
+|---|---|---|---|
+| seed3 vs seed1 | **0.811** | 0.093 | 1e−4 |
+| seed3 vs seed2 | **0.741** | 0.091 | 1e−4 |
+| seed1 vs seed2 | 0.724 | 0.097 | 1e−4 |
+| **all three (3-way)** | **0.661** | **0.012** | **1e−4** |
+
+Seed 3 recovers **39 of the 42** pairs that seeds 1 and 2 both degraded — 0.929
+[0.810, 0.975]. On shared wrong member slots the *extracted answer is identical*
+in 44/44 (vs seed 1), 40/41 (vs seed 2) and **39/40 three-way (0.975)**. A 3-way
+Jaccard of 0.661 against a null of 0.012 is not a shared difficulty gradient; it
+is the same failure reproduced.
+
+**Tier 1 wording is therefore upgraded from "across two analyzed seeds" to
+"across seeds" (three).** The Tier 2 attribution clause and the Tier 3 requirement
+(a second long-horizon seed) are unchanged — SEED3γ speaks to the pilot A2-gray
+arm, not to the long-horizon anchor.
 
 ### 6b. The same corrosion along the time axis (R2)
 
@@ -546,36 +582,46 @@ because the sample is mixed (`reports/chance_corrected_retention_v1.json`,
 
 | model | condition | subset | n | null | corrected retention [95% CI] |
 |---|---|---|---|---|---|
-| Gemma-3 | none | MC, k determinable | 1,215 | 0.2679 | **1.371 [1.218, 1.574]** |
-| Gemma-3 | none | free-form pooled | 2,789 | 0.0 | **0.727 [0.690, 0.765]** |
-| Gemma-3 | caption | MC, k determinable | 1,215 | 0.2679 | **1.161 [1.028, 1.321]** |
-| Gemma-3 | caption | free-form pooled | 2,789 | 0.0 | **0.923 [0.885, 0.964]** |
-| InternVL3-9B | none | free-form pooled | 2,789 | 0.0 | **0.485 [0.439, 0.533]** |
-| InternVL3-9B | caption | free-form pooled | 2,789 | 0.0 | **0.749 [0.693, 0.811]** |
-| InternVL3-9B | either | MC, k determinable | 1,215 | 0.2679 | **not reportable** |
+| model | condition | subset | n | with image | blind | corrected retention [95% CI] |
+|---|---|---|---|---|---|---|
+| Gemma-3 | none | free-form pooled | 2,789 | 0.4295 | 0.3122 | **0.727 [0.690, 0.765]** |
+| Gemma-3 | caption | free-form pooled | 2,789 | 0.4295 | 0.3965 | **0.923 [0.885, 0.964]** |
+| InternVL3-9B | none | free-form pooled | 2,789 | 0.2685 | 0.1301 | **0.485 [0.439, 0.533]** |
+| InternVL3-9B | caption | free-form pooled | 2,789 | 0.2685 | 0.2011 | **0.749 [0.693, 0.811]** |
+| Gemma-3 | either | MC, k determinable | 1,215 | 0.1349 | — | **withheld — denominator negative** |
+| InternVL3-9B | either | MC, k determinable | 1,215 | 0.2938 | — | **withheld — denominator degenerate** |
 
-Gemma-3's corrected MC retention **exceeds 1.0 with the interval clear of 1.0**:
-on the multiple-choice slice of this corpus, deleting the image does not cost it
-anything relative to chance — blind is at or above with-image. Its free-form
-retention is 0.727 even with no correction available (null = 0, so corrected =
-naive there by construction).
+**Neither model's MC ratio is quoted, and the reason is not a technicality.** The
+MC null on this sample is 0.2679, and **Gemma-3's with-image MC accuracy is
+0.1349 — far *below* the chance floor**. The denominator `(with-image − null)` is
+therefore negative, and `boot_denominator_nonpositive_frac = 1.0`: *every* one of
+the 10,000 bootstrap replicates is degenerate. The arithmetic still emits 1.371
+[1.218, 1.574], and that number means nothing at all. InternVL3-9B's MC
+with-image accuracy (0.2938) sits just above the floor, giving −2.44
+[−17.96, +6.51] with 2.7% of replicates degenerate — equally unusable.
 
-InternVL3-9B's MC ratio is **withheld, not reported as a number**: its with-image
-MC accuracy sits essentially on the chance floor, so the denominator is near zero
-and the ratio is unstable (point estimate −2.44, CI [−17.96, +6.51]). A ratio
-whose denominator crosses zero carries no information and is not quoted.
+> A model scoring **below chance with the image** on a multiple-choice slice is
+> not evidence about blind solvability; it is evidence that the slice is broken
+> for that model (options live in the image, extraction fails, or both). Reporting
+> "retention > 1.0" from it would have inverted the finding.
 
-Two subsets are excluded by rule and named here rather than dropped silently:
+The free-form rows carry the cross-family result on their own, and they are clean:
+null = 0 there, so the denominator is just with-image accuracy and no correction
+is needed or applied. **Gemma-3 retains 0.727 of its free-form accuracy with no
+image; InternVL3-9B retains 0.485**, rising to 0.923 and 0.749 when a caption
+replaces the image.
+
+Two further subsets are excluded by rule and named rather than dropped silently:
 92 MC rows whose options appear only inside the image (k indeterminable, so no
 null can be assigned), and the whole-sample single-null figure, which the mixed
 format forbids.
 
 **This is the blind-reward-opportunity thesis measured on two foreign model
-families, and correction strengthens it here**: on the corpus family that RLVR
-actually trains on, most — for Gemma-3's MC slice, all — of the available reward
-is collectable without the image, while FlipTrack collapses to exactly 0.0000
-with collapse rate 1.0 for every model tested. (Dossier note: §5's "caption
-≤0.013" should read ≤0.0134 — the measured maximum is 0.01333.)
+families**: on the corpus family that RLVR actually trains on, roughly half to
+three-quarters of free-form accuracy is collectable without the image, while
+FlipTrack collapses to exactly 0.0000 with collapse rate 1.0 for every model
+tested. (Dossier note: §5's "caption ≤0.013" should read ≤0.0134 — the measured
+maximum is 0.01333.)
 
 ---
 
@@ -650,6 +696,73 @@ and the naive strict ratio of 11.5 is an artifact of dividing by ~0.
 Also complete for the base at both scales, without blind variants: BLINK
 (0.4929 / 0.5565), HallusionBench (0.5979 / 0.6829), MMVP (0.6600 / 0.7433),
 MathVerse (0.2817 / 0.3406), MMMU dev+validation (0.4819 / 0.5133).
+
+---
+
+## 13c. E1b — the blind gain does **not** transfer out of domain
+
+`reports/e1b_blind_readout_v1.json`. Registered
+`docs/registered_e1b_external_access_matrix_v1.md` **before any cell was run**.
+24 blind cells (4 arms × 3 seeds × 2 benchmarks), all rc = 0, item sets pinned to
+the E1a base items (1500/1500 MMStar, 999/999 MathVista). Same harness, decoding,
+prompt contract and scorer as the base column — the E1b config differs from the
+base config by exactly `_e1b` provenance and `model_path`. Deltas are paired
+item-level, 10,000-draw bootstrap, arms averaged over their three seeds.
+
+**Lenient (`acc_final`, answer content) — every arm is flat against base:**
+
+| benchmark / subset | n | null | base | A1 real | A2 gray | A2b no-image | A3 caption |
+|---|---|---|---|---|---|---|---|
+| MMStar (MC pooled) | 1,500 | 0.2693 | 0.2607 | 0.2647 **+0.0040** | 0.2620 **+0.0013** | 0.2562 **−0.0044** | 0.2669 **+0.0062** |
+| MathVista MC | 539 | 0.3316 | 0.5121 | 0.5121 **+0.0000** | 0.5182 **+0.0062** | 0.5182 **+0.0062** | 0.5114 **−0.0006** |
+| MathVista free-form | 460 | 0.0 | 0.1152 | 0.1181 **+0.0029** | 0.1159 **+0.0007** | 0.1109 **−0.0043** | 0.1152 **+0.0000** |
+
+**All twelve confidence intervals contain zero.** The widest deltas are ±0.006.
+On MMStar every arm also sits *at or below the 0.2693 chance floor*, consistent
+with §13b: there is nothing there to gain.
+
+**P1 (primary) — branch (c), refuted on answer content.** The blind gain that RLVR
+produces on geo3k and R19 **does not appear on either external benchmark**.
+
+**P2 (primary) — not evaluable, and deliberately not forced.** P2 asks whether
+A2b's blind gain matches A1's, scaled by A1's own gain over base. A1's lenient
+gain is +0.0040 with an interval containing zero, so the scale is null and the
+ratio is meaningless. Quoting one would repeat exactly the degenerate-denominator
+error CHANCE was built to stop (cf. InternVL3-9B in §13). **Withheld**, because P1
+failed and P2 was conditional on it.
+
+**Strict (`acc_strict`) says something different, and it is about format:**
+
+| benchmark / subset | base | A1 real | A2 gray | A2b no-image | A3 caption |
+|---|---|---|---|---|---|
+| MMStar | 0.0153 | 0.0564 **+0.0411** [+0.0329, +0.0500] | 0.0117 **−0.0036** [−0.0073, −0.0002] | 0.0117 −0.0036 [−0.0080, +0.0007] | 0.0275 **+0.0122** [+0.0062, +0.0184] |
+| MathVista MC | 0.1706 | 0.2504 **+0.0798** [+0.0557, +0.1051] | 0.1533 **−0.0173** [−0.0322, −0.0025] | 0.1490 **−0.0216** [−0.0390, −0.0056] | 0.1799 +0.0093 [−0.0062, +0.0254] |
+| MathVista free-form | 0.1021 | 0.1086 +0.0065 | 0.1014 −0.0007 | 0.0971 −0.0051 | 0.1000 −0.0022 |
+
+Strict requires the `<answer>` wrapper **in addition to** a correct answer, so a
+strict gain with a flat lenient gain can only come from formatting answers the
+model already had. The contract-validity diagnostic confirms it directly
+(seed 1): MMStar `Format_valid` base 0.0373 → A1 0.0653 → A3 0.1673, and
+MathVista 0.6186 → A1 0.6687 → A3 0.6436, tracking `acc_strict` step for step.
+
+So, reported under I7 with both metrics rather than the flattering one:
+
+> **What transfers out of domain is output-format compliance, not blind answering
+> ability.** And the format transfer *is* access-dependent — A1 (real images)
+> carries it strongly (+0.041 / +0.080) while the blind-trained arms A2-gray and
+> A2b carry it **negatively** — even though none of them transfers any answer
+> content at all.
+
+**Why this matters for the thesis.** §13 shows the *training corpus* is largely
+blind-solvable, and F1 shows RLVR exploits that. E1b shows what the model takes
+away is **specific to that distribution**: it is not a portable "answer without
+looking" skill. The blind reward opportunity is a property of the corpus, and the
+capability it installs does not generalise — which sharpens rather than weakens
+the case for filtering the corpus.
+
+*Registered but not yet run at this writing:* the with-image column (24 cells,
+S1 corrosion transfer and S2 with-image transfer) is running on an12 GPUs 4–7.
+No S1/S2 claim is made here.
 
 ---
 
@@ -789,6 +902,18 @@ review.
    item sets are 1500/1500 and 999/999 intact. Fixed before any E1b cell ran.
    Logged because the failure mode — a check that manufactures a problem — is as
    costly as one that misses a real one.
+12. **I published a degenerate ratio as a headline while writing the rule against
+   it — same session, caught within the hour.** Rewriting §13 under the new CHANCE
+   contract, I reported Gemma-3's cross-family MC retention as **1.371 [1.218,
+   1.574]** and glossed it as "blind is at or above with-image." It is nothing of
+   the kind: Gemma-3's *with-image* MC accuracy is 0.1349 against a 0.2679 null, so
+   the denominator is negative and `boot_denominator_nonpositive_frac = 1.0` —
+   every replicate degenerate. I had flagged exactly this failure for InternVL3-9B
+   two paragraphs later and still quoted Gemma-3's. Both MC ratios are now
+   withheld; the cross-family claim rests on the free-form rows, which are clean.
+   **The lesson is that the guard has to run as a check, not as prose** — the
+   `denominator_crosses_zero` flag was already in the JSON and I did not read it
+   before writing.
 
 ---
 
