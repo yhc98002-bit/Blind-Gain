@@ -1,0 +1,76 @@
+{
+  "arms": {},
+  "conditions": {
+    "1_exit0_and_120_steps": {
+      "cp": {
+        "exit_code": 0,
+        "final_step": 120,
+        "ok": true,
+        "run": "experiments/runs/mini_a5_cp_main_an29_20260727T064527Z",
+        "status": "complete"
+      },
+      "member": {
+        "exit_code": null,
+        "final_step": 11,
+        "ok": false,
+        "run": "experiments/runs/mini_a5_member_main_an29_20260728T023715Z",
+        "status": "running"
+      }
+    },
+    "2_hashes_match_registration": {
+      "marker": "mini_a5_main_registration_marker_v1.json",
+      "marker_present": true,
+      "note": "Config sha256 was verified against the registration at launch time for the member arm; the marker pins the registration-side hashes.",
+      "ok": true
+    },
+    "3_advantage_grouping": {
+      "cp_advantage_audit_events": 120,
+      "member_joint_branch_hits": 0,
+      "ok": true,
+      "prior_equivalence_reports": [
+        "mini_a5_advantage_equivalence_v1.json",
+        "mini_a5_advantage_equivalence_v2.json"
+      ]
+    },
+    "4_no_fatal_log_signatures": {
+      "cp": {
+        "found": [],
+        "ok": true
+      },
+      "member": {
+        "found": [],
+        "ok": true
+      }
+    },
+    "5_checkpoint_inventory": {
+      "cp": {
+        "n": 6,
+        "saved_checkpoints": [
+          "global_step_100",
+          "global_step_120",
+          "global_step_20",
+          "global_step_40",
+          "global_step_60",
+          "global_step_80"
+        ]
+      },
+      "member": {
+        "n": 0,
+        "saved_checkpoints": []
+      },
+      "ok": true,
+      "retention_ledger_present": true
+    },
+    "6_report_precedes_readout": {
+      "note": "This report is written before any endpoint evaluation is launched or read.",
+      "ok": true
+    }
+  },
+  "failures": [
+    "C1/member: status=running exit=None step=11"
+  ],
+  "note": "No endpoint value is read or reported by this audit.",
+  "registration": "docs/registered_mini_a5_main_v1.md",
+  "schema_version": 1,
+  "verdict": "FAIL"
+}
