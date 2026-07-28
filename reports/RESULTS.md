@@ -23,7 +23,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M5b two-axis trajectory | R2 / title upgrade | **complete** — dissociation holds; **upgrade condition not met** (§12b) |
 | CHANCE null-corrected retention | **F0 contract** | **complete** (partial coverage: 5 benchmarks have no blind run) — §13/§13b rewritten |
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
-| E1b trained-arm external columns | F1 beyond geo3k | **blind column complete (24/24)** — **P1 refuted**, P2 withheld (§13c); with-image column running |
+| E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
@@ -760,9 +760,50 @@ looking" skill. The blind reward opportunity is a property of the corpus, and th
 capability it installs does not generalise — which sharpens rather than weakens
 the case for filtering the corpus.
 
-*Registered but not yet run at this writing:* the with-image column (24 cells,
-S1 corrosion transfer and S2 with-image transfer) is running on an12 GPUs 4–7.
-No S1/S2 claim is made here.
+### 13d. E1b with-image column — S1 and S2 both miss, the same way
+
+`reports/e1b_image_readout_v1.json`. All 24 with-image cells inferred and scored;
+inference fail rate 0/999 and 0/1500 in every cell. Scored through
+`postprocess_vlmeval_predictions.py` (canonical-v2), the **same scorer and path
+that produced the base with-image column** — it reads only the prediction and
+answer columns and never a judge column, so base and E1b are comparable.
+
+**Lenient (`acc_final`) — flat again, in all twelve cells:**
+
+| benchmark / subset | base | A1 real | A2 gray | A2b no-image | A3 caption |
+|---|---|---|---|---|---|
+| MMStar (n=1,500) | 0.5540 | 0.5540 **+0.0000** | 0.5533 −0.0007 | 0.5489 −0.0051 | 0.5513 −0.0027 |
+| MathVista MC (n=539) | 0.7254 | 0.7273 +0.0019 | 0.7229 −0.0025 | 0.7186 −0.0068 | 0.7186 −0.0068 |
+| MathVista free-form (n=460) | 0.5043 | 0.5087 +0.0043 | 0.4993 −0.0051 | 0.5072 +0.0029 | 0.5051 +0.0007 |
+
+**Every interval contains zero.**
+
+- **S2 — not supported.** Trained arms do not beat base with images; they *match*
+  it. Largest movement across all twelve cells is −0.0068.
+- **S1 — not supported, and this bounds F6.** A2-gray minus A1-real on lenient is
+  −0.0007 [−0.0067, +0.0053] (MMStar), −0.0043 [−0.0216, +0.0124] (MathVista MC),
+  −0.0094 [−0.0225, +0.0029] (free-form). All contain zero. **The grounding
+  corrosion that is item-identifiable on R19 (§6, §6a) does not show up as an
+  accuracy loss on external benchmarks.** As the registration stated in advance,
+  this does not overturn F6 — F6 is registered on R19 — it **bounds its external
+  reach**, and is reported as the miss it is.
+
+**Strict repeats the format story exactly.** A1 gains +0.0096 (MMStar), +0.1119
+(MathVista MC) and +0.0399 (free-form), all intervals clear of zero, and S1 strict
+is strongly negative — −0.0087, −0.1107, −0.0457, all significant. With lenient
+flat, this is the `<answer>`-wrapper habit again, not answering ability.
+
+### The whole E1b result in one line
+
+**Across all 48 cells — blind and with-image, four arms, three seeds, two
+benchmarks — not one lenient comparison moves.** Twenty-four intervals, every one
+containing zero. The complete measurable out-of-domain effect of this RLVR recipe
+is **output-format compliance**, which A1 acquires strongly and the blind-trained
+arms do not.
+
+That is a strong negative result and it is worth stating plainly: what the pilot
+installs is **specific to the training distribution**. It transfers as formatting,
+not as capability — in either direction, and whether or not the image is present.
 
 ---
 

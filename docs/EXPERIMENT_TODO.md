@@ -1,6 +1,8 @@
 # Experiment To-Do — Engineering Implementation
 Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define *what claim* each experiment serves; this file defines *what the code must do* so the two never diverge. Updated 2026-07-27.
 
+**Benchmark stance (2026-07-27).** For Paper 1: **finalize, do not extend.** Remaining benchmark work is scoring and documentation only — Phase 0 below. New capability tracks are Paper-2 work and stay gated on Mini-A5; if the endpoint proves unmovable, tracks built now would measure something no method can affect.
+
 **How to use.** Every row names the claim it serves and the implementation requirement that makes the result mean what the claim says. If an implementation detail here conflicts with a merged registration, the registration wins and this file is corrected. Status snapshot is from the 2026-07-27 consolidated results; **verify against `reports/main_progress.md` at HEAD before acting** — the ledger is authoritative, this file is a plan.
 
 ---
@@ -25,6 +27,9 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | I14 | Every new track passes acceptance gates (caption stress, blind floor, attacker check, difficulty band) before it is used for training or reporting. | Blind-solvability as a schema field is not a gate; an unaudited track can leak. |
 | I15 | The intervention-group schema is versioned and validated by the training loader with a fixture. | Silent schema drift changes what a group contains, and therefore what the reward means. |
 | I16 | If a premise warm start is used, an SFT-warm-start + standard-GRPO comparator is trained alongside. | Without it, every gain is attributable to the SFT rather than to IGPO. |
+| I18 | Every blind/retention figure is reported against the null appropriate to its answer format (MC → 1/k; free-form → ≈0; mixed → split), with bootstrap CIs. Conclusions about a benchmark's blind opportunity are written after its split is computed, never before. | Raw retention on multiple-choice benchmarks reports the guessing floor as if it were prior exploitation — and asserting a comparison before computing it is how that error arose. |
+| I19 | The long-horizon run extends the **anchor** (unfrozen tower, native reward, unfiltered corpus), never pilot A1. Every mention states the configuration and names the unfiltered corpus as a confound. | Misattributing it to A1 claims a controlled result we did not run — and discards the stronger fact that corrosion occurs with gradients reaching the vision encoder. |
+| I17 | Baselines are implemented as published. No component of our method is transplanted into a baseline; fairness is secured by matched backbone/data/compute, baseline-specific tuning, and reproducing the baseline's own claimed benefit before reporting. | A baseline carrying our contribution is neither the published method nor a clean ablation, and it hands our novelty to prior work. |
 
 ---
 
@@ -34,31 +39,47 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | ID | Experiment | Serves | Status |
 |---|---|---|---|
 | C1 | Pilot seeds 1–3, four arms (A1 real / A2 gray / A2b no-image / A3 caption), geo3k, 100 steps | F1, F2, ladder R1 | ✅ |
-| D2 | Test-time access, three seeds | F1 (access matrix) | ✅ |
+| D2 | Test-time access, three seeds | F1 | ✅ |
+| D3 | Train×test grid, 36 cells | **F1 — the central figure** | ✅ registered branch (a): ratio > 2 for both blind arms in all three seeds; strict control 1.95–2.69, qualifying not overturning |
 | X1/X5 | Image-condition matrix, seeds 1–2 (correct / mismatched-real / twin / gray / no-image × both layers) | F3 | ✅ |
 | X2 | Hard-negative ranking v2, registered ladder fired (bottom branch) | F4, candidate-set correction | ✅ |
 | X3 | A2 −0.045 item forensics (Jaccard 0.724 vs null 0.098) | F5 | ✅ |
 | X4 | Calibration, exploratory | F6 | ✅ |
-| B1 | Geometry track declared batch + trained-checkpoint scoring | F4, benchmark §5 | ✅ |
+| B1 | Geometry track declared batch + trained-checkpoint scoring | F5, benchmark §5 | ✅ |
+| D4 | Caption test column, 4×3 → 4×4 | F1 | ✅ branch (a) **evidence-general**: ρ(caption,real)=+0.80, caption spread 4.0× blind spread. A3 ratio 1.67 (<2×) — reported as a confirmed prediction, since A3's matched condition is evidence-bearing |
+| M5 | Long horizon → step 400 | **R2** | ✅ **verdict FALLING**: geometry pair acc 0.4800 → 0.4133, Δ −0.0667 [−0.0933,−0.0400]; below the frozen base 0.4717; strict ≡ lenient; blind floor holds at 0.0. Terminal — no extension |
+| M11 | Cross-family generalization | R5 | ✅ recovered 2026-07-28 |
+| G0 | Gate-0 stratification | title claim + Paper-2 C1 | ✅ **G0.2: image-free training recovers 84% of A1's gain on blind-answerable items and 42% on items requiring pixels** |
+| E1a | Base external-benchmark blind columns | **motivation / opening** | ✅ **naive figures WITHDRAWN — superseded by CHANCE.** Corrected (I18): MMStar **−0.029 [−0.108, +0.049]** (3B) and **+0.053 [−0.010, +0.117]** (7B) — indistinguishable from the 0.2688 guessing floor, so MMStar is image-necessary, not blind-solvable. MathVista **split**: MC +0.458/+0.464, free-form +0.228/+0.210; its old whole-benchmark 53%/51% was a forbidden cross-format average. Cross-family: **only free-form is reportable** — Gemma-3 0.727 [0.690, 0.765], InternVL3-9B 0.485 [0.439, 0.533]; **both MC ratios withheld** (Gemma-3's with-image MC accuracy 0.1349 is *below* its 0.2679 null → negative denominator, 100% of replicates degenerate). FlipTrack 0.0000 collapse 1.0 for every model — unchanged. |
+| CL | Cue ladder | Paper 2 P1.1 | ✅ **closed — both monotonicity gates failed**; marker is cue (+0.317) *and* occluder (−0.277); arm cells deliberately unscored, F3d untested not refuted. Micro-result retained: at 3B a correct cue adds nothing and a misleading one costs nothing once text names the series |
 | — | Instrument dossier: R19, one-shot R20, 72B caption stress, attackers, human audit, cross-family | C3 | ✅ |
 
 ### 1B. In flight
 | ID | Experiment | Serves | Implementation requirement |
 |---|---|---|---|
-| D3 | Train×test grid (19/36 cells at snapshot) | **completes F1** | All four training arms × {real, gray, no-image, caption} test conditions × 3 seeds. Export one tidy CSV keyed for F1. Registered estimand: TrainShare with paired item-level CIs per seed — register before reading remaining cells (I9). |
-| M5 | Long-horizon to step 400 (step 354 at snapshot) | ladder R2 | Terminal rule already merged: 400-vs-100 primary, SESOI ±0.05, no extension under any outcome. Evaluate at 150/200/300/400. |
-| A5 | Mini-A5: CP arm vs matched same-data standard GRPO | **F7**, and Paper-2 Gate 1 | Same corpus, prompts, G, steps, token budget for both arms. Advantage-tensor equivalence test must pass. Success read on held-out-template pair accuracy, not margins. |
+| A5 | Mini-A5: CP arm complete, member arm 17/120 | **F8**, Paper-2 Gate 1 | Both arms sealed until the acceptance gate passes. Success read on held-out-template pair accuracy, not margins. |
+| M7 | ViRL39K stratified — launched 2026-07-28 (arm 1 of 8) | R3 | Per-stratum estimands and merged pre-launch prediction verified present. |
+
+### 1B-bis. **Highest priority — completes R2 into a headline figure**
+| ID | Experiment | Serves | Implementation requirement |
+|---|---|---|---|
+| **M5b** | **geo3k benchmark trajectory across the M5 checkpoints** | turns R2 into **the scissors figure** and gates the title upgrade | **Check for existing artifacts first** — the merged extension registered "benchmark + FlipTrack R19 evaluations at steps 150, 200, 300, 400", so these numbers may already exist and this may be a reporting gap rather than an experiment. If absent, evaluate geo3k `Acc_final` at 100/150/200/300/400 on the existing checkpoints, locked contract, paired CIs. Plot benchmark and grounding on identical axes with the frozen-base reference; the divergence in trajectory matters more than the terminal difference. |
+| **CHANCE** | **Null correction on every blind-retention figure** | **protects F0, the paper's opening** | ✅ **DONE 2026-07-28** — `reports/chance_corrected_retention_v1.*`. **Coverage is partial and that is a finding, not an omission:** BLINK, HallusionBench, MMVP, MathVerse and MMMU have **no image-removed run anywhere**, so no retention (naive or corrected) exists for them; k is available for future work. Executed spec: Retention = (blind − null)/(with-image − null), with **item-level bootstrap CIs** — it is a ratio of differences, so naive intervals do not apply. **Null rule by answer format:** multiple-choice → 1/k; free-form numeric → ≈0, no correction; **mixed benchmarks split into MC and free-form subsets and reported separately**, never one global null. Report image-present accuracy, blind accuracy, the null, corrected retention, and CI for every benchmark. Known: MMStar is 4-way MC, blind 0.2607/0.2880 vs 0.25 → corrected retention ≈3.5%, not 47%. **Do not assert that any other benchmark retains materially more until its split is computed** — MathVista is roughly half MC and its correction may also be large; if its free-form subset holds up, that is the stronger result since no guessing explains it. Pure arithmetic on existing numbers. |
+| **SEED3γ** | Third-seed replication of the A2-gray −0.0450 attractor | **gates Tier-1 wording of the corrosion ladder** | Cached predictions; no GPU. Until it returns, Tier 1 reads "across two analyzed seeds," not "across seeds." A 3/3 structured replication strengthens the formal corrosion concept at essentially zero interpretive cost — run it with CHANCE. |
+| LH2 | Second long-horizon seed — **staged, conditional** | Tier-3 upgrade of the corrosion ladder | Do **not** commit a full 400-step run before M5b. Sequence: (1) recover or run M5b; (2) if the scissors pattern appears, register LH2; (3) run the second seed through the intermediate checkpoints only; (4) continue to step 400 **only if** the grounding trajectory reproduces directionally. Each stage is a separate go/no-go. |
 
 ### 1C. Remaining
 | ID | Experiment | Serves | Implementation requirement |
 |---|---|---|---|
-| M7 | ViRL39K stratified decomposition (built, awaiting node) | ladder R3 | Strata = source × category with stratum-level q̄ attached; per-stratum estimands registered; pooled reported secondary. Prediction (merged pre-launch): recovery tracks stratum blind-opportunity. |
-| C5 | 7B access pair | ladder R4 | **A1 and A2b only, one seed** — the test side is inference, so the headline replicates for two training runs, not twelve. |
+| M7 | **ViRL39K stratified decomposition — PROMOTED** (built, awaiting node) | ladder R3; second corpus for a bold claim | Strata = source × category with stratum-level q̄ attached; per-stratum estimands registered; pooled reported secondary. Prediction (merged pre-launch): recovery tracks stratum blind-opportunity. |
+| C5 | **7B access pair — PROMOTED; no configs exist yet** | ladder R4; second scale | **A1 and A2-gray only, one seed** — gray is now the sharper contrast (49% crossed recovery from zero visual information). The test side is inference, so the headline matrix replicates for two training runs, not twelve. |
 | M11 | Cross-family completion | ladder R5 | Inference only. Confirm current state in the ledger; snapshot is ambiguous between "validity confirmed" and "full matrix pending." |
 | X6 | Related-work nine-column table | positioning | **PI-owned, not a cluster task.** |
+| **D4** | **Caption test column — completes the D3 matrix** | **F1** — is the readout policy pixel-specific or evidence-general? | The registered matrix is 4×3 because A3's own condition is absent. Score all four arms × 3 seeds under *tested-with-caption* using the frozen 3B caption store, same locked decoding. If caption-at-test reproduces the real-image ordering, the policy reads evidence generally; if not, it is pixel-specific. **Inference only on existing checkpoints — the one addition to Paper 1.** |
+| **E1b** | **Trained-arm external-benchmark access columns** | **generalization of F1 beyond geo3k** | 🔄 **blind column DONE 2026-07-28 (24/24), with-image column running.** Registered `docs/registered_e1b_external_access_matrix_v1.md` before any cell ran. **P1 refuted:** no arm beats base blind on either benchmark or any subset — twelve intervals, all containing zero, widest Δ 0.006. **P2 withheld** (not evaluable: it scales by A1's own blind gain, which is null). Strict shows a real gain for A1 (+0.0411 MMStar, +0.0798 MathVista MC) but `Format_valid` tracks it step for step, so **what transfers is output-format compliance, not blind answering**. `reports/e1b_blind_readout_v1.json`. Base rows complete (E1a). Now evaluate all four arms × 3 seeds on the pinned suite **with and without images**, locked decoding. Expected shape if the mechanism holds — blind-trained arms beat base *with* images and match base *without*. **Inference only, no training.** |
+| E2 | Anchor as recipe-variation comparison | robustness of the dissociation across configurations | No new runs. Report the existing anchor (unfrozen vision tower, native r1v reward, unfiltered corpus) alongside the pilot as evidence that the dissociation is not an artifact of the frozen-tower / canonical-reward configuration. |
 | G0 | Gate-0 stratification (see Part 2) | freezes the title claim | Cached predictions; also serves Paper 2. |
-| CL | **Cue ladder on existing checkpoints** | **F4b** — does RLVR improve oracle-localized readout while leaving search and binding flat? | Generate four rungs (exact / region / no cue / decoy) from the nine-series scene family; score base + 4 arms × 3 seeds, inference only. Register the analysis before scoring; label a post-hoc decomposition. Invariants I12, I13. Generation is CPU; scoring is one eval pass per checkpoint. |
-| F2d | Template decomposition of the overall-R19 movement | **sharpens F2** | Split the +0.0283/+0.0208/+0.0267 overall delta by template. Expectation from role analysis: the saturated table contributes zero and the movement concentrates on the oracle-localized readout control. Cached predictions, no new inference. |
+| F3d | Template decomposition of the overall-R19 movement | **sharpens F3** | Split the +0.0283/+0.0208/+0.0267 overall delta by template. Expectation from role analysis: the saturated table contributes zero and the movement concentrates on the oracle-localized readout control. Cached predictions, no new inference. |
 
 ---
 
@@ -72,10 +93,10 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | G0.3 | Overlap of A1 / A2b newly-correct sets (Jaccard + permutation null) | same policy or different policies |
 | G0.4 | Answer-gain vs format-gain split of A2b's image-present gain | that the access-matrix result is not a formatting artifact |
 
-### 2B. Phase 0 — no GPU training; blocking
+### 2B. Phase 0 — no GPU training; blocking — ✅ **COMPLETE**
 | ID | Task | Why blocking / requirement |
 |---|---|---|
-| P0.1 | Measure **premise-probe accuracy separately** on the B1 batch, all models | If premises are at floor, C3 supplies no gradient and IGPO cannot learn on chained items. Determines whether the paper's most valuable result is reachable. Report premise accuracy, reasoning-given-correct-premise, member accuracy, pair accuracy, and premise-transition accuracy as five separate numbers. |
+| P0.1 | Measure **premise-probe accuracy separately** on the B1 batch, all models | ✅ complete — branch (b): the chained-premise floor is **uninformative**, so it is not counted as evidence in F5 and the construct needs redesign before it can carry a Paper-2 claim. |
 | P0.2 | Fix the **equal-gold invariance scorer** (two-gold ambiguity guard structurally fails equal-gold items) | Invariance is the anti-gaming component (I5, I13); it cannot rest on single-gold workaround scoring. Ships with an adversarial fixture. |
 | P0.3 | Freeze and version the **intervention-group schema**; add loader validation fixture | I15. |
 | P0.4 | Fix task **roles** in all reports and text | Primary visual anchor / saturated positive control + retention canary / oracle-localized readout control. No aggregate across roles (I13). |
@@ -83,7 +104,7 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 ### 2C. Phase 1 — minimum capability extension (development scale only)
 | ID | Task | Requirement |
 |---|---|---|
-| P1.1 | Cue ladder track | Shared scene program across rungs; decoy gold follows the question (I12). Doubles as Paper-1 task CL. |
+| P1.1 | Cue ladder track | Shared scene program across rungs; decoy gold follows the question (I12). **Paper 2 only** — reversed from the earlier plan: D3 already establishes readout-not-discrimination at the level Paper 1 needs, so building this for Paper 1 would be accumulation rather than argument. |
 | P1.2 | Binding and distractor track | **Scales B1's existing `binding_swap` / `distractor_only` types — not a new build.** Add similar-label interference, same-abscissa/ordinate distractors, position exchange, question-cue conflict. |
 | P1.3 | Causal / invariance groups | Both present in every group; reported separately (I13). Scales B1's `style_twin` and `fact_read` types. |
 | P1.4 | Generate **100–300 development groups only** | Check difficulty band, blind-solvability, scorer behaviour, and whether IGPO produces non-zero training signal. **Do not generate tens of thousands of items before Mini-A5 prints a positive signal.** |
@@ -111,12 +132,39 @@ Phase 2 (premise curriculum) expands only if P0.1 shows learnable signal; if pre
 | Stage 3 (7B) | standard · full IGPO · minimal blind control | Three runs, not a matrix. |
 | Efficiency ablation | blind-first curriculum at matched total compute | Registered probe: Paper-1's 42-item corrosion set. Not headline. |
 
+### 2E-bis. Prior-method baselines — implemented as published
+| ID | Baseline | Implementation | Argumentative role |
+|---|---|---|---|
+| B-PR1 | Perception-R1 | **As published**: model-judged visual-description consistency reward. Do **not** substitute our verifiable premises. | Does an existing visual reward fix acquisition? |
+| B-VPPO | VPPO | **As published**: attention-derived visual-dependency token reweighting. | Does existing credit reweighting reach the encoder? |
+
+**Baseline integrity rules.**
+1. **No component of our method is transplanted into a baseline.** Enhancing a baseline with our contribution produces a hybrid that is neither the published method nor a clean ablation, and it attributes our novelty to prior work. The question "would verified premises improve a description-style reward?" is a design-choice study of ours (below), not a baseline.
+2. **Fairness lives on the axes that matter:** identical backbone, data, and compute budget; a baseline-specific hyperparameter search rather than inherited settings; every deviation forced by our setting reported explicitly.
+3. **Implementation validation before reporting:** each baseline must reproduce its own claimed benefit on ordinary accuracy. A baseline that works exactly as advertised and still fails our criteria is the strongest possible result; a baseline that underperforms without this check invites "you implemented it badly."
+4. **Every baseline is pushed through the access matrix** and scored on the co-primary criteria. If prior methods also show ~50% crossed recovery and flat competence, the field's current answer does not fix the problem either — a second diagnostic result rather than a courtesy comparison.
+
+**Design-choice study (ours, not a baseline):** verified premise reward vs model-judged description reward, both inside IGPO. The win is attributed to our verification mechanism, where it belongs.
+
+**Ablation, not a baseline:** standard GRPO on our generated corpus (Stage-2 arm "paired-data") isolates data volume from signal design and sits in the ablation ladder.
+
+**Scope statement, not an experiment:** the mechanism argument concerns outcome-only rewards under group normalization, hence the GRPO family (GRPO, DAPO, RLOO, variants). PPO with a learned value baseline is a different credit path and belongs in the limitations sentence, not the GPU queue.
+
 ### 2F. Evaluation harness (must exist before Stage 2)
 Co-primary A — competence: counterfactual pair accuracy, hard negatives, binding, prior-conflict, premise extraction, chained reasoning, invariance specificity, held-out-template transfer.
 Co-primary B — attribution: VAG = ΔAcc(method, real) − ΔAcc(matched same-data blind control, real), with constraints (real up, blind not significantly down, A rises jointly). **Requires training a same-data blind control per method arm** — budget it explicitly (I8).
 Supporting: external benchmarks with blind variants at matched compute; corrosion probe; calibration.
 
 ---
+
+## PART 2-bis — Execution order (2026-07-28)
+1. **CHANCE** — recompute every external retention against its format-appropriate null; regenerate the F0 table. No GPU.
+2. **M5b** — locate existing benchmark artifacts first (the merged extension registered them); run only what is missing. Plot base + steps 100/150/200/300/400, geo3k accuracy and the R19 primary anchor on identical axes; trajectory divergence matters more than the terminal gap.
+3. **SEED3γ** — third-seed structured corrosion; unlocks Tier-1 wording. No GPU.
+4. **LH2 decision** — triggered only by a genuine scissors pattern in M5b, then staged per its row.
+5. Finish **Mini-A5** and **M7** under their registered endpoints, unaltered.
+6. **E1b** — trained-arm external columns, so the public-benchmark result connects to the gain decomposition.
+7. **C5 7B configs** — author A1 and A2-gray after the current evidence chain is secured.
 
 ## PART 3 — Human items (Richard)
 - [ ] Chart-v08 no-zoom audit (~1–2 h; package ready) — blocks chart-v08 freeze and P2 of the benchmark build.

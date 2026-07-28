@@ -115,3 +115,28 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
   check, not defects in the data**: with correct parsing and type coercion the base
   item sets are 1500/1500 and 999/999 present. `scripts/preflight_e1b.py` now parses
   the TSV. No data was modified and no E1b cell was affected.
+
+- **E1b MathVista with-image cells recorded `status: fail` while their inference
+  had fully succeeded.** VLMEvalKit's *native* MathVista scorer requires an
+  OpenAI judge; without one it aborted, and `validate_vlmeval_run.py` then failed
+  the run for a missing `*_acc.csv`. The run summary shows the true state:
+  `infer_fail_rate 0.00% (0/999)`, `judge_fail_rate 100%`. All 999 predictions
+  per cell were on disk the whole time. The project never uses that judge for
+  reported numbers — the base MathVista column was scored by
+  `postprocess_vlmeval_predictions.py` under canonical-v2 — so all 12 cells were
+  recovered by running the canonical scorer over the raw workbooks. No GPU work
+  was repeated. **For future MathVista runs pass `MODE=infer`** to
+  `launch_vlmevalkit_eval.sh`, which skips the judge stage and the spurious
+  failure. Recorded as an implementation issue; no reported number depends on it.
+  This is the second instance of the general lesson already in this ledger: a
+  `fail` status is a claim about a pipeline stage, not about whether the work
+  happened.
+
+- **Two defects in my own E1b image readout, both caught before any number was
+  reported.** (1) It ran the postprocess under `.venv/bin/python`, which lacks
+  `openpyxl`, so every workbook read failed; the base pipeline uses
+  `artifacts/envs/vlmevalkit/bin/python`. (2) It selected `candidates[-1]`, which
+  on MMStar is `_exact_matching_result.pkl` rather than the raw prediction
+  workbook — MathVista only worked because it happened to have no pickle. Both
+  fixed in `scripts/e1b_image_readout.py`; the second is the more dangerous kind,
+  since a wrong-but-readable input would have produced plausible numbers.
