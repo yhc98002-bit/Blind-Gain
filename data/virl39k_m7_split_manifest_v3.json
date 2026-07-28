@@ -1,0 +1,21 @@
+{
+  "heldout_file": "virl39k_m7_heldout_v3.jsonl",
+  "heldout_rows": 4239,
+  "heldout_sha256": "50f3b85c11c4046ef2512c544faec04286648688bb6d47548995f18cab40716c",
+  "identifier_integrity": {
+    "shared_qids": 0
+  },
+  "image_integrity": {
+    "heldout_unique_images": 3881,
+    "shared_image_examples": [],
+    "shared_images": 0,
+    "train_unique_images": 21590
+  },
+  "registration": "docs/registered_m7_single_image_v2.md",
+  "restriction": "single-image rows only (len(images) <= 1)",
+  "schema_version": "blind-gains.m7-heldout-split.v2",
+  "supersedes": "data/virl39k_m7_split_manifest_v2.json",
+  "train_file": "virl39k_m7_train_v3.jsonl",
+  "train_rows": 23542,
+  "train_sha256": "a3d18c370958e1cfffa866b0d5f5be495fe1fcec8913b22240691156e7a4d6a9"
+}

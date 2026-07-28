@@ -52,7 +52,7 @@ TRAIN_SHA="$(sha256sum "${TRAIN_FILE}" | awk '{print $1}')"
 VAL_SHA="$(sha256sum "${VAL_FILE}" | awk '{print $1}')"
 jq -e --arg t "${TRAIN_SHA}" --arg v "${VAL_SHA}" \
   '(.train_sha256 == $t) and (.heldout_sha256 == $v) and (.image_integrity.shared_images == 0)' \
-  data/virl39k_m7_split_manifest_v2.json >/dev/null || {
+  data/virl39k_m7_split_manifest_v3.json >/dev/null || {
   echo "corpus hashes do not match the registered image-disjoint split" >&2; exit 3; }
 
 CHECKPOINT_PATH="$(python3 -c 'import yaml,sys; print(yaml.safe_load(open(sys.argv[1]))["trainer"]["save_checkpoint_path"])' "${CONFIG}")"
