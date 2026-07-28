@@ -18,7 +18,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | C1 three seeds × four arms, geo3k | R1, F1/F2 | **complete** |
 | D2 test-time access, three seeds | F1 | **complete** |
 | D3 train × test grid, 36 cells | **F1 central figure** | **complete**, registered branch (a) |
-| D4 caption test column (4×3 → 4×4) | F1 | **running** — 4/12 cells done |
+| D4 caption test column (4×3 → 4×4) | F1 | **complete** — branch (a), evidence-general |
 | M5 long horizon → step 400 | **R2** | **complete — verdict FALLING** |
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
@@ -119,6 +119,38 @@ both arms.
 
 The caption inversion replicates 3/3: A3 starts above A1 at step 0 (0.2097 vs
 0.1747) and ends below it at step 100.
+
+---
+
+## 2b. D4 — the caption test column (completes the matrix to 4×4)
+
+`reports/d4_caption_column_v1.*`. Registered primary, filed before any cell ran:
+is the readout policy pixel-specific or evidence-general? Base caption row pinned
+at 0.2097; 12 cells, n=601.
+
+| arm | caption accuracy | gain over base | 95% CI |
+|---|---|---|---|
+| A1 real | 0.3145 | **+0.1048** | [+0.0727, +0.1370] |
+| A3 caption | 0.3145 | **+0.1048** | [+0.0732, +0.1375] |
+| A2b no-image | 0.2751 | +0.0654 | [+0.0361, +0.0965] |
+| A2 gray | 0.2629 | +0.0532 | [+0.0233, +0.0837] |
+
+**Branch (a) fires — evidence-general.** Spearman ρ(caption, real) = **+0.800**
+(threshold ≥ +0.70) and the caption column's spread is **4.0×** the larger blind
+spread (0.0516 vs 0.0130; threshold ≥ 2×). Given frozen textual descriptions
+instead of pixels the arms re-order as they do with images and spread apart four
+times more than under a blind condition, so **the readout policy is not
+pixel-specific**. F1's two-regime split is about information presence, not
+modality — which is what licenses generalising the ceiling argument beyond pixels.
+
+The A1/A3 tie at +0.1048 is a coincidence of the three-seed mean (distinct
+checkpoints, per-seed accuracies differ, ~40% answer agreement); ρ = +0.800
+rather than +1.000 is entirely that swap.
+
+**Secondary — A3 does not clear the protocol-effect bar.** A3 matched (caption)
++0.1048 vs crossed (real) +0.1747 is a ratio of **1.67**, below the registered
+2× threshold. So the matched-versus-crossed protocol effect is stated for **two
+arms, not three**; A3 is an exception, reported as such under branch (c).
 
 ---
 
