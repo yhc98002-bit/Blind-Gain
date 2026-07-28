@@ -26,6 +26,11 @@ from src.eval.prompt_contract import DEFAULT_PROMPT_CONTRACT
 
 ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain")
 MANIFEST = "data/geometry3k_caption_images_manifest.jsonl"
+# Frozen question-blind caption store, identical to the one the A3 arm's own
+# step-100 evaluation used (see m2_geo3k_a3_caption_seed1 run manifest).
+CAPTION_STORE_DIR = (
+    "experiments/runs/geometry3k_qwen25vl3b_captionstore384_20260710T005300Z/shards"
+)
 FORMAT_PROMPT = "artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 EXPECTED_ROWS = 601
 SEED = 20260710
@@ -283,6 +288,15 @@ def launch_cell(node: str, gpu: int, model_key: str, condition: str, git_hash: s
             "performance_values_opened": False,
         },
     )
+    if condition == "caption":
+        shards = sorted((ROOT / CAPTION_STORE_DIR).glob("store_shard_*.jsonl"))
+        if not shards:
+            raise RuntimeError(f"caption store is empty: {CAPTION_STORE_DIR}")
+        caption_args = "--caption-shards " + " ".join(
+            str(s.relative_to(ROOT)) for s in shards
+        )
+    else:
+        caption_args = ""
     command = (
         f"cd '{ROOT}' && "
         f"(nohup env TRANSFORMERS_OFFLINE=1 HF_HOME={ROOT}/artifacts/hf_home "
@@ -296,6 +310,7 @@ def launch_cell(node: str, gpu: int, model_key: str, condition: str, git_hash: s
         f"--source-training-manifest {spec['training_run']}/run_manifest.json "
         f"--checkpoint-index-sha256 {index_sha} --batch-size 4 --max-model-len 8192 "
         f"--max-tokens {MAX_TOKENS} --seed {SEED} --global-step 100 "
+        f"{caption_args} "
         f"> experiments/runs/{run_id}/logs/cell.log 2>&1 & echo $! > experiments/runs/{run_id}/logs/pid)"
     )
     result = _ssh_retry(node, command, attempts=3)
