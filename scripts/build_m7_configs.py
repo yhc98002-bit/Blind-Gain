@@ -26,7 +26,12 @@ ARMS = {
 SEEDS = (1, 2)
 TRAIN_FILE = "data/virl39k_m7_train_v2.jsonl"
 VAL_FILE = "data/virl39k_m7_heldout_v2.jsonl"
-IMAGE_DIR = str(ROOT / "data/virl39k_main_filtered_images")
+# The M7 manifests carry repo-root-relative image paths
+# ("data/virl39k/images/..."), so image_dir must be null exactly as it is
+# for every other config in this repo. The flat
+# virl39k_main_filtered_images store is content-addressed and resolves
+# none of them (measured 0/25712 train, 0/4524 heldout).
+IMAGE_DIR = None
 CAPTION_STORE = str(ROOT / "data/virl39k_caption_store_3b_main_v2.jsonl")
 
 
