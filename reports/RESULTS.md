@@ -133,8 +133,8 @@ own right, not a caveat on another one.
 **Power.** Minimum detectable effect at 80% power (two-sided alpha=0.05) is
 0.0348 (A1), 0.0377 (A2 gray), 0.0360 (A2b), 0.0338 (A3) — all comfortably below
 the +/-0.05 SESOI. The A1 null is therefore informative rather than underpowered:
-the design could have detected an effect roughly half the size of the
-equivalence bound.
+the design could have detected an effect about 70% of the equivalence
+bound (0.0348 / 0.05).
 
 ---
 

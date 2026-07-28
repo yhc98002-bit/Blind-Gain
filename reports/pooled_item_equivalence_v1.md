@@ -85,5 +85,5 @@ power (two-sided α=0.05), Acc_final:
 
 For A1 the minimum detectable effect is ≈0.035, comfortably below the
 ±0.05 SESOI, so the null is informative rather than merely underpowered:
-the design could have detected an effect half the size of the equivalence
-bound. This is the power statement the audit asked for.
+the design could have detected an effect about 70% of the equivalence
+bound (0.0348 / 0.05). This is the power statement the audit asked for.

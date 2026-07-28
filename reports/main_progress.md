@@ -31,7 +31,7 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | A5 | Mini-A5 CP vs matched same-data GRPO | running | **CP arm complete at 120/120** (`mini_a5_cp_main_an29_20260727T064527Z`, status complete, `global_step_120` written). **Matched member arm launched** on the now-free an29 0–7 (`mini_a5_member_main_an29_20260728T023715Z`); member config sha256 verified against the registration, storage guard pass. The two arms differ only in `pair_group_mode` and the reward callback. Readout on held-out-template pair accuracy, not margins; the advantage-tensor equivalence test must pass first. Gate-1 four-arm registration already merged behind it. |
 | M7 | ViRL39K stratified decomposition | blocked | Built; awaiting a full free node (an12 after M5). |
 | C5 | 7B access pair | blocked | Re-scoped to A1 and A2b only, one seed. Awaiting a node. |
-| M11 | Cross-family completion | blocked | **Ambiguity resolved 2026-07-27.** Both readings were partly right: six *smoke* cells validate the instrument cross-family (no-image collapse, caption ≤0.013) and are what PAPER1 §5's dossier cites; the **18-cell full matrix never ran**. Queue `m11_generalization_full_recovery_login_20260715T182317Z` has manifest status `fail` and its watcher (pid 177427) is dead, despite status report v10 describing it as running. No model performance may be reported from M11 until the full matrix and machine audit complete. Relaunch needs a node and is not scheduled. |
+| M11 | Cross-family completion | **pass** | **Corrected 2026-07-28 — R5 is LANDED.** The full 18-cell matrix completed via `m11_reconciled_backfill_v2_login_20260717T075457Z` (status complete, exit 0): 12 FlipTrack cells (InternVL3-9B, Gemma-3 x {R19,R20} x {real,caption,none}) plus a 6-cell blind-sample matrix. `reports/generalization_audits_v2.json` has status pass, zero errors, all six completeness checks true, and `performance_values_opened_only_after_complete_queue_gate=true`. My 2026-07-27 entry claiming "the 18-cell full matrix never ran" was wrong. |
 | CL | Cue ladder on existing checkpoints (F4b) | fail | Gate 1 pass (exact reproduces R19). Gate 2 **fails under both rung designs** (v1 0.4533/0.1367/0.6167; v2 0.3333/0.6100/0.6167), so branches (a)/(b) are void and the 12 arm cells were deliberately **not scored** — F2d's prediction is untested, not refuted. Cause: the on-point annotation is a cue *and* an occluder (+0.317 when it is the sole identifier, −0.277 when the series is named). Instrument findings stand: R19's nine-series marker occludes the datum it localizes; at 3B a correct or misleading visual cue adds ~nothing once text names the series. v3 redesign specified, not attempted this round. `reports/cue_ladder_readout_v1.*`. |
 | X6 | Related-work nine-column table | blocked | PI-owned, not a cluster task. |
 
@@ -83,6 +83,8 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
   items. `reports/b1_rescored_p02_v1.json`. **Closed.**
 - The B1 premise probe's on-disk `metrics.json` files read 0.000 for every cell
   under the pre-fix scorer and are void; cite the rescored readout instead.
-- `reports/m11_execution_queue_status_v10.md` describes its queue as `running`;
-  the run manifest says `fail` and the watcher is dead. Status reports are not
-  a substitute for checking the manifest.
+- `reports/m11_execution_queue_status_v10.md` describes its queue as `running` while that
+  queue's manifest says `fail`. **Both were stale**: the work was completed two days later by
+  `m11_reconciled_backfill_v2`. The real lesson is stronger than "check the manifest, not the
+  status report" — a failed run manifest does not mean the work never happened. Search for a
+  successor run before recording anything as never-ran.
