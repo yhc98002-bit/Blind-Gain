@@ -32,6 +32,9 @@ VAL_FILE = "data/virl39k_m7_heldout_v2.jsonl"
 # virl39k_main_filtered_images store is content-addressed and resolves
 # none of them (measured 0/25712 train, 0/4524 heldout).
 IMAGE_DIR = None
+
+# max images per prompt across the registered M7 splits (train 8, heldout 7)
+LIMIT_IMAGES = 8
 CAPTION_STORE = str(ROOT / "data/virl39k_caption_store_3b_main_v2.jsonl")
 
 
@@ -52,6 +55,11 @@ def main() -> None:
             data["train_files"] = TRAIN_FILE
             data["val_files"] = VAL_FILE
             data["image_dir"] = IMAGE_DIR
+            # ViRL39K carries up to 8 images per prompt (geo3k is
+            # single-image). EasyR1 only forwards limit_mm_per_prompt when
+            # limit_images is truthy, so 0 leaves vLLM at its default of 1
+            # and any multi-image row aborts the rollout.
+            config["worker"]["rollout"]["limit_images"] = LIMIT_IMAGES
             data["seed"] = seed
             if condition == "caption":
                 data["caption_store_paths"] = [CAPTION_STORE]
@@ -82,12 +90,38 @@ def main() -> None:
             )
 
     hyper_keys = ("algorithm", "worker")
+    # ViRL39K carries up to 8 images per prompt; geo3k is single-image and uses 0.
+    # This is the ONLY sanctioned deviation from the matched geo3k recipe, and all
+    # eight arms receive the identical value, so arm-to-arm parity is preserved.
+    SANCTIONED_DEVIATIONS = (("worker", "rollout", "limit_images"),)
+
+    def _strip_sanctioned(blob, top):
+        import copy as _copy
+        out = _copy.deepcopy(blob)
+        for path in SANCTIONED_DEVIATIONS:
+            if path[0] != top:
+                continue
+            node = out
+            for part in path[1:-1]:
+                node = node.get(part) if isinstance(node, dict) else None
+                if node is None:
+                    break
+            if isinstance(node, dict):
+                node.pop(path[-1], None)
+        return out
+
     baseline = yaml.safe_load((ROOT / "configs/train" / ARMS["a1_real"][0]).read_text(encoding="utf-8"))
     for record in written:
         config = yaml.safe_load((ROOT / record["config"]).read_text(encoding="utf-8"))
         for key in hyper_keys:
-            if json.dumps(config[key], sort_keys=True) != json.dumps(baseline[key], sort_keys=True):
+            got = json.dumps(_strip_sanctioned(config[key], key), sort_keys=True)
+            want = json.dumps(_strip_sanctioned(baseline[key], key), sort_keys=True)
+            if got != want:
                 raise AssertionError(f"arm {record['arm']} deviates from the matched recipe in {key}")
+        # arm-to-arm parity on the sanctioned key itself
+        if config["worker"]["rollout"]["limit_images"] != 8:
+            raise AssertionError(f"arm {record['arm']} has limit_images "
+                                 f"{config['worker']['rollout']['limit_images']}, expected 8")
         if config["data"]["train_files"] != TRAIN_FILE or config["data"]["val_files"] != VAL_FILE:
             raise AssertionError("corpus pinning failed")
 

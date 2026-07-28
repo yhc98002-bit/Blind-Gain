@@ -66,7 +66,7 @@ worker:
     n: 5
     temperature: 1.0
     top_p: 1.0
-    limit_images: 0
+    limit_images: 8
     gpu_memory_utilization: 0.6
     enforce_eager: false
     enable_chunked_prefill: false
