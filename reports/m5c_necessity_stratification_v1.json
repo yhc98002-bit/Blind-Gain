@@ -1,0 +1,1216 @@
+{
+  "adopted_definitions": {
+    "primary": {
+      "label_caveat": "Gate 0 never attached the words blind-solvable / image-necessary to these terciles; it called them low/mid/high \u0394q. The low-\u0394q bin means 'the image bought no measured reward opportunity', which is satisfied both by items the base model solves blind and by items it solves under no condition. q_blind and q_real are reported per bin so this is visible.",
+      "label_map": {
+        "bin0_low_delta_q": "blind_solvable",
+        "bin1_mid_delta_q": "intermediate",
+        "bin2_high_delta_q": "image_necessary"
+      },
+      "name": "delta_q terciles (Gate 0 G0.1)",
+      "operational_rule": "q_real = q_i from the guarded-rescore `real` per_item.jsonl; q_blind = q_i from the guarded-rescore `none` per_item.jsonl (base model, Jeffreys-smoothed). delta_q = q_real - q_blind. Bin edges = np.quantile(delta_q, [0,1/3,2/3,1]) with the outer edges opened to +/-inf; bin 0 is delta_q <= e1, bin i>0 is e_i < delta_q <= e_{i+1}. Identical code path to Gate 0.",
+      "quote_from_gate0_docstring": "Delta-q uses the audit's own per-item q_i, real minus none, on the identical rows.",
+      "quote_from_gate0_md": "\u0394q = q_real \u2212 q_blind per item, taken from the registered blind reward-opportunity audit's own `q_i`. Terciles of \u0394q, mean per-item image-present gain in each",
+      "source_code": "scripts/build_gate0_stratification.py (function `concentration`, n_bins=3)",
+      "source_report": "reports/gate0_stratification_v1.md"
+    },
+    "secondary": {
+      "name": "blind-answerable split (Gate 0 G0.2 headroom control)",
+      "operational_rule": "FLOOR = min(q_blind) over the 601 eval items; blind_answerable = q_blind > FLOOR + 1e-9.",
+      "quote_from_gate0_md": "`q_blind` is Jeffreys-smoothed, so items with no observed blind success sit at the floor 0.1387. The split is therefore **blind-answerable** (\u22651 observed blind success, n=117) versus **not** (n=484).",
+      "source_code": "scripts/build_g02_headroom_control.py lines 39-42",
+      "source_report": "reports/gate0_stratification_v1.md",
+      "why_reported": "This is Gate 0's only literal 'blind-solvable' definition. It is binary, so it cannot produce an 'intermediate' bin; it is reported alongside, not merged (I13)."
+    }
+  },
+  "crosstab_primary_by_secondary": {
+    "blind_solvable": {
+      "blind_answerable": 77,
+      "not_blind_answerable": 252
+    },
+    "image_necessary": {
+      "blind_answerable": 14,
+      "not_blind_answerable": 137
+    },
+    "intermediate": {
+      "blind_answerable": 26,
+      "not_blind_answerable": 95
+    }
+  },
+  "gate0_reproduction_check": {
+    "bin_edges_gate0": [
+      [
+        -0.7988410100453778,
+        0.0
+      ],
+      [
+        0.0,
+        0.23122927168017626
+      ],
+      [
+        0.23122927168017626,
+        0.7988410100453778
+      ]
+    ],
+    "bin_edges_here": [
+      [
+        -0.7988410100453778,
+        0.0
+      ],
+      [
+        0.0,
+        0.23122927168017626
+      ],
+      [
+        0.23122927168017626,
+        0.7988410100453778
+      ]
+    ],
+    "bin_edges_match": true,
+    "bin_n_gate0": [
+      329,
+      121,
+      151
+    ],
+    "bin_n_here": [
+      329,
+      121,
+      151
+    ],
+    "bin_n_match": true,
+    "blind_answerable_n_gate0": [
+      117,
+      484
+    ],
+    "blind_answerable_n_here": [
+      117,
+      484
+    ],
+    "delta_q_summary_gate0": {
+      "max": 0.7988410100453778,
+      "mean": 0.14918787250512847,
+      "min": -0.7988410100453778,
+      "q_blind_mean": 0.23259851966449763
+    },
+    "delta_q_summary_here": {
+      "max": 0.7988410100453778,
+      "mean": 0.14918787250512847,
+      "min": -0.7988410100453778,
+      "q_blind_mean": 0.23259851966449763
+    },
+    "jeffreys_floor_gate0": 0.1386589899546222,
+    "jeffreys_floor_here": 0.1386589899546222
+  },
+  "generated_utc": "2026-07-29T17:53:47Z",
+  "git_hash": "1b17b3b598f807c67256ea831a05022ba6b9bfb7",
+  "hypothesis_tests": {
+    "contrast_image_necessary_minus_blind_solvable": {
+      "acc_final": {
+        "contrast": -0.013788522313251072,
+        "contrast_ci95_independent_bin_bootstrap": [
+          -0.10357042210994584,
+          0.07729624187282352
+        ],
+        "delta_blind_solvable": -0.0060790273556231,
+        "delta_image_necessary": -0.019867549668874173,
+        "n_blind_solvable": 329,
+        "n_image_necessary": 151,
+        "note": "bins are disjoint item sets, so the bootstrap resamples each bin independently; the permutation reshuffles bin membership within their union",
+        "permutation_p_two_sided": 0.8374162583741626
+      },
+      "acc_strict": {
+        "contrast": -0.013788522313251072,
+        "contrast_ci95_independent_bin_bootstrap": [
+          -0.10433533283681233,
+          0.07784778276535345
+        ],
+        "delta_blind_solvable": -0.0060790273556231,
+        "delta_image_necessary": -0.019867549668874173,
+        "n_blind_solvable": 329,
+        "n_image_necessary": 151,
+        "note": "bins are disjoint item sets, so the bootstrap resamples each bin independently; the permutation reshuffles bin membership within their union",
+        "permutation_p_two_sided": 0.8373162683731626
+      }
+    },
+    "delta_q_of_gained_vs_lost": {
+      "acc_final": {
+        "difference": 0.030147063997536944,
+        "mean_delta_q_gained": 0.1539918020111666,
+        "mean_delta_q_lost": 0.12384473801362966,
+        "mean_delta_q_stable": 0.15205763087045218,
+        "n_gained": 71,
+        "n_lost": 66,
+        "permutation_p_two_sided": 0.5432456754324567
+      },
+      "acc_strict": {
+        "difference": 0.030147063997536944,
+        "mean_delta_q_gained": 0.1539918020111666,
+        "mean_delta_q_lost": 0.12384473801362966,
+        "mean_delta_q_stable": 0.15205763087045218,
+        "n_gained": 71,
+        "n_lost": 66,
+        "permutation_p_two_sided": 0.5547445255474452
+      }
+    },
+    "hypothesis_as_stated": "blind-solvable items improve or hold while image-necessary items decline, cancelling to a flat overall",
+    "spearman_change_vs_delta_q": {
+      "acc_final": {
+        "note": "average-rank Spearman; per-item change takes only {-1,0,+1} so ties dominate and Gate 0's ordinal-rank helper is not reused here",
+        "permutation_p_two_sided": 0.6053394660533946,
+        "spearman_rho_tie_aware": 0.021205567822423436
+      },
+      "acc_strict": {
+        "note": "average-rank Spearman; per-item change takes only {-1,0,+1} so ties dominate and Gate 0's ordinal-rank helper is not reused here",
+        "permutation_p_two_sided": 0.6026397360263973,
+        "spearman_rho_tie_aware": 0.021205567822423436
+      }
+    }
+  },
+  "i7_lenient_vs_strict": {
+    "acc_final_equals_acc_strict_per_item": {
+      "100": 601,
+      "400": 601
+    },
+    "n": 601,
+    "note": "Both metrics are computed, stored and reported separately and are never collapsed. Where the two tables carry identical point estimates it is because the underlying per-item vectors are identical, not because one was substituted for the other. Small differences between the lenient and strict bootstrap CIs are Monte-Carlo only: identical data, different draws consumed from the single seeded stream."
+  },
+  "join": {
+    "cross_field_mismatch_counts": {
+      "ground_truth_sub_vs_none": 0,
+      "ground_truth_sub_vs_real": 0,
+      "image_sha256_real_vs_none": 0,
+      "image_sha256_sub_vs_none": 0,
+      "image_sha256_sub_vs_real": 0,
+      "problem_real_vs_none": 0
+    },
+    "join_rate": 1.0,
+    "n_joined": 601,
+    "n_necessity_none_test": 601,
+    "n_necessity_real_test": 601,
+    "n_substrate": 601,
+    "necessity_arm_manifest_hash_differs": true,
+    "necessity_arm_manifest_hash_note": "The real and none guarded-rescore arms carry different data_manifest_hash values. This is inherited from Gate 0's inputs, which are used unchanged. Item identity across the two arms is therefore asserted from the row fields directly: problem and image_sha256 are equal on 601/601 joined test rows (see cross_field_mismatch_counts).",
+    "necessity_test_keys_missing_from_substrate": [],
+    "note_qid": "qid is null on every substrate row and on every necessity row, so a qid arm of the identity check is vacuous and is not claimed as a check.",
+    "qid_null_counts": {
+      "necessity_none": 601,
+      "necessity_real": 601,
+      "substrate": 601
+    },
+    "substrate_keys_missing_from_necessity": []
+  },
+  "necessity_source": {
+    "none": {
+      "condition_field_values": [
+        "none"
+      ],
+      "data_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+      "data_manifest_hash": "0b2599df27c92c36be1d89ec0e7c3d632963301e9505e9cc1cf3619b54f94281",
+      "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "parser_version": "canonical-v2",
+      "per_item_sha256": "60db78c675680507f1c3bc28ae7294da4cf5811f5cea75306dfdb70318ea2a6d",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "rescore_source_run": "experiments/runs/blind_solvability_v2_geo3k_filtered_v2_timeoutguard_resume_none_an12_20260712T044556Z",
+      "rows_excluded_non_test": 1288,
+      "rows_test": 601,
+      "rows_total": 1889,
+      "run": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z"
+    },
+    "real": {
+      "condition_field_values": [
+        "real"
+      ],
+      "data_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+      "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+      "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "parser_version": "canonical-v2",
+      "per_item_sha256": "021da42f00eab94bc431ed0e7924110c237f77454b23ded5a8f1064c48fd6aa3",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "rescore_source_run": "experiments/runs/blind_solvability_v2_geo3k_filtered_v2_real_an29_20260711T141452Z",
+      "rows_excluded_non_test": 1288,
+      "rows_test": 601,
+      "rows_total": 1889,
+      "run": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z"
+    }
+  },
+  "per_bin_100_to_400": {
+    "overall_all_items": {
+      "acc_final": {
+        "acc_step100": 0.43594009983361065,
+        "acc_step400": 0.4442595673876872,
+        "delta": 0.008319467554076539,
+        "delta_ci95_paired_item_bootstrap": [
+          -0.029950083194675542,
+          0.04658901830282862
+        ],
+        "gained": 71,
+        "lost": 66,
+        "mcnemar_exact_p": 0.7326840935910409,
+        "n": 601,
+        "n_changed": 137,
+        "n_correct_step100": 262,
+        "n_correct_step400": 267,
+        "stable_correct": 196,
+        "stable_incorrect": 268,
+        "turnover_rate": 0.22795341098169716
+      },
+      "acc_strict": {
+        "acc_step100": 0.43594009983361065,
+        "acc_step400": 0.4442595673876872,
+        "delta": 0.008319467554076539,
+        "delta_ci95_paired_item_bootstrap": [
+          -0.029950083194675542,
+          0.04658901830282862
+        ],
+        "gained": 71,
+        "lost": 66,
+        "mcnemar_exact_p": 0.7326840935910409,
+        "n": 601,
+        "n_changed": 137,
+        "n_correct_step100": 262,
+        "n_correct_step400": 267,
+        "stable_correct": 196,
+        "stable_incorrect": 268,
+        "turnover_rate": 0.22795341098169716
+      }
+    },
+    "primary_delta_q_terciles": {
+      "blind_solvable": {
+        "acc_final": {
+          "acc_step100": 0.25227963525835867,
+          "acc_step400": 0.24620060790273557,
+          "delta": -0.0060790273556231,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.0547112462006079,
+            0.0425531914893617
+          ],
+          "gained": 32,
+          "lost": 34,
+          "mcnemar_exact_p": 0.9021585000966993,
+          "n": 329,
+          "n_changed": 66,
+          "n_correct_step100": 83,
+          "n_correct_step400": 81,
+          "stable_correct": 49,
+          "stable_incorrect": 214,
+          "turnover_rate": 0.2006079027355623
+        },
+        "acc_strict": {
+          "acc_step100": 0.25227963525835867,
+          "acc_step400": 0.24620060790273557,
+          "delta": -0.0060790273556231,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.0547112462006079,
+            0.0425531914893617
+          ],
+          "gained": 32,
+          "lost": 34,
+          "mcnemar_exact_p": 0.9021585000966993,
+          "n": 329,
+          "n_changed": 66,
+          "n_correct_step100": 83,
+          "n_correct_step400": 81,
+          "stable_correct": 49,
+          "stable_incorrect": 214,
+          "turnover_rate": 0.2006079027355623
+        }
+      },
+      "image_necessary": {
+        "acc_final": {
+          "acc_step100": 0.7549668874172185,
+          "acc_step400": 0.7350993377483444,
+          "delta": -0.019867549668874173,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.09933774834437085,
+            0.059602649006622516
+          ],
+          "gained": 17,
+          "lost": 20,
+          "mcnemar_exact_p": 0.7428293587290682,
+          "n": 151,
+          "n_changed": 37,
+          "n_correct_step100": 114,
+          "n_correct_step400": 111,
+          "stable_correct": 94,
+          "stable_incorrect": 20,
+          "turnover_rate": 0.24503311258278146
+        },
+        "acc_strict": {
+          "acc_step100": 0.7549668874172185,
+          "acc_step400": 0.7350993377483444,
+          "delta": -0.019867549668874173,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.09933774834437085,
+            0.059602649006622516
+          ],
+          "gained": 17,
+          "lost": 20,
+          "mcnemar_exact_p": 0.7428293587290682,
+          "n": 151,
+          "n_changed": 37,
+          "n_correct_step100": 114,
+          "n_correct_step400": 111,
+          "stable_correct": 94,
+          "stable_incorrect": 20,
+          "turnover_rate": 0.24503311258278146
+        }
+      },
+      "intermediate": {
+        "acc_final": {
+          "acc_step100": 0.5371900826446281,
+          "acc_step400": 0.6198347107438017,
+          "delta": 0.08264462809917356,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.008264462809917356,
+            0.17355371900826447
+          ],
+          "gained": 22,
+          "lost": 12,
+          "mcnemar_exact_p": 0.12144948495551944,
+          "n": 121,
+          "n_changed": 34,
+          "n_correct_step100": 65,
+          "n_correct_step400": 75,
+          "stable_correct": 53,
+          "stable_incorrect": 34,
+          "turnover_rate": 0.2809917355371901
+        },
+        "acc_strict": {
+          "acc_step100": 0.5371900826446281,
+          "acc_step400": 0.6198347107438017,
+          "delta": 0.08264462809917356,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.008264462809917356,
+            0.17355371900826447
+          ],
+          "gained": 22,
+          "lost": 12,
+          "mcnemar_exact_p": 0.12144948495551944,
+          "n": 121,
+          "n_changed": 34,
+          "n_correct_step100": 65,
+          "n_correct_step400": 75,
+          "stable_correct": 53,
+          "stable_incorrect": 34,
+          "turnover_rate": 0.2809917355371901
+        }
+      }
+    },
+    "secondary_blind_answerable": {
+      "blind_answerable": {
+        "acc_final": {
+          "acc_step100": 0.5470085470085471,
+          "acc_step400": 0.5128205128205128,
+          "delta": -0.03418803418803419,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.1282051282051282,
+            0.05982905982905983
+          ],
+          "gained": 13,
+          "lost": 17,
+          "mcnemar_exact_p": 0.584664711728692,
+          "n": 117,
+          "n_changed": 30,
+          "n_correct_step100": 64,
+          "n_correct_step400": 60,
+          "stable_correct": 47,
+          "stable_incorrect": 40,
+          "turnover_rate": 0.2564102564102564
+        },
+        "acc_strict": {
+          "acc_step100": 0.5470085470085471,
+          "acc_step400": 0.5128205128205128,
+          "delta": -0.03418803418803419,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.1282051282051282,
+            0.05982905982905983
+          ],
+          "gained": 13,
+          "lost": 17,
+          "mcnemar_exact_p": 0.584664711728692,
+          "n": 117,
+          "n_changed": 30,
+          "n_correct_step100": 64,
+          "n_correct_step400": 60,
+          "stable_correct": 47,
+          "stable_incorrect": 40,
+          "turnover_rate": 0.2564102564102564
+        }
+      },
+      "not_blind_answerable": {
+        "acc_final": {
+          "acc_step100": 0.4090909090909091,
+          "acc_step400": 0.42768595041322316,
+          "delta": 0.01859504132231405,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.024793388429752067,
+            0.05991735537190083
+          ],
+          "gained": 58,
+          "lost": 49,
+          "mcnemar_exact_p": 0.43944010177908277,
+          "n": 484,
+          "n_changed": 107,
+          "n_correct_step100": 198,
+          "n_correct_step400": 207,
+          "stable_correct": 149,
+          "stable_incorrect": 228,
+          "turnover_rate": 0.22107438016528927
+        },
+        "acc_strict": {
+          "acc_step100": 0.4090909090909091,
+          "acc_step400": 0.42768595041322316,
+          "delta": 0.01859504132231405,
+          "delta_ci95_paired_item_bootstrap": [
+            -0.022778925619834665,
+            0.05991735537190083
+          ],
+          "gained": 58,
+          "lost": 49,
+          "mcnemar_exact_p": 0.43944010177908277,
+          "n": 484,
+          "n_changed": 107,
+          "n_correct_step100": 198,
+          "n_correct_step400": 207,
+          "stable_correct": 149,
+          "stable_incorrect": 228,
+          "turnover_rate": 0.22107438016528927
+        }
+      }
+    }
+  },
+  "real_vs_blind_gap": {
+    "blind_conditions_scanned": {
+      "note": "conditions are kept separate and never pooled (I13)",
+      "step_100_available": [
+        "none",
+        "gray",
+        "noise",
+        "caption"
+      ],
+      "step_400_available": []
+    },
+    "checkpoint_identity": {
+      "all_step100_runs_share_model_revision": true,
+      "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface"
+    },
+    "field_mapping_note": "The step-100 per_item rows carry greedy_correct / greedy_acc_strict; the m5_geo3k step-150..400 rows carry acc_final / acc_strict. greedy_correct is the field that equals score_greedy_item_pilot(...)['acc_final'] (601/601). The separate field greedy_canonical_correct agrees with greedy_correct on only 598/601 rows and is NOT used here; Gate 0's base-model analysis used greedy_canonical_correct, which is a different quantity. Neither field feeds the necessity binning, which comes from q_i.",
+    "greedy_correct_eq_greedy_canonical_correct_step100_real": 598,
+    "real_arm_reproduces_substrate_step100": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "runs": {
+      "caption": {
+        "condition": "caption",
+        "data_manifest_hash": "efa6d46cd7f06c7cc320a2040758187ed22e8e6d6c8d5d5b1f4b9ff69a2ec12e",
+        "is_guarded_rescore": false,
+        "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+        "parser_version": "canonical-v2",
+        "per_item_sha256": "c4131d45fbd8fa258524ec3a1b1a3655eda0fdb01b99d2d22319b573e3088859",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "run": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_caption_an29_20260712T102011Z",
+        "status": "complete"
+      },
+      "gray": {
+        "condition": "gray",
+        "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+        "is_guarded_rescore": false,
+        "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+        "parser_version": "canonical-v2",
+        "per_item_sha256": "bdec5b17b7ca8bf1a9318a6301e5bd1ea01271b307e8be40d402fcebc26ab0fe",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "run": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_gray_an12_20260712T101335Z",
+        "status": "complete"
+      },
+      "noise": {
+        "condition": "noise",
+        "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+        "is_guarded_rescore": false,
+        "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+        "parser_version": "canonical-v2",
+        "per_item_sha256": "15a71936f2b3159065712437e24a9b9f38818bb8701e4a26249b91399d260f7d",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "run": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_noise_an12_20260712T101335Z",
+        "status": "complete"
+      },
+      "none": {
+        "condition": "none",
+        "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+        "is_guarded_rescore": false,
+        "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+        "parser_version": "canonical-v2",
+        "per_item_sha256": "3a89d287cbf6387bdceddc63d54b477f78d6aec9419d14a6c96829223ca4c6f5",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "run": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_none_an29_20260712T102011Z",
+        "status": "complete"
+      },
+      "real": {
+        "condition": "real",
+        "data_manifest_hash": "578c6cb214482758617702cc6091923ecf8551a7f49770a4709e1731fc736cc1",
+        "is_guarded_rescore": true,
+        "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+        "parser_version": "canonical-v2",
+        "per_item_sha256": "22d93ad3f5510c49d9755d82dd0cdb148ea0818f75db77e7363b757b8ed0d8c4",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "run": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+        "status": "complete"
+      }
+    },
+    "scoring_parity_note": "The real arm is a guarded RESCORE; the four blind arms are raw run outputs. To remove that asymmetry every greedy response in all five arms was re-scored here through src.eval.blind_solvability.score_greedy_item_pilot under DEFAULT_PROMPT_CONTRACT, and the gap is computed from those recomputed values. Stored == recomputed on 601/601 rows for both metrics in all five arms, so the rescore asymmetry has no effect on these numbers.",
+    "step_100": {
+      "overall_all_items": {
+        "all": {
+          "acc_final": {
+            "acc_real": 0.43594009983361065,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.33277870216306155,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0632279534109817,
+                  0.14143094841930118
+                ],
+                "gap_real_minus_blind": 0.10316139767054909
+              },
+              "gray": {
+                "acc_blind": 0.10815307820299501,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.28452579034941766,
+                  0.36938435940099834
+                ],
+                "gap_real_minus_blind": 0.3277870216306156
+              },
+              "noise": {
+                "acc_blind": 0.11813643926788686,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.27287853577371046,
+                  0.3627287853577371
+                ],
+                "gap_real_minus_blind": 0.3178036605657238
+              },
+              "none": {
+                "acc_blind": 0.10981697171381032,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.28452579034941766,
+                  0.36772046589018303
+                ],
+                "gap_real_minus_blind": 0.3261231281198003
+              }
+            },
+            "n": 601
+          },
+          "acc_strict": {
+            "acc_real": 0.43594009983361065,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.33277870216306155,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0632279534109817,
+                  0.14309484193011648
+                ],
+                "gap_real_minus_blind": 0.10316139767054909
+              },
+              "gray": {
+                "acc_blind": 0.10815307820299501,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.28618968386023297,
+                  0.36938435940099834
+                ],
+                "gap_real_minus_blind": 0.3277870216306156
+              },
+              "noise": {
+                "acc_blind": 0.11813643926788686,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.27454242928452577,
+                  0.3627287853577371
+                ],
+                "gap_real_minus_blind": 0.3178036605657238
+              },
+              "none": {
+                "acc_blind": 0.10981697171381032,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.28286189683860236,
+                  0.36605657237936773
+                ],
+                "gap_real_minus_blind": 0.3261231281198003
+              }
+            },
+            "n": 601
+          }
+        }
+      },
+      "primary_delta_q_terciles": {
+        "blind_solvable": {
+          "acc_final": {
+            "acc_real": 0.25227963525835867,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.17933130699088146,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.02735562310030395,
+                  0.12158054711246201
+                ],
+                "gap_real_minus_blind": 0.0729483282674772
+              },
+              "gray": {
+                "acc_blind": 0.11246200607902736,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0911854103343465,
+                  0.1884498480243161
+                ],
+                "gap_real_minus_blind": 0.1398176291793313
+              },
+              "noise": {
+                "acc_blind": 0.1276595744680851,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.06990881458966565,
+                  0.1762917933130699
+                ],
+                "gap_real_minus_blind": 0.12462006079027356
+              },
+              "none": {
+                "acc_blind": 0.11550151975683891,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0911854103343465,
+                  0.18541033434650456
+                ],
+                "gap_real_minus_blind": 0.13677811550151975
+              }
+            },
+            "n": 329
+          },
+          "acc_strict": {
+            "acc_real": 0.25227963525835867,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.17933130699088146,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0243161094224924,
+                  0.11854103343465046
+                ],
+                "gap_real_minus_blind": 0.0729483282674772
+              },
+              "gray": {
+                "acc_blind": 0.11246200607902736,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0911854103343465,
+                  0.1884498480243161
+                ],
+                "gap_real_minus_blind": 0.1398176291793313
+              },
+              "noise": {
+                "acc_blind": 0.1276595744680851,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0729483282674772,
+                  0.1762917933130699
+                ],
+                "gap_real_minus_blind": 0.12462006079027356
+              },
+              "none": {
+                "acc_blind": 0.11550151975683891,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0911854103343465,
+                  0.182370820668693
+                ],
+                "gap_real_minus_blind": 0.13677811550151975
+              }
+            },
+            "n": 329
+          }
+        },
+        "image_necessary": {
+          "acc_final": {
+            "acc_real": 0.7549668874172185,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.6158940397350994,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.052980132450331126,
+                  0.2251655629139073
+                ],
+                "gap_real_minus_blind": 0.1390728476821192
+              },
+              "gray": {
+                "acc_blind": 0.0728476821192053,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.6026490066225165,
+                  0.7549668874172185
+                ],
+                "gap_real_minus_blind": 0.6821192052980133
+              },
+              "noise": {
+                "acc_blind": 0.08609271523178808,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.5894039735099338,
+                  0.7483443708609272
+                ],
+                "gap_real_minus_blind": 0.6688741721854304
+              },
+              "none": {
+                "acc_blind": 0.08609271523178808,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.5894039735099338,
+                  0.7417218543046358
+                ],
+                "gap_real_minus_blind": 0.6688741721854304
+              }
+            },
+            "n": 151
+          },
+          "acc_strict": {
+            "acc_real": 0.7549668874172185,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.6158940397350994,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.052980132450331126,
+                  0.2251655629139073
+                ],
+                "gap_real_minus_blind": 0.1390728476821192
+              },
+              "gray": {
+                "acc_blind": 0.0728476821192053,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.609271523178808,
+                  0.7549668874172185
+                ],
+                "gap_real_minus_blind": 0.6821192052980133
+              },
+              "noise": {
+                "acc_blind": 0.08609271523178808,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.5894039735099338,
+                  0.7483443708609272
+                ],
+                "gap_real_minus_blind": 0.6688741721854304
+              },
+              "none": {
+                "acc_blind": 0.08609271523178808,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.5894039735099338,
+                  0.7417218543046358
+                ],
+                "gap_real_minus_blind": 0.6688741721854304
+              }
+            },
+            "n": 151
+          }
+        },
+        "intermediate": {
+          "acc_final": {
+            "acc_real": 0.5371900826446281,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.39669421487603307,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.03305785123966942,
+                  0.24793388429752067
+                ],
+                "gap_real_minus_blind": 0.14049586776859505
+              },
+              "gray": {
+                "acc_blind": 0.14049586776859505,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.2975206611570248,
+                  0.48760330578512395
+                ],
+                "gap_real_minus_blind": 0.39669421487603307
+              },
+              "noise": {
+                "acc_blind": 0.1322314049586777,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.30578512396694213,
+                  0.5041322314049587
+                ],
+                "gap_real_minus_blind": 0.4049586776859504
+              },
+              "none": {
+                "acc_blind": 0.12396694214876033,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.3140495867768595,
+                  0.5041322314049587
+                ],
+                "gap_real_minus_blind": 0.4132231404958678
+              }
+            },
+            "n": 121
+          },
+          "acc_strict": {
+            "acc_real": 0.5371900826446281,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.39669421487603307,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.03305785123966942,
+                  0.24793388429752067
+                ],
+                "gap_real_minus_blind": 0.14049586776859505
+              },
+              "gray": {
+                "acc_blind": 0.14049586776859505,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.30578512396694213,
+                  0.49586776859504134
+                ],
+                "gap_real_minus_blind": 0.39669421487603307
+              },
+              "noise": {
+                "acc_blind": 0.1322314049586777,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.30578512396694213,
+                  0.5041322314049587
+                ],
+                "gap_real_minus_blind": 0.4049586776859504
+              },
+              "none": {
+                "acc_blind": 0.12396694214876033,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.3140495867768595,
+                  0.512396694214876
+                ],
+                "gap_real_minus_blind": 0.4132231404958678
+              }
+            },
+            "n": 121
+          }
+        }
+      },
+      "secondary_blind_answerable": {
+        "blind_answerable": {
+          "acc_final": {
+            "acc_real": 0.5470085470085471,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.49572649572649574,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.042735042735042736,
+                  0.1452991452991453
+                ],
+                "gap_real_minus_blind": 0.05128205128205128
+              },
+              "gray": {
+                "acc_blind": 0.452991452991453,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0,
+                  0.19658119658119658
+                ],
+                "gap_real_minus_blind": 0.09401709401709402
+              },
+              "noise": {
+                "acc_blind": 0.47863247863247865,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.03440170940170921,
+                  0.17094017094017094
+                ],
+                "gap_real_minus_blind": 0.06837606837606838
+              },
+              "none": {
+                "acc_blind": 0.4700854700854701,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.017094017094017096,
+                  0.17094017094017094
+                ],
+                "gap_real_minus_blind": 0.07692307692307693
+              }
+            },
+            "n": 117
+          },
+          "acc_strict": {
+            "acc_real": 0.5470085470085471,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.49572649572649574,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.042735042735042736,
+                  0.1452991452991453
+                ],
+                "gap_real_minus_blind": 0.05128205128205128
+              },
+              "gray": {
+                "acc_blind": 0.452991452991453,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.0,
+                  0.18803418803418803
+                ],
+                "gap_real_minus_blind": 0.09401709401709402
+              },
+              "noise": {
+                "acc_blind": 0.47863247863247865,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.042735042735042736,
+                  0.1794871794871795
+                ],
+                "gap_real_minus_blind": 0.06837606837606838
+              },
+              "none": {
+                "acc_blind": 0.4700854700854701,
+                "gap_ci95_paired_item_bootstrap": [
+                  -0.017094017094017096,
+                  0.17094017094017094
+                ],
+                "gap_real_minus_blind": 0.07692307692307693
+              }
+            },
+            "n": 117
+          }
+        },
+        "not_blind_answerable": {
+          "acc_final": {
+            "acc_real": 0.4090909090909091,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.29338842975206614,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.07231404958677685,
+                  0.15702479338842976
+                ],
+                "gap_real_minus_blind": 0.11570247933884298
+              },
+              "gray": {
+                "acc_blind": 0.024793388429752067,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.33884297520661155,
+                  0.4297520661157025
+                ],
+                "gap_real_minus_blind": 0.384297520661157
+              },
+              "noise": {
+                "acc_blind": 0.030991735537190084,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.33264462809917356,
+                  0.42355371900826444
+                ],
+                "gap_real_minus_blind": 0.378099173553719
+              },
+              "none": {
+                "acc_blind": 0.022727272727272728,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.3409090909090909,
+                  0.4318181818181818
+                ],
+                "gap_real_minus_blind": 0.38636363636363635
+              }
+            },
+            "n": 484
+          },
+          "acc_strict": {
+            "acc_real": 0.4090909090909091,
+            "blind_conditions": {
+              "caption": {
+                "acc_blind": 0.29338842975206614,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.07231404958677685,
+                  0.1590909090909091
+                ],
+                "gap_real_minus_blind": 0.11570247933884298
+              },
+              "gray": {
+                "acc_blind": 0.024793388429752067,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.33884297520661155,
+                  0.4297520661157025
+                ],
+                "gap_real_minus_blind": 0.384297520661157
+              },
+              "noise": {
+                "acc_blind": 0.030991735537190084,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.3305785123966942,
+                  0.4256198347107438
+                ],
+                "gap_real_minus_blind": 0.378099173553719
+              },
+              "none": {
+                "acc_blind": 0.022727272727272728,
+                "gap_ci95_paired_item_bootstrap": [
+                  0.3409090909090909,
+                  0.4318181818181818
+                ],
+                "gap_real_minus_blind": 0.38636363636363635
+              }
+            },
+            "n": 484
+          }
+        }
+      }
+    },
+    "step_400": "NOT COMPUTED -- no artifact exists",
+    "step_400_absence_reason": "No Geometry3K evaluation of any M5 step-400 checkpoint under a blind condition exists. A scan of every experiments/runs/*/run_manifest.json whose manifest mentions 'geo' and whose condition field is not 'real' returns 100 runs; all of them evaluate either the frozen base model or a step-60/step-100 pilot checkpoint. The only step-400 blind evaluations in the repo are m5_r19_step400_gray_an12_20260728T054005Z and m5_r19_step400_noise_an12_20260728T054005Z, which are R19 grounding probes, not geo3k, and are not substitutable. The step-400 real-vs-blind column is therefore not reported.",
+    "stored_vs_recomputed_agreement": {
+      "caption": {
+        "acc_final_stored_eq_recomputed": 601,
+        "acc_strict_stored_eq_recomputed": 601,
+        "n": 601
+      },
+      "gray": {
+        "acc_final_stored_eq_recomputed": 601,
+        "acc_strict_stored_eq_recomputed": 601,
+        "n": 601
+      },
+      "noise": {
+        "acc_final_stored_eq_recomputed": 601,
+        "acc_strict_stored_eq_recomputed": 601,
+        "n": 601
+      },
+      "none": {
+        "acc_final_stored_eq_recomputed": 601,
+        "acc_strict_stored_eq_recomputed": 601,
+        "n": 601
+      },
+      "real": {
+        "acc_final_stored_eq_recomputed": 601,
+        "acc_strict_stored_eq_recomputed": 601,
+        "n": 601
+      }
+    }
+  },
+  "rng": {
+    "bootstrap_draws": 10000,
+    "consumption_order": [
+      "overall|acc_final",
+      "overall|acc_strict",
+      "primary|blind_solvable|acc_final",
+      "primary|blind_solvable|acc_strict",
+      "primary|intermediate|acc_final",
+      "primary|intermediate|acc_strict",
+      "primary|image_necessary|acc_final",
+      "primary|image_necessary|acc_strict",
+      "secondary|blind_answerable|acc_final",
+      "secondary|blind_answerable|acc_strict",
+      "secondary|not_blind_answerable|acc_final",
+      "secondary|not_blind_answerable|acc_strict",
+      "contrast_boot|acc_final",
+      "contrast_perm|acc_final",
+      "contrast_boot|acc_strict",
+      "contrast_perm|acc_strict",
+      "gained_vs_lost_perm|acc_final",
+      "gained_vs_lost_perm|acc_strict",
+      "spearman_perm|acc_final",
+      "spearman_perm|acc_strict",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_final|none",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_final|gray",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_final|noise",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_final|caption",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_strict|none",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_strict|gray",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_strict|noise",
+      "gap100|primary_delta_q_terciles|blind_solvable|acc_strict|caption",
+      "gap100|primary_delta_q_terciles|intermediate|acc_final|none",
+      "gap100|primary_delta_q_terciles|intermediate|acc_final|gray",
+      "gap100|primary_delta_q_terciles|intermediate|acc_final|noise",
+      "gap100|primary_delta_q_terciles|intermediate|acc_final|caption",
+      "gap100|primary_delta_q_terciles|intermediate|acc_strict|none",
+      "gap100|primary_delta_q_terciles|intermediate|acc_strict|gray",
+      "gap100|primary_delta_q_terciles|intermediate|acc_strict|noise",
+      "gap100|primary_delta_q_terciles|intermediate|acc_strict|caption",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_final|none",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_final|gray",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_final|noise",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_final|caption",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_strict|none",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_strict|gray",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_strict|noise",
+      "gap100|primary_delta_q_terciles|image_necessary|acc_strict|caption",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_final|none",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_final|gray",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_final|noise",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_final|caption",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_strict|none",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_strict|gray",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_strict|noise",
+      "gap100|secondary_blind_answerable|blind_answerable|acc_strict|caption",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_final|none",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_final|gray",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_final|noise",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_final|caption",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_strict|none",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_strict|gray",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_strict|noise",
+      "gap100|secondary_blind_answerable|not_blind_answerable|acc_strict|caption",
+      "gap100|overall_all_items|all|acc_final|none",
+      "gap100|overall_all_items|all|acc_final|gray",
+      "gap100|overall_all_items|all|acc_final|noise",
+      "gap100|overall_all_items|all|acc_final|caption",
+      "gap100|overall_all_items|all|acc_strict|none",
+      "gap100|overall_all_items|all|acc_strict|gray",
+      "gap100|overall_all_items|all|acc_strict|noise",
+      "gap100|overall_all_items|all|acc_strict|caption"
+    ],
+    "note": "one numpy default_rng(20260729) stream, consumed in the order recorded in rng.consumption_order",
+    "permutation_draws": 10000,
+    "seed": 20260729
+  },
+  "schema_version": "blind-gains.m5c-necessity-stratification.v1",
+  "step_400_real_run": {
+    "condition": "real",
+    "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+    "per_item_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+    "run": "experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z"
+  },
+  "stratification": {
+    "bins": [
+      {
+        "delta_q_hi": 0.0,
+        "delta_q_lo": -0.7988410100453778,
+        "delta_q_mean": -0.05133566866990006,
+        "gate0_description": "low delta_q tercile",
+        "index": 0,
+        "label": "blind_solvable",
+        "n": 329,
+        "n_blind_answerable_in_bin": 77,
+        "q_blind_mean": 0.25778815787697174,
+        "q_real_mean": 0.20645248920707168
+      },
+      {
+        "delta_q_hi": 0.23122927168017626,
+        "delta_q_lo": 0.0,
+        "delta_q_mean": 0.20892528538128824,
+        "gate0_description": "mid delta_q tercile",
+        "index": 1,
+        "label": "intermediate",
+        "n": 121,
+        "n_blind_answerable_in_bin": 26,
+        "q_blind_mean": 0.24201474519052518,
+        "q_real_mean": 0.4509400305718136
+      },
+      {
+        "delta_q_hi": 0.7988410100453778,
+        "delta_q_lo": 0.23122927168017626,
+        "delta_q_mean": 0.5382211048797577,
+        "gate0_description": "high delta_q tercile",
+        "index": 2,
+        "label": "image_necessary",
+        "n": 151,
+        "n_blind_answerable_in_bin": 14,
+        "q_blind_mean": 0.17016968350189285,
+        "q_real_mean": 0.7083907883816507
+      }
+    ],
+    "blind_answerable": {
+      "jeffreys_floor": 0.1386589899546222,
+      "n_blind_answerable": 117,
+      "n_not_blind_answerable": 484
+    },
+    "delta_q": {
+      "max": 0.7988410100453778,
+      "mean": 0.14918787250512847,
+      "min": -0.7988410100453778,
+      "n_items_with_delta_q_exactly_zero": 271,
+      "q_blind_mean": 0.23259851966449763,
+      "q_real_mean": 0.38178639216962607,
+      "tercile_edges_raw": [
+        -0.7988410100453778,
+        0.0,
+        0.23122927168017626,
+        0.7988410100453778
+      ]
+    }
+  },
+  "substrate": {
+    "item_key_definition": "(split, row_index) on the Geometry3K test split",
+    "path": "reports/m5c_item_substrate_v1.jsonl",
+    "rows": 601,
+    "sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864"
+  }
+}
