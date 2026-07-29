@@ -1,0 +1,1251 @@
+{
+  "answer_canonicalization": "normalize_answer -> numeric_value; numeric answers bucketed to 1e-6, non-numeric keep normalized text; contract-invalid rows carry no value and are counted separately",
+  "dataset": "Geometry3K test split (n=601), condition=real, arm=anchor_real, greedy temperature 0",
+  "derived_bucket_tables": {
+    "acc_final": {
+      "by_derived_gold_type": {
+        "decimal": {
+          "all_test_items": 132,
+          "correct_at_100": 50,
+          "gained": 11,
+          "lost": 19,
+          "wrong_at_100": 82
+        },
+        "integer": {
+          "all_test_items": 420,
+          "correct_at_100": 187,
+          "gained": 52,
+          "lost": 42,
+          "wrong_at_100": 233
+        },
+        "non_numeric": {
+          "all_test_items": 49,
+          "correct_at_100": 25,
+          "gained": 8,
+          "lost": 5,
+          "wrong_at_100": 24
+        }
+      },
+      "by_derived_stem_bucket": {
+        "angle_measure": {
+          "all_test_items": 143,
+          "correct_at_100": 40,
+          "gained": 19,
+          "gained_rate_within_wrong_at_100": 0.18446601941747573,
+          "lost": 18,
+          "lost_rate_within_correct_at_100": 0.45,
+          "wrong_at_100": 103
+        },
+        "arc_measure": {
+          "all_test_items": 38,
+          "correct_at_100": 10,
+          "gained": 5,
+          "gained_rate_within_wrong_at_100": 0.17857142857142858,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.3,
+          "wrong_at_100": 28
+        },
+        "area": {
+          "all_test_items": 60,
+          "correct_at_100": 29,
+          "gained": 4,
+          "gained_rate_within_wrong_at_100": 0.12903225806451613,
+          "lost": 9,
+          "lost_rate_within_correct_at_100": 0.3103448275862069,
+          "wrong_at_100": 31
+        },
+        "circumference": {
+          "all_test_items": 4,
+          "correct_at_100": 4,
+          "gained": 0,
+          "gained_rate_within_wrong_at_100": null,
+          "lost": 1,
+          "lost_rate_within_correct_at_100": 0.25,
+          "wrong_at_100": 0
+        },
+        "length_measure": {
+          "all_test_items": 14,
+          "correct_at_100": 8,
+          "gained": 1,
+          "gained_rate_within_wrong_at_100": 0.16666666666666666,
+          "lost": 0,
+          "lost_rate_within_correct_at_100": 0.0,
+          "wrong_at_100": 6
+        },
+        "other": {
+          "all_test_items": 124,
+          "correct_at_100": 61,
+          "gained": 14,
+          "gained_rate_within_wrong_at_100": 0.2222222222222222,
+          "lost": 10,
+          "lost_rate_within_correct_at_100": 0.16393442622950818,
+          "wrong_at_100": 63
+        },
+        "perimeter": {
+          "all_test_items": 19,
+          "correct_at_100": 11,
+          "gained": 3,
+          "gained_rate_within_wrong_at_100": 0.375,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.2727272727272727,
+          "wrong_at_100": 8
+        },
+        "ratio": {
+          "all_test_items": 10,
+          "correct_at_100": 8,
+          "gained": 2,
+          "gained_rate_within_wrong_at_100": 1.0,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.375,
+          "wrong_at_100": 2
+        },
+        "solve_for_variable": {
+          "all_test_items": 189,
+          "correct_at_100": 91,
+          "gained": 23,
+          "gained_rate_within_wrong_at_100": 0.23469387755102042,
+          "lost": 19,
+          "lost_rate_within_correct_at_100": 0.2087912087912088,
+          "wrong_at_100": 98
+        }
+      },
+      "gained_bucket_concentration_vs_wrong_at_100_pool": {
+        "draw_size": 71,
+        "observed_chi2": 8.806222174140693,
+        "p_chi2_ge_observed": 0.13338666133386662,
+        "pool_size": 339
+      }
+    },
+    "acc_strict": {
+      "by_derived_gold_type": {
+        "decimal": {
+          "all_test_items": 132,
+          "correct_at_100": 50,
+          "gained": 11,
+          "lost": 19,
+          "wrong_at_100": 82
+        },
+        "integer": {
+          "all_test_items": 420,
+          "correct_at_100": 187,
+          "gained": 52,
+          "lost": 42,
+          "wrong_at_100": 233
+        },
+        "non_numeric": {
+          "all_test_items": 49,
+          "correct_at_100": 25,
+          "gained": 8,
+          "lost": 5,
+          "wrong_at_100": 24
+        }
+      },
+      "by_derived_stem_bucket": {
+        "angle_measure": {
+          "all_test_items": 143,
+          "correct_at_100": 40,
+          "gained": 19,
+          "gained_rate_within_wrong_at_100": 0.18446601941747573,
+          "lost": 18,
+          "lost_rate_within_correct_at_100": 0.45,
+          "wrong_at_100": 103
+        },
+        "arc_measure": {
+          "all_test_items": 38,
+          "correct_at_100": 10,
+          "gained": 5,
+          "gained_rate_within_wrong_at_100": 0.17857142857142858,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.3,
+          "wrong_at_100": 28
+        },
+        "area": {
+          "all_test_items": 60,
+          "correct_at_100": 29,
+          "gained": 4,
+          "gained_rate_within_wrong_at_100": 0.12903225806451613,
+          "lost": 9,
+          "lost_rate_within_correct_at_100": 0.3103448275862069,
+          "wrong_at_100": 31
+        },
+        "circumference": {
+          "all_test_items": 4,
+          "correct_at_100": 4,
+          "gained": 0,
+          "gained_rate_within_wrong_at_100": null,
+          "lost": 1,
+          "lost_rate_within_correct_at_100": 0.25,
+          "wrong_at_100": 0
+        },
+        "length_measure": {
+          "all_test_items": 14,
+          "correct_at_100": 8,
+          "gained": 1,
+          "gained_rate_within_wrong_at_100": 0.16666666666666666,
+          "lost": 0,
+          "lost_rate_within_correct_at_100": 0.0,
+          "wrong_at_100": 6
+        },
+        "other": {
+          "all_test_items": 124,
+          "correct_at_100": 61,
+          "gained": 14,
+          "gained_rate_within_wrong_at_100": 0.2222222222222222,
+          "lost": 10,
+          "lost_rate_within_correct_at_100": 0.16393442622950818,
+          "wrong_at_100": 63
+        },
+        "perimeter": {
+          "all_test_items": 19,
+          "correct_at_100": 11,
+          "gained": 3,
+          "gained_rate_within_wrong_at_100": 0.375,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.2727272727272727,
+          "wrong_at_100": 8
+        },
+        "ratio": {
+          "all_test_items": 10,
+          "correct_at_100": 8,
+          "gained": 2,
+          "gained_rate_within_wrong_at_100": 1.0,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.375,
+          "wrong_at_100": 2
+        },
+        "solve_for_variable": {
+          "all_test_items": 189,
+          "correct_at_100": 91,
+          "gained": 23,
+          "gained_rate_within_wrong_at_100": 0.23469387755102042,
+          "lost": 19,
+          "lost_rate_within_correct_at_100": 0.2087912087912088,
+          "wrong_at_100": 98
+        }
+      },
+      "gained_bucket_concentration_vs_wrong_at_100_pool": {
+        "draw_size": 71,
+        "observed_chi2": 8.806222174140693,
+        "p_chi2_ge_observed": 0.13338666133386662,
+        "pool_size": 339
+      }
+    }
+  },
+  "generated_utc": "2026-07-29T17:59:01Z",
+  "geo3k_native_structure_probes": {
+    "acc_final": {
+      "lost_set": {
+        "n_contract_valid_at_step400": 63,
+        "n_items": 66,
+        "numeric_near_miss_within_10pct_of_own_gold": {
+          "count": 11,
+          "numeric_comparable": 54,
+          "rate": 0.2037037037037037
+        },
+        "same_step400_value_as_earlier_step": {
+          "150": {
+            "comparable_items": 61,
+            "rate": 0.13114754098360656,
+            "same_value_as_step400": 8
+          },
+          "200": {
+            "comparable_items": 63,
+            "rate": 0.20634920634920634,
+            "same_value_as_step400": 13
+          },
+          "300": {
+            "comparable_items": 61,
+            "rate": 0.22950819672131148,
+            "same_value_as_step400": 14
+          }
+        },
+        "small_integer_1_to_20": {
+          "count": 10,
+          "rate": 0.15873015873015872
+        },
+        "wrong_value_equals_some_other_test_item_gold": {
+          "count": 40,
+          "rate": 0.6349206349206349
+        }
+      },
+      "permutation_vs_stable_wrong_null": {
+        "n_perm": 10000,
+        "p_near_miss_rate_ge_observed": 0.0004999500049995,
+        "p_other_gold_rate_ge_observed": 0.31916808319168083,
+        "seed": 20260729
+      },
+      "stable_wrong_reference_set": {
+        "n_contract_valid_at_step400": 263,
+        "n_items": 268,
+        "numeric_near_miss_within_10pct_of_own_gold": {
+          "count": 20,
+          "numeric_comparable": 230,
+          "rate": 0.08695652173913043
+        },
+        "same_step400_value_as_earlier_step": {
+          "150": {
+            "comparable_items": 251,
+            "rate": 0.29880478087649404,
+            "same_value_as_step400": 75
+          },
+          "200": {
+            "comparable_items": 253,
+            "rate": 0.2885375494071146,
+            "same_value_as_step400": 73
+          },
+          "300": {
+            "comparable_items": 256,
+            "rate": 0.4296875,
+            "same_value_as_step400": 110
+          }
+        },
+        "small_integer_1_to_20": {
+          "count": 54,
+          "rate": 0.20532319391634982
+        },
+        "wrong_value_equals_some_other_test_item_gold": {
+          "count": 160,
+          "rate": 0.6083650190114068
+        }
+      }
+    },
+    "acc_strict": {
+      "lost_set": {
+        "n_contract_valid_at_step400": 63,
+        "n_items": 66,
+        "numeric_near_miss_within_10pct_of_own_gold": {
+          "count": 11,
+          "numeric_comparable": 54,
+          "rate": 0.2037037037037037
+        },
+        "same_step400_value_as_earlier_step": {
+          "150": {
+            "comparable_items": 61,
+            "rate": 0.13114754098360656,
+            "same_value_as_step400": 8
+          },
+          "200": {
+            "comparable_items": 63,
+            "rate": 0.20634920634920634,
+            "same_value_as_step400": 13
+          },
+          "300": {
+            "comparable_items": 61,
+            "rate": 0.22950819672131148,
+            "same_value_as_step400": 14
+          }
+        },
+        "small_integer_1_to_20": {
+          "count": 10,
+          "rate": 0.15873015873015872
+        },
+        "wrong_value_equals_some_other_test_item_gold": {
+          "count": 40,
+          "rate": 0.6349206349206349
+        }
+      },
+      "permutation_vs_stable_wrong_null": {
+        "n_perm": 10000,
+        "p_near_miss_rate_ge_observed": 0.0004999500049995,
+        "p_other_gold_rate_ge_observed": 0.31916808319168083,
+        "seed": 20260729
+      },
+      "stable_wrong_reference_set": {
+        "n_contract_valid_at_step400": 263,
+        "n_items": 268,
+        "numeric_near_miss_within_10pct_of_own_gold": {
+          "count": 20,
+          "numeric_comparable": 230,
+          "rate": 0.08695652173913043
+        },
+        "same_step400_value_as_earlier_step": {
+          "150": {
+            "comparable_items": 251,
+            "rate": 0.29880478087649404,
+            "same_value_as_step400": 75
+          },
+          "200": {
+            "comparable_items": 253,
+            "rate": 0.2885375494071146,
+            "same_value_as_step400": 73
+          },
+          "300": {
+            "comparable_items": 256,
+            "rate": 0.4296875,
+            "same_value_as_step400": 110
+          }
+        },
+        "small_integer_1_to_20": {
+          "count": 54,
+          "rate": 0.20532319391634982
+        },
+        "wrong_value_equals_some_other_test_item_gold": {
+          "count": 160,
+          "rate": 0.6083650190114068
+        }
+      }
+    }
+  },
+  "lost_set_structure_vs_step100_correct_null": {
+    "acc_final": {
+      "derived_bucket_concentration": {
+        "expected_counts_from_pool": {
+          "angle_measure": 10.076335877862595,
+          "arc_measure": 2.519083969465649,
+          "area": 7.305343511450381,
+          "circumference": 1.0076335877862594,
+          "length_measure": 2.015267175572519,
+          "other": 15.366412213740459,
+          "perimeter": 2.7709923664122136,
+          "ratio": 2.015267175572519,
+          "solve_for_variable": 22.923664122137403
+        },
+        "null_mean_chi2": 5.958118914556332,
+        "observed_chi2": 11.776932937816078,
+        "observed_counts": {
+          "angle_measure": 18,
+          "arc_measure": 3,
+          "area": 9,
+          "circumference": 1,
+          "other": 10,
+          "perimeter": 3,
+          "ratio": 3,
+          "solve_for_variable": 19
+        },
+        "p_chi2_ge_observed": 0.0428957104289571
+      },
+      "gold_answer_concentration": {
+        "null_mean_entropy_bits": 5.5106823539102425,
+        "observed": {
+          "distinct_per_item": 0.8484848484848485,
+          "hhi": 0.021579430670339777,
+          "max_entropy_bits": 6.044394119358453,
+          "n_distinct": 56,
+          "n_values": 66,
+          "normalized_entropy": 0.9429602014772923,
+          "shannon_entropy_bits": 5.699623096598408,
+          "share_in_repeated_value": 0.25757575757575757,
+          "top1_share": 0.06060606060606061
+        },
+        "p_entropy_le_observed": 0.9468053194680532
+      },
+      "lost_400_also_lost_at_200_and_300_share": 0.4393939393939394,
+      "lost_set_sizes": {
+        "100_200": 54,
+        "100_300": 60,
+        "100_400": 66
+      },
+      "pairwise_jaccard": {
+        "j_200_300": {
+          "observed": 0.4074074074074074,
+          "p_ge_observed": 0.0001
+        },
+        "j_200_400": {
+          "observed": 0.4457831325301205,
+          "p_ge_observed": 0.0001
+        },
+        "j_300_400": {
+          "observed": 0.575,
+          "p_ge_observed": 0.0001
+        }
+      },
+      "pool": "items correct at step 100",
+      "pool_size": 262,
+      "three_way_jaccard": {
+        "null_mean": 0.022097160586725454,
+        "null_sd": 0.011991276493731202,
+        "observed": 0.3118279569892473,
+        "p_ge_observed": 0.0001
+      }
+    },
+    "acc_strict": {
+      "derived_bucket_concentration": {
+        "expected_counts_from_pool": {
+          "angle_measure": 10.076335877862595,
+          "arc_measure": 2.519083969465649,
+          "area": 7.305343511450381,
+          "circumference": 1.0076335877862594,
+          "length_measure": 2.015267175572519,
+          "other": 15.366412213740459,
+          "perimeter": 2.7709923664122136,
+          "ratio": 2.015267175572519,
+          "solve_for_variable": 22.923664122137403
+        },
+        "null_mean_chi2": 5.958118914556332,
+        "observed_chi2": 11.776932937816078,
+        "observed_counts": {
+          "angle_measure": 18,
+          "arc_measure": 3,
+          "area": 9,
+          "circumference": 1,
+          "other": 10,
+          "perimeter": 3,
+          "ratio": 3,
+          "solve_for_variable": 19
+        },
+        "p_chi2_ge_observed": 0.0428957104289571
+      },
+      "gold_answer_concentration": {
+        "null_mean_entropy_bits": 5.5106823539102425,
+        "observed": {
+          "distinct_per_item": 0.8484848484848485,
+          "hhi": 0.021579430670339777,
+          "max_entropy_bits": 6.044394119358453,
+          "n_distinct": 56,
+          "n_values": 66,
+          "normalized_entropy": 0.9429602014772923,
+          "shannon_entropy_bits": 5.699623096598408,
+          "share_in_repeated_value": 0.25757575757575757,
+          "top1_share": 0.06060606060606061
+        },
+        "p_entropy_le_observed": 0.9468053194680532
+      },
+      "lost_400_also_lost_at_200_and_300_share": 0.4393939393939394,
+      "lost_set_sizes": {
+        "100_200": 54,
+        "100_300": 60,
+        "100_400": 66
+      },
+      "pairwise_jaccard": {
+        "j_200_300": {
+          "observed": 0.4074074074074074,
+          "p_ge_observed": 0.0001
+        },
+        "j_200_400": {
+          "observed": 0.4457831325301205,
+          "p_ge_observed": 0.0001
+        },
+        "j_300_400": {
+          "observed": 0.575,
+          "p_ge_observed": 0.0001
+        }
+      },
+      "pool": "items correct at step 100",
+      "pool_size": 262,
+      "three_way_jaccard": {
+        "null_mean": 0.022097160586725454,
+        "null_sd": 0.011991276493731202,
+        "observed": 0.3118279569892473,
+        "p_ge_observed": 0.0001
+      }
+    }
+  },
+  "metadata_availability": {
+    "dataset_manifest": "data/geometry3k_caption_images_manifest.jsonl",
+    "derived_bucket_rules_in_order": [
+      {
+        "name": "area",
+        "regex": "\\barea\\b"
+      },
+      {
+        "name": "perimeter",
+        "regex": "\\bperimeter\\b"
+      },
+      {
+        "name": "circumference",
+        "regex": "\\bcircumference\\b"
+      },
+      {
+        "name": "volume",
+        "regex": "\\bvolume\\b"
+      },
+      {
+        "name": "arc_measure",
+        "regex": "\\\\widehat|\\barc\\b"
+      },
+      {
+        "name": "angle_measure",
+        "regex": "\\\\angle|\u2220|\\bm\\s*\\\\angle"
+      },
+      {
+        "name": "ratio",
+        "regex": "\\bratio\\b"
+      },
+      {
+        "name": "length_measure",
+        "regex": "\\blength\\b|\\bmeasure\\b|\\bperimeter\\b"
+      },
+      {
+        "name": "solve_for_variable",
+        "regex": "\\bfind\\s+\\$?\\\\?[xyz]\\$?\\b|\\bfind\\s+the\\s+value\\b"
+      }
+    ],
+    "derived_buckets_are_defined_by_this_analysis": true,
+    "eval_row_qid_non_null_count": {
+      "100": 0,
+      "150": 0,
+      "200": 0,
+      "300": 0,
+      "400": 0
+    },
+    "eval_row_source_metadata_non_null_count": {
+      "100": 0,
+      "150": 0,
+      "200": 0,
+      "300": 0,
+      "400": 0
+    },
+    "manifest_field_sets": {
+      "answer|images|problem|row_index|split": 2702
+    },
+    "template_category_source_field_present": false
+  },
+  "multiplicity": {
+    "bonferroni_threshold": 0.0033333333333333335,
+    "family_alpha": 0.05,
+    "holm_bonferroni_reject": {
+      "gained_derived_bucket_chi2": false,
+      "lost_derived_bucket_chi2": false,
+      "lost_gold_answer_entropy": false,
+      "lost_set_pairwise_jaccard::j_200_300": true,
+      "lost_set_pairwise_jaccard::j_200_400": true,
+      "lost_set_pairwise_jaccard::j_300_400": true,
+      "lost_set_three_way_jaccard": true,
+      "native_near_miss_rate": true,
+      "native_other_gold_rate": false,
+      "wrong_answer_concentration::all_step400_errors::p_entropy_le_observed": false,
+      "wrong_answer_concentration::all_step400_errors::p_hhi_ge_observed": false,
+      "wrong_answer_concentration::all_step400_errors::p_n_distinct_le_observed": false,
+      "wrong_answer_concentration::stable_wrong_only::p_entropy_le_observed": false,
+      "wrong_answer_concentration::stable_wrong_only::p_hhi_ge_observed": false,
+      "wrong_answer_concentration::stable_wrong_only::p_n_distinct_le_observed": false
+    },
+    "n_tests_in_family": 15,
+    "note": "All permutation tests reported here form one pre-listed family; the family is reported with Holm-Bonferroni at alpha 0.05 alongside the raw p values. The acc_strict family is numerically identical to the acc_final family because acc_final == acc_strict on all 601 items at all five steps.",
+    "tests": {
+      "gained_derived_bucket_chi2": 0.13338666133386662,
+      "lost_derived_bucket_chi2": 0.0428957104289571,
+      "lost_gold_answer_entropy": 0.9468053194680532,
+      "lost_set_pairwise_jaccard::j_200_300": 0.0001,
+      "lost_set_pairwise_jaccard::j_200_400": 0.0001,
+      "lost_set_pairwise_jaccard::j_300_400": 0.0001,
+      "lost_set_three_way_jaccard": 0.0001,
+      "native_near_miss_rate": 0.0004999500049995,
+      "native_other_gold_rate": 0.31916808319168083,
+      "wrong_answer_concentration::all_step400_errors::p_entropy_le_observed": 0.44165583441655837,
+      "wrong_answer_concentration::all_step400_errors::p_hhi_ge_observed": 0.5660433956604339,
+      "wrong_answer_concentration::all_step400_errors::p_n_distinct_le_observed": 0.38346165383461656,
+      "wrong_answer_concentration::stable_wrong_only::p_entropy_le_observed": 0.44855514448555145,
+      "wrong_answer_concentration::stable_wrong_only::p_hhi_ge_observed": 0.5816418358164184,
+      "wrong_answer_concentration::stable_wrong_only::p_n_distinct_le_observed": 0.38146185381461856
+    }
+  },
+  "permutation_convention": {
+    "n_perm": 10000,
+    "note": "p is reported as max((hits+1)/(n_perm+1), 1e-4); the smallest attainable value of the formula is 9.999e-5, so the floor binds only at zero hits",
+    "p_floor": 0.0001,
+    "p_formula": "(hits + 1) / (n_perm + 1)",
+    "seed": 20260729
+  },
+  "runs": {
+    "100": "blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+    "150": "m5_geo3k_step150_an12_gpu4_20260718T051839Z",
+    "200": "m5_geo3k_step200_an29_gpu4_20260722T141052Z",
+    "300": "m5_geo3k_step300_an12_gpu0_20260726T083303Z",
+    "400": "m5_geo3k_step400_an12_gpu0_20260728T053115Z"
+  },
+  "schema_version": "blind-gains.m5c-lost-item-forensics.v1",
+  "scope_limits": {
+    "checkpoint_sets_are_not_independent_seeds": "The three lost sets (100->200, 100->300, 100->400) come from three checkpoints of ONE training trajectory and share the same step-100 anchor evaluation. The FlipTrack 3-way Jaccard used independent seeds. The permutation null conditions on the step-100-correct pool, but serial dependence between checkpoints is not removed.",
+    "fliptrack_taxonomy_not_transplanted": "The gray-arm attractor taxonomy in scripts/x3_a2_degradation_forensics.py (nearest_gridline, nearest_neighbor_x, twin_member_gold, same_point_y, most_similar_label_x, other_scene_point_x) is defined over replayed coordinate_register_twenty_point_x_v02 scene registers on FlipTrack pairs. Geometry3K is a different task: real-image geometry word problems with no generator seed, no replayable scene register, no coordinate grid, no paired twin member. None of those taxa is computable here and none was transplanted.",
+    "geo3k_analogues_used_instead": [
+      "wrong-answer value repetition across items (attractor value concentration)",
+      "same wrong value as an earlier checkpoint (temporal persistence)",
+      "wrong value equals some other test item's gold answer",
+      "numeric near-miss within 10% of own gold",
+      "small-integer 1..20 occupancy"
+    ]
+  },
+  "scorer": "src.eval.blind_solvability.score_greedy_item_pilot under DEFAULT_PROMPT_CONTRACT (uniform re-score of cached predictions)",
+  "set_membership": {
+    "acc_final": {
+      "gained_100_400": [
+        "test:7",
+        "test:12",
+        "test:16",
+        "test:28",
+        "test:40",
+        "test:46",
+        "test:69",
+        "test:78",
+        "test:79",
+        "test:81",
+        "test:84",
+        "test:87",
+        "test:93",
+        "test:97",
+        "test:104",
+        "test:109",
+        "test:148",
+        "test:150",
+        "test:154",
+        "test:178",
+        "test:181",
+        "test:191",
+        "test:192",
+        "test:197",
+        "test:201",
+        "test:213",
+        "test:222",
+        "test:233",
+        "test:242",
+        "test:245",
+        "test:251",
+        "test:274",
+        "test:279",
+        "test:284",
+        "test:289",
+        "test:298",
+        "test:299",
+        "test:301",
+        "test:310",
+        "test:324",
+        "test:327",
+        "test:333",
+        "test:334",
+        "test:345",
+        "test:355",
+        "test:356",
+        "test:374",
+        "test:386",
+        "test:391",
+        "test:402",
+        "test:403",
+        "test:425",
+        "test:426",
+        "test:432",
+        "test:464",
+        "test:468",
+        "test:482",
+        "test:503",
+        "test:510",
+        "test:524",
+        "test:531",
+        "test:545",
+        "test:549",
+        "test:551",
+        "test:552",
+        "test:558",
+        "test:561",
+        "test:563",
+        "test:584",
+        "test:587",
+        "test:590"
+      ],
+      "lost_100_400": [
+        "test:1",
+        "test:3",
+        "test:45",
+        "test:49",
+        "test:51",
+        "test:57",
+        "test:103",
+        "test:106",
+        "test:110",
+        "test:113",
+        "test:123",
+        "test:127",
+        "test:129",
+        "test:133",
+        "test:134",
+        "test:138",
+        "test:143",
+        "test:152",
+        "test:172",
+        "test:180",
+        "test:182",
+        "test:200",
+        "test:206",
+        "test:217",
+        "test:224",
+        "test:225",
+        "test:227",
+        "test:232",
+        "test:235",
+        "test:237",
+        "test:253",
+        "test:276",
+        "test:280",
+        "test:292",
+        "test:330",
+        "test:339",
+        "test:343",
+        "test:372",
+        "test:380",
+        "test:385",
+        "test:387",
+        "test:392",
+        "test:394",
+        "test:399",
+        "test:401",
+        "test:413",
+        "test:418",
+        "test:422",
+        "test:424",
+        "test:433",
+        "test:444",
+        "test:445",
+        "test:447",
+        "test:448",
+        "test:467",
+        "test:470",
+        "test:472",
+        "test:481",
+        "test:495",
+        "test:502",
+        "test:520",
+        "test:536",
+        "test:554",
+        "test:573",
+        "test:582",
+        "test:593"
+      ]
+    },
+    "acc_strict": {
+      "gained_100_400": [
+        "test:7",
+        "test:12",
+        "test:16",
+        "test:28",
+        "test:40",
+        "test:46",
+        "test:69",
+        "test:78",
+        "test:79",
+        "test:81",
+        "test:84",
+        "test:87",
+        "test:93",
+        "test:97",
+        "test:104",
+        "test:109",
+        "test:148",
+        "test:150",
+        "test:154",
+        "test:178",
+        "test:181",
+        "test:191",
+        "test:192",
+        "test:197",
+        "test:201",
+        "test:213",
+        "test:222",
+        "test:233",
+        "test:242",
+        "test:245",
+        "test:251",
+        "test:274",
+        "test:279",
+        "test:284",
+        "test:289",
+        "test:298",
+        "test:299",
+        "test:301",
+        "test:310",
+        "test:324",
+        "test:327",
+        "test:333",
+        "test:334",
+        "test:345",
+        "test:355",
+        "test:356",
+        "test:374",
+        "test:386",
+        "test:391",
+        "test:402",
+        "test:403",
+        "test:425",
+        "test:426",
+        "test:432",
+        "test:464",
+        "test:468",
+        "test:482",
+        "test:503",
+        "test:510",
+        "test:524",
+        "test:531",
+        "test:545",
+        "test:549",
+        "test:551",
+        "test:552",
+        "test:558",
+        "test:561",
+        "test:563",
+        "test:584",
+        "test:587",
+        "test:590"
+      ],
+      "lost_100_400": [
+        "test:1",
+        "test:3",
+        "test:45",
+        "test:49",
+        "test:51",
+        "test:57",
+        "test:103",
+        "test:106",
+        "test:110",
+        "test:113",
+        "test:123",
+        "test:127",
+        "test:129",
+        "test:133",
+        "test:134",
+        "test:138",
+        "test:143",
+        "test:152",
+        "test:172",
+        "test:180",
+        "test:182",
+        "test:200",
+        "test:206",
+        "test:217",
+        "test:224",
+        "test:225",
+        "test:227",
+        "test:232",
+        "test:235",
+        "test:237",
+        "test:253",
+        "test:276",
+        "test:280",
+        "test:292",
+        "test:330",
+        "test:339",
+        "test:343",
+        "test:372",
+        "test:380",
+        "test:385",
+        "test:387",
+        "test:392",
+        "test:394",
+        "test:399",
+        "test:401",
+        "test:413",
+        "test:418",
+        "test:422",
+        "test:424",
+        "test:433",
+        "test:444",
+        "test:445",
+        "test:447",
+        "test:448",
+        "test:467",
+        "test:470",
+        "test:472",
+        "test:481",
+        "test:495",
+        "test:502",
+        "test:520",
+        "test:536",
+        "test:554",
+        "test:573",
+        "test:582",
+        "test:593"
+      ]
+    }
+  },
+  "set_sizes": {
+    "acc_final": {
+      "correct_step100": 262,
+      "correct_step400": 267,
+      "gained_100_400": 71,
+      "lost_100_200": 54,
+      "lost_100_300": 60,
+      "lost_100_400": 66,
+      "n_items": 601,
+      "net_delta_accuracy": 0.008319467554076539,
+      "net_delta_items": 5,
+      "stable_correct": 196,
+      "stable_wrong": 268,
+      "turnover_items": 137
+    },
+    "acc_strict": {
+      "correct_step100": 262,
+      "correct_step400": 267,
+      "gained_100_400": 71,
+      "lost_100_200": 54,
+      "lost_100_300": 60,
+      "lost_100_400": 66,
+      "n_items": 601,
+      "net_delta_accuracy": 0.008319467554076539,
+      "net_delta_items": 5,
+      "stable_correct": 196,
+      "stable_wrong": 268,
+      "turnover_items": 137
+    }
+  },
+  "task": "geo3k step-100 -> step-400 LOST/GAINED item forensics",
+  "verification": {
+    "acc_final_equals_acc_strict_per_item": {
+      "100": 601,
+      "150": 601,
+      "200": 601,
+      "300": 601,
+      "400": 601
+    },
+    "gold_identical_across_steps": true,
+    "item_key_sets_identical": true,
+    "level_series": {
+      "acc_final": {
+        "100": 0.43594009983361065,
+        "150": 0.46921797004991683,
+        "200": 0.4891846921797005,
+        "300": 0.47420965058236275,
+        "400": 0.4442595673876872
+      },
+      "acc_strict": {
+        "100": 0.43594009983361065,
+        "150": 0.46921797004991683,
+        "200": 0.4891846921797005,
+        "300": 0.47420965058236275,
+        "400": 0.4442595673876872
+      }
+    },
+    "non_test_rows_excluded_step100": 1288,
+    "problem_sha256_identical_across_steps": true,
+    "rescore_mismatches_vs_stored": {
+      "100": 0,
+      "150": 0,
+      "200": 0,
+      "300": 0,
+      "400": 0
+    },
+    "step100_file_total_rows": 1889,
+    "substrate_rows": 601,
+    "substrate_value_mismatches_vs_runs": 0,
+    "test_item_counts": {
+      "100": 601,
+      "150": 601,
+      "200": 601,
+      "300": 601,
+      "400": 601
+    }
+  },
+  "wrong_answer_distribution_on_lost_set": {
+    "acc_final": {
+      "lost_contract_invalid_at_step400": 3,
+      "lost_contract_valid_at_step400": 63,
+      "lost_n": 66,
+      "max_multiplicity_of_any_single_wrong_value": 2,
+      "n_values_appearing_twice_or_more": 8,
+      "observed_concentration": {
+        "distinct_per_item": 0.873015873015873,
+        "hhi": 0.019904257999496088,
+        "max_entropy_bits": 5.977279923499917,
+        "n_distinct": 55,
+        "n_values": 63,
+        "normalized_entropy": 0.9575110656990038,
+        "shannon_entropy_bits": 5.7233116695316655,
+        "share_in_repeated_value": 0.25396825396825395,
+        "top1_share": 0.031746031746031744
+      },
+      "permutation_nulls": {
+        "all_step400_errors": {
+          "draw_size": 66,
+          "null_mean_entropy_bits": 5.734629767500609,
+          "null_sd_entropy_bits": 0.09306279002286685,
+          "p_entropy_le_observed": 0.44165583441655837,
+          "p_hhi_ge_observed": 0.5660433956604339,
+          "p_n_distinct_le_observed": 0.38346165383461656,
+          "pool_size": 334
+        },
+        "stable_wrong_only": {
+          "draw_size": 66,
+          "null_mean_entropy_bits": 5.7321121509853326,
+          "null_sd_entropy_bits": 0.09235919651591025,
+          "p_entropy_le_observed": 0.44855514448555145,
+          "p_hhi_ge_observed": 0.5816418358164184,
+          "p_n_distinct_le_observed": 0.38146185381461856,
+          "pool_size": 268
+        }
+      },
+      "stable_wrong_contract_invalid_at_step400": 5,
+      "stable_wrong_reference_concentration": {
+        "distinct_per_item": 0.6768060836501901,
+        "hhi": 0.008804522257080435,
+        "max_entropy_bits": 8.038918989292302,
+        "n_distinct": 178,
+        "n_values": 263,
+        "normalized_entropy": 0.8943015762199568,
+        "shannon_entropy_bits": 7.1892179232286475,
+        "share_in_repeated_value": 0.467680608365019,
+        "top1_share": 0.022813688212927757
+      },
+      "top_values": [
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 11,
+          "value": "num::60.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 2,
+          "value": "num::0.380000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 3,
+          "value": "num::110.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 15,
+          "value": "num::6.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 12,
+          "value": "num::4.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 7,
+          "value": "num::120.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 1,
+          "value": "num::52.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 2,
+          "value": "num::45.000000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::9.420000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::152.500000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::0.310000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 1,
+          "value": "num::42.000000"
+        }
+      ]
+    },
+    "acc_strict": {
+      "lost_contract_invalid_at_step400": 3,
+      "lost_contract_valid_at_step400": 63,
+      "lost_n": 66,
+      "max_multiplicity_of_any_single_wrong_value": 2,
+      "n_values_appearing_twice_or_more": 8,
+      "observed_concentration": {
+        "distinct_per_item": 0.873015873015873,
+        "hhi": 0.019904257999496088,
+        "max_entropy_bits": 5.977279923499917,
+        "n_distinct": 55,
+        "n_values": 63,
+        "normalized_entropy": 0.9575110656990038,
+        "shannon_entropy_bits": 5.7233116695316655,
+        "share_in_repeated_value": 0.25396825396825395,
+        "top1_share": 0.031746031746031744
+      },
+      "permutation_nulls": {
+        "all_step400_errors": {
+          "draw_size": 66,
+          "null_mean_entropy_bits": 5.734629767500609,
+          "null_sd_entropy_bits": 0.09306279002286685,
+          "p_entropy_le_observed": 0.44165583441655837,
+          "p_hhi_ge_observed": 0.5660433956604339,
+          "p_n_distinct_le_observed": 0.38346165383461656,
+          "pool_size": 334
+        },
+        "stable_wrong_only": {
+          "draw_size": 66,
+          "null_mean_entropy_bits": 5.7321121509853326,
+          "null_sd_entropy_bits": 0.09235919651591025,
+          "p_entropy_le_observed": 0.44855514448555145,
+          "p_hhi_ge_observed": 0.5816418358164184,
+          "p_n_distinct_le_observed": 0.38146185381461856,
+          "pool_size": 268
+        }
+      },
+      "stable_wrong_contract_invalid_at_step400": 5,
+      "stable_wrong_reference_concentration": {
+        "distinct_per_item": 0.6768060836501901,
+        "hhi": 0.008804522257080435,
+        "max_entropy_bits": 8.038918989292302,
+        "n_distinct": 178,
+        "n_values": 263,
+        "normalized_entropy": 0.8943015762199568,
+        "shannon_entropy_bits": 7.1892179232286475,
+        "share_in_repeated_value": 0.467680608365019,
+        "top1_share": 0.022813688212927757
+      },
+      "top_values": [
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 11,
+          "value": "num::60.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 2,
+          "value": "num::0.380000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 3,
+          "value": "num::110.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 15,
+          "value": "num::6.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 12,
+          "value": "num::4.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 7,
+          "value": "num::120.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 1,
+          "value": "num::52.000000"
+        },
+        {
+          "count": 2,
+          "n_items_with_this_gold_in_test": 2,
+          "value": "num::45.000000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::9.420000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::152.500000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 0,
+          "value": "num::0.310000"
+        },
+        {
+          "count": 1,
+          "n_items_with_this_gold_in_test": 1,
+          "value": "num::42.000000"
+        }
+      ]
+    }
+  }
+}
