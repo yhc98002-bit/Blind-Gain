@@ -569,6 +569,95 @@ greedy only. The greedy sub-contract itself is identical.
 
 ---
 
+## 12c. M5c — what the flat benchmark hides: turnover is huge, but it is not visual
+
+`reports/m5c_item_substrate_v1.jsonl`, `reports/m5c_turnover_v1.json`,
+`reports/m5c_necessity_stratification_v1.*`, `reports/m5c_lost_item_forensics_v1.*`.
+Cached predictions only, no GPU. All five geo3k steps re-scored through
+`score_greedy_item_pilot`; stored ≡ recomputed 601/601 at every step; item-id,
+`ground_truth`, problem-sha256 and `image_sha256` sets identical across all five runs.
+**`acc_final ≡ acc_strict` on all 601 items at every trained step**, so lenient and
+strict tables are numerically identical (both computed and stored, not collapsed).
+
+### The flat aggregate does hide large turnover
+
+| | count | fraction |
+|---|---:|---:|
+| stable correct (1→1) | 196 | 0.326 |
+| **gained (0→1)** | **71** | 0.118 |
+| **lost (1→0)** | **66** | 0.110 |
+| stable incorrect (0→0) | 268 | 0.446 |
+
+Net is **+5 items (+0.0083)** while **137 items (22.8%) change state — turnover is 27.4×
+the net**. Only 59.9% of items hold one state across all five steps. The peak-and-reverse
+is real at item level and significant in both directions: 100→200 gains 86 / loses 54
+(p=0.0086); 200→400 gains 44 / loses 71 (p=0.015).
+
+### But the turnover is **not** organised by visual necessity — the hypothesis fails
+
+Using Gate 0's own Δq terciles unchanged (bin sizes and edges reproduce
+`gate0_stratification_v1.json` to full precision):
+
+| stratum | n | acc@100 | acc@400 | Δ | 95% CI | McNemar p |
+|---|---:|---:|---:|---:|:---:|---:|
+| blind-solvable (low Δq) | 329 | 0.2523 | 0.2462 | **−0.0061** | [−0.055, +0.043] | 0.902 |
+| intermediate | 121 | 0.5372 | 0.6198 | **+0.0826** | [−0.008, +0.174] | 0.121 |
+| image-necessary (high Δq) | 151 | 0.7550 | 0.7351 | **−0.0199** | [−0.099, +0.060] | 0.743 |
+
+**The bins move together, not against each other.** The predicted pattern —
+blind-solvable improves while image-necessary declines — does not appear: blind-solvable
+*also* declines, and the only bin that rises is the intermediate one, about which the
+hypothesis says nothing. Direct contrast (image-necessary − blind-solvable) =
+**−0.0138, CI [−0.104, +0.077], permutation p = 0.837**. Spearman(per-item change, Δq)
+= **+0.021, p = 0.605**. Gained and lost items differ in mean Δq by +0.030 (p = 0.543).
+
+**This is a non-rejection, not proof of no effect** — per-bin n runs as low as 121 and the
+contrast CI still admits bin differences of ±0.10.
+
+*The bins are not the problem.* At step 100 the real-minus-blind gap is strongly ordered
+across them — **+0.137 / +0.413 / +0.669** — so Δq does capture image-dependence. The
+change over training is simply unrelated to it. Two measured limits are recorded anyway:
+**252 of the 329 low-Δq items have zero observed blind successes**, so that bin is
+dominated by items the base solves under no condition rather than by blind-solvable ones;
+and mean q_real rises 0.207 → 0.451 → 0.708 across bins, so Δq terciles confound necessity
+with with-image difficulty. **That confound is a finding for Paper 2's C1**, which proposes
+sampling on Δq.
+
+### Which items are lost is reproducible; what they become is not
+
+| probe | observed | null | p |
+|---|---:|---:|---:|
+| 3-way Jaccard of LOST(100→200, 100→300, 100→400) | **0.3118** | 0.0221 | **≤1e−4** |
+| share of 100→400 lost already lost at both earlier hops | 0.4394 | — | — |
+| step-400 wrong-answer entropy on lost items (norm.) | 0.9575 | 0.9578 | 0.449 |
+| max multiplicity of any single wrong value | **2** | — | — |
+
+**The same items keep being lost** — that is structured and highly significant. **But they
+do not land on a shared wrong answer**: 55 distinct values over 63 contract-valid answers,
+no value occurring more than twice, entropy indistinguishable from a matched permutation
+null. Lost items repeat their step-400 value at step 300 only 22.9% of the time, versus
+42.9% for stable-wrong items — they are *not* settling onto an attractor.
+
+**This is the sharpest available contrast with F6 Tier 1.** On FlipTrack the gray arm
+degrades to the *identical extracted wrong answer* in 39/40 three-way. On geo3k the
+degradation is item-reproducible but answer-dispersed. The FlipTrack taxonomy
+(`nearest_gridline` etc.) was **not** transplanted — it is defined over replayed coordinate
+scene registers and is not computable on geo3k word problems.
+
+One geo3k-native signal did clear the 15-test Holm family: lost items' step-400 answer is a
+numeric near-miss (within 10% of gold) **20.4% of the time vs 8.7%** for stable-wrong
+(p = 5.0e−4) — **not difficulty-controlled**, since lost items were correct at step 100 by
+construction and the reference items were not.
+
+### Verdict
+
+The benchmark is not hiding a clean substitution of cheap strategies for visual ones. It is
+hiding **large, item-reproducible churn that is orthogonal to measured visual necessity**.
+The corrosion established on FlipTrack (§6, §6a, §12b) does not have a visible geo3k
+counterpart at the level of *which kinds of item* move.
+
+---
+
 ## 13. R5 — Cross-family generalization (complete)
 
 `reports/generalization_audits_v2.json`, from
@@ -975,6 +1064,19 @@ review.
    **The lesson is that the guard has to run as a check, not as prose** — the
    `denominator_crosses_zero` flag was already in the JSON and I did not read it
    before writing.
+13. **The on-quota step-300 M5 checkpoint is not the one that produced the reported
+   step-300 numbers.** It was **re-merged on 2026-07-26**, and its
+   `model.safetensors.index.json` sha256 (`0a640939…`) does **not** match the
+   `checkpoint_index_sha256` recorded by the completed `m5_geo3k_step300` eval run
+   (`236a9516…`). Total size (8,131,575,808) and all 825 tensor names are identical,
+   but **419 of 825 tensors are assigned to a different shard file**, and byte
+   identity was never established. The original is on **ln207 node-local scratch
+   only**. Nothing reported so far is affected — the step-300 numbers came from the
+   original — but **any re-evaluation at step 300 must restore the original**, or it
+   will silently be a different checkpoint. Steps 150 and 400 match their eval runs;
+   step 200 has no on-quota weights at all and survives only on ln207 scratch (index
+   `d77c3fcb…`, which *does* match its eval run), with its raw shards deleted, so it
+   can be **restored but never re-merged**.
 
 ---
 
