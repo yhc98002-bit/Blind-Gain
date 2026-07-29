@@ -27,7 +27,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
-| Mini-A5 CP vs matched GRPO | F8 | CP arm complete; member arm 17/120 |
+| Mini-A5 CP vs matched GRPO | F8 | **both arms trained (120/120); acceptance gate PASS 2026-07-29**; endpoints still unread — member arm needs HF merge first (§8) |
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
 | Cue ladder | Paper 2 P1.1 | **closed — both validity gates failed** |
 
@@ -312,20 +312,40 @@ twin images where accuracy is 0.012 (+0.17–0.19 overconfidence gap).
 
 ---
 
-## 8. F8 — Trainability (Mini-A5) — IN FLIGHT
+## 8. F8 — Trainability (Mini-A5) — BOTH ARMS TRAINED, GATE PASSED, ENDPOINTS NOT YET READ
 
 CP-GRPO vs matched same-data standard GRPO, 120 steps each, on held-out
-FlipTrack templates. CP arm **complete** (status complete, `global_step_120`);
-matched member arm at 34/120 on an29.
+FlipTrack templates. **Both arms are now complete**: CP arm `global_step_120`;
+matched member arm reached `global_step_120` on an29 on 2026-07-29
+(`checkpoint_tracker.json` → `last_global_step: 120`, trainer exited).
 
-**No value from either arm has been opened.** The registration prohibits partial
-readouts until both arms and their endpoint evaluations complete. An acceptance
-audit of all six conditions (`scripts/audit_mini_a5_acceptance.py`, emitting
-`reports/mini_a5_acceptance_audit_v1.json`) must return
-PASS before any endpoint is read; it currently fails on condition 1 alone
-(member arm still running), with the other five passing — including the
-structural check that the CP arm logged its advantage-audit events and the member
-arm never entered the joint branch.
+**The acceptance gate returned PASS on 2026-07-29** —
+`scripts/audit_mini_a5_acceptance.py`, report
+`reports/mini_a5_acceptance_audit_v1.json`:
+
+| condition | verdict |
+|---|---|
+| 1. both manifests exit 0 with exactly 120 optimizer steps | ok |
+| 2. config / data / model / registration / placement / EasyR1 hashes match | ok |
+| 3. advantage grouping (CP logged joint-branch events, member never entered it) | ok |
+| 4. no fatal log signatures (NaN, traceback, OOM, fatal NCCL) | ok |
+| 5. checkpoint inventory | ok |
+| 6. independent versioned report precedes any readout | ok |
+
+**VERDICT: PASS.** The audit reads no endpoint metric and prints no accuracy by
+construction; endpoint evaluation was gated on this verdict and is now authorized
+for the first time.
+
+**No endpoint value has been read yet.** Reading them requires evaluation runs that
+have not been performed, and one prerequisite is outstanding: the member arm's
+`global_step_120/actor/huggingface/` holds only config and tokenizer files
+(~16 MB, no safetensors), because that arm was saved with `save_model_only: false`
+as raw FSDP shards. The CP arm's step-120 checkpoint is 7.6 GB and directly
+loadable. **The member arm must be merged to HF weights before it can be
+evaluated** — the registration anticipated exactly this ("a checkpoint
+merge/relocation watcher must accompany each arm so raw state is merged, archived,
+and pruned behind the trainer"). Until that merge runs, F8 remains unread, and no
+number here should be cited.
 
 ---
 

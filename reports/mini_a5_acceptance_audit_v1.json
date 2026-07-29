@@ -10,11 +10,11 @@
         "status": "complete"
       },
       "member": {
-        "exit_code": null,
-        "final_step": 11,
-        "ok": false,
+        "exit_code": 0,
+        "final_step": 120,
+        "ok": true,
         "run": "experiments/runs/mini_a5_member_main_an29_20260728T023715Z",
-        "status": "running"
+        "status": "complete"
       }
     },
     "2_hashes_match_registration": {
@@ -55,8 +55,15 @@
         ]
       },
       "member": {
-        "n": 0,
-        "saved_checkpoints": []
+        "n": 6,
+        "saved_checkpoints": [
+          "global_step_100",
+          "global_step_120",
+          "global_step_20",
+          "global_step_40",
+          "global_step_60",
+          "global_step_80"
+        ]
       },
       "ok": true,
       "retention_ledger_present": true
@@ -66,11 +73,9 @@
       "ok": true
     }
   },
-  "failures": [
-    "C1/member: status=running exit=None step=11"
-  ],
+  "failures": [],
   "note": "No endpoint value is read or reported by this audit.",
   "registration": "docs/registered_mini_a5_main_v1.md",
   "schema_version": 1,
-  "verdict": "FAIL"
+  "verdict": "PASS"
 }
