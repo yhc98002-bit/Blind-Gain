@@ -1,0 +1,917 @@
+{
+  "schema_version": "blind-gains.m5c-turnover.v1",
+  "generated_utc": "2026-07-29T17:32:03Z",
+  "git_hash": "65227c62258770edd0967169b8bc3f2a2b1d0d59",
+  "item_key_definition": "(split, row_index) on the Geometry3K test split",
+  "metrics": {
+    "acc_final": "lenient (I7)",
+    "acc_strict": "contract-strict (I7)"
+  },
+  "n_items": 601,
+  "id_check": {
+    "n_per_step": {
+      "100": 601,
+      "150": 601,
+      "200": 601,
+      "300": 601,
+      "400": 601
+    },
+    "n_common": 601,
+    "n_union": 601,
+    "all_identical": true,
+    "missing_vs_step100": {
+      "100": [],
+      "150": [],
+      "200": [],
+      "300": [],
+      "400": []
+    },
+    "extra_vs_step100": {
+      "100": [],
+      "150": [],
+      "200": [],
+      "300": [],
+      "400": []
+    },
+    "duplicate_keys_within_step": {
+      "100": [],
+      "150": [],
+      "200": [],
+      "300": [],
+      "400": []
+    },
+    "raw_row_counts": {
+      "100": 1889,
+      "150": 601,
+      "200": 601,
+      "300": 601,
+      "400": 601
+    },
+    "non_test_rows_excluded": {
+      "100": {
+        "split=train|condition=real": 1288
+      },
+      "150": {},
+      "200": {},
+      "300": {},
+      "400": {}
+    }
+  },
+  "joined_field_mismatch_counts": {
+    "ground_truth": 0,
+    "qid": 0,
+    "image_sha256": 0,
+    "problem_sha256": 0
+  },
+  "joined_field_mismatch_examples": {},
+  "stored_vs_recomputed_agreement": {
+    "100": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "150": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "200": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "300": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "400": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    }
+  },
+  "levels": {
+    "100": {
+      "n": 601,
+      "acc_final_count": 262,
+      "acc_final": 0.43594009983361065,
+      "acc_strict_count": 262,
+      "acc_strict": 0.43594009983361065,
+      "m5b_acc_final": 0.4359,
+      "acc_final_matches_m5b_4dp": true,
+      "m5b_acc_strict": 0.4359,
+      "acc_strict_matches_m5b_4dp": true,
+      "acc_final_equals_acc_strict_all_items": true
+    },
+    "150": {
+      "n": 601,
+      "acc_final_count": 282,
+      "acc_final": 0.46921797004991683,
+      "acc_strict_count": 282,
+      "acc_strict": 0.46921797004991683,
+      "m5b_acc_final": 0.4692,
+      "acc_final_matches_m5b_4dp": true,
+      "m5b_acc_strict": 0.4692,
+      "acc_strict_matches_m5b_4dp": true,
+      "acc_final_equals_acc_strict_all_items": true
+    },
+    "200": {
+      "n": 601,
+      "acc_final_count": 294,
+      "acc_final": 0.4891846921797005,
+      "acc_strict_count": 294,
+      "acc_strict": 0.4891846921797005,
+      "m5b_acc_final": 0.4892,
+      "acc_final_matches_m5b_4dp": true,
+      "m5b_acc_strict": 0.4892,
+      "acc_strict_matches_m5b_4dp": true,
+      "acc_final_equals_acc_strict_all_items": true
+    },
+    "300": {
+      "n": 601,
+      "acc_final_count": 285,
+      "acc_final": 0.47420965058236275,
+      "acc_strict_count": 285,
+      "acc_strict": 0.47420965058236275,
+      "m5b_acc_final": 0.4742,
+      "acc_final_matches_m5b_4dp": true,
+      "m5b_acc_strict": 0.4742,
+      "acc_strict_matches_m5b_4dp": true,
+      "acc_final_equals_acc_strict_all_items": true
+    },
+    "400": {
+      "n": 601,
+      "acc_final_count": 267,
+      "acc_final": 0.4442595673876872,
+      "acc_strict_count": 267,
+      "acc_strict": 0.4442595673876872,
+      "m5b_acc_final": 0.4443,
+      "acc_final_matches_m5b_4dp": true,
+      "m5b_acc_strict": 0.4443,
+      "acc_strict_matches_m5b_4dp": true,
+      "acc_final_equals_acc_strict_all_items": true
+    }
+  },
+  "transitions": {
+    "100->400|acc_final": {
+      "from_step": "100",
+      "to_step": "400",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 196,
+        "gained": 71,
+        "lost": 66,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4442595673876872,
+      "net_count": 5,
+      "net_delta": 0.008319467554076539,
+      "acc_to_minus_acc_from": 0.008319467554076532,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 66,
+      "discordant_pairs": 137,
+      "turnover_fraction_of_n": 0.22795341098169716,
+      "turnover_to_abs_net_ratio": 27.4,
+      "abs_net_count": 5,
+      "mcnemar_exact_two_sided_p": 0.7326840935910409,
+      "concordant_pairs": 464,
+      "agreement_fraction": 0.7720465890183028
+    },
+    "100->400|acc_strict": {
+      "from_step": "100",
+      "to_step": "400",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 196,
+        "gained": 71,
+        "lost": 66,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4442595673876872,
+      "net_count": 5,
+      "net_delta": 0.008319467554076539,
+      "acc_to_minus_acc_from": 0.008319467554076532,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 66,
+      "discordant_pairs": 137,
+      "turnover_fraction_of_n": 0.22795341098169716,
+      "turnover_to_abs_net_ratio": 27.4,
+      "abs_net_count": 5,
+      "mcnemar_exact_two_sided_p": 0.7326840935910409,
+      "concordant_pairs": 464,
+      "agreement_fraction": 0.7720465890183028
+    },
+    "100->200|acc_final": {
+      "from_step": "100",
+      "to_step": "200",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 208,
+        "gained": 86,
+        "lost": 54,
+        "stable_incorrect": 253
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4891846921797005,
+      "net_count": 32,
+      "net_delta": 0.05324459234608985,
+      "acc_to_minus_acc_from": 0.05324459234608986,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 86,
+      "b10_lost": 54,
+      "discordant_pairs": 140,
+      "turnover_fraction_of_n": 0.23294509151414308,
+      "turnover_to_abs_net_ratio": 4.375,
+      "abs_net_count": 32,
+      "mcnemar_exact_two_sided_p": 0.008556547961075816,
+      "concordant_pairs": 461,
+      "agreement_fraction": 0.7670549084858569
+    },
+    "100->200|acc_strict": {
+      "from_step": "100",
+      "to_step": "200",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 208,
+        "gained": 86,
+        "lost": 54,
+        "stable_incorrect": 253
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4891846921797005,
+      "net_count": 32,
+      "net_delta": 0.05324459234608985,
+      "acc_to_minus_acc_from": 0.05324459234608986,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 86,
+      "b10_lost": 54,
+      "discordant_pairs": 140,
+      "turnover_fraction_of_n": 0.23294509151414308,
+      "turnover_to_abs_net_ratio": 4.375,
+      "abs_net_count": 32,
+      "mcnemar_exact_two_sided_p": 0.008556547961075816,
+      "concordant_pairs": 461,
+      "agreement_fraction": 0.7670549084858569
+    },
+    "200->400|acc_final": {
+      "from_step": "200",
+      "to_step": "400",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 223,
+        "gained": 44,
+        "lost": 71,
+        "stable_incorrect": 263
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.4442595673876872,
+      "net_count": -27,
+      "net_delta": -0.04492512479201331,
+      "acc_to_minus_acc_from": -0.04492512479201333,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 44,
+      "b10_lost": 71,
+      "discordant_pairs": 115,
+      "turnover_fraction_of_n": 0.1913477537437604,
+      "turnover_to_abs_net_ratio": 4.2592592592592595,
+      "abs_net_count": 27,
+      "mcnemar_exact_two_sided_p": 0.014964671136824323,
+      "concordant_pairs": 486,
+      "agreement_fraction": 0.8086522462562395
+    },
+    "200->400|acc_strict": {
+      "from_step": "200",
+      "to_step": "400",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 223,
+        "gained": 44,
+        "lost": 71,
+        "stable_incorrect": 263
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.4442595673876872,
+      "net_count": -27,
+      "net_delta": -0.04492512479201331,
+      "acc_to_minus_acc_from": -0.04492512479201333,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 44,
+      "b10_lost": 71,
+      "discordant_pairs": 115,
+      "turnover_fraction_of_n": 0.1913477537437604,
+      "turnover_to_abs_net_ratio": 4.2592592592592595,
+      "abs_net_count": 27,
+      "mcnemar_exact_two_sided_p": 0.014964671136824323,
+      "concordant_pairs": 486,
+      "agreement_fraction": 0.8086522462562395
+    },
+    "100->150|acc_final": {
+      "from_step": "100",
+      "to_step": "150",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 211,
+        "gained": 71,
+        "lost": 51,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.46921797004991683,
+      "net_count": 20,
+      "net_delta": 0.033277870216306155,
+      "acc_to_minus_acc_from": 0.03327787021630618,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 51,
+      "discordant_pairs": 122,
+      "turnover_fraction_of_n": 0.20299500831946754,
+      "turnover_to_abs_net_ratio": 6.1,
+      "abs_net_count": 20,
+      "mcnemar_exact_two_sided_p": 0.08498064582685333,
+      "concordant_pairs": 479,
+      "agreement_fraction": 0.7970049916805324
+    },
+    "100->150|acc_strict": {
+      "from_step": "100",
+      "to_step": "150",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 211,
+        "gained": 71,
+        "lost": 51,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.46921797004991683,
+      "net_count": 20,
+      "net_delta": 0.033277870216306155,
+      "acc_to_minus_acc_from": 0.03327787021630618,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 51,
+      "discordant_pairs": 122,
+      "turnover_fraction_of_n": 0.20299500831946754,
+      "turnover_to_abs_net_ratio": 6.1,
+      "abs_net_count": 20,
+      "mcnemar_exact_two_sided_p": 0.08498064582685333,
+      "concordant_pairs": 479,
+      "agreement_fraction": 0.7970049916805324
+    },
+    "150->200|acc_final": {
+      "from_step": "150",
+      "to_step": "200",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 233,
+        "gained": 61,
+        "lost": 49,
+        "stable_incorrect": 258
+      },
+      "acc_from": 0.46921797004991683,
+      "acc_to": 0.4891846921797005,
+      "net_count": 12,
+      "net_delta": 0.019966722129783693,
+      "acc_to_minus_acc_from": 0.019966722129783676,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 61,
+      "b10_lost": 49,
+      "discordant_pairs": 110,
+      "turnover_fraction_of_n": 0.18302828618968386,
+      "turnover_to_abs_net_ratio": 9.166666666666666,
+      "abs_net_count": 12,
+      "mcnemar_exact_two_sided_p": 0.2942337084442914,
+      "concordant_pairs": 491,
+      "agreement_fraction": 0.8169717138103162
+    },
+    "150->200|acc_strict": {
+      "from_step": "150",
+      "to_step": "200",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 233,
+        "gained": 61,
+        "lost": 49,
+        "stable_incorrect": 258
+      },
+      "acc_from": 0.46921797004991683,
+      "acc_to": 0.4891846921797005,
+      "net_count": 12,
+      "net_delta": 0.019966722129783693,
+      "acc_to_minus_acc_from": 0.019966722129783676,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 61,
+      "b10_lost": 49,
+      "discordant_pairs": 110,
+      "turnover_fraction_of_n": 0.18302828618968386,
+      "turnover_to_abs_net_ratio": 9.166666666666666,
+      "abs_net_count": 12,
+      "mcnemar_exact_two_sided_p": 0.2942337084442914,
+      "concordant_pairs": 491,
+      "agreement_fraction": 0.8169717138103162
+    },
+    "200->300|acc_final": {
+      "from_step": "200",
+      "to_step": "300",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 238,
+        "gained": 47,
+        "lost": 56,
+        "stable_incorrect": 260
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.47420965058236275,
+      "net_count": -9,
+      "net_delta": -0.014975041597337771,
+      "acc_to_minus_acc_from": -0.014975041597337757,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 47,
+      "b10_lost": 56,
+      "discordant_pairs": 103,
+      "turnover_fraction_of_n": 0.1713810316139767,
+      "turnover_to_abs_net_ratio": 11.444444444444445,
+      "abs_net_count": 9,
+      "mcnemar_exact_two_sided_p": 0.43068906630813125,
+      "concordant_pairs": 498,
+      "agreement_fraction": 0.8286189683860233
+    },
+    "200->300|acc_strict": {
+      "from_step": "200",
+      "to_step": "300",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 238,
+        "gained": 47,
+        "lost": 56,
+        "stable_incorrect": 260
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.47420965058236275,
+      "net_count": -9,
+      "net_delta": -0.014975041597337771,
+      "acc_to_minus_acc_from": -0.014975041597337757,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 47,
+      "b10_lost": 56,
+      "discordant_pairs": 103,
+      "turnover_fraction_of_n": 0.1713810316139767,
+      "turnover_to_abs_net_ratio": 11.444444444444445,
+      "abs_net_count": 9,
+      "mcnemar_exact_two_sided_p": 0.43068906630813125,
+      "concordant_pairs": 498,
+      "agreement_fraction": 0.8286189683860233
+    },
+    "300->400|acc_final": {
+      "from_step": "300",
+      "to_step": "400",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 229,
+        "gained": 38,
+        "lost": 56,
+        "stable_incorrect": 278
+      },
+      "acc_from": 0.47420965058236275,
+      "acc_to": 0.4442595673876872,
+      "net_count": -18,
+      "net_delta": -0.029950083194675542,
+      "acc_to_minus_acc_from": -0.02995008319467557,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 38,
+      "b10_lost": 56,
+      "discordant_pairs": 94,
+      "turnover_fraction_of_n": 0.15640599001663893,
+      "turnover_to_abs_net_ratio": 5.222222222222222,
+      "abs_net_count": 18,
+      "mcnemar_exact_two_sided_p": 0.07897554800108209,
+      "concordant_pairs": 507,
+      "agreement_fraction": 0.8435940099833611
+    },
+    "300->400|acc_strict": {
+      "from_step": "300",
+      "to_step": "400",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 229,
+        "gained": 38,
+        "lost": 56,
+        "stable_incorrect": 278
+      },
+      "acc_from": 0.47420965058236275,
+      "acc_to": 0.4442595673876872,
+      "net_count": -18,
+      "net_delta": -0.029950083194675542,
+      "acc_to_minus_acc_from": -0.02995008319467557,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 38,
+      "b10_lost": 56,
+      "discordant_pairs": 94,
+      "turnover_fraction_of_n": 0.15640599001663893,
+      "turnover_to_abs_net_ratio": 5.222222222222222,
+      "abs_net_count": 18,
+      "mcnemar_exact_two_sided_p": 0.07897554800108209,
+      "concordant_pairs": 507,
+      "agreement_fraction": 0.8435940099833611
+    }
+  },
+  "multi_step_patterns": {
+    "note": "pattern digits are steps 100/150/200/300/400 in order",
+    "lenient_pattern_counts": {
+      "00000": 198,
+      "11111": 162,
+      "01111": 22,
+      "10000": 19,
+      "00111": 16,
+      "00100": 13,
+      "00010": 13,
+      "00001": 12,
+      "01000": 11,
+      "11000": 10,
+      "00110": 10,
+      "01100": 10,
+      "11100": 9,
+      "11110": 9,
+      "01110": 9,
+      "11101": 8,
+      "11011": 8,
+      "10100": 8,
+      "10111": 7,
+      "01001": 6,
+      "10011": 5,
+      "01011": 5,
+      "01010": 4,
+      "11010": 4,
+      "10010": 4,
+      "00011": 4,
+      "01101": 4,
+      "10110": 3,
+      "10001": 3,
+      "00101": 2,
+      "10101": 2,
+      "11001": 1
+    },
+    "strict_pattern_counts": {
+      "00000": 198,
+      "11111": 162,
+      "01111": 22,
+      "10000": 19,
+      "00111": 16,
+      "00100": 13,
+      "00010": 13,
+      "00001": 12,
+      "01000": 11,
+      "11000": 10,
+      "00110": 10,
+      "01100": 10,
+      "11100": 9,
+      "11110": 9,
+      "01110": 9,
+      "11101": 8,
+      "11011": 8,
+      "10100": 8,
+      "10111": 7,
+      "01001": 6,
+      "10011": 5,
+      "01011": 5,
+      "01010": 4,
+      "11010": 4,
+      "10010": 4,
+      "00011": 4,
+      "01101": 4,
+      "10110": 3,
+      "10001": 3,
+      "00101": 2,
+      "10101": 2,
+      "11001": 1
+    },
+    "lenient_never_correct_any_step": 198,
+    "lenient_always_correct_all_steps": 162,
+    "lenient_items_that_moved_at_least_once": 241
+  },
+  "provenance": {
+    "100": {
+      "run": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+      "per_item_sha256": "22d93ad3f5510c49d9755d82dd0cdb148ea0818f75db77e7363b757b8ed0d8c4",
+      "rows_total": 1889,
+      "rows_test": 601
+    },
+    "150": {
+      "run": "experiments/runs/m5_geo3k_step150_an12_gpu4_20260718T051839Z",
+      "per_item_sha256": "90c97b6df7c4c78d9d90e564c84fb1616e0e0fa8f6d63b24851bfe6b98e83a6f",
+      "rows_total": 601,
+      "rows_test": 601
+    },
+    "200": {
+      "run": "experiments/runs/m5_geo3k_step200_an29_gpu4_20260722T141052Z",
+      "per_item_sha256": "0371dfe7b3dada6009ae0d4c3c4852c552ddbd07cd34052d2a63fe53127fc227",
+      "rows_total": 601,
+      "rows_test": 601
+    },
+    "300": {
+      "run": "experiments/runs/m5_geo3k_step300_an12_gpu0_20260726T083303Z",
+      "per_item_sha256": "81dd02a133eea0211a450f1aad25ef646db3f4bc8c3636f82f59bb524b6f1347",
+      "rows_total": 601,
+      "rows_test": 601
+    },
+    "400": {
+      "run": "experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z",
+      "per_item_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+      "rows_total": 601,
+      "rows_test": 601
+    }
+  },
+  "substrate_path": "reports/m5c_item_substrate_v1.jsonl",
+  "substrate_sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864",
+  "substrate_rows": 601,
+  "verification": {
+    "substrate_reread_rows": 601,
+    "substrate_unique_item_keys": 601,
+    "substrate_vs_source_value_mismatches": 0,
+    "source_keys_absent_from_substrate": [],
+    "transition_counts_rederived_from_written_file_match": true,
+    "transition_labels_in_file_match_rederived": true,
+    "acc_final_equals_acc_strict_per_item_all_steps": true,
+    "note": "acc_final and acc_strict are identical on every item at every trained step (100-400), so the lenient and contract-strict transition tables coincide exactly. Both are reported per I7; they are not collapsed."
+  },
+  "gained_share_of_discordant": {
+    "100->400|acc_final": {
+      "gained": 71,
+      "lost": 66,
+      "discordant": 137,
+      "gained_share": 0.5182481751824818,
+      "wilson95": [
+        0.4352281581629236,
+        0.6002727521642091
+      ],
+      "mcnemar_exact_p": 0.7326840935910409
+    },
+    "100->200|acc_final": {
+      "gained": 86,
+      "lost": 54,
+      "discordant": 140,
+      "gained_share": 0.6142857142857143,
+      "wilson95": [
+        0.5316279871048573,
+        0.6908391670936314
+      ],
+      "mcnemar_exact_p": 0.008556547961075816
+    },
+    "200->400|acc_final": {
+      "gained": 44,
+      "lost": 71,
+      "discordant": 115,
+      "gained_share": 0.3826086956521739,
+      "wilson95": [
+        0.2989389688976963,
+        0.47386758979384996
+      ],
+      "mcnemar_exact_p": 0.014964671136824323
+    }
+  },
+  "mcnemar_scope_note": "McNemar's exact test asks only whether the discordant pairs split away from 50/50 (i.e. whether the NET delta is larger than the observed turnover would produce by chance). It does NOT test whether the TOTAL turnover (b01+b10) exceeds per-item noise. Testing that would require replicate evaluations of the SAME checkpoint, which do not exist: every geo3k eval here is single-pass greedy decoding (temperature 0.0, seed 20260710), deterministic by construction. No such replicate-noise test is computed.",
+  "noise_reference_not_a_test": {
+    "caveat": "REFERENCE ONLY, not a noise test: derived from 16-sample temperature decoding at step 100; greedy decoding is deterministic, so this does not estimate greedy-eval replicate noise. No greedy replicate exists.",
+    "n_items_with_samples": 601,
+    "sample_count_values": [
+      16
+    ],
+    "mean_p_i": 0.399022462562396,
+    "expected_discordance_fraction_two_indep_draws": 0.21327735024958402,
+    "expected_discordance_count": 128.1796875,
+    "observed_discordance_count_100_to_400": 137,
+    "observed_discordance_fraction_100_to_400": 0.22795341098169716
+  },
+  "join_identity_field_census": {
+    "qid": {
+      "100": {
+        "n_null": 601,
+        "n_distinct": 1,
+        "python_types": [
+          "NoneType"
+        ]
+      },
+      "150": {
+        "n_null": 601,
+        "n_distinct": 1,
+        "python_types": [
+          "NoneType"
+        ]
+      },
+      "200": {
+        "n_null": 601,
+        "n_distinct": 1,
+        "python_types": [
+          "NoneType"
+        ]
+      },
+      "300": {
+        "n_null": 601,
+        "n_distinct": 1,
+        "python_types": [
+          "NoneType"
+        ]
+      },
+      "400": {
+        "n_null": 601,
+        "n_distinct": 1,
+        "python_types": [
+          "NoneType"
+        ]
+      }
+    },
+    "image_sha256": {
+      "100": {
+        "n_null": 0,
+        "n_distinct": 533,
+        "python_types": [
+          "list"
+        ]
+      },
+      "150": {
+        "n_null": 0,
+        "n_distinct": 533,
+        "python_types": [
+          "list"
+        ]
+      },
+      "200": {
+        "n_null": 0,
+        "n_distinct": 533,
+        "python_types": [
+          "list"
+        ]
+      },
+      "300": {
+        "n_null": 0,
+        "n_distinct": 533,
+        "python_types": [
+          "list"
+        ]
+      },
+      "400": {
+        "n_null": 0,
+        "n_distinct": 533,
+        "python_types": [
+          "list"
+        ]
+      }
+    },
+    "ground_truth": {
+      "100": {
+        "n_null": 0,
+        "n_distinct": 285,
+        "python_types": [
+          "str"
+        ]
+      },
+      "150": {
+        "n_null": 0,
+        "n_distinct": 285,
+        "python_types": [
+          "str"
+        ]
+      },
+      "200": {
+        "n_null": 0,
+        "n_distinct": 285,
+        "python_types": [
+          "str"
+        ]
+      },
+      "300": {
+        "n_null": 0,
+        "n_distinct": 285,
+        "python_types": [
+          "str"
+        ]
+      },
+      "400": {
+        "n_null": 0,
+        "n_distinct": 285,
+        "python_types": [
+          "str"
+        ]
+      }
+    },
+    "problem": {
+      "100": {
+        "n_null": 0,
+        "n_distinct": 449,
+        "python_types": [
+          "str"
+        ]
+      },
+      "150": {
+        "n_null": 0,
+        "n_distinct": 449,
+        "python_types": [
+          "str"
+        ]
+      },
+      "200": {
+        "n_null": 0,
+        "n_distinct": 449,
+        "python_types": [
+          "str"
+        ]
+      },
+      "300": {
+        "n_null": 0,
+        "n_distinct": 449,
+        "python_types": [
+          "str"
+        ]
+      },
+      "400": {
+        "n_null": 0,
+        "n_distinct": 449,
+        "python_types": [
+          "str"
+        ]
+      }
+    }
+  },
+  "join_identity_check_scope": "The (split,row_index) join was cross-checked on ground_truth, problem (sha256), image_sha256 and qid: 0 mismatches out of 601 items x 4 comparison steps. NOTE: `qid` is null in ALL FIVE source runs, so the qid arm of that check is VACUOUS and carries no evidence. The informative arms are ground_truth, problem-sha256 and image_sha256, each of which is populated and item-distinguishing.",
+  "duplicate_content_census": {
+    "note": "Descriptive only. The reported substrate and all headline transition tables use ALL 601 items keyed on (split,row_index); this census records content duplication so downstream analyses can decide how to treat it.",
+    "problem_text": {
+      "field": "problem_sha256",
+      "n_items": 601,
+      "n_distinct_groups": 449,
+      "group_size_histogram": {
+        "1": 401,
+        "2": 26,
+        "3": 11,
+        "4": 1,
+        "5": 2,
+        "6": 2,
+        "8": 2,
+        "9": 1,
+        "14": 1,
+        "24": 1,
+        "26": 1
+      },
+      "n_items_in_a_multi_item_group": 200,
+      "fraction_items_in_multi_item_group": 0.33277870216306155
+    },
+    "image": {
+      "field": "image_sha256",
+      "n_items": 601,
+      "n_distinct_groups": 533,
+      "group_size_histogram": {
+        "1": 477,
+        "2": 47,
+        "3": 6,
+        "4": 3
+      },
+      "n_items_in_a_multi_item_group": 124,
+      "fraction_items_in_multi_item_group": 0.20632279534109818
+    },
+    "problem_plus_image": {
+      "field": "problem+image",
+      "n_items": 601,
+      "n_distinct_groups": 601,
+      "group_size_histogram": {
+        "1": 601
+      },
+      "n_items_in_a_multi_item_group": 0,
+      "fraction_items_in_multi_item_group": 0.0
+    },
+    "exact_duplicate_groups_with_disagreeing_100_400_label": 0,
+    "exact_duplicate_groups_size_gt1": 0,
+    "dedup_by_problem_plus_image_100_to_400_lenient": {
+      "n_groups": 601,
+      "counts": {
+        "stable_correct": 196,
+        "lost": 66,
+        "stable_incorrect": 268,
+        "gained": 71
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4442595673876872,
+      "net_delta": 0.008319467554076539,
+      "turnover_fraction": 0.22795341098169716,
+      "b01_gained": 71,
+      "b10_lost": 66
+    }
+  }
+}
