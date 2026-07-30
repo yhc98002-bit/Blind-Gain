@@ -27,7 +27,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
-| Mini-A5 CP vs matched GRPO | F8 | **both arms trained (120/120); acceptance gate PASS 2026-07-29**; endpoints still unread — member arm needs HF merge first (§8) |
+| Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
 | Cue ladder | Paper 2 P1.1 | **closed — both validity gates failed** |
 
@@ -312,7 +312,7 @@ twin images where accuracy is 0.012 (+0.17–0.19 overconfidence gap).
 
 ---
 
-## 8. F8 — Trainability (Mini-A5) — BOTH ARMS TRAINED, GATE PASSED, ENDPOINTS NOT YET READ
+## 8. F8 — Trainability (Mini-A5): the ceiling holds against a counterfactual-group objective
 
 CP-GRPO vs matched same-data standard GRPO, 120 steps each, on held-out
 FlipTrack templates. **Both arms are now complete**: CP arm `global_step_120`;
@@ -336,16 +336,76 @@ matched member arm reached `global_step_120` on an29 on 2026-07-29
 construction; endpoint evaluation was gated on this verdict and is now authorized
 for the first time.
 
-**No endpoint value has been read yet.** Reading them requires evaluation runs that
-have not been performed, and one prerequisite is outstanding: the member arm's
-`global_step_120/actor/huggingface/` holds only config and tokenizer files
-(~16 MB, no safetensors), because that arm was saved with `save_model_only: false`
-as raw FSDP shards. The CP arm's step-120 checkpoint is 7.6 GB and directly
-loadable. **The member arm must be merged to HF weights before it can be
-evaluated** — the registration anticipated exactly this ("a checkpoint
-merge/relocation watcher must accompany each arm so raw state is merged, archived,
-and pruned behind the trainer"). Until that merge runs, F8 remains unread, and no
-number here should be cited.
+### 8a. The endpoints, read under the merged addendum
+
+`reports/f8_mini_a5_endpoint_readout_v1.{json,md}`, binding spec
+`docs/registered_mini_a5_endpoint_readout_v1.md` (filed before any value was read).
+Member arm merged from raw FSDP shards and verified (825 tensors, 8,131,575,808
+bytes). Six cells on an29, ~14 min. Paired item bootstrap, 10,000 draws, seed
+20260729, unit `pair_id`, both arms on identical replicate indices. Δ = CP − member.
+
+**The pattern is the same on all three instruments, and it separates content from
+format cleanly.**
+
+| instrument / task | role | n | lenient Δ | 95% CI | strict Δ | 95% CI |
+|---|---|---:|---:|:---:|---:|:---:|
+| **R19 coordinate register** | **primary visual anchor** | 600 | **−0.0100** | [−0.030, +0.010] | **+0.0700** | [+0.042, +0.098] |
+| R19 nine-series | oracle-localized readout | 300 | **+0.0767** | [+0.030, +0.127] | +0.0967 | [+0.047, +0.147] |
+| R19 header table | saturated canary | 300 | +0.0000 | [−0.017, +0.017] | **−0.0400** | [−0.070, −0.013] |
+| **R20 coordinate register** | primary anchor, private twin | 600 | +0.0067 | [−0.013, +0.027] | +0.0950 | [+0.067, +0.123] |
+| R20 nine-series | oracle-localized readout | 300 | **+0.0600** | [+0.013, +0.103] | +0.1100 | [+0.063, +0.160] |
+| R20 header table | saturated canary | 300 | −0.0067 | [−0.023, +0.010] | **−0.0733** | [−0.107, −0.040] |
+
+**Registered branch: branch 2 fires.** On the primary anchor the lenient CI contains
+zero (p = 0.405), so by the decision rule pinned before any value was read this is
+**NOT MOVED**. Per `PAPER2 §6` the Paper-2 gate is reconsidered: premise-first
+redesign (C3 before C2), C1 retained.
+
+### 8b. The strict "win" is response formatting, decomposed to zero residual
+
+The two registered contracts disagree, and the addendum pre-committed to treating the
+disagreement as the result. It resolves exactly:
+
+- `strict_delta = lenient_delta − (CP contract loss − member contract loss)`
+  = −0.0100 − (0.0183 − 0.0983) = **+0.0700**, residual **1e−17**.
+- `contract_valid_rate`: CP **0.9683** vs member **0.8133**. `acc_strict` is
+  `contract_valid AND acc_final`, so strict is a subset of lenient by construction.
+- Against the frozen base the strict gap is **(CP − base) − (member − base) =
+  +0.0100 − (−0.0600)**, i.e. **85.7% of it is the member arm falling below base**,
+  not CP rising.
+
+**The entire +0.07 primary-endpoint "effect" is response-format contract validity.**
+Reported as +0.0700 with p = 1.4e−06 it would read as a clean trainability win; it is
+a formatting difference, and most of it is the comparison arm degrading.
+
+### 8c. What did move: the same layer ordinary RLVR moves, replicated on the private twin
+
+On answer content, CP moves the **oracle-localized readout control** — **+0.0767 on
+R19 (p = 0.0027) and +0.0600 on R20 (p = 0.0133)** — and leaves the **search-and-binding
+anchor flat** on both. R20 is the one-shot private twin from fresh generator seeds, so
+this is a replicated content gain, not a single-set artifact.
+
+**This is F3's mechanism reproduced by a method built to breach it.** F3 established
+that RLVR's gain "lands exactly where the visual work has been done for the model" —
+concentrated on the template where localization is supplied by the cue, flat on the
+anchor requiring search, binding and read. CP-GRPO, whose reward is structurally
+unsatisfiable by a text prior, **selects the same layer**: it improves readout given a
+located target and does not install localization.
+
+That makes F8 direct evidence for the representational-ceiling argument of §3 rather
+than only a gate outcome: **the ceiling holds against a purpose-built counterfactual
+intervention-group objective.**
+
+*Retention canary.* The saturated control is flat on lenient and **drops on strict**
+(−0.0400 R19, −0.0733 R20, both CIs excluding zero) — recorded as a damage signal per
+its registered role. Absolute levels keep both arms above base on that contract (base
+strict 0.1800, member 0.2600, CP 0.2200), so this is a formatting regression relative
+to member, not absolute loss of the control.
+
+*Scope.* Mini-A5 is Gate 1 — 120 steps, one run per arm; intervals are evaluation
+uncertainty, not run-to-run RL variance. chart-v08 cells are n = 50 per template.
+Attribution (VAG, `PAPER2` §3B) requires a matched blind control that is not among the
+six F8 cells, so the lenient/strict contrast is **not** used as a proxy for it.
 
 ---
 
