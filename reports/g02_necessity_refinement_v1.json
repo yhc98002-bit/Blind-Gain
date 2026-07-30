@@ -1,0 +1,1215 @@
+{
+  "analysis_id": "G0.2-necessity-refinement-v1",
+  "compute": "login node, CPU only, cached predictions only, no GPU job started",
+  "d1_reproduction": {
+    "cells": [
+      {
+        "a1_real": {
+          "abs_deviation": 0.0,
+          "published": 0.32763532763532766,
+          "recomputed": 0.32763532763532766
+        },
+        "a2_gray": {
+          "abs_deviation": 0.0,
+          "published": 0.2735042735042735,
+          "recomputed": 0.2735042735042735
+        },
+        "a2b_noimage": {
+          "abs_deviation": 0.0,
+          "published": 0.27635327635327633,
+          "recomputed": 0.27635327635327633
+        },
+        "a3_caption": {
+          "abs_deviation": 2.7755575615628914e-17,
+          "published": 0.23931623931623933,
+          "recomputed": 0.2393162393162393
+        },
+        "n": 117,
+        "n_published": 117,
+        "recovery_percent_rounded": 84,
+        "recovery_ratio_from_published_means": 0.8434782608695651,
+        "recovery_ratio_recomputed": 0.8434782608695651,
+        "scope": "all_items",
+        "stratum": "blind_answerable"
+      },
+      {
+        "a1_real": {
+          "abs_deviation": 0.0,
+          "published": 0.2231404958677686,
+          "recomputed": 0.2231404958677686
+        },
+        "a2_gray": {
+          "abs_deviation": 0.0,
+          "published": 0.08126721763085398,
+          "recomputed": 0.08126721763085398
+        },
+        "a2b_noimage": {
+          "abs_deviation": 2.7755575615628914e-17,
+          "published": 0.09297520661157024,
+          "recomputed": 0.09297520661157022
+        },
+        "a3_caption": {
+          "abs_deviation": 0.0,
+          "published": 0.1590909090909091,
+          "recomputed": 0.1590909090909091
+        },
+        "n": 484,
+        "n_published": 484,
+        "recovery_percent_rounded": 42,
+        "recovery_ratio_from_published_means": 0.41666666666666663,
+        "recovery_ratio_recomputed": 0.4166666666666665,
+        "scope": "all_items",
+        "stratum": "not_blind_answerable"
+      },
+      {
+        "a1_real": {
+          "abs_deviation": 0.0,
+          "published": 0.4666666666666667,
+          "recomputed": 0.4666666666666667
+        },
+        "a2_gray": {
+          "abs_deviation": 0.0,
+          "published": 0.4296296296296296,
+          "recomputed": 0.4296296296296296
+        },
+        "a2b_noimage": {
+          "abs_deviation": 0.0,
+          "published": 0.42592592592592593,
+          "recomputed": 0.42592592592592593
+        },
+        "a3_caption": {
+          "abs_deviation": 0.0,
+          "published": 0.3703703703703704,
+          "recomputed": 0.3703703703703704
+        },
+        "n": 90,
+        "n_published": 90,
+        "recovery_percent_rounded": 91,
+        "recovery_ratio_from_published_means": 0.9126984126984127,
+        "recovery_ratio_recomputed": 0.9126984126984127,
+        "scope": "base_wrong_only",
+        "stratum": "blind_answerable"
+      },
+      {
+        "a1_real": {
+          "abs_deviation": 0.0,
+          "published": 0.3218390804597701,
+          "recomputed": 0.3218390804597701
+        },
+        "a2_gray": {
+          "abs_deviation": 0.0,
+          "published": 0.18390804597701146,
+          "recomputed": 0.18390804597701146
+        },
+        "a2b_noimage": {
+          "abs_deviation": 0.0,
+          "published": 0.19704433497536947,
+          "recomputed": 0.19704433497536947
+        },
+        "a3_caption": {
+          "abs_deviation": 0.0,
+          "published": 0.2635467980295566,
+          "recomputed": 0.2635467980295566
+        },
+        "n": 406,
+        "n_published": 406,
+        "recovery_percent_rounded": 61,
+        "recovery_ratio_from_published_means": 0.6122448979591837,
+        "recovery_ratio_recomputed": 0.6122448979591837,
+        "scope": "base_wrong_only",
+        "stratum": "not_blind_answerable"
+      }
+    ],
+    "max_abs_deviation": 2.7755575615628914e-17,
+    "published_headline_reproduced": {
+      "blind_answerable_84pct": true,
+      "not_blind_answerable_42pct": true
+    },
+    "status": "EXACT",
+    "target_artifact": "reports/gate0_stratification_v1.json :: G0_2_headroom_control"
+  },
+  "d2_ratio_intervals": {
+    "lenient": {
+      "base_wrong_only": {
+        "blind_answerable": {
+          "a1_gain": {
+            "ci95": [
+              0.3851851851851852,
+              0.5481481481481482
+            ],
+            "mean": 0.4666666666666667,
+            "n": 90
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.3444444444444444,
+              0.5074074074074074
+            ],
+            "mean": 0.42592592592592593,
+            "n": 90
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 90,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.9126984126984127,
+          "recovery_ratio_ci95": [
+            0.7777777777777779,
+            1.0560747663551402
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0003,
+          "bootstrap_mass_le_0_display": "0.0003",
+          "bootstrap_replicate_mean_difference": 0.3012773065293726,
+          "ci95": [
+            0.14163434078727913,
+            0.46386151731169295
+          ],
+          "contrast": "base-wrong recovery difference",
+          "point": 0.300453514739229
+        },
+        "intervals_overlap": false,
+        "lenient_strict_identity_note": "On base-wrong items lenient and strict gains are IDENTICAL by construction: base acc_final = 0 implies base acc_strict = 0 (verified for all 496 base-wrong items), and every trained arm satisfies acc_strict == acc_final on every item (G0.4 identity, re-verified here). The two rows are therefore expected to match exactly; this is not a duplication error.",
+        "not_blind_answerable": {
+          "a1_gain": {
+            "ci95": [
+              0.2832512315270936,
+              0.3604269293924466
+            ],
+            "mean": 0.3218390804597701,
+            "n": 406
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.16666666666666663,
+              0.2282430213464696
+            ],
+            "mean": 0.19704433497536947,
+            "n": 406
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 406,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.6122448979591837,
+          "recovery_ratio_ci95": [
+            0.5333333333333333,
+            0.6984171696847752
+          ]
+        }
+      },
+      "blind_answerable": {
+        "a1_gain": {
+          "ci95": [
+            0.24501424501424499,
+            0.4102564102564103
+          ],
+          "mean": 0.32763532763532766,
+          "n": 117
+        },
+        "a2b_gain": {
+          "ci95": [
+            0.1937321937321937,
+            0.358974358974359
+          ],
+          "mean": 0.27635327635327633,
+          "n": 117
+        },
+        "bootstrap": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "draws": 10000,
+          "paired_on_items": true,
+          "percentiles": [
+            2.5,
+            97.5
+          ],
+          "resampling": "within-stratum, item-level, with replacement",
+          "seed": 20260730
+        },
+        "denominator_arm": "a1_real",
+        "n": 117,
+        "numerator_arm": "a2b_noimage",
+        "recovery_ratio": 0.8434782608695651,
+        "recovery_ratio_ci95": [
+          0.6793857122281433,
+          1.0097111174566915
+        ]
+      },
+      "difference": {
+        "bootstrap_mass_le_0": 0.0,
+        "bootstrap_mass_le_0_display": "<0.0001",
+        "bootstrap_replicate_mean_difference": 0.42783978545699963,
+        "ci95": [
+          0.21815432081904262,
+          0.6346462313235857
+        ],
+        "contrast": "recovery(blind_answerable) - recovery(not_blind_answerable)",
+        "point": 0.4268115942028986
+      },
+      "intervals_overlap": false,
+      "not_blind_answerable": {
+        "a1_gain": {
+          "ci95": [
+            0.18250688705234155,
+            0.2644628099173553
+          ],
+          "mean": 0.2231404958677686,
+          "n": 484
+        },
+        "a2b_gain": {
+          "ci95": [
+            0.057162534435261696,
+            0.12947658402203857
+          ],
+          "mean": 0.09297520661157022,
+          "n": 484
+        },
+        "bootstrap": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "draws": 10000,
+          "paired_on_items": true,
+          "percentiles": [
+            2.5,
+            97.5
+          ],
+          "resampling": "within-stratum, item-level, with replacement",
+          "seed": 20260730
+        },
+        "denominator_arm": "a1_real",
+        "n": 484,
+        "numerator_arm": "a2b_noimage",
+        "recovery_ratio": 0.4166666666666665,
+        "recovery_ratio_ci95": [
+          0.2829457364341085,
+          0.5380328788014711
+        ]
+      }
+    },
+    "strict": {
+      "base_wrong_only": {
+        "blind_answerable": {
+          "a1_gain": {
+            "ci95": [
+              0.3851851851851852,
+              0.5481481481481482
+            ],
+            "mean": 0.4666666666666667,
+            "n": 90
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.3444444444444444,
+              0.5074074074074074
+            ],
+            "mean": 0.42592592592592593,
+            "n": 90
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 90,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.9126984126984127,
+          "recovery_ratio_ci95": [
+            0.7777777777777779,
+            1.0560747663551402
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0003,
+          "bootstrap_mass_le_0_display": "0.0003",
+          "bootstrap_replicate_mean_difference": 0.3012773065293726,
+          "ci95": [
+            0.14163434078727913,
+            0.46386151731169295
+          ],
+          "contrast": "base-wrong recovery difference",
+          "point": 0.300453514739229
+        },
+        "intervals_overlap": false,
+        "lenient_strict_identity_note": "On base-wrong items lenient and strict gains are IDENTICAL by construction: base acc_final = 0 implies base acc_strict = 0 (verified for all 496 base-wrong items), and every trained arm satisfies acc_strict == acc_final on every item (G0.4 identity, re-verified here). The two rows are therefore expected to match exactly; this is not a duplication error.",
+        "not_blind_answerable": {
+          "a1_gain": {
+            "ci95": [
+              0.2832512315270936,
+              0.3604269293924466
+            ],
+            "mean": 0.3218390804597701,
+            "n": 406
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.16666666666666663,
+              0.2282430213464696
+            ],
+            "mean": 0.19704433497536947,
+            "n": 406
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 406,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.6122448979591837,
+          "recovery_ratio_ci95": [
+            0.5333333333333333,
+            0.6984171696847752
+          ]
+        }
+      },
+      "blind_answerable": {
+        "a1_gain": {
+          "ci95": [
+            0.41595441595441585,
+            0.5811965811965812
+          ],
+          "mean": 0.4985754985754986,
+          "n": 117
+        },
+        "a2b_gain": {
+          "ci95": [
+            0.37037037037037035,
+            0.5242165242165242
+          ],
+          "mean": 0.44729344729344733,
+          "n": 117
+        },
+        "bootstrap": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "draws": 10000,
+          "paired_on_items": true,
+          "percentiles": [
+            2.5,
+            97.5
+          ],
+          "resampling": "within-stratum, item-level, with replacement",
+          "seed": 20260730
+        },
+        "denominator_arm": "a1_real",
+        "n": 117,
+        "numerator_arm": "a2b_noimage",
+        "recovery_ratio": 0.8971428571428571,
+        "recovery_ratio_ci95": [
+          0.7942548550520686,
+          1.0062893081761006
+        ]
+      },
+      "difference": {
+        "bootstrap_mass_le_0": 0.0,
+        "bootstrap_mass_le_0_display": "<0.0001",
+        "bootstrap_replicate_mean_difference": 0.2980265863300225,
+        "ci95": [
+          0.1684812641523961,
+          0.4282370908606777
+        ],
+        "contrast": "recovery(blind_answerable) - recovery(not_blind_answerable)",
+        "point": 0.2984167424931756
+      },
+      "intervals_overlap": false,
+      "not_blind_answerable": {
+        "a1_gain": {
+          "ci95": [
+            0.2858126721763085,
+            0.36363636363636365
+          ],
+          "mean": 0.3243801652892562,
+          "n": 484
+        },
+        "a2b_gain": {
+          "ci95": [
+            0.16253443526170797,
+            0.22658402203856748
+          ],
+          "mean": 0.19421487603305784,
+          "n": 484
+        },
+        "bootstrap": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "draws": 10000,
+          "paired_on_items": true,
+          "percentiles": [
+            2.5,
+            97.5
+          ],
+          "resampling": "within-stratum, item-level, with replacement",
+          "seed": 20260730
+        },
+        "denominator_arm": "a1_real",
+        "n": 484,
+        "numerator_arm": "a2b_noimage",
+        "recovery_ratio": 0.5987261146496815,
+        "recovery_ratio_ci95": [
+          0.5230769230769231,
+          0.6796541241099763
+        ]
+      }
+    }
+  },
+  "d3_b1_b2_decomposition": {
+    "base_real_greedy_accuracy": {
+      "B1": 0.27586206896551724,
+      "B2": 0.05555555555555555
+    },
+    "by_mode": {
+      "lenient": {
+        "B1_image_buys_opportunity": {
+          "a1_gain": {
+            "ci95": [
+              0.27586206896551724,
+              0.4080459770114942
+            ],
+            "mean": 0.34195402298850575,
+            "n": 232
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.11494252873563217,
+              0.24568965517241376
+            ],
+            "mean": 0.17959770114942528,
+            "n": 232
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 232,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.5252100840336135,
+          "recovery_ratio_ci95": [
+            0.37947867298578186,
+            0.6574816632509978
+          ]
+        },
+        "B2_ci_includes_zero": true,
+        "B2_never_solved_any_condition": {
+          "a1_gain": {
+            "ci95": [
+              0.0701058201058201,
+              0.15740740740740736
+            ],
+            "mean": 0.11375661375661375,
+            "n": 252
+          },
+          "a2b_gain": {
+            "ci95": [
+              -0.02116402116402117,
+              0.04629629629629629
+            ],
+            "mean": 0.013227513227513227,
+            "n": 252
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 252,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.11627906976744186,
+          "recovery_ratio_ci95": [
+            -0.2553315190499754,
+            0.3584905660377358
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0025,
+          "bootstrap_mass_le_0_display": "0.0025",
+          "bootstrap_replicate_mean_difference": 0.42197608294449335,
+          "ci95": [
+            0.1257193416937942,
+            0.7948447579313903
+          ],
+          "contrast": "B1 - B2",
+          "point": 0.4089310142661716
+        },
+        "other_arms": {
+          "a2_gray": {
+            "B1_image_buys_opportunity": {
+              "gain": {
+                "ci95": [
+                  0.10632183908045977,
+                  0.23706896551724138
+                ],
+                "mean": 0.1724137931034483,
+                "n": 232
+              },
+              "recovery_ratio": 0.5042016806722689,
+              "recovery_ratio_ci95": [
+                0.35064935064935054,
+                0.6401564992025518
+              ]
+            },
+            "B2_never_solved_any_condition": {
+              "gain": {
+                "ci95": [
+                  -0.03306878306878308,
+                  0.026455026455026454
+                ],
+                "mean": -0.0026455026455026506,
+                "n": 252
+              },
+              "recovery_ratio": -0.023255813953488417,
+              "recovery_ratio_ci95": [
+                -0.4032413151364766,
+                0.19791924504950487
+              ]
+            }
+          },
+          "a3_caption": {
+            "B1_image_buys_opportunity": {
+              "gain": {
+                "ci95": [
+                  0.19252873563218387,
+                  0.3304597701149425
+                ],
+                "mean": 0.2614942528735632,
+                "n": 232
+              },
+              "recovery_ratio": 0.7647058823529411,
+              "recovery_ratio_ci95": [
+                0.6333301158301157,
+                0.8918974991589098
+              ]
+            },
+            "B2_never_solved_any_condition": {
+              "gain": {
+                "ci95": [
+                  0.025132275132275124,
+                  0.10317460317460317
+                ],
+                "mean": 0.06481481481481481,
+                "n": 252
+              },
+              "recovery_ratio": 0.5697674418604651,
+              "recovery_ratio_ci95": [
+                0.2698412698412698,
+                0.8823720397249805
+              ]
+            }
+          }
+        }
+      },
+      "strict": {
+        "B1_image_buys_opportunity": {
+          "a1_gain": {
+            "ci95": [
+              0.4396551724137931,
+              0.5603448275862069
+            ],
+            "mean": 0.5014367816091954,
+            "n": 232
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.28448275862068967,
+              0.3936781609195403
+            ],
+            "mean": 0.339080459770115,
+            "n": 232
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 232,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.67621776504298,
+          "recovery_ratio_ci95": [
+            0.5913037554792085,
+            0.7633152762730229
+          ]
+        },
+        "B2_ci_includes_zero": false,
+        "B2_never_solved_any_condition": {
+          "a1_gain": {
+            "ci95": [
+              0.12433862433862433,
+              0.1997354497354497
+            ],
+            "mean": 0.16137566137566137,
+            "n": 252
+          },
+          "a2b_gain": {
+            "ci95": [
+              0.037037037037037035,
+              0.08465608465608465
+            ],
+            "mean": 0.06084656084656084,
+            "n": 252
+          },
+          "bootstrap": {
+            "degenerate_replicates_denominator_le_0": 0,
+            "draws": 10000,
+            "paired_on_items": true,
+            "percentiles": [
+              2.5,
+              97.5
+            ],
+            "resampling": "within-stratum, item-level, with replacement",
+            "seed": 20260730
+          },
+          "denominator_arm": "a1_real",
+          "n": 252,
+          "numerator_arm": "a2b_noimage",
+          "recovery_ratio": 0.3770491803278688,
+          "recovery_ratio_ci95": [
+            0.23711149293623524,
+            0.5370370370370371
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0005,
+          "bootstrap_mass_le_0_display": "0.0005",
+          "bootstrap_replicate_mean_difference": 0.2978460721462275,
+          "ci95": [
+            0.11756253282635783,
+            0.465175729025928
+          ],
+          "contrast": "B1 - B2",
+          "point": 0.2991685847151112
+        },
+        "other_arms": {
+          "a2_gray": {
+            "B1_image_buys_opportunity": {
+              "gain": {
+                "ci95": [
+                  0.2729885057471264,
+                  0.3908045977011494
+                ],
+                "mean": 0.33189655172413796,
+                "n": 232
+              },
+              "recovery_ratio": 0.6618911174785101,
+              "recovery_ratio_ci95": [
+                0.5726737974557741,
+                0.7522394823465753
+              ]
+            },
+            "B2_never_solved_any_condition": {
+              "gain": {
+                "ci95": [
+                  0.023809523809523805,
+                  0.06746031746031746
+                ],
+                "mean": 0.04497354497354497,
+                "n": 252
+              },
+              "recovery_ratio": 0.2786885245901639,
+              "recovery_ratio_ci95": [
+                0.1559633027522936,
+                0.4098360655737705
+              ]
+            }
+          },
+          "a3_caption": {
+            "B1_image_buys_opportunity": {
+              "gain": {
+                "ci95": [
+                  0.35919540229885055,
+                  0.4827586206896552
+                ],
+                "mean": 0.4209770114942528,
+                "n": 232
+              },
+              "recovery_ratio": 0.839541547277937,
+              "recovery_ratio_ci95": [
+                0.7550421469740631,
+                0.9267622810030917
+              ]
+            },
+            "B2_never_solved_any_condition": {
+              "gain": {
+                "ci95": [
+                  0.08068783068783067,
+                  0.1455026455026455
+                ],
+                "mean": 0.11243386243386241,
+                "n": 252
+              },
+              "recovery_ratio": 0.6967213114754097,
+              "recovery_ratio_ci95": [
+                0.5112740183792817,
+                0.9212620543218616
+              ]
+            }
+          }
+        }
+      }
+    },
+    "definition": {
+      "B1_image_buys_opportunity": "c_real > 0: at least one of the 16 frozen base samples is correct WITH the image",
+      "B2_never_solved_any_condition": "c_real == 0: zero observed successes with the image AND zero without",
+      "n_B1": 232,
+      "n_B1_plus_B2": 484,
+      "n_B2": 252,
+      "note": "on this eval split q_real sits at the Jeffreys floor iff c_real == 0 (verified, 278/601 items); the symmetric-q_i hazard that affects q_blind does not bite here",
+      "parent_stratum": "not_blind_answerable (n=484), the stratum the published text labels 'items requiring pixels'"
+    }
+  },
+  "d4_difficulty_standardisation": {
+    "binning_variable": "c_real = number correct among the 16 frozen base samples WITH the image (q_real is a strictly increasing function of c_real on this split)",
+    "bins": [
+      "c_real=0",
+      "c_real=1",
+      "c_real=2",
+      "c_real=3-5",
+      "c_real>=6"
+    ],
+    "by_mode": {
+      "lenient": {
+        "blind_answerable": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "standardised_a1_gain": 0.2821680714578516,
+          "standardised_a2b_gain": 0.2269930732230408,
+          "standardised_recovery_ratio": 0.8044605190454637,
+          "standardised_recovery_ratio_ci95": [
+            0.5896578620711349,
+            1.0292593272847597
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0031,
+          "bootstrap_mass_le_0_display": "0.0031",
+          "bootstrap_replicate_mean_difference": 0.36153161465349304,
+          "ci95": [
+            0.10814691790428164,
+            0.6184813226764481
+          ],
+          "contrast": "standardised recovery difference",
+          "point": 0.35727134926958415
+        },
+        "intervals_overlap": false,
+        "not_blind_answerable": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "standardised_a1_gain": 0.23864811339196135,
+          "standardised_a2b_gain": 0.10672085169633115,
+          "standardised_recovery_ratio": 0.4471891697758795,
+          "standardised_recovery_ratio_ci95": [
+            0.3164510018793717,
+            0.5633968995469627
+          ]
+        }
+      },
+      "strict": {
+        "blind_answerable": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "standardised_a1_gain": 0.39346585600198,
+          "standardised_a2b_gain": 0.3382908577671691,
+          "standardised_recovery_ratio": 0.8597718267210123,
+          "standardised_recovery_ratio_ci95": [
+            0.714888449460578,
+            1.0211748393270925
+          ]
+        },
+        "difference": {
+          "bootstrap_mass_le_0": 0.0023,
+          "bootstrap_mass_le_0_display": "0.0023",
+          "bootstrap_replicate_mean_difference": 0.23648734184027834,
+          "ci95": [
+            0.06615673530181922,
+            0.41008641598014955
+          ],
+          "contrast": "standardised recovery difference",
+          "point": 0.2335071970079955
+        },
+        "intervals_overlap": false,
+        "not_blind_answerable": {
+          "degenerate_replicates_denominator_le_0": 0,
+          "standardised_a1_gain": 0.35299645734447377,
+          "standardised_a2b_gain": 0.22106919564884359,
+          "standardised_recovery_ratio": 0.6262646297130168,
+          "standardised_recovery_ratio_ci95": [
+            0.5507636865539933,
+            0.7015967553610267
+          ]
+        }
+      }
+    },
+    "cell_counts": {
+      "blind_answerable": {
+        "c_real=0": 26,
+        "c_real=1": 18,
+        "c_real=2": 19,
+        "c_real=3-5": 35,
+        "c_real>=6": 19
+      },
+      "not_blind_answerable": {
+        "c_real=0": 252,
+        "c_real=1": 95,
+        "c_real=2": 55,
+        "c_real=3-5": 56,
+        "c_real>=6": 26
+      }
+    },
+    "common_support_bins": [
+      "c_real=0",
+      "c_real=1",
+      "c_real=2",
+      "c_real=3-5",
+      "c_real>=6"
+    ],
+    "common_support_limitation": "All five q_real bins have non-empty support in both strata, so no weight mass is discarded (retained 1.0000). Support is nevertheless badly unbalanced: the c_real=0 bin carries 0.463 of the target weight but is estimated from only 26 blind-answerable items against 252 not-blind-answerable items. Smallest cell overall is n=18. The standardised blind-answerable figure is therefore driven by small cells and its interval is correspondingly wide; it is reported as a sensitivity analysis, not as a replacement estimand.",
+    "method": "direct standardisation: both strata reweighted to the pooled 601-item q_real bin distribution; standardised gain_s = sum_k w_k * mean(gain | stratum s, bin k); recovery = std_A2b / std_A1",
+    "min_cell_n": 18,
+    "per_bin_recovery": {
+      "lenient": {
+        "c_real=0": {
+          "blind_answerable": {
+            "a1_gain": 0.17948717948717946,
+            "a2b_gain": 0.15384615384615385,
+            "n": 26,
+            "recovery_ratio": 0.8571428571428573
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.11375661375661375,
+            "a2b_gain": 0.013227513227513227,
+            "n": 252,
+            "recovery_ratio": 0.11627906976744186
+          },
+          "target_weight": 0.46256239600665555
+        },
+        "c_real=1": {
+          "blind_answerable": {
+            "a1_gain": 0.35185185185185186,
+            "a2b_gain": 0.20370370370370366,
+            "n": 18,
+            "recovery_ratio": 0.5789473684210525
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.2245614035087719,
+            "a2b_gain": 0.05614035087719296,
+            "n": 95,
+            "recovery_ratio": 0.24999999999999994
+          },
+          "target_weight": 0.18801996672212978
+        },
+        "c_real=2": {
+          "blind_answerable": {
+            "a1_gain": 0.4385964912280701,
+            "a2b_gain": 0.33333333333333326,
+            "n": 19,
+            "recovery_ratio": 0.76
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.5454545454545454,
+            "a2b_gain": 0.3454545454545454,
+            "n": 55,
+            "recovery_ratio": 0.6333333333333333
+          },
+          "target_weight": 0.12312811980033278
+        },
+        "c_real=3-5": {
+          "blind_answerable": {
+            "a1_gain": 0.30476190476190473,
+            "a2b_gain": 0.3142857142857142,
+            "n": 35,
+            "recovery_ratio": 1.03125
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.4047619047619047,
+            "a2b_gain": 0.244047619047619,
+            "n": 56,
+            "recovery_ratio": 0.6029411764705882
+          },
+          "target_weight": 0.15141430948419302
+        },
+        "c_real>=6": {
+          "blind_answerable": {
+            "a1_gain": 0.4385964912280701,
+            "a2b_gain": 0.38596491228070173,
+            "n": 19,
+            "recovery_ratio": 0.8800000000000001
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.20512820512820512,
+            "a2b_gain": 0.141025641025641,
+            "n": 26,
+            "recovery_ratio": 0.6874999999999999
+          },
+          "target_weight": 0.07487520798668885
+        }
+      },
+      "strict": {
+        "c_real=0": {
+          "blind_answerable": {
+            "a1_gain": 0.21794871794871792,
+            "a2b_gain": 0.19230769230769232,
+            "n": 26,
+            "recovery_ratio": 0.8823529411764708
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.16137566137566137,
+            "a2b_gain": 0.06084656084656084,
+            "n": 252,
+            "recovery_ratio": 0.3770491803278688
+          },
+          "target_weight": 0.46256239600665555
+        },
+        "c_real=1": {
+          "blind_answerable": {
+            "a1_gain": 0.4629629629629629,
+            "a2b_gain": 0.31481481481481477,
+            "n": 18,
+            "recovery_ratio": 0.6799999999999999
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.3403508771929824,
+            "a2b_gain": 0.17192982456140354,
+            "n": 95,
+            "recovery_ratio": 0.5051546391752579
+          },
+          "target_weight": 0.18801996672212978
+        },
+        "c_real=2": {
+          "blind_answerable": {
+            "a1_gain": 0.4912280701754386,
+            "a2b_gain": 0.3859649122807017,
+            "n": 19,
+            "recovery_ratio": 0.7857142857142855
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.618181818181818,
+            "a2b_gain": 0.4181818181818181,
+            "n": 55,
+            "recovery_ratio": 0.6764705882352942
+          },
+          "target_weight": 0.12312811980033278
+        },
+        "c_real=3-5": {
+          "blind_answerable": {
+            "a1_gain": 0.5333333333333332,
+            "a2b_gain": 0.5428571428571428,
+            "n": 35,
+            "recovery_ratio": 1.017857142857143
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.5833333333333333,
+            "a2b_gain": 0.42261904761904756,
+            "n": 56,
+            "recovery_ratio": 0.7244897959183674
+          },
+          "target_weight": 0.15141430948419302
+        },
+        "c_real>=6": {
+          "blind_answerable": {
+            "a1_gain": 0.8596491228070174,
+            "a2b_gain": 0.8070175438596492,
+            "n": 19,
+            "recovery_ratio": 0.9387755102040818
+          },
+          "not_blind_answerable": {
+            "a1_gain": 0.6666666666666666,
+            "a2b_gain": 0.6025641025641025,
+            "n": 26,
+            "recovery_ratio": 0.9038461538461539
+          },
+          "target_weight": 0.07487520798668885
+        }
+      }
+    },
+    "target_weight_mass_retained": 1.0,
+    "target_weights": {
+      "c_real=0": 0.46256239600665555,
+      "c_real=1": 0.18801996672212978,
+      "c_real=2": 0.12312811980033278,
+      "c_real=3-5": 0.15141430948419302,
+      "c_real>=6": 0.07487520798668885
+    }
+  },
+  "d5_wording_proposal": {
+    "label_replacements": [
+      {
+        "do_not_use": "items requiring pixels",
+        "use_instead": "items with no observed blind success",
+        "why": "names exactly the measured condition (c_blind = 0 of 16), asserts nothing about image necessity"
+      },
+      {
+        "do_not_use": "items requiring pixels",
+        "use_instead": "blind-unanswerable items",
+        "why": "acceptable short form; still describes only the blind side of the measurement"
+      },
+      {
+        "reserve_for_B1": "items where the image demonstrably buys reward opportunity (c_blind = 0, c_real > 0, n=232)",
+        "why": "this is the only subgroup in the analysis for which an image-necessity reading is licensed by data"
+      },
+      {
+        "label_for_B2": "items unsolved under every condition (c_blind = 0, c_real = 0, n=252)",
+        "why": "measured description; these items carry no evidence about image necessity in either direction"
+      }
+    ],
+    "problem": "The published label 'items requiring pixels' is applied to the n=484 not-blind-answerable stratum. That stratum is defined only by the absence of observed BLIND success. It does not condition on the image buying anything: 252 of its 484 items (52.1%) also have zero observed successes WITH the image, i.e. the base model solves them under no condition. Those items cannot demonstrate that pixels are required; they only show the base fails.",
+    "proposals": [
+      {
+        "current": "G0.2: image-free training recovers 84% of A1's gain on blind-answerable items and 42% on items requiring pixels",
+        "proposed_minimal": "G0.2: image-free training recovers 84% [0.68, 1.01] of A1's gain on blind-answerable items (n=117) and 42% [0.28, 0.54] on items with no observed blind success (n=484); that second stratum splits into 53% [0.38, 0.66] where the image demonstrably buys reward opportunity (n=232) and 12% [-0.26, 0.36] on items the base solves under no condition (n=252)",
+        "proposed_short": "G0.2: recovery 84% on blind-answerable items vs 42% on items with no observed blind success; intervals disjoint. The 42% is not a figure for image-requiring items \u2014 252/484 of that stratum is never solved with the image either",
+        "target": "docs/EXPERIMENT_TODO.md line 52 (G0 ledger row)"
+      },
+      {
+        "current": "recovering 84% of A1's gain where blind reward opportunity exists and 42% where none was observed (91% vs 61% under a base-wrong headroom control)",
+        "proposed": "recovering 84% [0.68, 1.01] of A1's gain where blind reward opportunity exists (n=117) and 42% [0.28, 0.54] where none was observed (n=484); the two intervals are disjoint (difference +0.43 [0.22, 0.63]). The second stratum is not 'items requiring pixels': 252 of its 484 items have no observed success WITH the image either. Decomposed, recovery is 53% [0.38, 0.66] on the 232 items where the image demonstrably buys reward opportunity and 12% [-0.26, 0.36] on the 252 items the base solves under no condition (91% vs 61% under a base-wrong headroom control)",
+        "target": "docs/PAPER1_RESEARCH_DOC.md line 70 (Gate 0 paragraph), clause on 42%"
+      }
+    ],
+    "what_is_superseded": "The NUMBER 0.4167 (42%) is arithmetically correct and reproduces exactly; it is the label and its use as a single summary of 'image-requiring' items that are superseded."
+  },
+  "d6_rule_audit": {
+    "discordant_items": [
+      {
+        "a1_gain_lenient": 0.0,
+        "a1_gain_strict": 1.0,
+        "a2b_gain_lenient": 0.0,
+        "a2b_gain_strict": 1.0,
+        "c_blind": 16,
+        "c_real": 10,
+        "classified_by_published_rule": "not_blind_answerable",
+        "classified_by_registered_rule": "blind_answerable",
+        "item_index_in_eval_order": 567,
+        "q_blind": 0.1386589899546222,
+        "q_real": 0.9019400809377283
+      }
+    ],
+    "executed_floor_rule": "scripts/build_g02_headroom_control.py:40-42 -- answerable = q_blind > min(q_blind) + 1e-9 (numeric)",
+    "n_discordant_items": 1,
+    "n_published_rule": {
+      "blind_answerable": 117,
+      "not_blind_answerable": 484
+    },
+    "n_registered_rule": {
+      "blind_answerable": 118,
+      "not_blind_answerable": 483
+    },
+    "q_i_definition": "q_i = mixed_group_probability(p_i, g) = 1 - p^g - (1-p)^g  (src/eval/blind_solvability.py:74-77, called at :235)",
+    "registered_floor_rule": "scripts/build_preregistration_pilot_draft.py:382 -- 'The floor is exactly c_i=0 (0/16 sampled successes, q_i=0.138659), not every item numerically sharing that symmetric q_i.'",
+    "symmetry": "q_i is symmetric under p -> 1-p, so c_i = 16/16 yields the SAME numeric q_i as c_i = 0/16",
+    "why_lenient_ratios_unchanged": "Every discordant item has a LENIENT gain of exactly 0 for both A1 and A2b (base already correct with the image, arm still correct). Moving a zero-gain item between strata leaves both stratum sums unchanged and rescales numerator and denominator by the same n, so the lenient recovery ratios are numerically identical under both rules. The strict ratios do shift, because the item has a non-zero strict gain (base acc_strict = 0 while base acc_final = 1)."
+  },
+  "definitions": {
+    "gain": "mean over seeds 1,2,3 of (crossed-cell arm score under condition=real) minus (base score); lenient uses acc_final vs base greedy_canonical_correct, strict uses acc_strict vs base greedy_acc_strict",
+    "jeffreys_floor": 0.1386589899546222,
+    "recovery_ratio": "mean per-item gain(A2b) / mean per-item gain(A1), within a stratum",
+    "strict_equals_final_on_trained_arms": true
+  },
+  "generated_utc": "2026-07-30T15:45:42Z",
+  "git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f",
+  "inputs": {
+    "base_none": {
+      "path": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z/per_item.jsonl",
+      "sha256": "60db78c675680507f1c3bc28ae7294da4cf5811f5cea75306dfdb70318ea2a6d"
+    },
+    "base_real": {
+      "path": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",
+      "sha256": "021da42f00eab94bc431ed0e7924110c237f77454b23ded5a8f1064c48fd6aa3"
+    },
+    "base_samples_per_item": [
+      16
+    ],
+    "crossed_runs": {
+      "a1_real|s1": "d2_testtime_a1_seed1_step100_real_an12_gpu4_20260726T143942Z",
+      "a1_real|s2": "d2_testtime_a1_seed2_step100_real_an12_gpu7_20260726T144048Z",
+      "a1_real|s3": "d2_testtime_a1_seed3_step100_real_an12_gpu4_20260727T082313Z",
+      "a2_gray|s1": "d2_testtime_a2_seed1_step100_real_an12_gpu4_20260727T085251Z",
+      "a2_gray|s2": "d2_testtime_a2_seed2_step100_real_an12_gpu7_20260727T085358Z",
+      "a2_gray|s3": "d2_testtime_a2_seed3_step100_real_an12_gpu4_20260727T091106Z",
+      "a2b_noimage|s1": "d2_testtime_a2b_seed1_step100_real_an12_gpu6_20260726T145754Z",
+      "a2b_noimage|s2": "d2_testtime_a2b_seed2_step100_real_an12_gpu7_20260726T145815Z",
+      "a2b_noimage|s3": "d2_testtime_a2b_seed3_step100_real_an12_gpu7_20260727T082419Z",
+      "a3_caption|s1": "d2_testtime_a3_seed1_step100_real_an12_gpu5_20260727T094941Z",
+      "a3_caption|s2": "d2_testtime_a3_seed2_step100_real_an12_gpu4_20260727T095814Z",
+      "a3_caption|s3": "d2_testtime_a3_seed3_step100_real_an12_gpu4_20260727T102811Z"
+    },
+    "gate0_artifact": {
+      "path": "reports/gate0_stratification_v1.json",
+      "sha256": "8479a6aec459152ae65b04bee22391f6849625e9620cc7b7ed1c3074ee8e7a5f"
+    }
+  },
+  "item_universe": {
+    "eval_order_source": "experiments/runs/m2_geo3k_a1_real_seed1_step100_an12_gpu4_20260715T210056Z/per_item.jsonl",
+    "item_key": "(problem, image_sha256)",
+    "n_items": 601,
+    "split": "Geometry3K test (filtered-v2 eval split)"
+  },
+  "reporting_discipline_I7": "every estimand reported under both lenient (acc_final) and strict (acc_strict)",
+  "schema_version": 1,
+  "scope_discipline_I13": "binary blind-answerable split ONLY. This addendum is never merged with the G0.1 / M5c Delta-q tercile analysis; the M5c tercile confound does not transfer to this split because this split is not built on Delta-q.",
+  "status": "addendum to reports/gate0_stratification_v1.{json,md}; does not modify the frozen Gate 0 artifact",
+  "superseded": [
+    {
+      "figure": "42% (0.4167) recovery on 'items requiring pixels'",
+      "number_still_valid_for": "recovery ratio on the not-blind-answerable stratum (n=484), reproduced exactly here",
+      "replaced_by": "d3_b1_b2_decomposition + d2_ratio_intervals",
+      "source": "docs/EXPERIMENT_TODO.md:52 and docs/PAPER1_RESEARCH_DOC.md:70",
+      "status": "SUPERSEDED AS LABELLED \u2014 RETAINED AS A NUMBER",
+      "why_superseded": "the stratum is not 'items requiring pixels'; 252/484 have zero observed successes with the image as well, and the stratum is internally heterogeneous (0.525 vs 0.116)"
+    },
+    {
+      "figure": "84% and 42% quoted without uncertainty",
+      "note": "no interval on these RATIOS existed anywhere in the repo before this addendum; reports/gate0_stratification_v1.json carried ci95 only on the component means",
+      "replaced_by": "d2_ratio_intervals (10,000-draw paired item bootstrap, seed 20260730)",
+      "status": "SUPERSEDED \u2014 intervals now exist"
+    }
+  ]
+}
