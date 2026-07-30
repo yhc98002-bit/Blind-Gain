@@ -971,6 +971,52 @@ collapses to exactly 0.0000 with collapse rate 1.0 for every model tested. **Tha
 contrast is the case for the instrument** — not that FlipTrack is harder, but
 that it is image-necessary by construction where the training corpus is not.
 
+### 13b-bis. The audit completed: seven benchmarks, and visual necessity spans the full range
+
+`reports/e1c_blind_columns_v1.{json,md}`. Five benchmarks had a with-image column but **no
+image-removed run anywhere**, so no retention figure existed for them. All ten cells
+(5 benchmarks × 2 scales) were run through `eval_layer1_blind.py`, which raises if a vision
+token reaches the prompt; `image_removed=true` verified per cell. Same null rule, same
+10,000-draw paired bootstrap (seed 20260729), mixed benchmarks split by format (I18).
+
+**Corrected retention, lenient, pooled at the level each benchmark's format permits:**
+
+| benchmark | n | null | with image | blind | **corrected** 3B | **corrected** 7B |
+|---|---:|---:|---:|---:|---:|---:|
+| **MMVP** (all k=2) | 300 | 0.500 | 0.660 / 0.743 | **0.5000** | **0.000** | **0.000** |
+| MMStar (§13b) | 1,500 | 0.269 | 0.554 / 0.632 | 0.261 / 0.288 | −0.029 | +0.053 |
+| BLINK | 1,901 | 0.377 | 0.493 / 0.557 | 0.409 / 0.387 | 0.271 | 0.055 |
+| MathVerse, free-form | 1,760 | 0.0 | 0.055 / 0.087 | 0.019 / 0.031 | 0.340 | 0.359 |
+| MathVista MC (§13b) | 539 | 0.332 | 0.725 / 0.761 | 0.512 / 0.531 | 0.458 | 0.464 |
+| MathVerse, MC pooled | 2,180 | 0.260 | 0.465 / 0.545 | 0.394 / 0.412 | 0.655 | 0.534 |
+| MMMU dev+val, MC pooled | 988 | 0.263 | 0.506 / 0.537 | 0.413 / 0.438 | 0.617 | 0.639 |
+
+**MMVP is the cleanest demonstration in the set.** Every one of its 300 items is two-way,
+and blind accuracy is **0.5000 to four decimals at both scales** — exactly the guessing
+floor, corrected retention exactly zero. Deleting the image leaves the model with nothing
+but a coin flip. MMStar behaves the same way within noise.
+
+At the other end, **MMMU and MathVerse's MC slices retain 0.53–0.64 above chance**, and
+MathVerse's free-form slice — where null = 0 and no correction is possible — retains
+0.34–0.36. So across seven public benchmarks **visual necessity ranges from exactly zero
+to roughly two-thirds, and the ordering is not recoverable from naive retention.** That is
+F0's claim, measured rather than asserted.
+
+*HallusionBench is reported with its null choice exposed, because the null decides the
+answer.* It stores **no option labels on any of its 1,129 rows**, so the primary row applies
+the existing rule literally — zero labels presented, therefore free-form, null = 0 — giving
+**0.794 / 0.833**. But its gold vocabulary is in fact binary ({Yes: 484, No: 645}) while only
+170 of 1,129 question texts say "yes or no". A null = 0.5 sensitivity row gives **−0.258 /
+0.375**. Both are reported; the free-form row is primary as the conservative reading under
+the registered rule, and **no options were synthesised**. This is the sharpest example in the
+audit of why the null must be declared rather than assumed.
+
+*Guards.* Where with-image accuracy equals the null the denominator is zero and retention is
+reported as undefined rather than as a number (guarded at |d| ≤ 1e−12). Subsets with n < 30
+carry `underpowered_subset=true` — MMMU k=6 (n=6), k=7 (n=2), k=9 (n=5). Blind prompts mirror
+each benchmark's own builder, including MMMU's `<image N>` marker handling, which differs
+from BLINK/MMVP/MMStar deliberately.
+
 *Strict caveat (I7).* The same 1/k null is applied to `acc_strict`, which
 additionally requires the `<answer>` wrapper. Where with-image `acc_strict` falls
 below the null the denominator goes negative and the ratio is meaningless; those
