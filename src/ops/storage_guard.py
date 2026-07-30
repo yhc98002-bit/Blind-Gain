@@ -11,9 +11,21 @@ from typing import Callable, Literal
 
 
 GIB = 1024**3
-# PI allocation update, 2026-07-12: 1.5 TiB is conservatively represented as
-# 1,500 GiB so the guard never assumes more than the reported allocation.
-DEFAULT_SHARED_QUOTA_BYTES = 1500 * GIB
+# PI allocation update, 2026-07-30: a 1 TiB top-up was purchased and verified by
+# the PI. CLAUDE.md now records the HDD pool as 2.5 TiB soft / 2.51 TiB hard.
+# The guard tracks the SOFT quota, because exceeding soft starts a grace period
+# rather than being free headroom -- so it still never assumes more than we may
+# actually use without consequence.
+#   Superseded 2026-07-12 value: 1500 * GIB (pre-top-up allocation).
+# NOTE: this constant is authoritative for the guard because the cluster's own
+# quota service is broken: "lfs quota -p 2228473301 /XYFS02" and the -u form both
+# return zeros with "Some errors happened when getting quota info. Some devices
+# may be not working or deactivated", so the allocation cannot be read from the
+# filesystem and must be carried here. The project id was confirmed correct via
+# "lfs project -d" (2228473301), so this is a broken quota service rather than a
+# mis-set id. Override at runtime with BLIND_GAINS_SHARED_QUOTA_BYTES if the
+# allocation changes again.
+DEFAULT_SHARED_QUOTA_BYTES = 2560 * GIB  # 2.5 TiB soft quota
 DEFAULT_SHARED_FLOOR_BYTES = 20 * GIB
 DEFAULT_SCRATCH_FLOOR_BYTES = 40 * GIB
 MEMORY_FILESYSTEMS = frozenset({"tmpfs", "ramfs"})
