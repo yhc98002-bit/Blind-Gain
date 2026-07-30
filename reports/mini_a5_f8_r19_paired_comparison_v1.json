@@ -1,0 +1,123 @@
+{
+  "bootstrap": {
+    "draws": 10000,
+    "interval": 0.95,
+    "seed": 20260729,
+    "unit": "paired item"
+  },
+  "left_inputs": [
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_0.jsonl",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_1.jsonl",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_2.jsonl",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_3.jsonl"
+  ],
+  "left_label": "mini_a5_same_data_seed1_step120",
+  "left_pair_accuracy": 0.6191666666666666,
+  "left_strict_pair_accuracy": 0.3875,
+  "mcnemar": {
+    "b01": 57.0,
+    "b10": 40.0,
+    "n_common": 1200.0,
+    "p_value": 0.10376938287271786
+  },
+  "n_pairs": 1200,
+  "pair_accuracy_delta": 0.014166666666666666,
+  "pair_accuracy_delta_ci95_high": 0.03,
+  "pair_accuracy_delta_ci95_low": -0.0025,
+  "per_template": {
+    "coordinate_register_twenty_point_x_v02": {
+      "left_pair_accuracy": 0.4816666666666667,
+      "left_strict_pair_accuracy": 0.38333333333333336,
+      "mcnemar": {
+        "b01": 15.0,
+        "b10": 21.0,
+        "n_common": 600.0,
+        "p_value": 0.40503224614076316
+      },
+      "n_pairs": 600,
+      "pair_accuracy_delta": -0.01,
+      "pair_accuracy_delta_ci95_high": 0.01,
+      "pair_accuracy_delta_ci95_low": -0.03,
+      "right_pair_accuracy": 0.4716666666666667,
+      "right_strict_pair_accuracy": 0.4533333333333333,
+      "strict_mcnemar": {
+        "b01": 59.0,
+        "b10": 17.0,
+        "n_common": 600.0,
+        "p_value": 1.3968718113140024e-06
+      },
+      "strict_pair_accuracy_delta": 0.07,
+      "strict_pair_accuracy_delta_ci95_high": 0.09833333333333333,
+      "strict_pair_accuracy_delta_ci95_low": 0.041666666666666664
+    },
+    "header_cued_table_code_v02": {
+      "left_pair_accuracy": 0.9233333333333333,
+      "left_strict_pair_accuracy": 0.26,
+      "mcnemar": {
+        "b01": 3.0,
+        "b10": 3.0,
+        "n_common": 300.0,
+        "p_value": 1.0
+      },
+      "n_pairs": 300,
+      "pair_accuracy_delta": 0.0,
+      "pair_accuracy_delta_ci95_high": 0.016666666666666666,
+      "pair_accuracy_delta_ci95_low": -0.016666666666666666,
+      "right_pair_accuracy": 0.9233333333333333,
+      "right_strict_pair_accuracy": 0.22,
+      "strict_mcnemar": {
+        "b01": 4.0,
+        "b10": 16.0,
+        "n_common": 300.0,
+        "p_value": 0.01181793212890625
+      },
+      "strict_pair_accuracy_delta": -0.04,
+      "strict_pair_accuracy_delta_ci95_high": -0.013333333333333334,
+      "strict_pair_accuracy_delta_ci95_low": -0.07
+    },
+    "starred_series_value_nine_v07": {
+      "left_pair_accuracy": 0.59,
+      "left_strict_pair_accuracy": 0.5233333333333333,
+      "mcnemar": {
+        "b01": 39.0,
+        "b10": 16.0,
+        "n_common": 300.0,
+        "p_value": 0.002667262382859803
+      },
+      "n_pairs": 300,
+      "pair_accuracy_delta": 0.07666666666666666,
+      "pair_accuracy_delta_ci95_high": 0.12666666666666668,
+      "pair_accuracy_delta_ci95_low": 0.03,
+      "right_pair_accuracy": 0.6666666666666666,
+      "right_strict_pair_accuracy": 0.62,
+      "strict_mcnemar": {
+        "b01": 46.0,
+        "b10": 17.0,
+        "n_common": 300.0,
+        "p_value": 0.0003367093494662382
+      },
+      "strict_pair_accuracy_delta": 0.09666666666666666,
+      "strict_pair_accuracy_delta_ci95_high": 0.14666666666666667,
+      "strict_pair_accuracy_delta_ci95_low": 0.04666666666666667
+    }
+  },
+  "right_inputs": [
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_0.jsonl",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_1.jsonl",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_2.jsonl",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_3.jsonl"
+  ],
+  "right_label": "mini_a5_cp_seed1_step120",
+  "right_pair_accuracy": 0.6333333333333333,
+  "right_strict_pair_accuracy": 0.43666666666666665,
+  "schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+  "strict_mcnemar": {
+    "b01": 109.0,
+    "b10": 50.0,
+    "n_common": 1200.0,
+    "p_value": 3.3064765101721803e-06
+  },
+  "strict_pair_accuracy_delta": 0.049166666666666664,
+  "strict_pair_accuracy_delta_ci95_high": 0.07,
+  "strict_pair_accuracy_delta_ci95_low": 0.028333333333333332
+}

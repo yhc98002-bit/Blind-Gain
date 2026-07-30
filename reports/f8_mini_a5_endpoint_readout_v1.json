@@ -1,0 +1,1218 @@
+{
+  "schema_version": "blind-gains.mini-a5-f8-endpoint-readout.v1",
+  "title": "Mini-A5 F8 endpoint readout and pre-committed branch determination",
+  "prepared_utc": "2026-07-30T09:18:06+08:00",
+  "run_ts": "20260730T004031Z",
+  "repo_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain",
+  "git_head_at_readout": "b0b316d294a7f22f8812235f590499e65735b939",
+  "git_head_at_launch": "f2e3762986d7a885218ce750a521149a369b6e5b",
+  "governing_documents": [
+    "docs/registered_mini_a5_endpoint_readout_v1.md (binding spec)",
+    "docs/registered_mini_a5_main_v1.md",
+    "reports/f8_eval_plan_v1.json",
+    "docs/PAPER1_RESEARCH_DOC.md line 88",
+    "docs/PAPER2_RESEARCH_DOC.md line 106"
+  ],
+  "input_artifacts_sha256": {
+    "comparison_r19": "de1cf1e580919a105aac5a21d1a26b042139d98f0c8687653f38f7eaa4bbf69b",
+    "comparison_r20": "1be3a4ad7adacbd7f6f7c13b30b877babb463b6fb454294e8984c474d457c825",
+    "comparison_chartv08": "0a94b7925f1fa5bdcb018ed57548e391ade10707935aa9021527a8b8041d4804",
+    "aggregate_r19_cp": "eb91c9c5f2ff1d8d4fd570cda7fd357303daac2ed4d9a719467fc2f240d2757e",
+    "aggregate_r19_member": "0ecabbca705bf2b741e3014699b7133e59e73ebc2e6afa732b2c3c0cea631451",
+    "aggregate_r20_cp": "7cc71b13e3251111c81a0ddb57151a46ca5a984e126d628d2442ea275d842ceb",
+    "aggregate_r20_member": "fa8aaaeb49e36cf326c8cb677cf37b7018d784c01f60e68d0df9b5a5dbf72620",
+    "aggregate_chartv08_cp": "801208f67db4e4854e0c638871ea28e3f86c0407e5a11bf5d66550fdcf05f5f9",
+    "aggregate_chartv08_member": "676dbf65feaa1cd6b2ea054f78525b3a23d451bc3d50e5abcb0128aef2205e06",
+    "run_provenance": "b99d485ba2e7fc642a89c04ebf10030c359238142c07274041300e29fec22c52",
+    "cell_verification": "1e1c088bd890ebeb7b972e107e268308caf17f56e962f9b341141c819157ef39",
+    "base_r19_f2d": "b0c9e3203f9c0fee0a190b7f79f10eb8374db9910520ed3a1598fa8d6dfdafca",
+    "base_r20_confirmatory": "77b841e65d9cdb3304b2a4dea202a939d4fd26068976bc3fbb492a0385efa9cd"
+  },
+  "instrument_conformance_to_registration_section_4": {
+    "paired_item_bootstrap": true,
+    "draws": 10000,
+    "seed_passed": 20260729,
+    "interval": 0.95,
+    "unit": "paired item",
+    "percentile_method": "np.quantile(means, 0.025) / np.quantile(means, 0.975)",
+    "both_arms_resampled_on_same_pair_indices": "yes -- src.analysis.blind_solvability.bootstrap_mean_ci resamples the per-pair difference vector, which is identical to resampling both arms on the same pair indices per replicate",
+    "exact_mcnemar_two_sided": "yes -- scripts/compare_fliptrack_runs.py::_paired_exact",
+    "scorer": "src.eval.fliptrack_metrics.pair_score",
+    "sign_convention": "--left = member, --right = CP; reported delta is CP minus member",
+    "derived_per_template_seeds": {
+      "pooled_lenient": 20260729,
+      "pooled_strict": 20260730,
+      "coordinate_register_twenty_point_x_v02_lenient": 20260829,
+      "coordinate_register_twenty_point_x_v02_strict": 20260830,
+      "header_cued_table_code_v02_lenient": 20260839,
+      "header_cued_table_code_v02_strict": 20260840,
+      "starred_series_value_nine_v07_lenient": 20260849,
+      "starred_series_value_nine_v07_strict": 20260850
+    },
+    "derived_seed_note": "reports/f8_eval_plan_v1.json blocking_limitations.per_template_bootstrap_seed_is_derived: the script uses seed for pooled lenient, seed+1 for pooled strict, and seed+100+10k / +1 for the k-th template in sorted order. Deterministic derivation from the pinned seed 20260729, fixed before any value was read."
+  },
+  "primary_endpoint": {
+    "definition": "CP-GRPO minus same-data standard GRPO at global_step_120 on the R19 coordinate survey register (primary visual anchor), 600 pairs",
+    "source_file": "reports/mini_a5_f8_r19_paired_comparison_v1.json",
+    "json_path": "per_template['coordinate_register_twenty_point_x_v02']",
+    "set": "r19",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "role": "primary visual anchor (search + binding + read)",
+    "n_pairs": 600,
+    "lenient_pair_correct": {
+      "member_accuracy": 0.4816666666666667,
+      "cp_accuracy": 0.4716666666666667,
+      "cp_minus_member": -0.01,
+      "ci95_low": -0.03,
+      "ci95_high": 0.01,
+      "ci_excludes_zero": false,
+      "mcnemar_exact_two_sided_p": 0.40503224614076316,
+      "mcnemar_b01_member_wrong_cp_right": 15.0,
+      "mcnemar_b10_member_right_cp_wrong": 21.0,
+      "decision_rule_outcome": "NOT MOVED"
+    },
+    "contract_strict_strict_pair_correct": {
+      "member_accuracy": 0.38333333333333336,
+      "cp_accuracy": 0.4533333333333333,
+      "cp_minus_member": 0.07,
+      "ci95_low": 0.041666666666666664,
+      "ci95_high": 0.09833333333333333,
+      "ci_excludes_zero": true,
+      "mcnemar_exact_two_sided_p": 1.3968718113140024e-06,
+      "mcnemar_b01_member_wrong_cp_right": 59.0,
+      "mcnemar_b10_member_right_cp_wrong": 17.0,
+      "decision_rule_outcome": "MOVED"
+    }
+  },
+  "r19_secondaries_in_their_own_roles": {
+    "I13_note": "The three R19 tasks hold three distinct scientific roles and are never aggregated with the primary.",
+    "header_cued_verification_table": {
+      "set": "r19",
+      "template_id": "header_cued_table_code_v02",
+      "role": "saturated positive control / retention canary -- a DROP signals damage",
+      "n_pairs": 300,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.9233333333333333,
+        "cp_accuracy": 0.9233333333333333,
+        "cp_minus_member": 0.0,
+        "ci95_low": -0.016666666666666666,
+        "ci95_high": 0.016666666666666666,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 1.0,
+        "mcnemar_b01_member_wrong_cp_right": 3.0,
+        "mcnemar_b10_member_right_cp_wrong": 3.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.26,
+        "cp_accuracy": 0.22,
+        "cp_minus_member": -0.04,
+        "ci95_low": -0.07,
+        "ci95_high": -0.013333333333333334,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.01181793212890625,
+        "mcnemar_b01_member_wrong_cp_right": 4.0,
+        "mcnemar_b10_member_right_cp_wrong": 16.0,
+        "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION"
+      }
+    },
+    "nine_series_calibration_trace": {
+      "set": "r19",
+      "template_id": "starred_series_value_nine_v07",
+      "role": "oracle-localized readout control",
+      "n_pairs": 300,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.59,
+        "cp_accuracy": 0.6666666666666666,
+        "cp_minus_member": 0.07666666666666666,
+        "ci95_low": 0.03,
+        "ci95_high": 0.12666666666666668,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.002667262382859803,
+        "mcnemar_b01_member_wrong_cp_right": 39.0,
+        "mcnemar_b10_member_right_cp_wrong": 16.0,
+        "decision_rule_outcome": "MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.5233333333333333,
+        "cp_accuracy": 0.62,
+        "cp_minus_member": 0.09666666666666666,
+        "ci95_low": 0.04666666666666667,
+        "ci95_high": 0.14666666666666667,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.0003367093494662382,
+        "mcnemar_b01_member_wrong_cp_right": 46.0,
+        "mcnemar_b10_member_right_cp_wrong": 17.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    }
+  },
+  "r20_one_shot_private_twin": {
+    "I13_note": "R20 is a separate instrument from R19 and is never averaged with it. Its three templates are reported in their own roles.",
+    "source_file": "reports/mini_a5_f8_r20_paired_comparison_v1.json",
+    "coordinate_survey_register": {
+      "set": "r20",
+      "template_id": "coordinate_register_twenty_point_x_v02",
+      "role": "primary visual anchor (search + binding + read)",
+      "n_pairs": 600,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.455,
+        "cp_accuracy": 0.46166666666666667,
+        "cp_minus_member": 0.006666666666666667,
+        "ci95_low": -0.013333333333333334,
+        "ci95_high": 0.02666666666666667,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.617719317029696,
+        "mcnemar_b01_member_wrong_cp_right": 20.0,
+        "mcnemar_b10_member_right_cp_wrong": 16.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.35,
+        "cp_accuracy": 0.445,
+        "cp_minus_member": 0.095,
+        "ci95_low": 0.06666666666666667,
+        "ci95_high": 0.12333333333333334,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 7.03300083476893e-11,
+        "mcnemar_b01_member_wrong_cp_right": 69.0,
+        "mcnemar_b10_member_right_cp_wrong": 12.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    },
+    "header_cued_verification_table": {
+      "set": "r20",
+      "template_id": "header_cued_table_code_v02",
+      "role": "saturated positive control / retention canary -- a DROP signals damage",
+      "n_pairs": 300,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.9233333333333333,
+        "cp_accuracy": 0.9166666666666666,
+        "cp_minus_member": -0.006666666666666667,
+        "ci95_low": -0.023333333333333334,
+        "ci95_high": 0.01,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.6875,
+        "mcnemar_b01_member_wrong_cp_right": 2.0,
+        "mcnemar_b10_member_right_cp_wrong": 4.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.22666666666666666,
+        "cp_accuracy": 0.15333333333333332,
+        "cp_minus_member": -0.07333333333333333,
+        "ci95_low": -0.10666666666666667,
+        "ci95_high": -0.04,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 5.947612226009369e-05,
+        "mcnemar_b01_member_wrong_cp_right": 4.0,
+        "mcnemar_b10_member_right_cp_wrong": 26.0,
+        "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION"
+      }
+    },
+    "nine_series_calibration_trace": {
+      "set": "r20",
+      "template_id": "starred_series_value_nine_v07",
+      "role": "oracle-localized readout control",
+      "n_pairs": 300,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.51,
+        "cp_accuracy": 0.57,
+        "cp_minus_member": 0.06,
+        "ci95_low": 0.013333333333333334,
+        "ci95_high": 0.10333333333333333,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.013283281562245008,
+        "mcnemar_b01_member_wrong_cp_right": 33.0,
+        "mcnemar_b10_member_right_cp_wrong": 15.0,
+        "decision_rule_outcome": "MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.42,
+        "cp_accuracy": 0.53,
+        "cp_minus_member": 0.11,
+        "ci95_low": 0.06333333333333334,
+        "ci95_high": 0.16,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 1.9167786796225883e-05,
+        "mcnemar_b01_member_wrong_cp_right": 46.0,
+        "mcnemar_b10_member_right_cp_wrong": 13.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    }
+  },
+  "chart_v08_calibration": {
+    "I13_note": "chart-v08 is a third instrument, never averaged with R19 or R20. The registration assigns the SET a calibration role but assigns no distinct role to each of its two templates; the two-template pooled number is therefore reported as a within-set aggregate whose role-homogeneity is not established by the registration, not as an endpoint.",
+    "source_file": "reports/mini_a5_f8_chartv08_paired_comparison_v1.json",
+    "legend_target_flip": {
+      "set": "chartv08",
+      "template_id": "chart_v08_legend_target_flip",
+      "role": "calibration set template (legend target flip)",
+      "n_pairs": 50,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.44,
+        "cp_accuracy": 0.38,
+        "cp_minus_member": -0.06,
+        "ci95_low": -0.16,
+        "ci95_high": 0.04,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.453125,
+        "mcnemar_b01_member_wrong_cp_right": 2.0,
+        "mcnemar_b10_member_right_cp_wrong": 5.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.14,
+        "cp_accuracy": 0.08,
+        "cp_minus_member": -0.06,
+        "ci95_low": -0.16,
+        "ci95_high": 0.02,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.375,
+        "mcnemar_b01_member_wrong_cp_right": 1.0,
+        "mcnemar_b10_member_right_cp_wrong": 4.0,
+        "decision_rule_outcome": "NOT MOVED"
+      }
+    },
+    "point_value_flip": {
+      "set": "chartv08",
+      "template_id": "chart_v08_point_value_flip",
+      "role": "calibration set template (point value flip)",
+      "n_pairs": 50,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.58,
+        "cp_accuracy": 0.56,
+        "cp_minus_member": -0.02,
+        "ci95_low": -0.1,
+        "ci95_high": 0.06,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 1.0,
+        "mcnemar_b01_member_wrong_cp_right": 2.0,
+        "mcnemar_b10_member_right_cp_wrong": 3.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.22,
+        "cp_accuracy": 0.44,
+        "cp_minus_member": 0.22,
+        "ci95_low": 0.08,
+        "ci95_high": 0.36,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.00738525390625,
+        "mcnemar_b01_member_wrong_cp_right": 13.0,
+        "mcnemar_b10_member_right_cp_wrong": 2.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    },
+    "set_level_pooled_two_templates_NOT_AN_ENDPOINT": {
+      "n_pairs": 100,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.51,
+        "cp_accuracy": 0.47,
+        "cp_minus_member": -0.04,
+        "ci95_low": -0.11,
+        "ci95_high": 0.03,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.3876953125,
+        "mcnemar_b01_member_wrong_cp_right": 4.0,
+        "mcnemar_b10_member_right_cp_wrong": 8.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.18,
+        "cp_accuracy": 0.26,
+        "cp_minus_member": 0.08,
+        "ci95_low": -0.01,
+        "ci95_high": 0.17,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.11531829833984375,
+        "mcnemar_b01_member_wrong_cp_right": 14.0,
+        "mcnemar_b10_member_right_cp_wrong": 6.0,
+        "decision_rule_outcome": "NOT MOVED"
+      }
+    }
+  },
+  "pooled_numbers_NOT_ENDPOINTS": {
+    "why": "reports/f8_eval_plan_v1.json endpoint_extraction.I13_guard: the pooled top-level R19/R20 numbers pool three distinct scientific roles and MUST NOT be reported as an endpoint. Recorded here as labelled non-endpoint diagnostics only.",
+    "r19_pooled_1200": {
+      "n_pairs": 1200,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.6191666666666666,
+        "cp_accuracy": 0.6333333333333333,
+        "cp_minus_member": 0.014166666666666666,
+        "ci95_low": -0.0025,
+        "ci95_high": 0.03,
+        "ci_excludes_zero": false,
+        "mcnemar_exact_two_sided_p": 0.10376938287271786,
+        "mcnemar_b01_member_wrong_cp_right": 57.0,
+        "mcnemar_b10_member_right_cp_wrong": 40.0,
+        "decision_rule_outcome": "NOT MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.3875,
+        "cp_accuracy": 0.43666666666666665,
+        "cp_minus_member": 0.049166666666666664,
+        "ci95_low": 0.028333333333333332,
+        "ci95_high": 0.07,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 3.3064765101721803e-06,
+        "mcnemar_b01_member_wrong_cp_right": 109.0,
+        "mcnemar_b10_member_right_cp_wrong": 50.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    },
+    "r20_pooled_1200": {
+      "n_pairs": 1200,
+      "lenient_pair_correct": {
+        "member_accuracy": 0.5858333333333333,
+        "cp_accuracy": 0.6025,
+        "cp_minus_member": 0.016666666666666666,
+        "ci95_low": 0.0016666666666666668,
+        "ci95_high": 0.0325,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 0.04459752462791594,
+        "mcnemar_b01_member_wrong_cp_right": 55.0,
+        "mcnemar_b10_member_right_cp_wrong": 35.0,
+        "decision_rule_outcome": "MOVED"
+      },
+      "contract_strict_strict_pair_correct": {
+        "member_accuracy": 0.33666666666666667,
+        "cp_accuracy": 0.3933333333333333,
+        "cp_minus_member": 0.056666666666666664,
+        "ci95_low": 0.035833333333333335,
+        "ci95_high": 0.0775,
+        "ci_excludes_zero": true,
+        "mcnemar_exact_two_sided_p": 1.923659943084837e-07,
+        "mcnemar_b01_member_wrong_cp_right": 119.0,
+        "mcnemar_b10_member_right_cp_wrong": 51.0,
+        "decision_rule_outcome": "MOVED"
+      }
+    }
+  },
+  "absolute_levels_against_frozen_base": {
+    "instruction": "Report each arm's absolute level against the frozen base where a base number exists in reports/; cite the source rather than recomputing.",
+    "r19": {
+      "base_source_report": "reports/f2d_template_decomposition_v1.json -> .base",
+      "base_source_run": "experiments/runs/fliptrack_v02r19_packaged_qwen25vl3b_real_an29_20260710T142716Z",
+      "base_model": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "base_run_data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "comparability": "IDENTICAL locked R19 manifest hash, identical pair_id keys, same max_new_tokens 32 and image_mode real as the F8 R19 cells. Verified by reading the base run_manifest.json.",
+      "comparability_caveat": "The base run_manifest records prompt_contract_sha256 = null and seed = null (it predates contract hashing into manifests). The F8 cells record 7ac39f53.... Contract identity for the base run is therefore NOT evidenced by its manifest; this bears mainly on the contract-strict base column.",
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "n_pairs": 600,
+          "base_pair_accuracy": 0.4716666666666667,
+          "base_strict_pair_accuracy": 0.44333333333333336,
+          "cp_minus_base_lenient": 0.0,
+          "member_minus_base_lenient": 0.010000000000000009,
+          "cp_minus_base_strict": 0.009999999999999953,
+          "member_minus_base_strict": -0.06
+        },
+        "header_cued_table_code_v02": {
+          "n_pairs": 300,
+          "base_pair_accuracy": 0.8666666666666667,
+          "base_strict_pair_accuracy": 0.18,
+          "cp_minus_base_lenient": 0.05666666666666664,
+          "member_minus_base_lenient": 0.05666666666666664,
+          "cp_minus_base_strict": 0.04000000000000001,
+          "member_minus_base_strict": 0.08000000000000002
+        },
+        "starred_series_value_nine_v07": {
+          "n_pairs": 300,
+          "base_pair_accuracy": 0.43666666666666665,
+          "base_strict_pair_accuracy": 0.42,
+          "cp_minus_base_lenient": 0.22999999999999998,
+          "member_minus_base_lenient": 0.15333333333333332,
+          "cp_minus_base_strict": 0.2,
+          "member_minus_base_strict": 0.10333333333333333
+        }
+      }
+    },
+    "r20": {
+      "base_source_report": "reports/fliptrack_r20_confirmatory.json -> .cells['3b_real'].metrics.per_template",
+      "base_source_run": "experiments/runs/fliptrack_r20_qwen25vl3b_real_an12_20260711T131807Z (aggregated in experiments/runs/fliptrack_aggregate_qwen25vl3b_real_20260711T132518Z)",
+      "base_model": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "base_run_data_manifest_hash": "525e1104631b0a7d68697f811298e4b4ffd539273361d8822872a7b61f2ff96f",
+      "comparability": "DIFFERENT manifest file from the pinned F8 R20 manifest (20222e60...), but reports/f8_eval_plan_v1.json blocking_limitations.r20_pair_ids_are_rekeyed_vs_prior_base_model_r20_runs verified the two describe the SAME 1200 items (identical image_a/image_b sha256 pair set, same 3 template ids) with DIFFERENT pair_id keys. Set-level and per-template level comparison is therefore valid; per-item joins are NOT.",
+      "comparability_caveat": "Same null prompt_contract_sha256 / null seed caveat as R19. Additionally, no per-item join is possible without going through source_pair_id.",
+      "per_template": {
+        "coordinate_register_twenty_point_x_v02": {
+          "n_pairs": 600,
+          "base_pair_accuracy": 0.39666666666666667,
+          "base_strict_pair_accuracy": 0.3616666666666667,
+          "cp_minus_base_lenient": 0.065,
+          "member_minus_base_lenient": 0.05833333333333335,
+          "cp_minus_base_strict": 0.08333333333333331,
+          "member_minus_base_strict": -0.011666666666666714
+        },
+        "header_cued_table_code_v02": {
+          "n_pairs": 300,
+          "base_pair_accuracy": 0.8666666666666667,
+          "base_strict_pair_accuracy": 0.16,
+          "cp_minus_base_lenient": 0.04999999999999993,
+          "member_minus_base_lenient": 0.05666666666666664,
+          "cp_minus_base_strict": -0.006666666666666682,
+          "member_minus_base_strict": 0.06666666666666665
+        },
+        "starred_series_value_nine_v07": {
+          "n_pairs": 300,
+          "base_pair_accuracy": 0.39,
+          "base_strict_pair_accuracy": 0.38333333333333336,
+          "cp_minus_base_lenient": 0.17999999999999994,
+          "member_minus_base_lenient": 0.12,
+          "cp_minus_base_strict": 0.14666666666666667,
+          "member_minus_base_strict": 0.036666666666666625
+        }
+      }
+    },
+    "chart_v08": {
+      "base_number_available_in_reports": false,
+      "statement": "NO chart-v08 base-model pair accuracy exists anywhere under reports/. Checked: every reports/*.json mentioning chart_v08 was grepped for pair_accuracy; only the three F8 files and reports/f8_eval_plan_v1.json match, and none of them carries a base number. reports/chart_v08_calibration_execution_status_v5.json is status 'blocked' and holds no accuracy field.",
+      "not_substituted": "A base-model chart-v08 run directory does exist: experiments/runs/chart_v08_calibration_qwen25vl3b_real_an29_20260715T185645Z -- verified by reading its run_manifest.json: status complete, model_path artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct, data_manifest_hash d90f3f13... which is IDENTICAL to the hash the F8 chart-v08 cells recorded, image_mode real, max_new_tokens 32. Aggregating it would give a directly comparable base. The instruction is to cite a base number from reports/ rather than recompute one, so NO number is computed, invented or proxied here. This cell is left explicitly empty and the exact way to fill it is recorded."
+    }
+  },
+  "lenient_vs_strict_decomposition": {
+    "why": "The two registered contracts disagree on the primary endpoint. This section is exact arithmetic on the per-row scores, not interpretation.",
+    "strict_contract_definition": {
+      "source": "src/eval/fliptrack_metrics.py::_score_member line 97",
+      "definition": "acc_strict = contract_valid and acc_final",
+      "consequence": "strict_pair_correct == pair_correct AND both members' responses satisfy the response-format contract. Strict is therefore a subset of lenient BY CONSTRUCTION, not merely empirically.",
+      "contract_valid_definition": "src/eval/prompt_contract.py::response_satisfies_contract, contract answer-tags-v1 / single_final_answer_tag: the response text must contain exactly one '<answer' opening tag, exactly one '</answer>' closing tag, and non-empty stripped content between them. It is a check on emitted response FORM only and does not inspect answer content."
+    },
+    "strict_is_subset_of_lenient": {
+      "claim": "strict_pair_correct implies pair_correct in every template-cell of every arm",
+      "check": "strict_correct_not_lenient == 0.0 in all 12 template-cells",
+      "passed": true
+    },
+    "contract_invalid_iff_fallback_extraction": {
+      "check": "contract_valid_rate + extraction_fallback_rate == 1.0 in all 12 template-cells, i.e. the contract-invalid rows are exactly the rows where the fallback extractor was used",
+      "max_abs_residual_from_one": 0.0,
+      "passed": true,
+      "per_cell": [
+        {
+          "cell": "chartv08_cp",
+          "template_id": "chart_v08_legend_target_flip",
+          "contract_valid_rate": 0.42,
+          "extraction_fallback_rate": 0.58,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "chartv08_cp",
+          "template_id": "chart_v08_point_value_flip",
+          "contract_valid_rate": 0.68,
+          "extraction_fallback_rate": 0.32,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "chartv08_member",
+          "template_id": "chart_v08_legend_target_flip",
+          "contract_valid_rate": 0.34,
+          "extraction_fallback_rate": 0.66,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "chartv08_member",
+          "template_id": "chart_v08_point_value_flip",
+          "contract_valid_rate": 0.32,
+          "extraction_fallback_rate": 0.68,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "contract_valid_rate": 0.9683333333333334,
+          "extraction_fallback_rate": 0.03166666666666667,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "header_cued_table_code_v02",
+          "contract_valid_rate": 0.2733333333333333,
+          "extraction_fallback_rate": 0.7266666666666667,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "starred_series_value_nine_v07",
+          "contract_valid_rate": 0.9466666666666667,
+          "extraction_fallback_rate": 0.05333333333333334,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "contract_valid_rate": 0.8133333333333334,
+          "extraction_fallback_rate": 0.18666666666666668,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "header_cued_table_code_v02",
+          "contract_valid_rate": 0.31666666666666665,
+          "extraction_fallback_rate": 0.6833333333333333,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "starred_series_value_nine_v07",
+          "contract_valid_rate": 0.8866666666666667,
+          "extraction_fallback_rate": 0.11333333333333333,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "contract_valid_rate": 0.9666666666666667,
+          "extraction_fallback_rate": 0.03333333333333333,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "header_cued_table_code_v02",
+          "contract_valid_rate": 0.20333333333333334,
+          "extraction_fallback_rate": 0.7966666666666666,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "starred_series_value_nine_v07",
+          "contract_valid_rate": 0.9533333333333334,
+          "extraction_fallback_rate": 0.04666666666666667,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "contract_valid_rate": 0.8,
+          "extraction_fallback_rate": 0.2,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "header_cued_table_code_v02",
+          "contract_valid_rate": 0.2833333333333333,
+          "extraction_fallback_rate": 0.7166666666666667,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "starred_series_value_nine_v07",
+          "contract_valid_rate": 0.8766666666666667,
+          "extraction_fallback_rate": 0.12333333333333334,
+          "sum": 1.0,
+          "abs_residual_from_one": 0.0
+        }
+      ],
+      "note": "max_new_tokens was 32 in all six F8 cells and in both cited base runs. Recorded as a fact about the shared decoding budget; no causal claim is made here about why contract validity differs between arms."
+    },
+    "identity_check": {
+      "identity": "strict_pair_accuracy == pair_accuracy - lenient_correct_not_strict",
+      "max_abs_residual_over_12_cells": 1.1102230246251565e-16,
+      "passed": true,
+      "per_cell": [
+        {
+          "cell": "chartv08_cp",
+          "template_id": "chart_v08_legend_target_flip",
+          "pair_accuracy_minus_contract_loss": 0.08000000000000002,
+          "strict_pair_accuracy": 0.08,
+          "abs_residual": 1.3877787807814457e-17
+        },
+        {
+          "cell": "chartv08_cp",
+          "template_id": "chart_v08_point_value_flip",
+          "pair_accuracy_minus_contract_loss": 0.44000000000000006,
+          "strict_pair_accuracy": 0.44,
+          "abs_residual": 5.551115123125783e-17
+        },
+        {
+          "cell": "chartv08_member",
+          "template_id": "chart_v08_legend_target_flip",
+          "pair_accuracy_minus_contract_loss": 0.14,
+          "strict_pair_accuracy": 0.14,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "chartv08_member",
+          "template_id": "chart_v08_point_value_flip",
+          "pair_accuracy_minus_contract_loss": 0.21999999999999997,
+          "strict_pair_accuracy": 0.22,
+          "abs_residual": 2.7755575615628914e-17
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "pair_accuracy_minus_contract_loss": 0.45333333333333337,
+          "strict_pair_accuracy": 0.4533333333333333,
+          "abs_residual": 5.551115123125783e-17
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "header_cued_table_code_v02",
+          "pair_accuracy_minus_contract_loss": 0.21999999999999997,
+          "strict_pair_accuracy": 0.22,
+          "abs_residual": 2.7755575615628914e-17
+        },
+        {
+          "cell": "r19_cp",
+          "template_id": "starred_series_value_nine_v07",
+          "pair_accuracy_minus_contract_loss": 0.62,
+          "strict_pair_accuracy": 0.62,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "pair_accuracy_minus_contract_loss": 0.38333333333333336,
+          "strict_pair_accuracy": 0.38333333333333336,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "header_cued_table_code_v02",
+          "pair_accuracy_minus_contract_loss": 0.26,
+          "strict_pair_accuracy": 0.26,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r19_member",
+          "template_id": "starred_series_value_nine_v07",
+          "pair_accuracy_minus_contract_loss": 0.5233333333333333,
+          "strict_pair_accuracy": 0.5233333333333333,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "pair_accuracy_minus_contract_loss": 0.445,
+          "strict_pair_accuracy": 0.445,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "header_cued_table_code_v02",
+          "pair_accuracy_minus_contract_loss": 0.15333333333333332,
+          "strict_pair_accuracy": 0.15333333333333332,
+          "abs_residual": 0.0
+        },
+        {
+          "cell": "r20_cp",
+          "template_id": "starred_series_value_nine_v07",
+          "pair_accuracy_minus_contract_loss": 0.5299999999999999,
+          "strict_pair_accuracy": 0.53,
+          "abs_residual": 1.1102230246251565e-16
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "coordinate_register_twenty_point_x_v02",
+          "pair_accuracy_minus_contract_loss": 0.35000000000000003,
+          "strict_pair_accuracy": 0.35,
+          "abs_residual": 5.551115123125783e-17
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "header_cued_table_code_v02",
+          "pair_accuracy_minus_contract_loss": 0.22666666666666668,
+          "strict_pair_accuracy": 0.22666666666666666,
+          "abs_residual": 2.7755575615628914e-17
+        },
+        {
+          "cell": "r20_member",
+          "template_id": "starred_series_value_nine_v07",
+          "pair_accuracy_minus_contract_loss": 0.42000000000000004,
+          "strict_pair_accuracy": 0.42,
+          "abs_residual": 5.551115123125783e-17
+        }
+      ]
+    },
+    "primary_anchor_strict_delta_attribution": {
+      "identity": "strict_delta = lenient_delta - (cp_contract_loss - member_contract_loss); valid because strict_pair_correct is a subset of pair_correct in all 12 template-cells (strict_correct_not_lenient == 0.0 everywhere)",
+      "lenient_delta": -0.01,
+      "cp_contract_loss_lenient_correct_not_strict": 0.018333333333333333,
+      "member_contract_loss_lenient_correct_not_strict": 0.09833333333333333,
+      "contract_loss_difference_cp_minus_member": -0.07999999999999999,
+      "reconstructed_strict_delta": 0.06999999999999999,
+      "reported_strict_delta": 0.07,
+      "cp_contract_valid_rate": 0.9683333333333334,
+      "member_contract_valid_rate": 0.8133333333333334,
+      "contract_valid_rate_difference": 0.15500000000000003,
+      "reconstruction_abs_residual": 1.3877787807814457e-17
+    },
+    "per_cell_validity_rates": {
+      "chartv08_cp": {
+        "chart_v08_legend_target_flip": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.54,
+          "contract_valid_rate": 0.42,
+          "extraction_fallback_rate": 0.58,
+          "extractor_valid_rate": 0.42,
+          "lenient_correct_not_strict": 0.3,
+          "n_pairs": 50,
+          "pair_accuracy": 0.38,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.08
+        },
+        "chart_v08_point_value_flip": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.26,
+          "contract_valid_rate": 0.68,
+          "extraction_fallback_rate": 0.32,
+          "extractor_valid_rate": 0.68,
+          "lenient_correct_not_strict": 0.12,
+          "n_pairs": 50,
+          "pair_accuracy": 0.56,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.44
+        }
+      },
+      "chartv08_member": {
+        "chart_v08_legend_target_flip": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.42,
+          "contract_valid_rate": 0.34,
+          "extraction_fallback_rate": 0.66,
+          "extractor_valid_rate": 0.34,
+          "lenient_correct_not_strict": 0.3,
+          "n_pairs": 50,
+          "pair_accuracy": 0.44,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.14
+        },
+        "chart_v08_point_value_flip": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.24,
+          "contract_valid_rate": 0.32,
+          "extraction_fallback_rate": 0.68,
+          "extractor_valid_rate": 0.32,
+          "lenient_correct_not_strict": 0.36,
+          "n_pairs": 50,
+          "pair_accuracy": 0.58,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.22
+        }
+      },
+      "r19_cp": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.03833333333333333,
+          "contract_valid_rate": 0.9683333333333334,
+          "extraction_fallback_rate": 0.03166666666666667,
+          "extractor_valid_rate": 0.9683333333333334,
+          "lenient_correct_not_strict": 0.018333333333333333,
+          "n_pairs": 600,
+          "pair_accuracy": 0.4716666666666667,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.4533333333333333
+        },
+        "header_cued_table_code_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.043333333333333335,
+          "contract_valid_rate": 0.2733333333333333,
+          "extraction_fallback_rate": 0.7266666666666667,
+          "extractor_valid_rate": 0.2733333333333333,
+          "lenient_correct_not_strict": 0.7033333333333334,
+          "n_pairs": 300,
+          "pair_accuracy": 0.9233333333333333,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.22
+        },
+        "starred_series_value_nine_v07": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.04666666666666667,
+          "contract_valid_rate": 0.9466666666666667,
+          "extraction_fallback_rate": 0.05333333333333334,
+          "extractor_valid_rate": 0.9466666666666667,
+          "lenient_correct_not_strict": 0.04666666666666667,
+          "n_pairs": 300,
+          "pair_accuracy": 0.6666666666666666,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.62
+        }
+      },
+      "r19_member": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.04,
+          "contract_valid_rate": 0.8133333333333334,
+          "extraction_fallback_rate": 0.18666666666666668,
+          "extractor_valid_rate": 0.8133333333333334,
+          "lenient_correct_not_strict": 0.09833333333333333,
+          "n_pairs": 600,
+          "pair_accuracy": 0.4816666666666667,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.38333333333333336
+        },
+        "header_cued_table_code_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.043333333333333335,
+          "contract_valid_rate": 0.31666666666666665,
+          "extraction_fallback_rate": 0.6833333333333333,
+          "extractor_valid_rate": 0.31666666666666665,
+          "lenient_correct_not_strict": 0.6633333333333333,
+          "n_pairs": 300,
+          "pair_accuracy": 0.9233333333333333,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.26
+        },
+        "starred_series_value_nine_v07": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.05333333333333334,
+          "contract_valid_rate": 0.8866666666666667,
+          "extraction_fallback_rate": 0.11333333333333333,
+          "extractor_valid_rate": 0.8866666666666667,
+          "lenient_correct_not_strict": 0.06666666666666667,
+          "n_pairs": 300,
+          "pair_accuracy": 0.59,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.5233333333333333
+        }
+      },
+      "r20_cp": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.03666666666666667,
+          "contract_valid_rate": 0.9666666666666667,
+          "extraction_fallback_rate": 0.03333333333333333,
+          "extractor_valid_rate": 0.9666666666666667,
+          "lenient_correct_not_strict": 0.016666666666666666,
+          "n_pairs": 600,
+          "pair_accuracy": 0.46166666666666667,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.445
+        },
+        "header_cued_table_code_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.05333333333333334,
+          "contract_valid_rate": 0.20333333333333334,
+          "extraction_fallback_rate": 0.7966666666666666,
+          "extractor_valid_rate": 0.20333333333333334,
+          "lenient_correct_not_strict": 0.7633333333333333,
+          "n_pairs": 300,
+          "pair_accuracy": 0.9166666666666666,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.15333333333333332
+        },
+        "starred_series_value_nine_v07": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.016666666666666666,
+          "contract_valid_rate": 0.9533333333333334,
+          "extraction_fallback_rate": 0.04666666666666667,
+          "extractor_valid_rate": 0.9533333333333334,
+          "lenient_correct_not_strict": 0.04,
+          "n_pairs": 300,
+          "pair_accuracy": 0.57,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.53
+        }
+      },
+      "r20_member": {
+        "coordinate_register_twenty_point_x_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.035,
+          "contract_valid_rate": 0.8,
+          "extraction_fallback_rate": 0.2,
+          "extractor_valid_rate": 0.8,
+          "lenient_correct_not_strict": 0.105,
+          "n_pairs": 600,
+          "pair_accuracy": 0.455,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.35
+        },
+        "header_cued_table_code_v02": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.04666666666666667,
+          "contract_valid_rate": 0.2833333333333333,
+          "extraction_fallback_rate": 0.7166666666666667,
+          "extractor_valid_rate": 0.2833333333333333,
+          "lenient_correct_not_strict": 0.6966666666666667,
+          "n_pairs": 300,
+          "pair_accuracy": 0.9233333333333333,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.22666666666666666
+        },
+        "starred_series_value_nine_v07": {
+          "ambiguous_rate": 0.0,
+          "collapse_rate": 0.04666666666666667,
+          "contract_valid_rate": 0.8766666666666667,
+          "extraction_fallback_rate": 0.12333333333333334,
+          "extractor_valid_rate": 0.8766666666666667,
+          "lenient_correct_not_strict": 0.09,
+          "n_pairs": 300,
+          "pair_accuracy": 0.51,
+          "strict_correct_not_lenient": 0.0,
+          "strict_pair_accuracy": 0.42
+        }
+      }
+    },
+    "validity_rate_source": "recomputed from the stored per-row prediction text with src.eval.fliptrack_metrics.pair_score (tmp/f8_decomp.py)"
+  },
+  "per_arm_aggregates": {
+    "note": "From scripts/aggregate_fliptrack_eval.py. Its pair_accuracy_ci95_low/high fields are SINGLE-ARM descriptive intervals with seed hard-coded to 0 inside src.eval.fliptrack_metrics.pair_accuracy_ci and lenient-only; they are NOT the registered endpoint interval (reports/f8_eval_plan_v1.json blocking_limitations.aggregate_script_ci_is_not_the_registered_interval).",
+    "cells": {
+      "chartv08_cp": {
+        "n_pairs": 100.0,
+        "pair_accuracy": 0.47,
+        "strict_pair_accuracy": 0.26,
+        "member_accuracy": 0.66,
+        "strict_member_accuracy": 0.445,
+        "contract_valid_rate": 0.66,
+        "extraction_fallback_rate": 0.34,
+        "collapse_rate": 0.4,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.37,
+        "pair_accuracy_ci95_high": 0.57,
+        "swap_null_mean": 0.23502,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.015869999999999797,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      },
+      "chartv08_member": {
+        "n_pairs": 100.0,
+        "pair_accuracy": 0.51,
+        "strict_pair_accuracy": 0.18,
+        "member_accuracy": 0.695,
+        "strict_member_accuracy": 0.37,
+        "contract_valid_rate": 0.48,
+        "extraction_fallback_rate": 0.52,
+        "collapse_rate": 0.33,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.41,
+        "pair_accuracy_ci95_high": 0.61,
+        "swap_null_mean": 0.25489000000000034,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.01730999999999984,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      },
+      "r19_cp": {
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.6333333333333333,
+        "strict_pair_accuracy": 0.43666666666666665,
+        "member_accuracy": 0.7720833333333333,
+        "strict_member_accuracy": 0.6283333333333333,
+        "contract_valid_rate": 0.8495833333333334,
+        "extraction_fallback_rate": 0.15041666666666667,
+        "collapse_rate": 0.041666666666666664,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.6058333333333333,
+        "pair_accuracy_ci95_high": 0.66,
+        "swap_null_mean": 0.3170166666666659,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.011015000000000035,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      },
+      "r19_member": {
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.6191666666666666,
+        "strict_pair_accuracy": 0.3875,
+        "member_accuracy": 0.7620833333333333,
+        "strict_member_accuracy": 0.5954166666666667,
+        "contract_valid_rate": 0.8129166666666666,
+        "extraction_fallback_rate": 0.18708333333333332,
+        "collapse_rate": 0.04416666666666667,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.5916666666666667,
+        "pair_accuracy_ci95_high": 0.6458333333333334,
+        "swap_null_mean": 0.30959083333333387,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.010716666666666697,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      },
+      "r20_cp": {
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.6025,
+        "strict_pair_accuracy": 0.3933333333333333,
+        "member_accuracy": 0.7566666666666667,
+        "strict_member_accuracy": 0.5941666666666666,
+        "contract_valid_rate": 0.83,
+        "extraction_fallback_rate": 0.17,
+        "collapse_rate": 0.035833333333333335,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.575,
+        "pair_accuracy_ci95_high": 0.63,
+        "swap_null_mean": 0.3008425000000015,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.011407500000000018,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      },
+      "r20_member": {
+        "n_pairs": 1200.0,
+        "pair_accuracy": 0.5858333333333333,
+        "strict_pair_accuracy": 0.33666666666666667,
+        "member_accuracy": 0.7454166666666666,
+        "strict_member_accuracy": 0.5575,
+        "contract_valid_rate": 0.79375,
+        "extraction_fallback_rate": 0.20625,
+        "collapse_rate": 0.04083333333333333,
+        "ambiguous_rate": 0.0,
+        "pair_accuracy_ci95_low": 0.5583333333333333,
+        "pair_accuracy_ci95_high": 0.6141666666666666,
+        "swap_null_mean": 0.29247583333333416,
+        "swap_null_p_ge": 0.000999000999000999,
+        "key_shuffle_null_mean": 0.010856666666666695,
+        "key_shuffle_null_p_ge": 0.000999000999000999,
+        "parser_version": "canonical-v2",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+      }
+    },
+    "cells_present": [
+      "chartv08_cp",
+      "chartv08_member",
+      "r19_cp",
+      "r19_member",
+      "r20_cp",
+      "r20_member"
+    ],
+    "cells_missing": []
+  },
+  "branch_determination": {
+    "decision_rule_verbatim": "\"moves\" means the CP-member difference on the primary anchor has a 95% paired-bootstrap CI EXCLUDING ZERO in the positive direction. A positive point estimate whose interval contains zero is reported as NOT MOVED, not as a trend.",
+    "rule_source": "docs/registered_mini_a5_endpoint_readout_v1.md section 5",
+    "primary_anchor": {
+      "set": "R19",
+      "template_id": "coordinate_register_twenty_point_x_v02",
+      "n_pairs": 600
+    },
+    "rule_applied_lenient": {
+      "cp_minus_member": -0.01,
+      "ci95": [
+        -0.03,
+        0.01
+      ],
+      "outcome": "NOT MOVED",
+      "note": "point estimate is negative and the interval contains zero"
+    },
+    "rule_applied_contract_strict": {
+      "cp_minus_member": 0.07,
+      "ci95": [
+        0.041666666666666664,
+        0.09833333333333333
+      ],
+      "outcome": "MOVED"
+    },
+    "contracts_disagree": true,
+    "registration_clause_on_disagreement": "docs/registered_mini_a5_endpoint_readout_v1.md section 3: \"Both scoring contracts are reported (I7): lenient pair_correct and contract-strict strict_pair_correct. Neither is privileged; if they disagree the disagreement is the result.\" The registration pins no tiebreak, so the section-5 rule read in isolation selects no single branch.",
+    "pre_committed_branches_verbatim": {
+      "branch_1": "CP moves held-out FlipTrack while matched same-data GRPO does not -> trainability established, C2 validated, Paper 2 proceeds. (PAPER1 doc line 88 / PAPER2 doc line 106)",
+      "branch_2": "Both flat -> reported as-is and the Paper-2 gate is reconsidered; premise-first redesign branch (C3 before C2), with C1 retained. (PAPER2 doc line 106)",
+      "branch_3": "Components move attribution but not competence -> engage C4. (PAPER2 doc line 106)"
+    },
+    "branch_3_eligibility": {
+      "eligible": false,
+      "reason": "Branch 3 turns on 'attribution', which PAPER2_RESEARCH_DOC.md line 51 defines as VAG = dAcc(method, real-image test) - dAcc(matched same-data BLIND control, real-image test). No blind control arm is among the six F8 cells, so VAG is not measurable from this readout. INSTRUMENT-ABSENT, not evaluated and not silently proxied by the lenient/strict split -- the lenient/strict contrast is a response-format contract, not VAG."
+    },
+    "branch_1_antecedent_check": {
+      "antecedent": "CP moves held-out FlipTrack while matched same-data GRPO does not",
+      "test": "each arm's absolute level on the primary anchor against the frozen base cited from reports/f2d_template_decomposition_v1.json",
+      "cp_minus_base_lenient": 0.0,
+      "member_minus_base_lenient": 0.010000000000000009,
+      "cp_minus_base_strict": 0.009999999999999953,
+      "member_minus_base_strict": -0.06,
+      "finding": "CP does not rise above the frozen base on either contract (lenient +0.0000, strict +0.0100). The contract-strict CP-minus-member gap of +0.0700 is composed of CP at +0.0100 versus base and the member arm at -0.0600 versus base; the gap opens predominantly because the member arm falls below base, not because CP rises above it.",
+      "antecedent_satisfied": false,
+      "gap_decomposed_into_vs_base_terms": {
+        "identity": "(CP - member) == (CP - base) - (member - base)",
+        "strict_cp_minus_member": 0.07,
+        "strict_cp_minus_base": 0.009999999999999953,
+        "strict_member_minus_base": -0.06,
+        "reconstructed": 0.06999999999999995,
+        "abs_residual": 5.551115123125783e-17,
+        "share_of_gap_from_cp_above_base": 0.14285714285714218,
+        "share_of_gap_from_member_below_base": 0.857142857142857,
+        "caveat": "Point-estimate decomposition. The base column carries no CI, so these shares are not interval-bounded."
+      },
+      "caveat": "No paired CI is computed for either arm against the base, because the task instruction is to cite the base level from reports/ rather than recompute it. These are point-level differences only."
+    },
+    "which_quantity_the_branch_is_read_from": {
+      "statement": "Per binding spec section 3 the branch is read from the R19 coordinate survey register ONLY -- that task is THE primary endpoint, not the average of R19's three tasks and not any R20 or chart-v08 quantity. R19/R20/chart-v08 are three instruments and are never averaged (I13).",
+      "corroboration_not_used_to_decide": "Recorded for completeness, not used to select the branch: R20's coordinate survey register shows the same lenient null in the CP-minus-member differential (+0.006667, CI [-0.013333, +0.026667], p = 0.617719) and the same contract-strict positive gap. Note separately that on R20's coordinate register BOTH arms sit above the cited R20 base on the lenient contract (member +0.0583, CP +0.0650) while being statistically indistinguishable from each other. That is a level fact about both arms, not a CP-versus-member difference, and it carries no CI."
+    },
+    "branch_fired": "branch_2",
+    "branch_fired_text": "Both flat -> reported as-is and the Paper-2 gate is reconsidered; premise-first redesign (C3 before C2), with C1 retained.",
+    "why_branch_2": [
+      "1. Registered rule on the primary anchor, lenient contract: CP-member = -0.010000, 95% CI [-0.030000, +0.010000] contains zero, point estimate negative -> NOT MOVED. Exact McNemar two-sided p = 0.405032. This is a null and is reported as a null, not as a trend.",
+      "2. Registered rule on the primary anchor, contract-strict: CP-member = +0.070000, 95% CI [+0.041667, +0.098333] excludes zero positive -> MOVED. Exact McNemar two-sided p = 1.397e-06.",
+      "3. The registration forbids privileging either contract, so steps 1 and 2 alone select no branch.",
+      "4. Branch 1's antecedent is 'CP moves ... while matched same-data GRPO does not', not merely 'the difference is positive'. Against the frozen base on the primary anchor, CP is +0.0000 lenient and +0.0100 strict. CP does not move. Branch 1's antecedent is unsatisfied on both contracts.",
+      "5. The entire contract-strict primary-anchor gap is a response-format contract difference, by exact arithmetic: strict_delta = lenient_delta - (CP contract loss - member contract loss) = -0.010000 - (0.018333 - 0.098333) = +0.070000, matching the reported +0.070000 to 1.4e-17. CP contract_valid_rate 0.968333 vs member 0.813333.",
+      "6. Branch 3 is instrument-absent (no blind control arm; VAG not measurable here).",
+      "7. Branch 2's antecedent ('both flat') is the only pre-committed antecedent satisfied by the primary anchor as measured. Branch 2 fires."
+    ],
+    "recorded_alternative_reading": "A reader who privileges the contract-strict contract and applies section 5 in isolation -- ignoring both the section-3 no-privilege clause and the vs-base content of branch 1's antecedent -- would fire branch 1. That reading is recorded here so it is not hidden. It requires privileging one contract, which the registration forbids, and it requires reading 'CP moves' as satisfied by a gap that arithmetic attributes to member-arm contract-validity loss.",
+    "not_softened": "The primary-anchor lenient result is a null with a negative point estimate. It is not reported as a trend, a partial move, or a directional signal."
+  },
+  "execution_provenance": {
+    "run_ts": "20260730T004031Z",
+    "node": "an29",
+    "eval_seed": 0,
+    "global_step": 120,
+    "image_mode": "real",
+    "max_new_tokens": 32,
+    "num_shards": 4,
+    "binding_env_vars_present_at_launch": [],
+    "git_head_at_launch": "f2e3762986d7a885218ce750a521149a369b6e5b",
+    "run_dirs": {
+      "F8-C1": "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z",
+      "F8-C2": "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z",
+      "F8-C3": "experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_20260730T004031Z",
+      "F8-C4": "experiments/runs/mini_a5_f8_r20_member_step120_real_an29_20260730T004031Z",
+      "F8-C5": "experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_20260730T004031Z",
+      "F8-C6": "experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_20260730T004031Z"
+    },
+    "run_manifest_status": {
+      "F8-C1": "complete",
+      "F8-C2": "complete",
+      "F8-C3": "complete",
+      "F8-C4": "complete",
+      "F8-C5": "complete",
+      "F8-C6": "complete"
+    },
+    "prompt_contract_sha256_all_cells": [
+      "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+    ],
+    "data_manifest_hash_by_cell": {
+      "F8-C1": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "F8-C2": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "F8-C3": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "F8-C4": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "F8-C5": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+      "F8-C6": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292"
+    },
+    "checkpoint_index_sha256_recomputed_from_disk": {
+      "cp": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "member": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "source": "reports/mini_a5_f8_run_provenance_v1.json"
+    }
+  },
+  "carried_caveats_from_execution_and_prep": [
+    "checkpoint_index_sha256 is null in all six run_manifest.json files. The launcher grants a provenance binding only for job_type l13_mechanical_pilot_arm / m3_mechanical_pilot_arm / m5_anchor_longhorizon_400; both Mini-A5 training runs carry m6_mini_a5_registered_main. The index sha256 was recomputed from disk and matches the plan's pinned values. The launcher, a git-diff-gated M5 contract file, was not amended.",
+    "Per-worker exit codes are not captured anywhere by the harness. Launcher exit code 0 was captured for all six cells; worker success is evidenced by clean terminal state (all 24 worker logs end with the metrics JSON line, no tracebacks, no .partial files, finalizer validated every artifact). This is strong evidence, not a captured exit status.",
+    "Intervals quantify evaluation uncertainty on a fixed pair set. They do NOT estimate run-to-run RL variance, and each arm is ONE run at ONE seed (docs/registered_mini_a5_endpoint_readout_v1.md section 4).",
+    "The repo working tree was dirty at launch (one modified reports file plus many untracked tmp/ files) and HEAD is shared with the live M7 workstream. Verified: no dirty or concurrently-committed file is in the FlipTrack evaluation path. Verbatim git status at launch is recorded in reports/mini_a5_f8_run_provenance_v1.json.",
+    "Registered secondaries not run here: catch-trial stability is INSTRUMENT-ABSENT (scripts/audit_mini_a5_catch.py never instantiates a checkpoint); 'the registered task benchmark' is UNRESOLVABLE from the registration; free-generation vs candidate-ranking is runnable but is not one of the six F8 cells. (docs/registered_mini_a5_endpoint_readout_v1.md section 6)",
+    "No blind control arm was evaluated, so VAG / attribution (PAPER2 line 51) is not measurable from this readout and branch 3 could not be tested."
+  ]
+}
