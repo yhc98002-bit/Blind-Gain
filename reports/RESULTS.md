@@ -402,6 +402,61 @@ its registered role. Absolute levels keep both arms above base on that contract 
 strict 0.1800, member 0.2600, CP 0.2200), so this is a formatting regression relative
 to member, not absolute loss of the control.
 
+### 8d. The ranking layer settles it: three of four measurements of the anchor are flat
+
+`reports/f8_secondaries_v1.md`. The registered ranking instrument was run for both arms
+at step 120 (1,200/1,200 rows each). Ranking removes the generation and formatting burden
+entirely, so it is the clean test of whether the strict generation gain was competence.
+
+**Primary anchor — coordinate survey register (n=600), CP − member:**
+
+| layer / severity | Δ | 95% CI | p | excludes 0 |
+|---|---:|:---:|---:|:---:|
+| ranking, lenient | −0.0050 | [−0.015, +0.005] | 0.508 | no |
+| ranking, strict | −0.0033 | [−0.023, +0.017] | 0.871 | no |
+| generation, lenient | −0.0100 | [−0.030, +0.010] | 0.405 | no |
+| generation, **strict** | **+0.0700** | [+0.043, +0.098] | 1.4e−06 | **yes** |
+
+**Three independent measurements of the primary anchor are flat; only the one confounded
+with response formatting moves.** On the ranking layer CP and member are
+indistinguishable — 0.9450 vs 0.9500 lenient, both near ceiling. That layer shows a
+**latent preference for the correct answer** which neither arm's free generation
+realises, and CP does not close that gap on the anchor.
+
+The oracle-localized readout control moves on **three of its four** measurements
+(ranking strict +0.0467, p = 0.034; generation lenient +0.0767, p = 0.0027; generation
+strict +0.0967, p = 3.4e−04), so §8c's layer-selectivity result is not a generation
+artifact — it appears on the ranking layer too.
+
+*Realization gap reproduced.* Ranking minus generation, within arm: **all twelve
+contrasts exclude zero, positive** — X2's measurement-methods finding replicated inside F8.
+
+### 8e. The invariance axis has no working instrument — a Paper-2 blocker
+
+Catch-trial stability is reported **instrument-absent**, and the reason is sharper than
+"no scorer exists". `scripts/audit_mini_a5_catch.py` loads no model (verified through all
+four transitive imports: PIL diffing, hashing, set overlap only). More importantly, **no
+existing metric field expresses the invariance criterion**: `pair_score`'s `collapsed`
+flag is gated on `answer_a != answer_b`, so it is identically `False` on all 300
+equal-gold catch pairs. Demonstrated by running the metric — a pair whose members
+**agree but are both wrong** (invariance satisfied, answer wrong) scores
+`pair_correct=False, collapsed=False`, **indistinguishable from a genuine invariance
+failure**.
+
+This matters beyond F8. `PAPER2` §2 C2 states invariance is "required, not optional" — it
+is the control that forbids the change-detector heuristic (I5), and I13 requires it be
+reported separately from causal sensitivity. **The P0.2 equal-gold fix repaired
+`_score_member`, but `collapsed` remains uninformative on equal-gold pairs**, so the
+specificity axis Paper 2 depends on cannot currently be measured. The scorer is fully
+specified in the report and deliberately not built here.
+
+"The registered task benchmark" is reported **unresolvable**: one binding occurrence, zero
+referents, both training configs at `val_freq: 0` with `val_files` pointing at a 48-row
+plumbing fixture never read. Geometry3K is named as the nearest convention referent and
+explicitly not adopted — the convention arms train *on* Geometry3K while Mini-A5 trains on
+`data/mini_a5_train_v1`, so adopting it would silently convert the endpoint into an
+out-of-domain transfer measurement.
+
 *Scope.* Mini-A5 is Gate 1 — 120 steps, one run per arm; intervals are evaluation
 uncertainty, not run-to-run RL variance. chart-v08 cells are n = 50 per template.
 Attribution (VAG, `PAPER2` §3B) requires a matched blind control that is not among the
