@@ -1114,6 +1114,13 @@
         "target": "docs/PAPER1_RESEARCH_DOC.md line 70 (Gate 0 paragraph), clause on 42%"
       }
     ],
+    "prose_target_drift_observed": {
+      "consequence": "The substantive proposal is unaffected \u2014 the label defect and the numbers stand \u2014 but the PI should apply the wording to whichever text is current, not to the quoted 'current' string. The EXPERIMENT_TODO.md:52 target was NOT affected and its quote is accurate.",
+      "effect_on_proposal": "The 'current' text quoted below for PAPER1_RESEARCH_DOC.md is the COMMITTED version at git 80a2cb0. In the modified working tree the Gate-0 paragraph containing 'recovering 84% of A1's gain ...' no longer exists; the only surviving anchor is a summary clause reading 'the access matrix plus the 84%/42% stratification'.",
+      "not_edited_by_this_analysis": "This builder writes only reports/g02_necessity_refinement_v1.{json,md} (verified: exactly two write_text calls). No doc was edited or committed by this analysis.",
+      "observed_utc": "2026-07-30T15:48Z",
+      "what": "While this addendum was being built, docs/PAPER1_RESEARCH_DOC.md was modified in the working tree by a concurrent session (file mtime 2026-07-30 23:39:20 +0800, i.e. 15:39Z). The change is UNCOMMITTED at the commit that carries this report."
+    },
     "what_is_superseded": "The NUMBER 0.4167 (42%) is arithmetically correct and reproduces exactly; it is the label and its use as a single summary of 'image-requiring' items that are superseded."
   },
   "d6_rule_audit": {
@@ -1153,8 +1160,8 @@
     "recovery_ratio": "mean per-item gain(A2b) / mean per-item gain(A1), within a stratum",
     "strict_equals_final_on_trained_arms": true
   },
-  "generated_utc": "2026-07-30T15:45:42Z",
-  "git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f",
+  "generated_utc": "2026-07-30T15:50:27Z",
+  "git_hash": "ca00b9105a0c591dbd29e5190fef7b18c9ae8251",
   "inputs": {
     "base_none": {
       "path": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z/per_item.jsonl",

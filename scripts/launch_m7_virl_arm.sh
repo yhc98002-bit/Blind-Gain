@@ -37,7 +37,7 @@ REGISTRATIONS=(
   # it must be tracked and byte-clean at HEAD like every other M7 registration
   docs/registered_m7_seed_scope_v1.md
 )
-CRITICAL=("${REGISTRATIONS[@]}" "${CONFIG}" scripts/launch_m7_virl_arm.sh scripts/build_m7_heldout_split_v2.py scripts/build_m7_configs.py scripts/m7_gpu_occupancy_guard.py)
+CRITICAL=("${REGISTRATIONS[@]}" "${CONFIG}" scripts/launch_m7_virl_arm.sh scripts/build_m7_heldout_split_v2.py scripts/build_m7_configs.py scripts/m7_gpu_occupancy_guard.py scripts/run_manifest_job.py scripts/finalize_run_manifest.py)
 for FILE in "${CRITICAL[@]}"; do
   git ls-files --error-unmatch "${FILE}" >/dev/null 2>&1 || { echo "untracked M7 contract: ${FILE}" >&2; exit 3; }
 done
@@ -142,8 +142,12 @@ HF_HOME='${ROOT}/artifacts/hf_home' HF_DATASETS_CACHE='${ROOT}/artifacts/hf_home
 TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 \
 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}'"
 
-# recorded verbatim in the run manifest so the provenance shows the exact
-# environment the trainer ran under, not just the python invocation
+# Recorded verbatim in the run manifest so the provenance shows the exact
+# environment the trainer ran under, not just the python invocation -- and so
+# that scripts/run_manifest_job.py, which reads payload["command"], executes
+# precisely this string. The `env ...` prefix makes the command self-contained:
+# every variable the trainer needs is set by the command itself, so the runner's
+# own environment (which sets PYTHONPATH=".") cannot leak into the trainer.
 COMMAND="env ${ENV_VARS} ${ROOT}/.venv/bin/python -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}"
 jq -n \
   --arg run_id "${RUN_ID}" --arg git "$(git rev-parse HEAD)" --arg arm "${ARM}" \
@@ -151,6 +155,7 @@ jq -n \
   --arg config_sha "${CONFIG_SHA}" --arg train "${TRAIN_FILE}" --arg train_sha "${TRAIN_SHA}" \
   --arg val "${VAL_FILE}" --arg val_sha "${VAL_SHA}" --arg ckpt "${CHECKPOINT_PATH}" \
   --arg command "${COMMAND}" --arg start "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg log "${LOG}" \
+  --arg shadow "${SHADOW}" \
   --argjson gpus "$(printf '%s' "[${GPU_IDS}]")" \
   --argjson deviations "${DEVIATIONS}" \
   '{schema_version:"blind-gains.run-manifest.v1",run_id:$run_id,
@@ -166,9 +171,21 @@ jq -n \
     checkpoint_path:$ckpt,command:$command,
     start_time_utc:$start,end_time_utc:null,status:"running",
     stdout_stderr_log:$log,performance_values_opened:false,
+    expected_artifacts:[$shadow, ($ckpt + "/experiment_log.jsonl"), ($ckpt + "/checkpoint_tracker.json")],
     scientific_gate_decision:null,deviations:$deviations}' > "${MANIFEST}"
 
-ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}' && (nohup setsid flock -n --no-fork '${LOCK}' env ${ENV_VARS} '${ROOT}/.venv/bin/python' -u -m verl.trainer.main config='${ROOT}/${EFFECTIVE}' > '${ROOT}/${LOG}' 2>&1 < /dev/null & echo \$! > '${ROOT}/${RUN_DIR}/pids/${NODE}.pid')"
+# --- manifest lifecycle: the trainer is started THROUGH scripts/run_manifest_job.py,
+# --- which reads payload["command"], waits for it, and calls finalize_manifest on
+# --- exit. Before this, the launcher exec'd verl.trainer.main directly, so nothing
+# --- outlived the trainer to stamp end_time_utc/exit_code/status and every M7
+# --- manifest stayed "running" forever (arm 1 had to be closed post-hoc by
+# --- scripts/close_orphaned_run_manifest.py). Every other training launcher in this
+# --- repo already routes this way -- scripts/launch_mech_pilot_arm.sh and
+# --- scripts/launch_mini_a5_main.sh. The recorded pid is now the runner, which
+# --- holds the flock for the whole job and whose child is the trainer; the trainer's
+# --- own argv still carries `-m verl.trainer.main config=...`, so
+# --- scripts/m7_gpu_occupancy_guard.py resolves occupancy exactly as before.
+ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}' && (nohup setsid flock -n --no-fork '${LOCK}' '${ROOT}/.venv/bin/python' '${ROOT}/scripts/run_manifest_job.py' '${ROOT}/${MANIFEST}' '${ROOT}/${LOG}' > '${ROOT}/${RUN_DIR}/logs/runner.log' 2>&1 < /dev/null & echo \$! > '${ROOT}/${RUN_DIR}/pids/${NODE}.pid')"
 sleep 25
 REMOTE_PID="$(cat "${ROOT}/${RUN_DIR}/pids/${NODE}.pid" 2>/dev/null || true)"
 if [[ -z "${REMOTE_PID}" ]] || ! ssh "${NODE}" "kill -0 '${REMOTE_PID}' 2>/dev/null"; then

@@ -1,6 +1,6 @@
 # G0.2 necessity refinement — addendum to Gate 0
 
-Artifact: `reports/g02_necessity_refinement_v1.json` · built by `scripts/build_g02_necessity_refinement.py` · git `80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f` · generated 2026-07-30T15:45:42Z · login node, CPU only, **no GPU job started**.
+Artifact: `reports/g02_necessity_refinement_v1.json` · built by `scripts/build_g02_necessity_refinement.py` · git `ca00b9105a0c591dbd29e5190fef7b18c9ae8251` · generated 2026-07-30T15:50:27Z · login node, CPU only, **no GPU job started**.
 
 Addendum to `reports/gate0_stratification_v1.{json,md}`. The frozen Gate 0 artifact is **not modified**.
 
@@ -141,6 +141,8 @@ Per-bin recovery (lenient), showing where the standardised figures come from:
 | — | items unsolved under every condition (c_blind = 0, c_real = 0, n=252) | measured description; these items carry no evidence about image necessity in either direction |
 
 No edit was made to `docs/PAPER1_RESEARCH_DOC.md` or `docs/EXPERIMENT_TODO.md`.
+
+> **Target drift — read before applying.** While this addendum was being built, docs/PAPER1_RESEARCH_DOC.md was modified in the working tree by a concurrent session (file mtime 2026-07-30 23:39:20 +0800, i.e. 15:39Z). The change is UNCOMMITTED at the commit that carries this report. The 'current' text quoted below for PAPER1_RESEARCH_DOC.md is the COMMITTED version at git 80a2cb0. In the modified working tree the Gate-0 paragraph containing 'recovering 84% of A1's gain ...' no longer exists; the only surviving anchor is a summary clause reading 'the access matrix plus the 84%/42% stratification'. The substantive proposal is unaffected — the label defect and the numbers stand — but the PI should apply the wording to whichever text is current, not to the quoted 'current' string. The EXPERIMENT_TODO.md:52 target was NOT affected and its quote is accurate. This builder writes only reports/g02_necessity_refinement_v1.{json,md} (verified: exactly two write_text calls). No doc was edited or committed by this analysis.
 
 ## 6. Split-rule audit (found while verifying, reported not applied)
 

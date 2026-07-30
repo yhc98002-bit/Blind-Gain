@@ -420,6 +420,22 @@ wording = {
              f"{pct(L['base_wrong_only']['not_blind_answerable']['recovery_ratio'])} under a base-wrong headroom "
              f"control)")},
     ],
+    "prose_target_drift_observed": {
+        "observed_utc": "2026-07-30T15:48Z",
+        "what": ("While this addendum was being built, docs/PAPER1_RESEARCH_DOC.md was modified in the working tree "
+                 "by a concurrent session (file mtime 2026-07-30 23:39:20 +0800, i.e. 15:39Z). The change is "
+                 "UNCOMMITTED at the commit that carries this report."),
+        "effect_on_proposal": ("The 'current' text quoted below for PAPER1_RESEARCH_DOC.md is the COMMITTED version "
+                               "at git 80a2cb0. In the modified working tree the Gate-0 paragraph containing "
+                               "'recovering 84% of A1's gain ...' no longer exists; the only surviving anchor is a "
+                               "summary clause reading 'the access matrix plus the 84%/42% stratification'."),
+        "consequence": ("The substantive proposal is unaffected — the label defect and the numbers stand — but the "
+                        "PI should apply the wording to whichever text is current, not to the quoted 'current' "
+                        "string. The EXPERIMENT_TODO.md:52 target was NOT affected and its quote is accurate."),
+        "not_edited_by_this_analysis": ("This builder writes only reports/g02_necessity_refinement_v1.{json,md} "
+                                        "(verified: exactly two write_text calls). No doc was edited or committed "
+                                        "by this analysis."),
+    },
     "label_replacements": [
         {"do_not_use": "items requiring pixels",
          "use_instead": "items with no observed blind success",
@@ -660,6 +676,9 @@ for r in wording["label_replacements"]:
         A(f"| — | {r['label_for_B2']} | {r['why']} |")
 A("")
 A("No edit was made to `docs/PAPER1_RESEARCH_DOC.md` or `docs/EXPERIMENT_TODO.md`.\n")
+_d = wording["prose_target_drift_observed"]
+A("> **Target drift — read before applying.** " + _d["what"] + " " + _d["effect_on_proposal"] + " " +
+  _d["consequence"] + " " + _d["not_edited_by_this_analysis"] + "\n")
 
 A("## 6. Split-rule audit (found while verifying, reported not applied)\n")
 A(f"`q_i` is `{rule_audit['q_i_definition']}`. {rule_audit['symmetry']}.\n")
