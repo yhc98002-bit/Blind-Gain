@@ -1,0 +1,126 @@
+{
+  "checkpoint_policy": {
+    "cadence_matched_across_arms": true,
+    "note": "Both arms write model-only checkpoints (~17 GB of HF weights per save, ~85 GB/arm) instead of full FSDP state (~600 GB/arm). save_freq is unchanged, so the registered matched checkpoint cadence holds; only the on-disk format differs. Neither arm can be resumed mid-run. Symmetric across both arms, so no arm-to-arm asymmetry is introduced.",
+    "save_freq": 20,
+    "save_model_only_arms": [
+      "a1_real",
+      "a2_gray"
+    ]
+  },
+  "configs": [
+    {
+      "arm": "a1_real",
+      "condition": "real",
+      "config": "configs/train/c5_a1_real_seed1_7b.yaml",
+      "config_sha256": "e600ef59347f3d5cb1748651023456e4817177d3df7e8a180d28f53569327857",
+      "gpu_memory_utilization": 0.45,
+      "max_steps": 100,
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
+      "seed": 1,
+      "template": "mech_a1_real_3b_geo3k.yaml",
+      "template_sha256": "abf9e9d9a48e35dd5f29e86a51dd674d1a666a088f9ced9f7acc86338a53560e",
+      "tensor_parallel_size": 1
+    },
+    {
+      "arm": "a2_gray",
+      "condition": "gray",
+      "config": "configs/train/c5_a2_gray_seed1_7b.yaml",
+      "config_sha256": "52e5a1dbe9b0f732b4ab774b07706ad43bccaeddd5825bbe57a3e8dd1bafe971",
+      "gpu_memory_utilization": 0.45,
+      "max_steps": 100,
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
+      "seed": 1,
+      "template": "mech_a2_gray_3b_geo3k.yaml",
+      "template_sha256": "c36f24f6bb4915b84722a262eb656332a6ebda1c0584be5f33f73d597ccaec64",
+      "tensor_parallel_size": 1
+    }
+  ],
+  "execution_scope": {
+    "arms": [
+      "a1_real",
+      "a2_gray"
+    ],
+    "note": "Two arms x one seed per the PI decision registered in docs/registered_c5_7b_access_pair_v1.md. A2-gray is retained by the FIRED precommitted M8 fork rule quoted there from Extension 4 (gray 0.2456 vs no-image 0.1824, non-overlapping 95% intervals); A2b and A3 are NOT run at 7B, and Extension 4's four-arm x three-seed ViRL39K flagship is deferred, not discharged.",
+    "seed": 1
+  },
+  "filtered_ids": "data/geo3k_pilot_filtered_ids.json",
+  "filtered_ids_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1",
+  "format_prompt": "artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja",
+  "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+  "matched_recipe_check": "algorithm and worker blocks byte-identical to the seed-1 3B geo3k pilot configs except worker.actor.model.model_path (the registered scale manipulation) and worker.rollout.gpu_memory_utilization (a registered mechanics deviation); data blocks inherited unchanged; the two C5 arms differ only in data.image_condition and run identity",
+  "model": {
+    "aux_file_sha256": {
+      "chat_template.json": "ad60d90252ed0b0705ba14e2d0ad0fec0beac1ea955642b54059b36052d8bc96",
+      "config.json": "77d9ec7321cc572e3579e2c84799c9cadaded63c49ce93b101733349fc330c43",
+      "generation_config.json": "0a3aea82869fe29f20dc95ccf3e2bcff380eca1f5ad6447a4a4b37110b08e43e",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "model.safetensors.index.json": "73b333b0b16e5286ddba615d2caebcd495cf7e616f52eb217a81781393d79de9",
+      "preprocessor_config.json": "f2058c716eef96ccaed1cc1e2d0c08306b62586d535b28d9d08e691b2fab7ca0",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "4abd3520120e266da84c0864fee064d1fb10806f02225911a47253dd38dc5f56",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    },
+    "config_sha256": "77d9ec7321cc572e3579e2c84799c9cadaded63c49ce93b101733349fc330c43",
+    "index_sha256": "73b333b0b16e5286ddba615d2caebcd495cf7e616f52eb217a81781393d79de9",
+    "index_total_size": 16584333312,
+    "note": "The model directory carries no upstream revision marker, so identity is pinned by these computed on-disk hashes. Equality with Qwen/Qwen2.5-VL-7B-Instruct@cc594898137f460bfe9f0759e9844b3ce807cfb5 (the M8 audit revision named in Extension 4) is NOT asserted.",
+    "on_disk_revision_marker": null,
+    "path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+    "shards": [
+      {
+        "bytes": 3900233256,
+        "file": "model-00001-of-00005.safetensors",
+        "sha256": "e97b877e47fde53a6c6e77aafb36e58e91ee9d95c4a3eeac6f1b5c0e6a1c986e"
+      },
+      {
+        "bytes": 3864726320,
+        "file": "model-00002-of-00005.safetensors",
+        "sha256": "a9a300a43b4724eee2abe7c18ceb26768d0ab011eb0cad19d9bfd2476a24d024"
+      },
+      {
+        "bytes": 3864726424,
+        "file": "model-00003-of-00005.safetensors",
+        "sha256": "111223d173e00bbee81cba1216fad28668df3476706b7fd26f4d5b50f8b3a507"
+      },
+      {
+        "bytes": 3864733680,
+        "file": "model-00004-of-00005.safetensors",
+        "sha256": "ef47f634fa57d46ee134edcc09f34085a47da1e16c12a2abe0d67118be6d72ed"
+      },
+      {
+        "bytes": 1089994880,
+        "file": "model-00005-of-00005.safetensors",
+        "sha256": "0c859795ad3a627a9b95bcb762e059d5b768a4a36fdd4affeff269d93fdecc67"
+      }
+    ]
+  },
+  "recipe_provenance": {
+    "a1_real": {
+      "template": "mech_a1_real_3b_geo3k.yaml",
+      "template_sha256": "abf9e9d9a48e35dd5f29e86a51dd674d1a666a088f9ced9f7acc86338a53560e"
+    },
+    "a2_gray": {
+      "template": "mech_a2_gray_3b_geo3k.yaml",
+      "template_sha256": "c36f24f6bb4915b84722a262eb656332a6ebda1c0584be5f33f73d597ccaec64"
+    }
+  },
+  "registration": "docs/registered_c5_7b_access_pair_v1.md (amends docs/registered_extensions_v1.md Extension 4)",
+  "reward_function": "src/rewards/pilot_reward.py",
+  "reward_sha256": "706de156da12ecbcfa2d52591b7477baf322fe488b98d3a52fac4ec2d628d97d",
+  "sanctioned_deviations": [
+    "worker.actor.model.model_path",
+    "worker.rollout.gpu_memory_utilization",
+    "trainer.save_model_only"
+  ],
+  "schema_version": "blind-gains.c5-arm-configs.v1",
+  "tensor_parallel_policy": "TP1 per the PI GPU Placement Addendum pi-2026-07-11 (docs/PRELAUNCH_BRIEF.md) and the Global Contract of docs/registered_extensions_v1.md ('Models at or below 7B use TP1; throughput comes from independent replicas'). The upstream EasyR1 default is TP2, so the explicit tensor_parallel_size: 1 override is retained in both configs.",
+  "train_file": "data/geo3k_pilot_filtered.jsonl",
+  "train_sha256": "f3d88dd1e52ccef833f266880e487eef252193f774c1076f7dfbccd180b450e6"
+}
