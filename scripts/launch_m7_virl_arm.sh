@@ -32,8 +32,12 @@ REGISTRATIONS=(
   docs/registered_m7_heldout_split_v2.md
   docs/registered_extensions_v1.md
   docs/registered_m7_single_image_v2.md
+  # the seed-scope / checkpoint-format amendment is in force for arms 2-4 and
+  # its 1(b) requires the deviation be recorded in each run manifest below, so
+  # it must be tracked and byte-clean at HEAD like every other M7 registration
+  docs/registered_m7_seed_scope_v1.md
 )
-CRITICAL=("${REGISTRATIONS[@]}" "${CONFIG}" scripts/launch_m7_virl_arm.sh scripts/build_m7_heldout_split_v2.py scripts/build_m7_configs.py)
+CRITICAL=("${REGISTRATIONS[@]}" "${CONFIG}" scripts/launch_m7_virl_arm.sh scripts/build_m7_heldout_split_v2.py scripts/build_m7_configs.py scripts/m7_gpu_occupancy_guard.py)
 for FILE in "${CRITICAL[@]}"; do
   git ls-files --error-unmatch "${FILE}" >/dev/null 2>&1 || { echo "untracked M7 contract: ${FILE}" >&2; exit 3; }
 done
@@ -58,21 +62,26 @@ jq -e --arg t "${TRAIN_SHA}" --arg v "${VAL_SHA}" \
 CHECKPOINT_PATH="$(python3 -c 'import yaml,sys; print(yaml.safe_load(open(sys.argv[1]))["trainer"]["save_checkpoint_path"])' "${CONFIG}")"
 [[ ! -e "${CHECKPOINT_PATH}" ]] || { echo "refusing to overwrite M7 checkpoints: ${CHECKPOINT_PATH}" >&2; exit 73; }
 
-# --- one synchronous RL trainer per node
-# Bracketing the final character stops pgrep matching the very command line
-# that carries the pattern: the remote argv holds "verl.trainer.mai[n]",
-# which the regex does not match, while a real trainer argv does.
-if ssh "${NODE}" "pgrep -f 'verl.trainer.mai[n]' >/dev/null"; then
-  echo "refusing to colocate a second RL trainer on ${NODE}" >&2
+# --- colocation guard: GPU scope, not node scope.
+# This narrowing implements the placement policy CLAUDE.md states verbatim:
+#   "Single-node placement for every job unless it genuinely requires >8 GPUs.
+#    Never split one training or serving job across an12/an29.
+#    Colocating disjoint-GPU jobs on one node is normal; the researcher's own
+#    processes are normal neighbors, never anomalies."
+# NODE CO-TENANCY IS THEREFORE EXPLICITLY NORMAL and is not a refusal
+# condition. The predecessor guard refused whenever ANY verl trainer ran on the
+# target node, which capped M7 at one arm per node and idled 10 GPUs; refusal
+# is now conditioned on GPU-set OVERLAP alone.
+# The helper derives occupancy from actual state -- nvidia-smi compute-apps
+# plus each live trainer's own run manifest / effective config -- never from a
+# process-name regex alone, keeps the bracketed-pattern self-match protection
+# (a defect that bit this project before), and fails closed: indeterminate
+# occupancy exits 75 exactly like a real overlap.
+if ! python3 "${ROOT}/scripts/m7_gpu_occupancy_guard.py" \
+    --node "${NODE}" --gpus "${GPU_IDS}"; then
+  echo "refusing to launch ${LABEL} on ${NODE}:${GPU_IDS}: GPU-scope guard denied" >&2
   exit 75
 fi
-IFS=',' read -r -a GPU_ARRAY <<< "${GPU_IDS}"
-for GPU in "${GPU_ARRAY[@]}"; do
-  if [[ -n "$(ssh "${NODE}" "nvidia-smi -i ${GPU} --query-compute-apps=pid --format=csv,noheader,nounits")" ]]; then
-    echo "GPU ${NODE}:${GPU} is occupied" >&2
-    exit 75
-  fi
-done
 
 # --- storage floor before a run that writes ~6 raw saves
 FREE_BYTES="$(df --output=avail -B1 "${ROOT}" | tail -1)"
@@ -89,6 +98,26 @@ MANIFEST="${RUN_DIR}/run_manifest.json"
 LOG="${RUN_DIR}/logs/${NODE}.log"
 EFFECTIVE="${RUN_DIR}/effective_config.yaml"
 install -m 0444 "${CONFIG}" "${EFFECTIVE}"
+
+# --- deviation provenance, DERIVED from the effective config, never hardcoded
+# --- per arm. docs/registered_m7_seed_scope_v1.md 1(b) sanctions model-only
+# --- checkpoints for the arms that carry them and requires the deviation be
+# --- "Recorded in SANCTIONED_DEVIATIONS in scripts/build_m7_configs.py and in
+# --- each run manifest": the first half is in build_m7_configs.py, this is the
+# --- second. Arm 1 runs save_model_only: false and so records no deviation.
+SAVE_MODEL_ONLY="$(python3 -c 'import yaml,sys; print(str(bool(yaml.safe_load(open(sys.argv[1]))["trainer"].get("save_model_only", False))).lower())' "${EFFECTIVE}")"
+SAVE_FREQ="$(python3 -c 'import yaml,sys; print(int(yaml.safe_load(open(sys.argv[1]))["trainer"]["save_freq"]))' "${EFFECTIVE}")"
+if [[ "${SAVE_MODEL_ONLY}" == "true" ]]; then
+  DEVIATIONS="$(jq -n --argjson freq "${SAVE_FREQ}" \
+    '[{field:"trainer.save_model_only",value:true,
+       registration:"docs/registered_m7_seed_scope_v1.md",section:"1(b)",
+       sanctioned_in:"scripts/build_m7_configs.py:SANCTIONED_DEVIATIONS",
+       save_freq_unchanged:$freq,
+       effect:"Checkpoints hold HF weights only (~7.6 GB) instead of full FSDP state including optimizer shards (~38.5 GB). save_freq is unchanged, so the registered matched checkpoint CADENCE holds and only the on-disk FORMAT differs; the cost is that this arm cannot be resumed mid-run."}]')"
+else
+  DEVIATIONS='[]'
+fi
+
 SHADOW="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
 STORAGE_LOG="${ROOT}/${RUN_DIR}/storage_guard.jsonl"
 RAY_DIGEST="$(printf '%s' "${USER}:${NODE}:${RUN_ID}" | sha256sum | awk '{print substr($1, 1, 12)}')"
@@ -123,19 +152,21 @@ jq -n \
   --arg val "${VAL_FILE}" --arg val_sha "${VAL_SHA}" --arg ckpt "${CHECKPOINT_PATH}" \
   --arg command "${COMMAND}" --arg start "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg log "${LOG}" \
   --argjson gpus "$(printf '%s' "[${GPU_IDS}]")" \
+  --argjson deviations "${DEVIATIONS}" \
   '{schema_version:"blind-gains.run-manifest.v1",run_id:$run_id,
     job_type:"m7_virl_stratified_arm",registration:"docs/registered_m7_amendment_v1.md",
     split_registration:"docs/registered_m7_heldout_split_v2.md",
+    seed_scope_registration:"docs/registered_m7_seed_scope_v1.md",
     arm:$arm,seed:$seed,node:$node,gpu_ids:$gpus,
     tensor_parallel_width:1,replica_count:4,
-    placement_justification:"One synchronous RL trainer per node on four disjoint GPUs; matched to the registered Geometry3K pilot recipe with only the corpus changed.",
+    placement_justification:"One synchronous RL trainer on four disjoint GPUs of a single node; matched to the registered Geometry3K pilot recipe with only the corpus changed. Co-tenancy with other GPU-disjoint jobs on the same node is normal per the CLAUDE.md placement policy and is enforced at GPU scope by scripts/m7_gpu_occupancy_guard.py.",
     git_hash:$git,config_path:$config,config_hash:$config_sha,
     data_manifest:$train,data_manifest_hash:$train_sha,
     heldout_manifest:$val,heldout_manifest_hash:$val_sha,
     checkpoint_path:$ckpt,command:$command,
     start_time_utc:$start,end_time_utc:null,status:"running",
     stdout_stderr_log:$log,performance_values_opened:false,
-    scientific_gate_decision:null,deviations:[]}' > "${MANIFEST}"
+    scientific_gate_decision:null,deviations:$deviations}' > "${MANIFEST}"
 
 ssh "${NODE}" "cd '${ROOT}' && mkdir -p '${RUN_DIR}/logs' '${RUN_DIR}/pids' '${RAY_TMP_DIR}' '${JOB_TMP_DIR}' && (nohup setsid flock -n --no-fork '${LOCK}' env ${ENV_VARS} '${ROOT}/.venv/bin/python' -u -m verl.trainer.main config='${ROOT}/${EFFECTIVE}' > '${ROOT}/${LOG}' 2>&1 < /dev/null & echo \$! > '${ROOT}/${RUN_DIR}/pids/${NODE}.pid')"
 sleep 25
