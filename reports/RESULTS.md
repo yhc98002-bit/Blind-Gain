@@ -524,6 +524,54 @@ overlapping policies, but ~60% of the union belongs to only one arm.
 `base_final − base_strict` = 0.1747 − 0.0599. The formatting component cancels
 exactly in any arm-minus-arm comparison.
 
+### 10b. G0.2 refined — the title claim now carries intervals, and they separate
+
+`reports/g02_necessity_refinement_v1.{json,md}`, addendum to the frozen Gate 0
+artifact (not modified). Pipeline validated first: the published 84/42 (and
+base-wrong 91/61) reproduce from the frozen artifact **exactly** (max deviation
+2.8e−17). Binary blind-answerable split only, never merged with the Δq terciles
+(I13) — so the difficulty confound M5c found in the terciles does not transfer to
+G0.2, which is not built on Δq.
+
+**The 84%/42% ratios had never carried intervals anywhere in the repo. Now they
+do, and they don't overlap** (10,000 paired item-bootstrap draws, seed 20260730):
+
+| scoring | blind-answerable (n=117) | no observed blind success (n=484) | difference |
+|---|---|---|---|
+| lenient | **0.844 [0.68, 1.01]** | **0.417 [0.28, 0.54]** | +0.427 [0.22, 0.63] |
+| strict | **0.897 [0.79, 1.01]** | **0.599 [0.52, 0.68]** | +0.298 [0.17, 0.43] |
+
+Bootstrap mass at or below zero difference: <0.0001 under both scorings. On
+blind-answerable items, A2b's recovery of A1's gain is statistically
+indistinguishable from 100% (upper bounds 1.01).
+
+**The n=484 stratum decomposes, and the decomposition sharpens the claim.** The
+published label "items requiring pixels" describes only part of it: **252 of the
+484 have zero observed successes *with* the image too** (c_real = 0/16) — items the
+base solves under no condition, where no arm's gain can be attributed to anything.
+
+| subgroup | n | recovery, lenient | recovery, strict |
+|---|---:|---|---|
+| **B1 — image demonstrably buys opportunity** | 232 | **0.525 [0.38, 0.66]** | **0.676 [0.59, 0.76]** |
+| B2 — never solved under any condition | 252 | 0.116 [−0.26, 0.36] | 0.377 [0.24, 0.54] |
+
+So on the items where the image *demonstrably* buys reward opportunity, image-free
+training recovers **half (lenient) to two-thirds (strict)** of A1's gain — a
+better-founded figure than the published 42%, which averaged B1 with a subgroup
+whose lenient recovery interval spans zero. (B2's strict recovery does exclude
+zero; the "unmeasurable" reading is lenient-only and is stated as such.)
+
+A difficulty-standardised sensitivity (both strata reweighted to the pooled q_real
+bin distribution, full common support, retained weight 1.0000) preserves the
+contrast; its blind-answerable figure rests on small cells (26 items carry 46% of
+the weight) and is reported as sensitivity, not replacement.
+
+**Proposed relabel** (PI-owned prose; proposal only): "items requiring pixels" →
+**"items with no observed blind success"**, with the pixel-requiring claim carried
+by B1. The refined headline: *image-free training captures most of the
+blind-attainable component, and half to two-thirds of what genuinely needs
+pixels.*
+
 ---
 
 ## 11. Phase 0 — Paper 2 blocking prerequisites (complete)
@@ -1304,10 +1352,14 @@ review.
    can be **restored but never re-merged**.
 14. **A run manifest saying `"running"` does not mean a run is live** — the mirror of
    entry 4. M7 arm 1 finished at step 100 with all five checkpoints written, and its
-   manifest still reads `"status": "running", "end_time_utc": null`; arm 4's OOM-killed
-   first attempt reads the same. There is no M7 finalizer, so **M7 manifests are not
-   authoritative for the R3 readout** until reconciled. Recorded rather than
-   hand-patched, because silently editing a run manifest is worse than a known-stale one.
+   manifest still read `"status": "running", "end_time_utc": null`; arm 4's OOM-killed
+   first attempt read the same. Root cause: `launch_m7_virl_arm.sh` invoked
+   `verl.trainer.main` directly instead of routing through `run_manifest_job.py` the
+   way every other training launcher does, so M7 manifests never closed.
+   **RESOLVED 2026-07-30**: arm 1's manifest closed via the standard
+   `finalize_run_manifest.py` (not hand-edited), with the run-time-vs-true-completion
+   timestamp discrepancy recorded; future launchers route through the wrapper. The
+   principle stands: silently editing a run manifest is worse than a known-stale one.
 15. **M7 arm 4's first attempt was killed by a race between two of our own
    workstreams.** The launcher checks GPU occupancy and then spends minutes in vLLM init
    holding no GPU memory; two `run_blind_solvability_v2.py` evaluation cells seized an29
@@ -1406,13 +1458,30 @@ sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open
 
 **Running now**
 
-- **R3 M7** — **arm 1 complete at step 100/100**, all five checkpoints on disk. Arms
-  2–4 (`a2_gray`, `a2b_noimage`, `a3_caption`, seed 1) training concurrently across
-  an12 and an29 under `docs/registered_m7_seed_scope_v1.md`: seed 1 only for all four
-  arms, estimands reported **per-seed** rather than as the registered two-seed mean
-  (seed 2 deferred, not abandoned), and `save_model_only: true` for arms 2–4 with
-  `save_freq: 20` unchanged so the registered matched *cadence* holds. Four-arm access
-  matrix on the second corpus expected **~2026-08-02**.
+- **R3 M7 training** — **arm 1 complete at step 100/100**, all five checkpoints on
+  disk; its step-100 checkpoint is **merged and verified** (825 weight entries,
+  8,131,575,808 bytes — identical shape to every other 3B merge) and its manifest is
+  **closed via the standard finalizer** (`status: complete`; `end_time_utc` stamped at
+  finalizer run-time 15:45:49Z, true completion ~2026-07-30T20:57Z per checkpoint
+  mtime — recorded, not hidden). Arms 2–4 (`a2_gray`, `a2b_noimage`, `a3_caption`,
+  seed 1) training concurrently across an12 and an29 under
+  `docs/registered_m7_seed_scope_v1.md`: seed 1 only, per-seed reporting, and
+  `save_model_only: true` with `save_freq: 20` unchanged so the registered matched
+  *cadence* holds. Four-arm access matrix on the second corpus expected **~2026-08-02**.
+- **R3 step-0 held-out evaluations — launched 2026-07-30T15:45Z** and generating
+  (fresh decode, `resumed: 0`, frozen contract hash `7ac39f53…` verified):
+  `m7_step0_heldout_base_{real,gray,none,caption}_an29_20260730T1544*`, one condition
+  per an29 GPU 4–7, 4,239 items × 16 samples each, ETA ~02:00–04:00Z. These close two
+  provenance gaps at once, established by exhaustive sweep of all 1,614 run dirs
+  before launching: **no M7 held-out per-item evaluation had ever been run**, and
+  frozen per-item `q_i` covered only 448/4,239 held-out items — one
+  `--sample-count 16` pass emits both `Acc_final(step_0)` and `q_i`, so `gain` and
+  `q_bar` come from the same runs. Step-100 evaluations follow when training lands.
+- **R3 readout script + C5 7B authoring** — in progress (no GPU): the readout
+  implements the registered estimands against adversarial fixtures before the data
+  exists; C5 (A1-real + A2-gray, one seed, per the fired M8 fork rule) gets generated
+  configs, a launcher that closes the TOCTOU window and self-finalizes its manifest,
+  and a registration amending Extension 4 — merge-before-launch per I9.
 
 **Open decisions (PI's, not mine)**
 
