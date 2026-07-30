@@ -764,12 +764,74 @@ numeric near-miss (within 10% of gold) **20.4% of the time vs 8.7%** for stable-
 (p = 5.0e−4) — **not difficulty-controlled**, since lost items were correct at step 100 by
 construction and the reference items were not.
 
+### The turnover is policy, not measurement — the noise floor is exactly zero
+
+`reports/m5c_noise_floor_replicate_v1.*`. The obvious rebuttal to a 22.8% turnover figure
+is that evaluation noise produces it. Measured directly: the same checkpoint was
+re-evaluated twice at step 400 and twice at step 100 under the identical decoding contract.
+
+| comparison | discordant items | agreement |
+|---|---:|---:|
+| step 400, R1 vs R2 (both metrics) | **0 / 601** | 1.000000 |
+| step 100, R1 vs R2 (both metrics) | **0 / 601** | 1.000000 |
+| each replicate vs the cached substrate column | 0 / 601 | 1.000000 |
+
+Stronger than the binary metric: **all 601 greedy response strings are byte-identical** in
+all six compared pairs, and the whole `per_item.jsonl` files are **bit-identical** —
+step-400 sha256 `60eac65a…`, exactly the provenance hash
+`reports/m5c_turnover_v1.json` already recorded. Greedy decoding here is bitwise
+reproducible across replicate, **node** (an12 vs an29), GPU index, date, and at step 100
+across generation harness.
+
+A determinism audit rules out a caching artifact: `resume_from` null, no `--resume-from`
+flag, 0 resumed rows, 601/601 processed, two real vLLM safetensors shard loads per cell,
+run-scoped node-local cache dirs, and the eval harness byte-identical between the cached
+commit and the replicate commit.
+
+**Measurement noise is 0 items, so all 137 flips are policy differences between
+checkpoints.** The turnover/floor ratio is undefined rather than finite. The earlier
+0.2133 "expected discordance" reference is **superseded, not confirmed** — it described
+temperature-1.0 sampling dispersion, and the greedy harness has no dispersion at all.
+
+### Evidence ledger: what survives multiplicity and what does not
+
+`reports/m5c_evidence_ledger_v1.*`, 16 rows, Holm-corrected within a 10-test family.
+
+| strand | statistic | verdict |
+|---|---|---|
+| noise floor | 0/601 discordant, bitwise identical | **SUPPORTS — decisive** |
+| which items are lost, across checkpoints | 3-way Jaccard 0.3118 vs null 0.0221 | **SUPPORTS**, p ≤ 1e−4 |
+| 5-step pattern structure | observed 429 flips **below the minimum of 10,000 nulls** holding each item's own correct-count fixed | **SUPPORTS** |
+| what they degrade *to* | normalized entropy 0.9575 vs null 0.9578 | no attractor |
+| problem-type concentration | LOST χ² 11.777, raw p 0.0461 → **Holm 0.1383** | **raw-p only, not corrected** |
+| near-miss on lost items | best version **Holm 0.0592** | **raw-p only, not corrected** |
+| margin / confidence collapse | no logprob field exists at any step | **not measurable** |
+
+Three things stated plainly rather than smoothed:
+
+1. **The bucket and near-miss strands do not survive correction.** Only the pattern-structure
+   and Jaccard strands do. The lost/gained asymmetry in raw p is real but uncorrected.
+2. **The near-miss p was partly a convention artifact.** The published 5.0e−4 reproduces
+   exactly under its subset-draw null, but arm-label permutation on identical data gives
+   0.0179. The requested stable-correct matching is **structurally degenerate** — those
+   items are correct at step 400 by definition, so their near-miss rate is 1.0 by
+   construction — and the substitute matched design rests on a single event in a 26-item
+   reference arm.
+3. **All five checkpoints are one trajectory sharing one step-100 anchor eval.** No
+   permutation null here removes serial dependence between checkpoints, and there is no
+   second training seed, so nothing separates *this run's* churn from *this recipe's* churn.
+
+*A sampled expected-discordance null (Task B) did not complete and is recorded in the
+ledger as an explicit gap. With the greedy floor measured at zero it is no longer
+load-bearing: it was a proxy for the quantity now measured directly.*
+
 ### Verdict
 
 The benchmark is not hiding a clean substitution of cheap strategies for visual ones. It is
-hiding **large, item-reproducible churn that is orthogonal to measured visual necessity**.
-The corrosion established on FlipTrack (§6, §6a, §12b) does not have a visible geo3k
-counterpart at the level of *which kinds of item* move.
+hiding **large, item-reproducible, policy-driven churn — 137 flips against a measured zero
+noise floor, with the movers sticky rather than random — that is orthogonal to measured
+visual necessity.** The corrosion established on FlipTrack (§6, §6a, §12b) has no visible
+geo3k counterpart at the level of *which kinds of item* move.
 
 ---
 
