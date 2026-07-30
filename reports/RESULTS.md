@@ -1477,11 +1477,40 @@ sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open
   frozen per-item `q_i` covered only 448/4,239 held-out items — one
   `--sample-count 16` pass emits both `Acc_final(step_0)` and `q_i`, so `gain` and
   `q_bar` come from the same runs. Step-100 evaluations follow when training lands.
-- **R3 readout script + C5 7B authoring** — in progress (no GPU): the readout
-  implements the registered estimands against adversarial fixtures before the data
-  exists; C5 (A1-real + A2-gray, one seed, per the fired M8 fork rule) gets generated
-  configs, a launcher that closes the TOCTOU window and self-finalizes its manifest,
-  and a registration amending Extension 4 — merge-before-launch per I9.
+- **R3 readout script — built and validated before its data exists** (`7b5176c`).
+  `scripts/build_m7_r3_readout.py` implements the registered estimands exactly
+  (q_bar / gain / recovery with the ≥2·paired_se stability rule, tie-corrected
+  Spearman ρ_gain / ρ_recovery, 5,000 within-stratum bootstrap draws at seed 20260716
+  with label-hashed streams, the >5% undefined-draw unstable rule, Geometry3K anchors
+  0.0789/0.1184 labelled *informed*, M10 candidates, one-seed tag). **9/9 adversarial
+  fixtures pass**, including planted rank correlations recovering their sign, unstable
+  denominators excluded from ρ_recovery only, byte-identical reruns at the registered
+  seed, and loud failure on missing items. The stratum recount asserts 22 eligible +
+  38 descriptive-small-n from the jsonl (nearest boundary stratum has 34 items, so the
+  count is not knife-edge). A real `--partial` invocation against the live step-0 runs
+  passed the sha and recount assertions, then **refused at the readiness gate exactly
+  as designed** (manifests still `running`, coverage ~20%) — fail-closed behaviour
+  demonstrated on real data.
+
+- **C5 7B (R4) — authored, registered, adversarially verified** (`50a16a9`; nothing
+  launched). `docs/registered_c5_7b_access_pair_v1.md` amends Extension 4 to 2 arms ×
+  1 seed on the geo3k pilot recipe (the ViRL flagship is *deferred with its pending
+  fields intact, not discharged*), pins the 7B model by computed on-disk hashes (the
+  dir carries no revision marker; equality with the M8 upstream revision is explicitly
+  not asserted), quotes the fired M8 fork rule for A2-gray retention, and registers
+  the 6-cell readout ({base, A1, A2-gray} × {real, gray}) with the M7
+  stable-denominator rule at 5,000 draws seed 20260730. Configs verified byte-
+  identical to the pilot templates except the five declared fields; both mechanics
+  deviations (gpu_memory_utilization 0.45; save_model_only both arms) carried with
+  their measured memory rationale. **The TOCTOU window that killed M7 arm 4 is closed
+  and proven**: per-GPU claim files are now a third occupancy source in
+  `m7_gpu_occupancy_guard.py`, and `tests/test_c5_gpu_claim_guard.py` (17/17)
+  includes a test reproducing the exact arm-4 state, showing the old rule allows it
+  and the new rule refuses; dry-probed on live hardware.
+  **New launch precondition discovered and registered**: no geo3k evaluation of the
+  7B base exists anywhere (1,619 runs scanned), so both base cells (test-real,
+  test-gray) must be evaluated under the locked contract before any C5 estimand is
+  read — schedulable on an29 GPUs 4–7 as soon as the step-0 evals finish.
 
 **Open decisions (PI's, not mine)**
 

@@ -116,7 +116,7 @@ Three-seed task gains: A1 +0.2435, A3 +0.1048, A2b +0.0460, A2 +0.0161 under mat
 
 *(Executor update 2026-07-30.)* **Landed since the last pass:** caption column (D4, branch (a) evidence-general); M5 step-400 (R2, FALLING) plus the M5b/M5c trajectory and turnover analyses; Mini-A5 both arms (F8 — gate PASS, endpoints read, branch 2 fired; the primary anchor is flat on three of four measurements and the layer-selectivity of F3 reproduces under the counterfactual-group objective); E1a/E1b/E1c external columns; CHANCE null-corrected retention across seven benchmarks.
 
-**Still pending:** M7 ViRL stratified (R3) — arm 1 of 4 complete at step 100, arms 2–4 training, step-0 held-out evaluations running, readout registered for ~2026-08-02; 7B access pair — A1 and A2-gray only, one seed (R4) — configs, launcher and registration being authored, launch when M7 frees GPUs; human gates; X6 related-work table (PI-owned).
+**Still pending:** M7 ViRL stratified (R3) — arm 1 of 4 complete at step 100, arms 2–4 training, step-0 held-out evaluations running, readout registered for ~2026-08-02; 7B access pair — A1 and A2-gray only, one seed (R4) — **authored and registered 2026-07-30** (`docs/registered_c5_7b_access_pair_v1.md`, config hashes in `reports/c5_arm_configs_v1.json`; A2-gray by the fired precommitted M8 fork rule of Extension 4); the 7B base has no geo3k evaluation yet, and both base cells (test-real, test-gray) must be evaluated before any C5 readout; launch through `scripts/launch_c5_7b_arm.sh` when M7 frees GPUs (~2026-08-02); human gates; X6 related-work table (PI-owned).
 
 ## 8. Pre-committed branches
 
