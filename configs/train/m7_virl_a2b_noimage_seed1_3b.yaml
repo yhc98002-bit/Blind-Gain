@@ -106,7 +106,7 @@ trainer:
   val_generations_to_log: 8
   save_freq: 20
   save_limit: -1
-  save_model_only: false
+  save_model_only: true
   save_checkpoint_path: /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m7/m7_virl_a2b_noimage_seed1
   load_checkpoint_path: null
   find_last_checkpoint: false

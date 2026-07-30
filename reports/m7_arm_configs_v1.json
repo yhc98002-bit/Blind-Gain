@@ -1,13 +1,26 @@
 {
   "caption_store": "data/virl39k_caption_store_3b_main_v2.jsonl",
+  "checkpoint_policy": {
+    "cadence_matched_across_arms": true,
+    "note": "docs/registered_m7_seed_scope_v1.md 1(b): arms 2-4 write model-only checkpoints. save_freq is unchanged, so the registered matched checkpoint cadence holds; only the on-disk format differs. Arms 2-4 therefore cannot be resumed mid-run. Arm 1 is unchanged at save_model_only: false.",
+    "save_freq": 20,
+    "save_model_only_arms": [
+      "a2_gray",
+      "a2b_noimage",
+      "a3_caption"
+    ]
+  },
   "configs": [
     {
       "arm": "a1_real",
       "condition": "real",
       "config": "configs/train/m7_virl_a1_real_seed1_3b.yaml",
       "config_sha256": "e3bc78967821b9d12b23d6d0a06114e9277971e6507d356f515e919e90e48258",
+      "in_execution_scope": true,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": false,
       "seed": 1,
       "template": "mech_a1_real_seed3_3b_geo3k.yaml"
     },
@@ -16,8 +29,11 @@
       "condition": "real",
       "config": "configs/train/m7_virl_a1_real_seed2_3b.yaml",
       "config_sha256": "2c1cfe9e972893c94b53399e13d918e3147a569fac45cb8d8eee3a07a22a8056",
+      "in_execution_scope": false,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": false,
       "seed": 2,
       "template": "mech_a1_real_seed3_3b_geo3k.yaml"
     },
@@ -25,9 +41,12 @@
       "arm": "a2_gray",
       "condition": "gray",
       "config": "configs/train/m7_virl_a2_gray_seed1_3b.yaml",
-      "config_sha256": "e36a91670dd82f931004575a56bc72d87b0c84c541fb5d014ac8b03273686a6c",
+      "config_sha256": "7ffc53ad4fe7271aa458a27ac255b547e2d71a7202d5d411beee9f7bd0739377",
+      "in_execution_scope": true,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 1,
       "template": "mech_a2_gray_seed3_3b_geo3k.yaml"
     },
@@ -35,9 +54,12 @@
       "arm": "a2_gray",
       "condition": "gray",
       "config": "configs/train/m7_virl_a2_gray_seed2_3b.yaml",
-      "config_sha256": "233e5191138fd33c3801c230c72002bd3a32995232d5d48f3827ff138a026d97",
+      "config_sha256": "2326dd233205cd573aa7b85855962916bce1e4330464e96179cf33a9ee3254fe",
+      "in_execution_scope": false,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 2,
       "template": "mech_a2_gray_seed3_3b_geo3k.yaml"
     },
@@ -45,9 +67,12 @@
       "arm": "a2b_noimage",
       "condition": "none",
       "config": "configs/train/m7_virl_a2b_noimage_seed1_3b.yaml",
-      "config_sha256": "9c5cc66d690b3ae3219b009eac897f824b5147e5295d763812c8a70824df0b85",
+      "config_sha256": "a294ac8741f06087ba431eebb5d26a9a2db85c87c0558dbd0061738a6c7015d8",
+      "in_execution_scope": true,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 1,
       "template": "mech_a2b_noimage_seed3_3b_geo3k.yaml"
     },
@@ -55,9 +80,12 @@
       "arm": "a2b_noimage",
       "condition": "none",
       "config": "configs/train/m7_virl_a2b_noimage_seed2_3b.yaml",
-      "config_sha256": "01fbb630e4d521410cc301959982873318058fcf061422cd870bdd7c2b810b7f",
+      "config_sha256": "cb07d1d26a2cc034500ec8643e313c17aef32bc2fd78bb0fdaf82713eb994d1b",
+      "in_execution_scope": false,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 2,
       "template": "mech_a2b_noimage_seed3_3b_geo3k.yaml"
     },
@@ -65,9 +93,12 @@
       "arm": "a3_caption",
       "condition": "caption",
       "config": "configs/train/m7_virl_a3_caption_seed1_3b.yaml",
-      "config_sha256": "7dd7d5cda6491dc0e90808ab870ee93e0d1e6805fe126714667cc47005bce904",
+      "config_sha256": "7c9f32bd5159159c37623faf665cedca5fe0c6e6cadbdd394c937227585a9a57",
+      "in_execution_scope": true,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 1,
       "template": "mech_a3_caption_seed3_3b_geo3k.yaml"
     },
@@ -75,16 +106,36 @@
       "arm": "a3_caption",
       "condition": "caption",
       "config": "configs/train/m7_virl_a3_caption_seed2_3b.yaml",
-      "config_sha256": "f567521e382817664b06f938d536f921d0b7032f7cae3ae904e4b58d45bf2820",
+      "config_sha256": "b03a28204d463f48f2d3b4a61838b9bc0a169e9ae2da75e8b477adf5be97276a",
+      "in_execution_scope": false,
       "max_steps": 100,
       "n_gpus_per_node": 4,
+      "save_freq": 20,
+      "save_model_only": true,
       "seed": 2,
       "template": "mech_a3_caption_seed3_3b_geo3k.yaml"
     }
   ],
+  "execution_scope": {
+    "note": "docs/registered_m7_seed_scope_v1.md 1(a): seed 1 only is executed, for all four arms; every estimand is reported per-seed, not as the registered two-seed mean, and every M7 readout carries the scope tag 'one seed'. Seed 2 configs are generated and registered but deferred, not abandoned.",
+    "seeds": [
+      1
+    ]
+  },
   "matched_recipe_check": "algorithm and worker blocks byte-identical across all eight configs",
-  "registration": "docs/registered_m7_amendment_v1.md + docs/registered_m7_heldout_split_v2.md",
+  "registration": "docs/registered_m7_amendment_v1.md + docs/registered_m7_heldout_split_v2.md + docs/registered_m7_seed_scope_v1.md",
+  "sanctioned_deviations": [
+    "worker.rollout.limit_images",
+    "trainer.save_model_only"
+  ],
   "schema_version": "blind-gains.m7-arm-configs.v1",
   "train_file": "data/virl39k_m7_train_v3.jsonl",
+  "trainer_fields_allowed_to_differ_from_arm1": [
+    "experiment_name",
+    "load_checkpoint_path",
+    "project_name",
+    "save_checkpoint_path",
+    "save_model_only"
+  ],
   "val_file": "data/virl39k_m7_heldout_v3.jsonl"
 }
