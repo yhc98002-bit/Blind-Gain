@@ -1,0 +1,2394 @@
+{
+  "compute": "CPU only on the login node; cached predictions and the existing substrate only; no GPU job started",
+  "dataset": "Geometry3K test split (n=601), condition=real, arm=anchor_real, greedy temperature 0, seed 20260710",
+  "evidence_ledger": [
+    {
+      "adjustment": "none (single pre-registered primary endpoint of the turnover report)",
+      "claim_supported": "The step-100 -> step-400 NET accuracy change is not distinguishable from zero.",
+      "id": "L01",
+      "note": "This is the only thing McNemar tests. It does NOT bound total turnover.",
+      "null": "no net asymmetry between gained and lost (binomial 137 discordant pairs, p=0.5)",
+      "p": 0.7326840935910409,
+      "p_adjusted": null,
+      "source": "reports/m5c_turnover_v1.json",
+      "statistic": "McNemar exact two-sided on 71 gained / 66 lost; net +5 items, +0.008319",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "n/a",
+      "claim_supported": "137 of 601 items (22.80%) change state between step 100 and step 400 -- turnover 27.4x the net.",
+      "id": "L02",
+      "note": "Count, not a test. Its interpretation depends entirely on the noise floor (L03).",
+      "null": "descriptive count -- no null; the noise question is answered by L03",
+      "p": null,
+      "p_adjusted": null,
+      "source": "reports/m5c_turnover_v1.json",
+      "statistic": "discordant pairs 137/601 = 0.227953; turnover/|net| = 27.4",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "n/a (a measured floor, not a test)",
+      "claim_supported": "The 137-item turnover is NOT evaluation or decoding noise.",
+      "id": "L03",
+      "note": "Floor = 0 items, so turnover/floor is undefined (zero denominator) and floor-subtracted turnover = 137 - 0 = 137. TASK A.",
+      "null": "directly measured replicate floor -- no model needed",
+      "p": null,
+      "p_adjusted": null,
+      "source": "reports/m5c_noise_floor_replicate_v1.json",
+      "statistic": "replicate discordance 0/601 on acc_final AND 0/601 on acc_strict at BOTH step 400 and step 100; all 601 greedy response strings byte-identical; per_item.jsonl bit-identical (step-400 sha256 60eac65a8b5bb9b3..., step-100 4a4a840f9a3edb1b...)",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "n/a",
+      "claim_supported": "(prior weakest link) 16-sample dispersion implies expected discordance 0.2133 vs 0.2280 observed.",
+      "id": "L04",
+      "note": "Explicitly labelled not-a-test when recorded; superseded by the measured zero floor in L03. It describes temperature-1.0 sampling, not replicate noise of the greedy eval that produced the 137.",
+      "null": "temperature-1.0 sampling dispersion -- NOT the greedy harness",
+      "p": null,
+      "p_adjusted": null,
+      "source": "reports/m5c_turnover_v1.json :: noise_reference_not_a_test; superseded per reports/m5c_noise_floor_replicate_v1.json :: superseded_reference",
+      "statistic": "expected discordance fraction 0.21327735 between two independent Bernoulli(p_i) draws at step 100",
+      "verdict": "DOES NOT SUPPORT (and was never a test)"
+    },
+    {
+      "adjustment": "not corrected in the source report; 7 hop tests exist, Bonferroni 0.05/7 = 0.00714 -> 100->200 survives, 200->400 does not",
+      "claim_supported": "Intermediate hops move accuracy significantly in BOTH directions, so the flat endpoint is a cancellation.",
+      "id": "L05",
+      "note": "Correction arithmetic stated here explicitly; the source report reports the raw p only.",
+      "null": "no net asymmetry at each hop",
+      "p": "0.008557 (100->200); 0.014965 (200->400)",
+      "p_adjusted": null,
+      "source": "reports/m5c_turnover_v1.json",
+      "statistic": "100->200: +86/-54, net +32; 200->400: +44/-71, net -27 (McNemar exact two-sided)",
+      "verdict": "SUPPORTS (100->200); QUALIFIES (200->400 does not survive a 7-hop Bonferroni)"
+    },
+    {
+      "adjustment": "Holm-Bonferroni, 15-test family in the forensics artifact (reject: True)",
+      "claim_supported": "WHICH items are lost is reproducible across checkpoints.",
+      "id": "L06",
+      "note": "Robust to per-item noise in either direction: noise would REDUCE cross-checkpoint agreement, not manufacture it. Limitation: the three lost sets share one step-100 anchor eval and come from one training trajectory, so serial dependence is not removed.",
+      "null": "10,000 equal-size random subsets of the step-100-correct pool (n=262), seed 20260729",
+      "p": 0.0001,
+      "p_adjusted": 0.0015,
+      "source": "reports/m5c_lost_item_forensics_v1.json",
+      "statistic": "3-way Jaccard of LOST(100->200), LOST(100->300), LOST(100->400) = 0.3118 vs permutation null mean 0.0221",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "LOST items concentrate by problem type (derived stem bucket).",
+      "id": "L07",
+      "note": "Buckets are DEFINED BY THE ANALYSIS from the problem string (regex, fixed order, reused verbatim); geo3k carries no template/category/source field and qid and source_metadata are null on all 601 rows at all five steps.",
+      "null": "10,000 random equal-size (66) subsets of the step-100-correct pool (n=262), seed 20260729",
+      "p": 0.04609539046095391,
+      "p_adjusted": 0.13828617138286173,
+      "source": "this report, task 1",
+      "statistic": "chi-square 11.7769 on 9 buckets (null mean 6.0463, 95th pct 11.5905); angle_measure lost rate 0.4500",
+      "verdict": "QUALIFIES -- raw p significant at 0.05 but does NOT survive Holm over this report's 10-test family"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "GAINED items concentrate by problem type.",
+      "id": "L08",
+      "note": "Asymmetry with L07 is the substantive point: losses look type-structured, gains less so.",
+      "null": "10,000 random equal-size (71) subsets of the step-100-WRONG pool (n=339), seed 20260729",
+      "p": 0.13338666133386662,
+      "p_adjusted": 0.13828617138286173,
+      "source": "this report, task 1",
+      "statistic": "chi-square 8.8062 (null mean 5.5763, 95th pct 11.2271)",
+      "verdict": "DOES NOT SUPPORT"
+    },
+    {
+      "adjustment": "Holm-Bonferroni, 15-test forensics family (reject: True)",
+      "claim_supported": "(uncontrolled) LOST items land on a numeric near-miss more often than stable-wrong items.",
+      "id": "L09",
+      "note": "NOT difficulty-controlled: LOST items were correct at step 100 by construction, stable-wrong items were not. See L10-L12. The raw p is also convention-dependent: the published subset-draw convention reproduces here at 0.0005, but arm-label permutation on the same data gives 0.0179. The subset-draw null puts sampling variance on one arm only.",
+      "null": "equal-size random subsets of the stable-wrong set (published) / arm-label permutation (here)",
+      "p": 0.0004999500049995,
+      "p_adjusted": 0.005499450054994501,
+      "source": "reports/m5c_lost_item_forensics_v1.json; recomputed here",
+      "statistic": "11/54 = 0.2037 vs 20/230 = 0.0870",
+      "verdict": "QUALIFIES"
+    },
+    {
+      "adjustment": "excluded from the Holm family (not a test)",
+      "claim_supported": "The near-miss effect survives matching on step-100 correctness using STABLE_CORRECT as reference.",
+      "id": "L10",
+      "note": "STABLE_CORRECT items are correct at step 400 by definition, so their step-400 answer IS gold and their near-miss rate is 1.0 by construction. The matched pool as literally specified cannot test the hypothesis.",
+      "null": "none run -- the comparison is degenerate",
+      "p": null,
+      "p_adjusted": null,
+      "source": "this report, task 2",
+      "statistic": "LOST 11/54 = 0.2037 vs STABLE_CORRECT 176/176 = 1.0000",
+      "verdict": "DOES NOT SUPPORT -- the requested matched comparison is DEGENERATE"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "The near-miss effect survives a non-degenerate match on step-100 correctness.",
+      "id": "L11",
+      "note": "Both arms are correct at step 100 and both are scored on a WRONG answer. Like-for-like (arm-label permutation on both sides): arm-label p 0.0179 (unmatched, effect +0.1167) -> 0.0482 (matched, effect +0.1652); the effect SIZE is preserved or larger under matching, the p rises because the matched reference arm has only 26 numeric-comparable items. Residual limitation: the reference arm's wrong answer is read at step 150/200/300, not 400, because among step-100-correct items 'wrong at step S' IS lost-at-S.",
+      "null": "10,000 arm-label permutations, seed 20260729",
+      "p": 0.0481951804819518,
+      "p_adjusted": 0.13828617138286173,
+      "source": "this report, task 2",
+      "statistic": "LOST(100->400) at step 400 11/54 = 0.2037 vs DIP-AND-RECOVER at first dip step 1/26 = 0.0385; difference +0.1652",
+      "verdict": "QUALIFIES -- raw p significant at 0.05 but does NOT survive Holm over this report's 10-test family"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "The near-miss effect is not an artefact of LOST items having larger gold answers (the +/-10% window widens with |gold|).",
+      "id": "L12",
+      "note": "Controls answer SCALE, not step-100 correctness. Complementary to L11, not a substitute.",
+      "null": "10,000 within-stratum arm-label permutations, seed 20260729",
+      "p": 0.014798520147985201,
+      "p_adjusted": 0.059194080591940805,
+      "source": "this report, task 2",
+      "statistic": "|gold|-quartile-stratified rate difference +0.1201 (median |gold| LOST 25.50 vs stable-wrong 33.00)",
+      "verdict": "QUALIFIES -- raw p significant at 0.05 but does NOT survive Holm over this report's 10-test family"
+    },
+    {
+      "adjustment": "n/a",
+      "claim_supported": "LOST items were already marginal at step 100 in the decoder's own margin / logprob.",
+      "id": "L13",
+      "note": "No logprob, token-probability, logit, decoding-score or margin field exists in any of the five cached geo3k per-item files (full field census in the JSON). Steps 150/200/300/400 additionally have no sampled decode of any kind. No proxy is substituted.",
+      "null": "n/a",
+      "p": null,
+      "p_adjusted": null,
+      "source": "this report, task 3",
+      "statistic": "not computable",
+      "verdict": "NOT MEASURABLE"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "(separate quantity, NOT the L13 margin test) LOST items had a lower step-100 16-sample pass rate than STABLE_CORRECT items.",
+      "id": "L14",
+      "note": "This is a temperature-1.0 n=16 empirical PASS RATE, not a decoding margin, and it exists only at step 100. It is reported as its own line so that L13 stays honestly NOT MEASURABLE. A reader wanting only the requested margin test should read L13.",
+      "null": "10,000 arm-label permutations, seed 20260729",
+      "p": 0.0001,
+      "p_adjusted": 0.001,
+      "source": "this report, task 3 (side measurement)",
+      "statistic": "mean canonical_p_sample 0.4233 (n=66) vs 0.7886 (n=196); difference -0.3653",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "The five-step correctness patterns are not what independent per-step flipping produces.",
+      "id": "L15",
+      "note": "Direction: MORE PERSISTENCE. never-correct 198 vs null mean 26.8; always-correct 162 vs 12.7; total adjacent flips 429 vs 1197.0.",
+      "null": "10,000 parametric-bootstrap datasets in which each item flips independently between steps at the observed per-step marginal accuracies, seed 20260729",
+      "p": 0.0001,
+      "p_adjusted": 0.001,
+      "source": "this report, task 4",
+      "statistic": "G2 = 1289.82 and Pearson X2 = 3070.95 over 32 patterns (null max G2 across 10,000 replicates = 70.91, null mean 26.44)",
+      "verdict": "SUPPORTS"
+    },
+    {
+      "adjustment": "Holm-Bonferroni over the 10 tests computed in this report",
+      "claim_supported": "Correctness is stickier in TIME than chance, holding each item's own number of correct steps fixed.",
+      "id": "L16",
+      "note": "This is the test that separates 'items differ in difficulty' (already implied by L15) from 'movement is temporally ordered'. N3 is the strict version: it fixes both margins.",
+      "null": "N2: 10,000 within-item permutations of the five step labels. N3: 10,000 curveball samples preserving every item's correct-step count AND every step's accuracy count. seed 20260729",
+      "p": "N2 <= 1e-04; N3 <= 1e-04",
+      "p_adjusted": "N2 0.0010; N3 0.0010",
+      "source": "this report, task 4",
+      "statistic": "total adjacent flips 429 vs within-item order-permutation null mean 480.62 (sd 11.41) and row+column-margin-preserving null mean 480.99 (sd 11.16)",
+      "verdict": "SUPPORTS"
+    }
+  ],
+  "generated_utc": "2026-07-30T13:22:05Z",
+  "git_hash": "8aeb7203061194f884144138ea3330fb8400a807",
+  "multiplicity": {
+    "bonferroni_threshold": 0.005,
+    "excluded_from_family_and_why": {
+      "literal_matched_pool_lost_vs_stable_correct": "DEGENERATE by construction (reference rate = 1.0 because STABLE_CORRECT items are correct at step 400), so it is not a test of the hypothesis and no p is entered into the family.",
+      "prior_published_tests": "McNemar exact p values, the 3-way/pairwise Jaccard tests and the wrong-answer concentration tests belong to the earlier families in reports/m5c_turnover_v1.json and reports/m5c_lost_item_forensics_v1.json; their own corrections are carried through into the ledger and are not recomputed.",
+      "uncontrolled_near_miss_contrast": "Already published and Holm-corrected inside the 15-test family of reports/m5c_lost_item_forensics_v1.json; recomputed here for continuity, not re-entered into this family."
+    },
+    "family_alpha": 0.05,
+    "family_definition": "The ten permutation tests COMPUTED IN THIS REPORT under acc_final. The acc_strict family is numerically identical because acc_final == acc_strict on all 601 items at all five steps (verified here).",
+    "holm": {
+      "T10_total_flips_vs_row_col_margin_preserving": {
+        "holm_threshold_at_rank": 0.01,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 6,
+        "reject_at_family_alpha_0.05": true
+      },
+      "T1_lost_bucket_chi2": {
+        "holm_threshold_at_rank": 0.016666666666666666,
+        "p_holm_adjusted": 0.13828617138286173,
+        "p_raw": 0.04609539046095391,
+        "rank": 8,
+        "reject_at_family_alpha_0.05": false
+      },
+      "T2_gained_bucket_chi2": {
+        "holm_threshold_at_rank": 0.05,
+        "p_holm_adjusted": 0.13828617138286173,
+        "p_raw": 0.13338666133386662,
+        "rank": 10,
+        "reject_at_family_alpha_0.05": false
+      },
+      "T3_near_miss_matched_dip_and_recover_one_sided": {
+        "holm_threshold_at_rank": 0.025,
+        "p_holm_adjusted": 0.13828617138286173,
+        "p_raw": 0.0481951804819518,
+        "rank": 9,
+        "reject_at_family_alpha_0.05": false
+      },
+      "T4_near_miss_gold_magnitude_stratified_one_sided": {
+        "holm_threshold_at_rank": 0.0125,
+        "p_holm_adjusted": 0.059194080591940805,
+        "p_raw": 0.014798520147985201,
+        "rank": 7,
+        "reject_at_family_alpha_0.05": false
+      },
+      "T5_step100_sampled_pass_rate_lost_vs_stable_correct_two_sided": {
+        "holm_threshold_at_rank": 0.005,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 1,
+        "reject_at_family_alpha_0.05": true
+      },
+      "T6_pattern_G2_vs_independence": {
+        "holm_threshold_at_rank": 0.005555555555555556,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 2,
+        "reject_at_family_alpha_0.05": true
+      },
+      "T7_pattern_X2_vs_independence": {
+        "holm_threshold_at_rank": 0.00625,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 3,
+        "reject_at_family_alpha_0.05": true
+      },
+      "T8_total_flips_vs_independence": {
+        "holm_threshold_at_rank": 0.0071428571428571435,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 4,
+        "reject_at_family_alpha_0.05": true
+      },
+      "T9_total_flips_vs_within_item_order_permutation": {
+        "holm_threshold_at_rank": 0.008333333333333333,
+        "p_holm_adjusted": 0.001,
+        "p_raw": 0.0001,
+        "rank": 5,
+        "reject_at_family_alpha_0.05": true
+      }
+    },
+    "n_tests_in_family": 10,
+    "prior_family_holm_adjusted_p_recomputed_here": {
+      "gained_derived_bucket_chi2": {
+        "holm_threshold_at_rank": 0.005555555555555556,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.13338666133386662,
+        "rank": 7,
+        "reject_at_family_alpha_0.05": false
+      },
+      "lost_derived_bucket_chi2": {
+        "holm_threshold_at_rank": 0.005,
+        "p_holm_adjusted": 0.428957104289571,
+        "p_raw": 0.0428957104289571,
+        "rank": 6,
+        "reject_at_family_alpha_0.05": false
+      },
+      "lost_gold_answer_entropy": {
+        "holm_threshold_at_rank": 0.05,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.9468053194680532,
+        "rank": 15,
+        "reject_at_family_alpha_0.05": false
+      },
+      "lost_set_pairwise_jaccard::j_200_300": {
+        "holm_threshold_at_rank": 0.0033333333333333335,
+        "p_holm_adjusted": 0.0015,
+        "p_raw": 0.0001,
+        "rank": 1,
+        "reject_at_family_alpha_0.05": true
+      },
+      "lost_set_pairwise_jaccard::j_200_400": {
+        "holm_threshold_at_rank": 0.0035714285714285718,
+        "p_holm_adjusted": 0.0015,
+        "p_raw": 0.0001,
+        "rank": 2,
+        "reject_at_family_alpha_0.05": true
+      },
+      "lost_set_pairwise_jaccard::j_300_400": {
+        "holm_threshold_at_rank": 0.0038461538461538464,
+        "p_holm_adjusted": 0.0015,
+        "p_raw": 0.0001,
+        "rank": 3,
+        "reject_at_family_alpha_0.05": true
+      },
+      "lost_set_three_way_jaccard": {
+        "holm_threshold_at_rank": 0.004166666666666667,
+        "p_holm_adjusted": 0.0015,
+        "p_raw": 0.0001,
+        "rank": 4,
+        "reject_at_family_alpha_0.05": true
+      },
+      "native_near_miss_rate": {
+        "holm_threshold_at_rank": 0.004545454545454546,
+        "p_holm_adjusted": 0.005499450054994501,
+        "p_raw": 0.0004999500049995,
+        "rank": 5,
+        "reject_at_family_alpha_0.05": true
+      },
+      "native_other_gold_rate": {
+        "holm_threshold_at_rank": 0.00625,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.31916808319168083,
+        "rank": 8,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::all_step400_errors::p_entropy_le_observed": {
+        "holm_threshold_at_rank": 0.01,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.44165583441655837,
+        "rank": 11,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::all_step400_errors::p_hhi_ge_observed": {
+        "holm_threshold_at_rank": 0.016666666666666666,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.5660433956604339,
+        "rank": 13,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::all_step400_errors::p_n_distinct_le_observed": {
+        "holm_threshold_at_rank": 0.008333333333333333,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.38346165383461656,
+        "rank": 10,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::stable_wrong_only::p_entropy_le_observed": {
+        "holm_threshold_at_rank": 0.0125,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.44855514448555145,
+        "rank": 12,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::stable_wrong_only::p_hhi_ge_observed": {
+        "holm_threshold_at_rank": 0.025,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.5816418358164184,
+        "rank": 14,
+        "reject_at_family_alpha_0.05": false
+      },
+      "wrong_answer_concentration::stable_wrong_only::p_n_distinct_le_observed": {
+        "holm_threshold_at_rank": 0.0071428571428571435,
+        "p_holm_adjusted": 1.0,
+        "p_raw": 0.38146185381461856,
+        "rank": 9,
+        "reject_at_family_alpha_0.05": false
+      }
+    },
+    "prior_family_holm_from_forensics_artifact": {
+      "bonferroni_threshold": 0.0033333333333333335,
+      "family_alpha": 0.05,
+      "holm_bonferroni_reject": {
+        "gained_derived_bucket_chi2": false,
+        "lost_derived_bucket_chi2": false,
+        "lost_gold_answer_entropy": false,
+        "lost_set_pairwise_jaccard::j_200_300": true,
+        "lost_set_pairwise_jaccard::j_200_400": true,
+        "lost_set_pairwise_jaccard::j_300_400": true,
+        "lost_set_three_way_jaccard": true,
+        "native_near_miss_rate": true,
+        "native_other_gold_rate": false,
+        "wrong_answer_concentration::all_step400_errors::p_entropy_le_observed": false,
+        "wrong_answer_concentration::all_step400_errors::p_hhi_ge_observed": false,
+        "wrong_answer_concentration::all_step400_errors::p_n_distinct_le_observed": false,
+        "wrong_answer_concentration::stable_wrong_only::p_entropy_le_observed": false,
+        "wrong_answer_concentration::stable_wrong_only::p_hhi_ge_observed": false,
+        "wrong_answer_concentration::stable_wrong_only::p_n_distinct_le_observed": false
+      },
+      "n_tests_in_family": 15,
+      "note": "All permutation tests reported here form one pre-listed family; the family is reported with Holm-Bonferroni at alpha 0.05 alongside the raw p values. The acc_strict family is numerically identical to the acc_final family because acc_final == acc_strict on all 601 items at all five steps.",
+      "tests": {
+        "gained_derived_bucket_chi2": 0.13338666133386662,
+        "lost_derived_bucket_chi2": 0.0428957104289571,
+        "lost_gold_answer_entropy": 0.9468053194680532,
+        "lost_set_pairwise_jaccard::j_200_300": 0.0001,
+        "lost_set_pairwise_jaccard::j_200_400": 0.0001,
+        "lost_set_pairwise_jaccard::j_300_400": 0.0001,
+        "lost_set_three_way_jaccard": 0.0001,
+        "native_near_miss_rate": 0.0004999500049995,
+        "native_other_gold_rate": 0.31916808319168083,
+        "wrong_answer_concentration::all_step400_errors::p_entropy_le_observed": 0.44165583441655837,
+        "wrong_answer_concentration::all_step400_errors::p_hhi_ge_observed": 0.5660433956604339,
+        "wrong_answer_concentration::all_step400_errors::p_n_distinct_le_observed": 0.38346165383461656,
+        "wrong_answer_concentration::stable_wrong_only::p_entropy_le_observed": 0.44855514448555145,
+        "wrong_answer_concentration::stable_wrong_only::p_hhi_ge_observed": 0.5816418358164184,
+        "wrong_answer_concentration::stable_wrong_only::p_n_distinct_le_observed": 0.38146185381461856
+      }
+    }
+  },
+  "permutation_convention": {
+    "n_perm": 10000,
+    "note": "reported as max((hits+1)/(n_perm+1), 1e-4); the floor binds only at zero hits",
+    "p_floor": 0.0001,
+    "p_formula": "(hits + 1) / (n_perm + 1)",
+    "seed": 20260729
+  },
+  "runs": {
+    "100": "blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+    "150": "m5_geo3k_step150_an12_gpu4_20260718T051839Z",
+    "200": "m5_geo3k_step200_an29_gpu4_20260722T141052Z",
+    "300": "m5_geo3k_step300_an12_gpu0_20260726T083303Z",
+    "400": "m5_geo3k_step400_an12_gpu0_20260728T053115Z"
+  },
+  "schema_version": "blind-gains.m5c-evidence-ledger.v1",
+  "scope_limits": {
+    "derived_buckets_are_analysis_defined": "The problem-type buckets are regex rules defined by the earlier forensics analysis and reused verbatim here. They are NOT dataset metadata: qid and source_metadata are null on all 601 test rows at all five steps and the manifest carries only answer/images/problem/row_index/split. Any bucket-level result is a result about these rules, not about a curated taxonomy.",
+    "matched_near_miss_caveat": "The only non-degenerate step-100-matched reference for the near-miss contrast reads its wrong answer at an EARLIER checkpoint than the LOST arm. That asymmetry is inherent to the design space, not a choice that could have been avoided.",
+    "no_second_trajectory": "There is no second training seed for this trajectory in this analysis, so nothing here separates 'this run's churn' from 'churn of this recipe'.",
+    "serial_dependence": "All five checkpoints come from ONE training trajectory. Permutation nulls here randomise item membership or within-item temporal order; none of them removes dependence between checkpoints of the same run."
+  },
+  "scorer": "src.eval.blind_solvability.score_greedy_item_pilot under DEFAULT_PROMPT_CONTRACT (uniform re-score of cached predictions)",
+  "source_artifacts": {
+    "forensics": {
+      "path": "reports/m5c_lost_item_forensics_v1.json",
+      "sha256": "4feba1f2a09b65750d2969919235ceba8cec6521d6a7ad4d7f7a61352b50e532"
+    },
+    "noise_floor_task_a": {
+      "path": "reports/m5c_noise_floor_replicate_v1.json",
+      "sha256": "54e5e8c3f5d07deb8f2ed093ba9c1cb6fb73fd37753c0da7fac5bf29a408c7e5"
+    },
+    "substrate": {
+      "path": "reports/m5c_item_substrate_v1.jsonl",
+      "sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864"
+    },
+    "turnover": {
+      "path": "reports/m5c_turnover_v1.json",
+      "sha256": "7584ee6b070dfe4f73a7b017913f40206fffb99973ea8809bc9024f7c9752a73"
+    }
+  },
+  "task": "M5C Task C -- systematicity evidence + evidence ledger for the geo3k step-100 -> step-400 turnover finding",
+  "task1_problem_type_concentration": {
+    "acc_final": {
+      "column_totals": {
+        "correct_at_100": 262,
+        "gained": 71,
+        "lost": 66,
+        "stable": 464,
+        "stable_correct": 196,
+        "stable_wrong": 268,
+        "total_items": 601,
+        "wrong_at_100": 339
+      },
+      "gained_bucket_concentration": {
+        "asymptotic_df_reference_only": 7,
+        "draw_size": 71,
+        "expected_counts_from_pool": {
+          "angle_measure": 21.57227138643068,
+          "arc_measure": 5.864306784660767,
+          "area": 6.492625368731564,
+          "length_measure": 1.2566371681415929,
+          "other": 13.194690265486726,
+          "perimeter": 1.6755162241887906,
+          "ratio": 0.41887905604719766,
+          "solve_for_variable": 20.525073746312685
+        },
+        "n_buckets_with_positive_expectation": 8,
+        "n_perm": 10000,
+        "null_mean_chi2": 5.576315644309536,
+        "null_q95_chi2": 11.227116332245485,
+        "null_sd_chi2": 2.924343255001498,
+        "observed_chi2": 8.806222174140693,
+        "observed_counts": {
+          "angle_measure": 19,
+          "arc_measure": 5,
+          "area": 4,
+          "length_measure": 1,
+          "other": 14,
+          "perimeter": 3,
+          "ratio": 2,
+          "solve_for_variable": 23
+        },
+        "p_chi2_ge_observed": 0.13338666133386662,
+        "perm_hits_ge_observed": 1333,
+        "pool": "items wrong at step 100",
+        "pool_size": 339,
+        "seed": 20260729,
+        "tag": "gained"
+      },
+      "lost_bucket_concentration": {
+        "asymptotic_df_reference_only": 8,
+        "draw_size": 66,
+        "expected_counts_from_pool": {
+          "angle_measure": 10.076335877862595,
+          "arc_measure": 2.519083969465649,
+          "area": 7.305343511450381,
+          "circumference": 1.0076335877862594,
+          "length_measure": 2.015267175572519,
+          "other": 15.366412213740459,
+          "perimeter": 2.7709923664122136,
+          "ratio": 2.015267175572519,
+          "solve_for_variable": 22.923664122137403
+        },
+        "n_buckets_with_positive_expectation": 9,
+        "n_perm": 10000,
+        "null_mean_chi2": 6.046279092125906,
+        "null_q95_chi2": 11.590525402681154,
+        "null_sd_chi2": 2.9362143499332634,
+        "observed_chi2": 11.776932937816078,
+        "observed_counts": {
+          "angle_measure": 18,
+          "arc_measure": 3,
+          "area": 9,
+          "circumference": 1,
+          "length_measure": 0,
+          "other": 10,
+          "perimeter": 3,
+          "ratio": 3,
+          "solve_for_variable": 19
+        },
+        "p_chi2_ge_observed": 0.04609539046095391,
+        "perm_hits_ge_observed": 460,
+        "pool": "items correct at step 100",
+        "pool_size": 262,
+        "seed": 20260729,
+        "tag": "lost"
+      },
+      "table_by_derived_stem_bucket": {
+        "angle_measure": {
+          "correct_at_100": 40,
+          "gained": 19,
+          "gained_rate_within_wrong_at_100": 0.18446601941747573,
+          "lost": 18,
+          "lost_rate_within_correct_at_100": 0.45,
+          "share_of_all_gained": 0.2676056338028169,
+          "share_of_all_lost": 0.2727272727272727,
+          "stable": 106,
+          "stable_correct": 22,
+          "stable_wrong": 84,
+          "total_items": 143,
+          "wrong_at_100": 103
+        },
+        "arc_measure": {
+          "correct_at_100": 10,
+          "gained": 5,
+          "gained_rate_within_wrong_at_100": 0.17857142857142858,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.3,
+          "share_of_all_gained": 0.07042253521126761,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 30,
+          "stable_correct": 7,
+          "stable_wrong": 23,
+          "total_items": 38,
+          "wrong_at_100": 28
+        },
+        "area": {
+          "correct_at_100": 29,
+          "gained": 4,
+          "gained_rate_within_wrong_at_100": 0.12903225806451613,
+          "lost": 9,
+          "lost_rate_within_correct_at_100": 0.3103448275862069,
+          "share_of_all_gained": 0.056338028169014086,
+          "share_of_all_lost": 0.13636363636363635,
+          "stable": 47,
+          "stable_correct": 20,
+          "stable_wrong": 27,
+          "total_items": 60,
+          "wrong_at_100": 31
+        },
+        "circumference": {
+          "correct_at_100": 4,
+          "gained": 0,
+          "gained_rate_within_wrong_at_100": null,
+          "lost": 1,
+          "lost_rate_within_correct_at_100": 0.25,
+          "share_of_all_gained": 0.0,
+          "share_of_all_lost": 0.015151515151515152,
+          "stable": 3,
+          "stable_correct": 3,
+          "stable_wrong": 0,
+          "total_items": 4,
+          "wrong_at_100": 0
+        },
+        "length_measure": {
+          "correct_at_100": 8,
+          "gained": 1,
+          "gained_rate_within_wrong_at_100": 0.16666666666666666,
+          "lost": 0,
+          "lost_rate_within_correct_at_100": 0.0,
+          "share_of_all_gained": 0.014084507042253521,
+          "share_of_all_lost": 0.0,
+          "stable": 13,
+          "stable_correct": 8,
+          "stable_wrong": 5,
+          "total_items": 14,
+          "wrong_at_100": 6
+        },
+        "other": {
+          "correct_at_100": 61,
+          "gained": 14,
+          "gained_rate_within_wrong_at_100": 0.2222222222222222,
+          "lost": 10,
+          "lost_rate_within_correct_at_100": 0.16393442622950818,
+          "share_of_all_gained": 0.19718309859154928,
+          "share_of_all_lost": 0.15151515151515152,
+          "stable": 100,
+          "stable_correct": 51,
+          "stable_wrong": 49,
+          "total_items": 124,
+          "wrong_at_100": 63
+        },
+        "perimeter": {
+          "correct_at_100": 11,
+          "gained": 3,
+          "gained_rate_within_wrong_at_100": 0.375,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.2727272727272727,
+          "share_of_all_gained": 0.04225352112676056,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 13,
+          "stable_correct": 8,
+          "stable_wrong": 5,
+          "total_items": 19,
+          "wrong_at_100": 8
+        },
+        "ratio": {
+          "correct_at_100": 8,
+          "gained": 2,
+          "gained_rate_within_wrong_at_100": 1.0,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.375,
+          "share_of_all_gained": 0.028169014084507043,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 5,
+          "stable_correct": 5,
+          "stable_wrong": 0,
+          "total_items": 10,
+          "wrong_at_100": 2
+        },
+        "solve_for_variable": {
+          "correct_at_100": 91,
+          "gained": 23,
+          "gained_rate_within_wrong_at_100": 0.23469387755102042,
+          "lost": 19,
+          "lost_rate_within_correct_at_100": 0.2087912087912088,
+          "share_of_all_gained": 0.323943661971831,
+          "share_of_all_lost": 0.2878787878787879,
+          "stable": 147,
+          "stable_correct": 72,
+          "stable_wrong": 75,
+          "total_items": 189,
+          "wrong_at_100": 98
+        }
+      },
+      "table_consistency_checks": {
+        "col_gained_sums": true,
+        "col_lost_sums": true,
+        "col_stable_sums": true,
+        "grand_total": true,
+        "row_sums_equal_total": true
+      }
+    },
+    "acc_strict": {
+      "column_totals": {
+        "correct_at_100": 262,
+        "gained": 71,
+        "lost": 66,
+        "stable": 464,
+        "stable_correct": 196,
+        "stable_wrong": 268,
+        "total_items": 601,
+        "wrong_at_100": 339
+      },
+      "gained_bucket_concentration": {
+        "asymptotic_df_reference_only": 7,
+        "draw_size": 71,
+        "expected_counts_from_pool": {
+          "angle_measure": 21.57227138643068,
+          "arc_measure": 5.864306784660767,
+          "area": 6.492625368731564,
+          "length_measure": 1.2566371681415929,
+          "other": 13.194690265486726,
+          "perimeter": 1.6755162241887906,
+          "ratio": 0.41887905604719766,
+          "solve_for_variable": 20.525073746312685
+        },
+        "n_buckets_with_positive_expectation": 8,
+        "n_perm": 10000,
+        "null_mean_chi2": 5.576315644309536,
+        "null_q95_chi2": 11.227116332245485,
+        "null_sd_chi2": 2.924343255001498,
+        "observed_chi2": 8.806222174140693,
+        "observed_counts": {
+          "angle_measure": 19,
+          "arc_measure": 5,
+          "area": 4,
+          "length_measure": 1,
+          "other": 14,
+          "perimeter": 3,
+          "ratio": 2,
+          "solve_for_variable": 23
+        },
+        "p_chi2_ge_observed": 0.13338666133386662,
+        "perm_hits_ge_observed": 1333,
+        "pool": "items wrong at step 100",
+        "pool_size": 339,
+        "seed": 20260729,
+        "tag": "gained"
+      },
+      "lost_bucket_concentration": {
+        "asymptotic_df_reference_only": 8,
+        "draw_size": 66,
+        "expected_counts_from_pool": {
+          "angle_measure": 10.076335877862595,
+          "arc_measure": 2.519083969465649,
+          "area": 7.305343511450381,
+          "circumference": 1.0076335877862594,
+          "length_measure": 2.015267175572519,
+          "other": 15.366412213740459,
+          "perimeter": 2.7709923664122136,
+          "ratio": 2.015267175572519,
+          "solve_for_variable": 22.923664122137403
+        },
+        "n_buckets_with_positive_expectation": 9,
+        "n_perm": 10000,
+        "null_mean_chi2": 6.046279092125906,
+        "null_q95_chi2": 11.590525402681154,
+        "null_sd_chi2": 2.9362143499332634,
+        "observed_chi2": 11.776932937816078,
+        "observed_counts": {
+          "angle_measure": 18,
+          "arc_measure": 3,
+          "area": 9,
+          "circumference": 1,
+          "length_measure": 0,
+          "other": 10,
+          "perimeter": 3,
+          "ratio": 3,
+          "solve_for_variable": 19
+        },
+        "p_chi2_ge_observed": 0.04609539046095391,
+        "perm_hits_ge_observed": 460,
+        "pool": "items correct at step 100",
+        "pool_size": 262,
+        "seed": 20260729,
+        "tag": "lost"
+      },
+      "table_by_derived_stem_bucket": {
+        "angle_measure": {
+          "correct_at_100": 40,
+          "gained": 19,
+          "gained_rate_within_wrong_at_100": 0.18446601941747573,
+          "lost": 18,
+          "lost_rate_within_correct_at_100": 0.45,
+          "share_of_all_gained": 0.2676056338028169,
+          "share_of_all_lost": 0.2727272727272727,
+          "stable": 106,
+          "stable_correct": 22,
+          "stable_wrong": 84,
+          "total_items": 143,
+          "wrong_at_100": 103
+        },
+        "arc_measure": {
+          "correct_at_100": 10,
+          "gained": 5,
+          "gained_rate_within_wrong_at_100": 0.17857142857142858,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.3,
+          "share_of_all_gained": 0.07042253521126761,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 30,
+          "stable_correct": 7,
+          "stable_wrong": 23,
+          "total_items": 38,
+          "wrong_at_100": 28
+        },
+        "area": {
+          "correct_at_100": 29,
+          "gained": 4,
+          "gained_rate_within_wrong_at_100": 0.12903225806451613,
+          "lost": 9,
+          "lost_rate_within_correct_at_100": 0.3103448275862069,
+          "share_of_all_gained": 0.056338028169014086,
+          "share_of_all_lost": 0.13636363636363635,
+          "stable": 47,
+          "stable_correct": 20,
+          "stable_wrong": 27,
+          "total_items": 60,
+          "wrong_at_100": 31
+        },
+        "circumference": {
+          "correct_at_100": 4,
+          "gained": 0,
+          "gained_rate_within_wrong_at_100": null,
+          "lost": 1,
+          "lost_rate_within_correct_at_100": 0.25,
+          "share_of_all_gained": 0.0,
+          "share_of_all_lost": 0.015151515151515152,
+          "stable": 3,
+          "stable_correct": 3,
+          "stable_wrong": 0,
+          "total_items": 4,
+          "wrong_at_100": 0
+        },
+        "length_measure": {
+          "correct_at_100": 8,
+          "gained": 1,
+          "gained_rate_within_wrong_at_100": 0.16666666666666666,
+          "lost": 0,
+          "lost_rate_within_correct_at_100": 0.0,
+          "share_of_all_gained": 0.014084507042253521,
+          "share_of_all_lost": 0.0,
+          "stable": 13,
+          "stable_correct": 8,
+          "stable_wrong": 5,
+          "total_items": 14,
+          "wrong_at_100": 6
+        },
+        "other": {
+          "correct_at_100": 61,
+          "gained": 14,
+          "gained_rate_within_wrong_at_100": 0.2222222222222222,
+          "lost": 10,
+          "lost_rate_within_correct_at_100": 0.16393442622950818,
+          "share_of_all_gained": 0.19718309859154928,
+          "share_of_all_lost": 0.15151515151515152,
+          "stable": 100,
+          "stable_correct": 51,
+          "stable_wrong": 49,
+          "total_items": 124,
+          "wrong_at_100": 63
+        },
+        "perimeter": {
+          "correct_at_100": 11,
+          "gained": 3,
+          "gained_rate_within_wrong_at_100": 0.375,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.2727272727272727,
+          "share_of_all_gained": 0.04225352112676056,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 13,
+          "stable_correct": 8,
+          "stable_wrong": 5,
+          "total_items": 19,
+          "wrong_at_100": 8
+        },
+        "ratio": {
+          "correct_at_100": 8,
+          "gained": 2,
+          "gained_rate_within_wrong_at_100": 1.0,
+          "lost": 3,
+          "lost_rate_within_correct_at_100": 0.375,
+          "share_of_all_gained": 0.028169014084507043,
+          "share_of_all_lost": 0.045454545454545456,
+          "stable": 5,
+          "stable_correct": 5,
+          "stable_wrong": 0,
+          "total_items": 10,
+          "wrong_at_100": 2
+        },
+        "solve_for_variable": {
+          "correct_at_100": 91,
+          "gained": 23,
+          "gained_rate_within_wrong_at_100": 0.23469387755102042,
+          "lost": 19,
+          "lost_rate_within_correct_at_100": 0.2087912087912088,
+          "share_of_all_gained": 0.323943661971831,
+          "share_of_all_lost": 0.2878787878787879,
+          "stable": 147,
+          "stable_correct": 72,
+          "stable_wrong": 75,
+          "total_items": 189,
+          "wrong_at_100": 98
+        }
+      },
+      "table_consistency_checks": {
+        "col_gained_sums": true,
+        "col_lost_sums": true,
+        "col_stable_sums": true,
+        "grand_total": true,
+        "row_sums_equal_total": true
+      }
+    }
+  },
+  "task2_near_miss_difficulty_control": {
+    "acc_final": {
+      "literal_matched_pool_lost_vs_stable_correct": {
+        "degeneracy_reason": "STABLE_CORRECT items are CORRECT at step 400 by definition, so their step-400 extracted answer equals gold and |pred-gold|/|gold| = 0 <= 0.10 for every numeric-comparable item. The reference near-miss rate is therefore 1.0 by construction and the contrast cannot test the hypothesis in this direction.",
+        "degenerate": true,
+        "design": "LOST(100->400) step-400 answer vs STABLE_CORRECT step-400 answer",
+        "lost": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "matched_on": "correct at step 100 (both arms, by construction)",
+        "stable_correct": {
+          "excluded_not_numeric_comparable": 20,
+          "n_items": 196,
+          "near_miss_count": 176,
+          "near_miss_rate": 1.0,
+          "numeric_comparable": 176
+        }
+      },
+      "matched_design_dip_and_recover": {
+        "arm_a_lost_400": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "arm_b_dip_and_recover": {
+          "excluded_not_numeric_comparable": 8,
+          "n_items": 34,
+          "near_miss_count": 1,
+          "near_miss_rate": 0.038461538461538464,
+          "numeric_comparable": 26
+        },
+        "arm_b_dip_step_histogram": {
+          "150": 17,
+          "200": 9,
+          "300": 8
+        },
+        "arm_b_size": 34,
+        "design": "Both arms restricted to items CORRECT at step 100, and both arms measured on a WRONG answer. Arm A = LOST(100->400), wrong answer taken at step 400. Arm B = DIP-AND-RECOVER: correct at 100, correct at 400, wrong at at least one of steps 150/200/300; wrong answer taken at the FIRST such step.",
+        "matched_on": "correct at step 100 (both arms); wrong answer measured (both arms)",
+        "rationale": "Among items correct at step 100, 'wrong at step S' IS the definition of LOST(100->S). There is therefore no set that is simultaneously matched on step-100 correctness, measured on a wrong answer, and not lost at the same step. The only free axis is the step at which the wrong answer is read, so the matched reference must be read at an earlier checkpoint. That checkpoint difference is a genuine limitation of this design and is not removed.",
+        "test": {
+          "arm_a_numeric_comparable": 54,
+          "arm_a_rate": 0.2037037037037037,
+          "arm_b_numeric_comparable": 26,
+          "arm_b_rate": 0.038461538461538464,
+          "computable": true,
+          "convention": "arm-label permutation (exchangeability of arm membership)",
+          "n_perm": 10000,
+          "null_mean_difference": -9.686609686611225e-05,
+          "null_sd_difference": 0.08635941529314099,
+          "observed_rate_difference_a_minus_b": 0.16524216524216523,
+          "p_one_sided_diff_ge_observed": 0.0481951804819518,
+          "p_two_sided_absdiff_ge_observed": 0.09429057094290572,
+          "seed": 20260729
+        }
+      },
+      "near_miss_rule": "step-S extracted answer must be contract-valid; pred and gold must both parse numerically and gold != 0; near miss iff |pred-gold|/|gold| <= 0.10. Identical rule to reports/m5c_lost_item_forensics_v1.json.",
+      "permutation_convention_matters": {
+        "like_for_like_unmatched_to_matched": "arm-label p 0.0179 (unmatched, effect +0.1167) -> 0.0482 (matched, effect +0.1652); the effect SIZE is preserved or larger under matching, the p rises because the matched reference arm has only 26 numeric-comparable items.",
+        "matched_arm_label_p": 0.0481951804819518,
+        "note": "The published p for the uncontrolled near-miss contrast (5.0e-4) uses the subset-draw convention, in which only the small arm carries sampling variance. The same data under arm-label permutation, which treats both arms as exchangeable, gives a much larger p. The matched design CANNOT be run under the subset-draw convention because its reference arm has fewer numeric-comparable items than the LOST arm, so a same-size subset cannot be drawn. The like-for-like comparison of unmatched vs matched is therefore arm-label vs arm-label.",
+        "uncontrolled_arm_label_p": 0.0178982101789821,
+        "uncontrolled_subset_draw_p": 0.0004999500049995
+      },
+      "stratified_by_gold_magnitude": {
+        "abs_gold_quartile_cuts": [
+          10.375,
+          34.8,
+          76.0
+        ],
+        "controls": "the answer-scale confound: the near-miss window is +/-10% of gold, so its width scales with |gold|. It does NOT control step-100 correctness.",
+        "design": "LOST(100->400) vs STABLE-WRONG at step 400, stratified by |gold| quartile of the pooled numeric-comparable items; arm labels permuted WITHIN stratum.",
+        "median_abs_gold_lost": 25.5,
+        "median_abs_gold_stable_wrong": 33.0,
+        "n_perm": 10000,
+        "null_mean": 0.0004457339903011588,
+        "null_sd": 0.04752678354942926,
+        "observed_stratified_rate_difference": 0.12006787629700548,
+        "p_one_sided_ge_observed": 0.014798520147985201,
+        "seed": 20260729,
+        "strata": {
+          "0": {
+            "abs_gold_range": [
+              0.3333333333333333,
+              10.0
+            ],
+            "n_lost": 18,
+            "n_stable_wrong": 53,
+            "near_miss_rate_lost": 0.2222222222222222,
+            "near_miss_rate_stable_wrong": 0.09433962264150944,
+            "weight": 13.43661971830986
+          },
+          "1": {
+            "abs_gold_range": [
+              10.5,
+              34.6
+            ],
+            "n_lost": 9,
+            "n_stable_wrong": 62,
+            "near_miss_rate_lost": 0.4444444444444444,
+            "near_miss_rate_stable_wrong": 0.08064516129032258,
+            "weight": 7.859154929577465
+          },
+          "2": {
+            "abs_gold_range": [
+              35.0,
+              74.0
+            ],
+            "n_lost": 15,
+            "n_stable_wrong": 55,
+            "near_miss_rate_lost": 0.0,
+            "near_miss_rate_stable_wrong": 0.09090909090909091,
+            "weight": 11.785714285714286
+          },
+          "3": {
+            "abs_gold_range": [
+              76.0,
+              1208.1
+            ],
+            "n_lost": 12,
+            "n_stable_wrong": 60,
+            "near_miss_rate_lost": 0.25,
+            "near_miss_rate_stable_wrong": 0.08333333333333333,
+            "weight": 10.0
+          }
+        }
+      },
+      "uncontrolled_reference": {
+        "confound": "LOST items were correct at step 100 by construction; STABLE-WRONG items were wrong at step 100. The arms are not matched on step-100 correctness.",
+        "design": "LOST(100->400) step-400 answer vs STABLE-WRONG step-400 answer",
+        "difficulty_controlled": false,
+        "lost": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "published_p_for_comparison": 0.0004999500049995,
+        "stable_wrong": {
+          "excluded_not_numeric_comparable": 38,
+          "n_items": 268,
+          "near_miss_count": 20,
+          "near_miss_rate": 0.08695652173913043,
+          "numeric_comparable": 230
+        },
+        "test": {
+          "arm_a_numeric_comparable": 54,
+          "arm_a_rate": 0.2037037037037037,
+          "arm_b_numeric_comparable": 230,
+          "arm_b_rate": 0.08695652173913043,
+          "computable": true,
+          "convention": "arm-label permutation (exchangeability of arm membership)",
+          "n_perm": 10000,
+          "null_mean_difference": -0.0002667632850241582,
+          "null_sd_difference": 0.04725078624245451,
+          "observed_rate_difference_a_minus_b": 0.11674718196457326,
+          "p_one_sided_diff_ge_observed": 0.0178982101789821,
+          "p_two_sided_absdiff_ge_observed": 0.019198080191980802,
+          "seed": 20260729
+        },
+        "test_published_subset_draw_convention": {
+          "convention": "equal-size subset draw from the reference set; statistic = the drawn subset's near-miss rate compared to the OBSERVED LOST rate (this is the convention used in reports/m5c_lost_item_forensics_v1.json)",
+          "draw_size": 66,
+          "n_perm": 10000,
+          "null_mean_rate": 0.08743165050818465,
+          "null_sd_rate": 0.03273261561928469,
+          "observed_lost_rate": 0.2037037037037037,
+          "p_rate_ge_observed": 0.0004999500049995,
+          "reference_pool_size": 268,
+          "seed": 20260729
+        }
+      }
+    },
+    "acc_strict": {
+      "literal_matched_pool_lost_vs_stable_correct": {
+        "degeneracy_reason": "STABLE_CORRECT items are CORRECT at step 400 by definition, so their step-400 extracted answer equals gold and |pred-gold|/|gold| = 0 <= 0.10 for every numeric-comparable item. The reference near-miss rate is therefore 1.0 by construction and the contrast cannot test the hypothesis in this direction.",
+        "degenerate": true,
+        "design": "LOST(100->400) step-400 answer vs STABLE_CORRECT step-400 answer",
+        "lost": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "matched_on": "correct at step 100 (both arms, by construction)",
+        "stable_correct": {
+          "excluded_not_numeric_comparable": 20,
+          "n_items": 196,
+          "near_miss_count": 176,
+          "near_miss_rate": 1.0,
+          "numeric_comparable": 176
+        }
+      },
+      "matched_design_dip_and_recover": {
+        "arm_a_lost_400": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "arm_b_dip_and_recover": {
+          "excluded_not_numeric_comparable": 8,
+          "n_items": 34,
+          "near_miss_count": 1,
+          "near_miss_rate": 0.038461538461538464,
+          "numeric_comparable": 26
+        },
+        "arm_b_dip_step_histogram": {
+          "150": 17,
+          "200": 9,
+          "300": 8
+        },
+        "arm_b_size": 34,
+        "design": "Both arms restricted to items CORRECT at step 100, and both arms measured on a WRONG answer. Arm A = LOST(100->400), wrong answer taken at step 400. Arm B = DIP-AND-RECOVER: correct at 100, correct at 400, wrong at at least one of steps 150/200/300; wrong answer taken at the FIRST such step.",
+        "matched_on": "correct at step 100 (both arms); wrong answer measured (both arms)",
+        "rationale": "Among items correct at step 100, 'wrong at step S' IS the definition of LOST(100->S). There is therefore no set that is simultaneously matched on step-100 correctness, measured on a wrong answer, and not lost at the same step. The only free axis is the step at which the wrong answer is read, so the matched reference must be read at an earlier checkpoint. That checkpoint difference is a genuine limitation of this design and is not removed.",
+        "test": {
+          "arm_a_numeric_comparable": 54,
+          "arm_a_rate": 0.2037037037037037,
+          "arm_b_numeric_comparable": 26,
+          "arm_b_rate": 0.038461538461538464,
+          "computable": true,
+          "convention": "arm-label permutation (exchangeability of arm membership)",
+          "n_perm": 10000,
+          "null_mean_difference": -9.686609686611225e-05,
+          "null_sd_difference": 0.08635941529314099,
+          "observed_rate_difference_a_minus_b": 0.16524216524216523,
+          "p_one_sided_diff_ge_observed": 0.0481951804819518,
+          "p_two_sided_absdiff_ge_observed": 0.09429057094290572,
+          "seed": 20260729
+        }
+      },
+      "near_miss_rule": "step-S extracted answer must be contract-valid; pred and gold must both parse numerically and gold != 0; near miss iff |pred-gold|/|gold| <= 0.10. Identical rule to reports/m5c_lost_item_forensics_v1.json.",
+      "permutation_convention_matters": {
+        "like_for_like_unmatched_to_matched": "arm-label p 0.0179 (unmatched, effect +0.1167) -> 0.0482 (matched, effect +0.1652); the effect SIZE is preserved or larger under matching, the p rises because the matched reference arm has only 26 numeric-comparable items.",
+        "matched_arm_label_p": 0.0481951804819518,
+        "note": "The published p for the uncontrolled near-miss contrast (5.0e-4) uses the subset-draw convention, in which only the small arm carries sampling variance. The same data under arm-label permutation, which treats both arms as exchangeable, gives a much larger p. The matched design CANNOT be run under the subset-draw convention because its reference arm has fewer numeric-comparable items than the LOST arm, so a same-size subset cannot be drawn. The like-for-like comparison of unmatched vs matched is therefore arm-label vs arm-label.",
+        "uncontrolled_arm_label_p": 0.0178982101789821,
+        "uncontrolled_subset_draw_p": 0.0004999500049995
+      },
+      "stratified_by_gold_magnitude": {
+        "abs_gold_quartile_cuts": [
+          10.375,
+          34.8,
+          76.0
+        ],
+        "controls": "the answer-scale confound: the near-miss window is +/-10% of gold, so its width scales with |gold|. It does NOT control step-100 correctness.",
+        "design": "LOST(100->400) vs STABLE-WRONG at step 400, stratified by |gold| quartile of the pooled numeric-comparable items; arm labels permuted WITHIN stratum.",
+        "median_abs_gold_lost": 25.5,
+        "median_abs_gold_stable_wrong": 33.0,
+        "n_perm": 10000,
+        "null_mean": 0.0004457339903011588,
+        "null_sd": 0.04752678354942926,
+        "observed_stratified_rate_difference": 0.12006787629700548,
+        "p_one_sided_ge_observed": 0.014798520147985201,
+        "seed": 20260729,
+        "strata": {
+          "0": {
+            "abs_gold_range": [
+              0.3333333333333333,
+              10.0
+            ],
+            "n_lost": 18,
+            "n_stable_wrong": 53,
+            "near_miss_rate_lost": 0.2222222222222222,
+            "near_miss_rate_stable_wrong": 0.09433962264150944,
+            "weight": 13.43661971830986
+          },
+          "1": {
+            "abs_gold_range": [
+              10.5,
+              34.6
+            ],
+            "n_lost": 9,
+            "n_stable_wrong": 62,
+            "near_miss_rate_lost": 0.4444444444444444,
+            "near_miss_rate_stable_wrong": 0.08064516129032258,
+            "weight": 7.859154929577465
+          },
+          "2": {
+            "abs_gold_range": [
+              35.0,
+              74.0
+            ],
+            "n_lost": 15,
+            "n_stable_wrong": 55,
+            "near_miss_rate_lost": 0.0,
+            "near_miss_rate_stable_wrong": 0.09090909090909091,
+            "weight": 11.785714285714286
+          },
+          "3": {
+            "abs_gold_range": [
+              76.0,
+              1208.1
+            ],
+            "n_lost": 12,
+            "n_stable_wrong": 60,
+            "near_miss_rate_lost": 0.25,
+            "near_miss_rate_stable_wrong": 0.08333333333333333,
+            "weight": 10.0
+          }
+        }
+      },
+      "uncontrolled_reference": {
+        "confound": "LOST items were correct at step 100 by construction; STABLE-WRONG items were wrong at step 100. The arms are not matched on step-100 correctness.",
+        "design": "LOST(100->400) step-400 answer vs STABLE-WRONG step-400 answer",
+        "difficulty_controlled": false,
+        "lost": {
+          "excluded_not_numeric_comparable": 12,
+          "n_items": 66,
+          "near_miss_count": 11,
+          "near_miss_rate": 0.2037037037037037,
+          "numeric_comparable": 54
+        },
+        "published_p_for_comparison": 0.0004999500049995,
+        "stable_wrong": {
+          "excluded_not_numeric_comparable": 38,
+          "n_items": 268,
+          "near_miss_count": 20,
+          "near_miss_rate": 0.08695652173913043,
+          "numeric_comparable": 230
+        },
+        "test": {
+          "arm_a_numeric_comparable": 54,
+          "arm_a_rate": 0.2037037037037037,
+          "arm_b_numeric_comparable": 230,
+          "arm_b_rate": 0.08695652173913043,
+          "computable": true,
+          "convention": "arm-label permutation (exchangeability of arm membership)",
+          "n_perm": 10000,
+          "null_mean_difference": -0.0002667632850241582,
+          "null_sd_difference": 0.04725078624245451,
+          "observed_rate_difference_a_minus_b": 0.11674718196457326,
+          "p_one_sided_diff_ge_observed": 0.0178982101789821,
+          "p_two_sided_absdiff_ge_observed": 0.019198080191980802,
+          "seed": 20260729
+        },
+        "test_published_subset_draw_convention": {
+          "convention": "equal-size subset draw from the reference set; statistic = the drawn subset's near-miss rate compared to the OBSERVED LOST rate (this is the convention used in reports/m5c_lost_item_forensics_v1.json)",
+          "draw_size": 66,
+          "n_perm": 10000,
+          "null_mean_rate": 0.08743165050818465,
+          "null_sd_rate": 0.03273261561928469,
+          "observed_lost_rate": 0.2037037037037037,
+          "p_rate_ge_observed": 0.0004999500049995,
+          "reference_pool_size": 268,
+          "seed": 20260729
+        }
+      }
+    }
+  },
+  "task3_margin_field_census": {
+    "answer": "NO. No logprob, token-probability, logit, decoding-score or margin field exists in any of the five cached geo3k per-item files.",
+    "field_census": {
+      "100": {
+        "all_field_names": [
+          "canonical_p_sample",
+          "canonical_sample_correct_count",
+          "condition",
+          "decoding",
+          "format_prompt_sha256",
+          "format_weight",
+          "greedy_acc_strict",
+          "greedy_canonical_correct",
+          "greedy_contract_valid",
+          "greedy_correct",
+          "greedy_extracted_answer",
+          "greedy_extractor_valid",
+          "greedy_format_reward",
+          "greedy_format_valid",
+          "greedy_native_r1v_shadow_reward",
+          "greedy_native_r1v_shadow_valid",
+          "greedy_response",
+          "greedy_reward_disagreement_reason",
+          "greedy_training_reward",
+          "ground_truth",
+          "guarded_rescore_source_row_sha256",
+          "guarded_rescore_source_run",
+          "guarded_rescore_version",
+          "image_sha256",
+          "mean_sampled_format_reward",
+          "mean_sampled_training_reward",
+          "p_greedy",
+          "p_i_jeffreys",
+          "p_sample",
+          "parser_version",
+          "pass_at_g",
+          "pass_at_k16",
+          "pilot_reward_version",
+          "problem",
+          "prompt_contract_id",
+          "prompt_contract_sha256",
+          "q_i",
+          "qid",
+          "row_index",
+          "sample_correct",
+          "sample_correct_count",
+          "sample_count",
+          "sampled_canonical_correct",
+          "sampled_canonical_rewards",
+          "sampled_contract_valid",
+          "sampled_extractor_valid",
+          "sampled_format_rewards",
+          "sampled_native_r1v_shadow_rewards",
+          "sampled_native_r1v_shadow_valid",
+          "sampled_responses",
+          "sampled_reward_disagreement_reasons",
+          "sampled_training_rewards",
+          "schema_version",
+          "scoring_mode",
+          "source_manifest_sha256",
+          "source_metadata",
+          "split",
+          "symbolic_grader_guard_version",
+          "symbolic_grader_timeout_seconds",
+          "train_filter_sha256",
+          "variance_proxy"
+        ],
+        "fields_matching_logprob_score_margin_candidates": [
+          "guarded_rescore_source_row_sha256",
+          "guarded_rescore_source_run",
+          "guarded_rescore_version"
+        ],
+        "n_fields": 61,
+        "per_item_path": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z/per_item.jsonl"
+      },
+      "150": {
+        "all_field_names": [
+          "acc_final",
+          "acc_strict",
+          "arm",
+          "canonical_correct",
+          "canonical_eval_reward",
+          "checkpoint_index_sha256",
+          "condition",
+          "contract_valid",
+          "decoding",
+          "extracted_answer",
+          "extractor_valid",
+          "format_prompt_sha256",
+          "format_reward",
+          "format_weight",
+          "global_step",
+          "greedy_response",
+          "ground_truth",
+          "image_sha256",
+          "model_revision",
+          "native_r1v_shadow_reward",
+          "native_r1v_shadow_valid",
+          "parser_version",
+          "pilot_accuracy_reward",
+          "pilot_reward_version",
+          "problem",
+          "prompt_contract_id",
+          "prompt_contract_sha256",
+          "qid",
+          "reward_disagreement_reason",
+          "row_index",
+          "schema_version",
+          "scoring_mode",
+          "source_manifest_sha256",
+          "source_metadata",
+          "source_training_manifest_sha256",
+          "split",
+          "symbolic_grader_guard_version",
+          "symbolic_grader_timeout_seconds",
+          "training_reward"
+        ],
+        "fields_matching_logprob_score_margin_candidates": [],
+        "n_fields": 39,
+        "per_item_path": "experiments/runs/m5_geo3k_step150_an12_gpu4_20260718T051839Z/per_item.jsonl"
+      },
+      "200": {
+        "all_field_names": [
+          "acc_final",
+          "acc_strict",
+          "arm",
+          "canonical_correct",
+          "canonical_eval_reward",
+          "checkpoint_index_sha256",
+          "condition",
+          "contract_valid",
+          "decoding",
+          "extracted_answer",
+          "extractor_valid",
+          "format_prompt_sha256",
+          "format_reward",
+          "format_weight",
+          "global_step",
+          "greedy_response",
+          "ground_truth",
+          "image_sha256",
+          "model_revision",
+          "native_r1v_shadow_reward",
+          "native_r1v_shadow_valid",
+          "parser_version",
+          "pilot_accuracy_reward",
+          "pilot_reward_version",
+          "problem",
+          "prompt_contract_id",
+          "prompt_contract_sha256",
+          "qid",
+          "reward_disagreement_reason",
+          "row_index",
+          "schema_version",
+          "scoring_mode",
+          "source_manifest_sha256",
+          "source_metadata",
+          "source_training_manifest_sha256",
+          "split",
+          "symbolic_grader_guard_version",
+          "symbolic_grader_timeout_seconds",
+          "training_reward"
+        ],
+        "fields_matching_logprob_score_margin_candidates": [],
+        "n_fields": 39,
+        "per_item_path": "experiments/runs/m5_geo3k_step200_an29_gpu4_20260722T141052Z/per_item.jsonl"
+      },
+      "300": {
+        "all_field_names": [
+          "acc_final",
+          "acc_strict",
+          "arm",
+          "canonical_correct",
+          "canonical_eval_reward",
+          "checkpoint_index_sha256",
+          "condition",
+          "contract_valid",
+          "decoding",
+          "extracted_answer",
+          "extractor_valid",
+          "format_prompt_sha256",
+          "format_reward",
+          "format_weight",
+          "global_step",
+          "greedy_response",
+          "ground_truth",
+          "image_sha256",
+          "model_revision",
+          "native_r1v_shadow_reward",
+          "native_r1v_shadow_valid",
+          "parser_version",
+          "pilot_accuracy_reward",
+          "pilot_reward_version",
+          "problem",
+          "prompt_contract_id",
+          "prompt_contract_sha256",
+          "qid",
+          "reward_disagreement_reason",
+          "row_index",
+          "schema_version",
+          "scoring_mode",
+          "source_manifest_sha256",
+          "source_metadata",
+          "source_training_manifest_sha256",
+          "split",
+          "symbolic_grader_guard_version",
+          "symbolic_grader_timeout_seconds",
+          "training_reward"
+        ],
+        "fields_matching_logprob_score_margin_candidates": [],
+        "n_fields": 39,
+        "per_item_path": "experiments/runs/m5_geo3k_step300_an12_gpu0_20260726T083303Z/per_item.jsonl"
+      },
+      "400": {
+        "all_field_names": [
+          "acc_final",
+          "acc_strict",
+          "arm",
+          "canonical_correct",
+          "canonical_eval_reward",
+          "checkpoint_index_sha256",
+          "condition",
+          "contract_valid",
+          "decoding",
+          "extracted_answer",
+          "extractor_valid",
+          "format_prompt_sha256",
+          "format_reward",
+          "format_weight",
+          "global_step",
+          "greedy_response",
+          "ground_truth",
+          "image_sha256",
+          "model_revision",
+          "native_r1v_shadow_reward",
+          "native_r1v_shadow_valid",
+          "parser_version",
+          "pilot_accuracy_reward",
+          "pilot_reward_version",
+          "problem",
+          "prompt_contract_id",
+          "prompt_contract_sha256",
+          "qid",
+          "reward_disagreement_reason",
+          "row_index",
+          "schema_version",
+          "scoring_mode",
+          "source_manifest_sha256",
+          "source_metadata",
+          "source_training_manifest_sha256",
+          "split",
+          "symbolic_grader_guard_version",
+          "symbolic_grader_timeout_seconds",
+          "training_reward"
+        ],
+        "fields_matching_logprob_score_margin_candidates": [],
+        "n_fields": 39,
+        "per_item_path": "experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z/per_item.jsonl"
+      }
+    },
+    "matched_candidate_fields_are_substring_false_positives": "The only substring hits anywhere are at step 100: guarded_rescore_source_row_sha256, guarded_rescore_source_run and guarded_rescore_version. They match because 'rescore' contains 'score'. They are a provenance sha256, a run id and a version string. Steps 150/200/300/400 have zero substring hits. There is no true logprob/score/margin field at any step.",
+    "matched_candidate_fields_by_step": {
+      "100": [
+        "guarded_rescore_source_row_sha256",
+        "guarded_rescore_source_run",
+        "guarded_rescore_version"
+      ],
+      "150": [],
+      "200": [],
+      "300": [],
+      "400": []
+    },
+    "question": "Do the cached geo3k prediction rows carry a logprob / score / margin field that would let us compare the decoding margin of LOST items against reference sets?",
+    "side_measurement_not_the_margin_test": {
+      "results": {
+        "acc_final": {
+          "mean_canonical_p_sample_lost": 0.42329545454545453,
+          "mean_canonical_p_sample_stable_correct": 0.7885841836734694,
+          "median_lost": 0.4375,
+          "median_stable_correct": 0.875,
+          "n_lost": 66,
+          "n_perm": 10000,
+          "n_stable_correct": 196,
+          "observed_mean_difference_lost_minus_stable_correct": -0.36528872912801486,
+          "p_one_sided_diff_le_observed": 0.0001,
+          "p_two_sided": 0.0001,
+          "seed": 20260729
+        },
+        "acc_strict": {
+          "mean_canonical_p_sample_lost": 0.42329545454545453,
+          "mean_canonical_p_sample_stable_correct": 0.7885841836734694,
+          "median_lost": 0.4375,
+          "median_stable_correct": 0.875,
+          "n_lost": 66,
+          "n_perm": 10000,
+          "n_stable_correct": 196,
+          "observed_mean_difference_lost_minus_stable_correct": -0.36528872912801486,
+          "p_one_sided_diff_le_observed": 0.0001,
+          "p_two_sided": 0.0001,
+          "seed": 20260729
+        }
+      },
+      "what_it_is": "step-100 16-sample temperature-1.0 empirical pass rate (canonical_p_sample) of LOST(100->400) items vs STABLE_CORRECT items, both correct at greedy step 100.",
+      "what_it_is_not": "It is NOT the logprob/margin comparison requested, and it is NOT offered as a proxy for one. The margin comparison stays NOT MEASURABLE. This is a separate, directly measured quantity from a different decode (temperature 1.0, n=16) that exists only at step 100. It is reported as its own line in the ledger and is included in the Holm family. A reader who wants only the requested test should read the verdict above."
+    },
+    "step_100_p_greedy_value_census_test_rows": {
+      "0.0": 339,
+      "1.0": 262
+    },
+    "step_100_sampling_summary_fields_present": [
+      "canonical_p_sample",
+      "canonical_sample_correct_count",
+      "p_greedy",
+      "p_i_jeffreys",
+      "p_sample",
+      "pass_at_g",
+      "pass_at_k16",
+      "q_i",
+      "sample_correct_count",
+      "sample_count",
+      "variance_proxy"
+    ],
+    "step_400_margin_is_unavailable_even_from_sampling": "There is no sampled decode at step 400 in the cached set, so not even a sampled pass-rate analogue exists at the second endpoint. A step-400 16-sample run (experiments/runs/m5c_sampled_m5c-taskb-step400_an29_gpu4_20260730T122620Z) was in flight for M5C Task B while this report was being written and was incomplete; it is not used here.",
+    "verdict": "NOT MEASURABLE. The requested comparisons -- step-100 margin of LOST vs STABLE_CORRECT, and step-400 margin of LOST vs STABLE_WRONG -- cannot be run on cached data. No proxy is substituted for the margin.",
+    "why_the_step_100_fields_are_not_a_margin": "The step-100 guarded-rescore file carries p_greedy, p_sample, canonical_p_sample, p_i_jeffreys, variance_proxy, q_i and pass_at_k16. These are summaries of a 16-sample temperature-1.0 decode (sample_count = 16) plus the binary greedy outcome. They are empirical correctness FREQUENCIES, not token logprobs and not a decoding margin. Steps 150/200/300/400 have no sampled decode at all: the only numeric non-binary fields there are format_reward / training_reward / canonical_eval_reward / pilot_accuracy_reward, which are deterministic functions of the binary correctness and format flags (verified: those four fields take exactly 4 distinct joint values across 601 items at step 400)."
+  },
+  "task4_five_step_pattern_structure": {
+    "acc_final": {
+      "always_correct": 162,
+      "direction": {
+        "n1_observed_minus_null_mean": -768.0413000000001,
+        "n2_observed_minus_null_mean": -51.620799999999974,
+        "n3_observed_minus_null_mean": -51.99380000000002,
+        "vs_N1_independence": "MORE PERSISTENCE than independence: observed total adjacent flips 429 vs null mean 1197.0; observed items with zero flips 360 vs null mean 39.5; observed never-correct 198 vs null mean 26.8; observed always-correct 162 vs null mean 12.7.",
+        "vs_N2_and_N3_given_item_difficulty": "observed flips 429 vs N2 null mean 480.6 and N3 null mean 481.0. Sign of (observed - null mean) determines whether states are sticky (negative) or alternating (positive) once each item's own number of correct steps is held fixed."
+      },
+      "moved_at_least_once": 241,
+      "n_distinct_patterns_observed": 32,
+      "n_items": 601,
+      "n_possible_patterns": 32,
+      "never_correct": 198,
+      "null_N1_independent_bernoulli_at_observed_step_marginals": {
+        "asymptotic_df_reference_only": {
+          "32_cells_minus_1": 31,
+          "minus_5_fitted_marginals": 26
+        },
+        "definition": "Each item's state at each step is an independent Bernoulli draw at that step's OBSERVED marginal accuracy; items are exchangeable. Per replicate the expected pattern counts are refit from the replicate's own marginals (parametric bootstrap), so the statistic is calibrated the same way as the observed one.",
+        "expected_pattern_counts_from_observed_marginals": {
+          "00000": 26.857427877415223,
+          "00001": 21.469860009790015,
+          "00010": 24.222680205896644,
+          "00011": 19.36363956579163,
+          "00100": 25.720142657850406,
+          "00101": 20.560712843251675,
+          "00110": 23.196964105972683,
+          "00111": 18.5436808871099,
+          "01000": 23.742303013890574,
+          "01001": 18.97962546319995,
+          "01010": 21.413153034679787,
+          "01011": 17.11770018041768,
+          "01100": 22.736928619165564,
+          "01101": 18.175927968015586,
+          "01110": 20.50640714070312,
+          "01111": 16.392846426849502,
+          "10000": 20.757068153046575,
+          "10001": 16.59322514030969,
+          "10010": 18.720773492462893,
+          "10011": 14.965408749962853,
+          "10100": 19.878104355034836,
+          "10101": 15.890580427527846,
+          "10110": 17.928037155648504,
+          "10111": 14.331694372928595,
+          "11000": 18.349508524009828,
+          "11001": 14.668619089552767,
+          "11010": 16.549398510578484,
+          "11011": 13.229608988995375,
+          "11100": 17.572493505077816,
+          "11101": 14.047472352861607,
+          "11110": 15.848609648567015,
+          "11111": 12.669397533435308
+        },
+        "expected_total_adjacent_flips_analytic": 1197.1663893510815,
+        "n_perm": 10000,
+        "null_max_G2": 70.91348013950078,
+        "null_max_X2": 73.82666053178846,
+        "null_mean_G2": 26.438631997000815,
+        "null_mean_X2": 26.14763266567009,
+        "null_mean_always_correct": 12.662,
+        "null_mean_items_with_zero_flips": 39.4797,
+        "null_mean_never_correct": 26.8177,
+        "null_mean_total_flips": 1197.0413,
+        "null_min_total_flips": 1091,
+        "null_q999_G2": 55.6927502930563,
+        "null_sd_G2": 7.266648476279234,
+        "null_sd_total_flips": 24.553547238193463,
+        "observed_G2_likelihood_ratio": 1289.8185493352635,
+        "observed_pearson_X2": 3070.952343135681,
+        "p_G2_ge_observed": 0.0001,
+        "p_X2_ge_observed": 0.0001,
+        "p_always_correct_ge_observed": 0.0001,
+        "p_items_with_zero_flips_ge_observed": 0.0001,
+        "p_never_correct_ge_observed": 0.0001,
+        "p_total_flips_le_observed": 0.0001,
+        "seed": 20260729
+      },
+      "null_N2_within_item_label_permutation": {
+        "definition": "Each item keeps its own number of correct steps; the five step labels are permuted uniformly within the item. Item difficulty is held fixed and only the temporal ORDER is randomised. Does not preserve per-step column margins.",
+        "n_perm": 10000,
+        "null_mean_total_flips": 480.6208,
+        "null_min_total_flips": 438,
+        "null_sd_total_flips": 11.406946094460173,
+        "observed_total_adjacent_flips": 429,
+        "p_total_flips_le_observed": 0.0001,
+        "seed": 20260729
+      },
+      "null_N3_row_and_column_margin_preserving_curveball": {
+        "col_sums_target": [
+          262,
+          282,
+          294,
+          285,
+          267
+        ],
+        "definition": "Curveball trades on the 601x5 binary matrix, preserving every item's number of correct steps AND every step's accuracy count exactly. 20000 burn-in trades, 200 trades between successive samples.",
+        "margins_preserved_at_every_sample": true,
+        "n_perm": 10000,
+        "null_mean_total_flips": 480.9938,
+        "null_min_total_flips": 439,
+        "null_sd_total_flips": 11.157132683667973,
+        "observed_total_adjacent_flips": 429,
+        "p_total_flips_le_observed": 0.0001,
+        "row_sums_target": [
+          198,
+          68,
+          61,
+          58,
+          54,
+          162
+        ],
+        "seed": 20260729
+      },
+      "observed_items_with_zero_flips": 360,
+      "observed_total_adjacent_flips": 429,
+      "pattern_table": {
+        "00000": {
+          "expected_under_independence": 26.857427877415223,
+          "n_adjacent_flips": 0,
+          "n_steps_correct": 0,
+          "obs_minus_exp": 171.14257212258477,
+          "observed": 198
+        },
+        "00001": {
+          "expected_under_independence": 21.469860009790015,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -9.469860009790015,
+          "observed": 12
+        },
+        "00010": {
+          "expected_under_independence": 24.222680205896644,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -11.222680205896644,
+          "observed": 13
+        },
+        "00011": {
+          "expected_under_independence": 19.36363956579163,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -15.36363956579163,
+          "observed": 4
+        },
+        "00100": {
+          "expected_under_independence": 25.720142657850406,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -12.720142657850406,
+          "observed": 13
+        },
+        "00101": {
+          "expected_under_independence": 20.560712843251675,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -18.560712843251675,
+          "observed": 2
+        },
+        "00110": {
+          "expected_under_independence": 23.196964105972683,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -13.196964105972683,
+          "observed": 10
+        },
+        "00111": {
+          "expected_under_independence": 18.5436808871099,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -2.5436808871099004,
+          "observed": 16
+        },
+        "01000": {
+          "expected_under_independence": 23.742303013890574,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -12.742303013890574,
+          "observed": 11
+        },
+        "01001": {
+          "expected_under_independence": 18.97962546319995,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -12.979625463199952,
+          "observed": 6
+        },
+        "01010": {
+          "expected_under_independence": 21.413153034679787,
+          "n_adjacent_flips": 4,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -17.413153034679787,
+          "observed": 4
+        },
+        "01011": {
+          "expected_under_independence": 17.11770018041768,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -12.117700180417678,
+          "observed": 5
+        },
+        "01100": {
+          "expected_under_independence": 22.736928619165564,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -12.736928619165564,
+          "observed": 10
+        },
+        "01101": {
+          "expected_under_independence": 18.175927968015586,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -14.175927968015586,
+          "observed": 4
+        },
+        "01110": {
+          "expected_under_independence": 20.50640714070312,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -11.506407140703121,
+          "observed": 9
+        },
+        "01111": {
+          "expected_under_independence": 16.392846426849502,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 4,
+          "obs_minus_exp": 5.607153573150498,
+          "observed": 22
+        },
+        "10000": {
+          "expected_under_independence": 20.757068153046575,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -1.7570681530465748,
+          "observed": 19
+        },
+        "10001": {
+          "expected_under_independence": 16.59322514030969,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -13.593225140309691,
+          "observed": 3
+        },
+        "10010": {
+          "expected_under_independence": 18.720773492462893,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -14.720773492462893,
+          "observed": 4
+        },
+        "10011": {
+          "expected_under_independence": 14.965408749962853,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -9.965408749962853,
+          "observed": 5
+        },
+        "10100": {
+          "expected_under_independence": 19.878104355034836,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -11.878104355034836,
+          "observed": 8
+        },
+        "10101": {
+          "expected_under_independence": 15.890580427527846,
+          "n_adjacent_flips": 4,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -13.890580427527846,
+          "observed": 2
+        },
+        "10110": {
+          "expected_under_independence": 17.928037155648504,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -14.928037155648504,
+          "observed": 3
+        },
+        "10111": {
+          "expected_under_independence": 14.331694372928595,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -7.331694372928595,
+          "observed": 7
+        },
+        "11000": {
+          "expected_under_independence": 18.349508524009828,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -8.349508524009828,
+          "observed": 10
+        },
+        "11001": {
+          "expected_under_independence": 14.668619089552767,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -13.668619089552767,
+          "observed": 1
+        },
+        "11010": {
+          "expected_under_independence": 16.549398510578484,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -12.549398510578484,
+          "observed": 4
+        },
+        "11011": {
+          "expected_under_independence": 13.229608988995375,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -5.229608988995375,
+          "observed": 8
+        },
+        "11100": {
+          "expected_under_independence": 17.572493505077816,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -8.572493505077816,
+          "observed": 9
+        },
+        "11101": {
+          "expected_under_independence": 14.047472352861607,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -6.0474723528616074,
+          "observed": 8
+        },
+        "11110": {
+          "expected_under_independence": 15.848609648567015,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -6.848609648567015,
+          "observed": 9
+        },
+        "11111": {
+          "expected_under_independence": 12.669397533435308,
+          "n_adjacent_flips": 0,
+          "n_steps_correct": 5,
+          "obs_minus_exp": 149.3306024665647,
+          "observed": 162
+        }
+      },
+      "per_step_marginal_accuracy": {
+        "100": 0.43594009983361065,
+        "150": 0.46921797004991683,
+        "200": 0.4891846921797005,
+        "300": 0.47420965058236275,
+        "400": 0.4442595673876872
+      },
+      "step_order": "digits are steps 100/150/200/300/400"
+    },
+    "acc_strict": {
+      "always_correct": 162,
+      "direction": {
+        "n1_observed_minus_null_mean": -768.0413000000001,
+        "n2_observed_minus_null_mean": -51.620799999999974,
+        "n3_observed_minus_null_mean": -51.99380000000002,
+        "vs_N1_independence": "MORE PERSISTENCE than independence: observed total adjacent flips 429 vs null mean 1197.0; observed items with zero flips 360 vs null mean 39.5; observed never-correct 198 vs null mean 26.8; observed always-correct 162 vs null mean 12.7.",
+        "vs_N2_and_N3_given_item_difficulty": "observed flips 429 vs N2 null mean 480.6 and N3 null mean 481.0. Sign of (observed - null mean) determines whether states are sticky (negative) or alternating (positive) once each item's own number of correct steps is held fixed."
+      },
+      "moved_at_least_once": 241,
+      "n_distinct_patterns_observed": 32,
+      "n_items": 601,
+      "n_possible_patterns": 32,
+      "never_correct": 198,
+      "null_N1_independent_bernoulli_at_observed_step_marginals": {
+        "asymptotic_df_reference_only": {
+          "32_cells_minus_1": 31,
+          "minus_5_fitted_marginals": 26
+        },
+        "definition": "Each item's state at each step is an independent Bernoulli draw at that step's OBSERVED marginal accuracy; items are exchangeable. Per replicate the expected pattern counts are refit from the replicate's own marginals (parametric bootstrap), so the statistic is calibrated the same way as the observed one.",
+        "expected_pattern_counts_from_observed_marginals": {
+          "00000": 26.857427877415223,
+          "00001": 21.469860009790015,
+          "00010": 24.222680205896644,
+          "00011": 19.36363956579163,
+          "00100": 25.720142657850406,
+          "00101": 20.560712843251675,
+          "00110": 23.196964105972683,
+          "00111": 18.5436808871099,
+          "01000": 23.742303013890574,
+          "01001": 18.97962546319995,
+          "01010": 21.413153034679787,
+          "01011": 17.11770018041768,
+          "01100": 22.736928619165564,
+          "01101": 18.175927968015586,
+          "01110": 20.50640714070312,
+          "01111": 16.392846426849502,
+          "10000": 20.757068153046575,
+          "10001": 16.59322514030969,
+          "10010": 18.720773492462893,
+          "10011": 14.965408749962853,
+          "10100": 19.878104355034836,
+          "10101": 15.890580427527846,
+          "10110": 17.928037155648504,
+          "10111": 14.331694372928595,
+          "11000": 18.349508524009828,
+          "11001": 14.668619089552767,
+          "11010": 16.549398510578484,
+          "11011": 13.229608988995375,
+          "11100": 17.572493505077816,
+          "11101": 14.047472352861607,
+          "11110": 15.848609648567015,
+          "11111": 12.669397533435308
+        },
+        "expected_total_adjacent_flips_analytic": 1197.1663893510815,
+        "n_perm": 10000,
+        "null_max_G2": 70.91348013950078,
+        "null_max_X2": 73.82666053178846,
+        "null_mean_G2": 26.438631997000815,
+        "null_mean_X2": 26.14763266567009,
+        "null_mean_always_correct": 12.662,
+        "null_mean_items_with_zero_flips": 39.4797,
+        "null_mean_never_correct": 26.8177,
+        "null_mean_total_flips": 1197.0413,
+        "null_min_total_flips": 1091,
+        "null_q999_G2": 55.6927502930563,
+        "null_sd_G2": 7.266648476279234,
+        "null_sd_total_flips": 24.553547238193463,
+        "observed_G2_likelihood_ratio": 1289.8185493352635,
+        "observed_pearson_X2": 3070.952343135681,
+        "p_G2_ge_observed": 0.0001,
+        "p_X2_ge_observed": 0.0001,
+        "p_always_correct_ge_observed": 0.0001,
+        "p_items_with_zero_flips_ge_observed": 0.0001,
+        "p_never_correct_ge_observed": 0.0001,
+        "p_total_flips_le_observed": 0.0001,
+        "seed": 20260729
+      },
+      "null_N2_within_item_label_permutation": {
+        "definition": "Each item keeps its own number of correct steps; the five step labels are permuted uniformly within the item. Item difficulty is held fixed and only the temporal ORDER is randomised. Does not preserve per-step column margins.",
+        "n_perm": 10000,
+        "null_mean_total_flips": 480.6208,
+        "null_min_total_flips": 438,
+        "null_sd_total_flips": 11.406946094460173,
+        "observed_total_adjacent_flips": 429,
+        "p_total_flips_le_observed": 0.0001,
+        "seed": 20260729
+      },
+      "null_N3_row_and_column_margin_preserving_curveball": {
+        "col_sums_target": [
+          262,
+          282,
+          294,
+          285,
+          267
+        ],
+        "definition": "Curveball trades on the 601x5 binary matrix, preserving every item's number of correct steps AND every step's accuracy count exactly. 20000 burn-in trades, 200 trades between successive samples.",
+        "margins_preserved_at_every_sample": true,
+        "n_perm": 10000,
+        "null_mean_total_flips": 480.9938,
+        "null_min_total_flips": 439,
+        "null_sd_total_flips": 11.157132683667973,
+        "observed_total_adjacent_flips": 429,
+        "p_total_flips_le_observed": 0.0001,
+        "row_sums_target": [
+          198,
+          68,
+          61,
+          58,
+          54,
+          162
+        ],
+        "seed": 20260729
+      },
+      "observed_items_with_zero_flips": 360,
+      "observed_total_adjacent_flips": 429,
+      "pattern_table": {
+        "00000": {
+          "expected_under_independence": 26.857427877415223,
+          "n_adjacent_flips": 0,
+          "n_steps_correct": 0,
+          "obs_minus_exp": 171.14257212258477,
+          "observed": 198
+        },
+        "00001": {
+          "expected_under_independence": 21.469860009790015,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -9.469860009790015,
+          "observed": 12
+        },
+        "00010": {
+          "expected_under_independence": 24.222680205896644,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -11.222680205896644,
+          "observed": 13
+        },
+        "00011": {
+          "expected_under_independence": 19.36363956579163,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -15.36363956579163,
+          "observed": 4
+        },
+        "00100": {
+          "expected_under_independence": 25.720142657850406,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -12.720142657850406,
+          "observed": 13
+        },
+        "00101": {
+          "expected_under_independence": 20.560712843251675,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -18.560712843251675,
+          "observed": 2
+        },
+        "00110": {
+          "expected_under_independence": 23.196964105972683,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -13.196964105972683,
+          "observed": 10
+        },
+        "00111": {
+          "expected_under_independence": 18.5436808871099,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -2.5436808871099004,
+          "observed": 16
+        },
+        "01000": {
+          "expected_under_independence": 23.742303013890574,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -12.742303013890574,
+          "observed": 11
+        },
+        "01001": {
+          "expected_under_independence": 18.97962546319995,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -12.979625463199952,
+          "observed": 6
+        },
+        "01010": {
+          "expected_under_independence": 21.413153034679787,
+          "n_adjacent_flips": 4,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -17.413153034679787,
+          "observed": 4
+        },
+        "01011": {
+          "expected_under_independence": 17.11770018041768,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -12.117700180417678,
+          "observed": 5
+        },
+        "01100": {
+          "expected_under_independence": 22.736928619165564,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -12.736928619165564,
+          "observed": 10
+        },
+        "01101": {
+          "expected_under_independence": 18.175927968015586,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -14.175927968015586,
+          "observed": 4
+        },
+        "01110": {
+          "expected_under_independence": 20.50640714070312,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -11.506407140703121,
+          "observed": 9
+        },
+        "01111": {
+          "expected_under_independence": 16.392846426849502,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 4,
+          "obs_minus_exp": 5.607153573150498,
+          "observed": 22
+        },
+        "10000": {
+          "expected_under_independence": 20.757068153046575,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 1,
+          "obs_minus_exp": -1.7570681530465748,
+          "observed": 19
+        },
+        "10001": {
+          "expected_under_independence": 16.59322514030969,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -13.593225140309691,
+          "observed": 3
+        },
+        "10010": {
+          "expected_under_independence": 18.720773492462893,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -14.720773492462893,
+          "observed": 4
+        },
+        "10011": {
+          "expected_under_independence": 14.965408749962853,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -9.965408749962853,
+          "observed": 5
+        },
+        "10100": {
+          "expected_under_independence": 19.878104355034836,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -11.878104355034836,
+          "observed": 8
+        },
+        "10101": {
+          "expected_under_independence": 15.890580427527846,
+          "n_adjacent_flips": 4,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -13.890580427527846,
+          "observed": 2
+        },
+        "10110": {
+          "expected_under_independence": 17.928037155648504,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -14.928037155648504,
+          "observed": 3
+        },
+        "10111": {
+          "expected_under_independence": 14.331694372928595,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -7.331694372928595,
+          "observed": 7
+        },
+        "11000": {
+          "expected_under_independence": 18.349508524009828,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 2,
+          "obs_minus_exp": -8.349508524009828,
+          "observed": 10
+        },
+        "11001": {
+          "expected_under_independence": 14.668619089552767,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -13.668619089552767,
+          "observed": 1
+        },
+        "11010": {
+          "expected_under_independence": 16.549398510578484,
+          "n_adjacent_flips": 3,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -12.549398510578484,
+          "observed": 4
+        },
+        "11011": {
+          "expected_under_independence": 13.229608988995375,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -5.229608988995375,
+          "observed": 8
+        },
+        "11100": {
+          "expected_under_independence": 17.572493505077816,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 3,
+          "obs_minus_exp": -8.572493505077816,
+          "observed": 9
+        },
+        "11101": {
+          "expected_under_independence": 14.047472352861607,
+          "n_adjacent_flips": 2,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -6.0474723528616074,
+          "observed": 8
+        },
+        "11110": {
+          "expected_under_independence": 15.848609648567015,
+          "n_adjacent_flips": 1,
+          "n_steps_correct": 4,
+          "obs_minus_exp": -6.848609648567015,
+          "observed": 9
+        },
+        "11111": {
+          "expected_under_independence": 12.669397533435308,
+          "n_adjacent_flips": 0,
+          "n_steps_correct": 5,
+          "obs_minus_exp": 149.3306024665647,
+          "observed": 162
+        }
+      },
+      "per_step_marginal_accuracy": {
+        "100": 0.43594009983361065,
+        "150": 0.46921797004991683,
+        "200": 0.4891846921797005,
+        "300": 0.47420965058236275,
+        "400": 0.4442595673876872
+      },
+      "step_order": "digits are steps 100/150/200/300/400"
+    }
+  },
+  "task_b_status": {
+    "report_exists": false,
+    "runs": {
+      "step100_sampled_repro": {
+        "path": "experiments/runs/m5c_sampled_m5c-taskb-step100-repro_an29_gpu5_20260730T122701Z",
+        "rows_written_at_read_time": 601,
+        "target_rows": 601
+      },
+      "step400_sampled": {
+        "path": "experiments/runs/m5c_sampled_m5c-taskb-step400_an29_gpu4_20260730T122620Z",
+        "rows_written_at_read_time": 572,
+        "target_rows": 601
+      }
+    },
+    "status": "M5C Task B (expected-discordance null from sampled p_i at both endpoints) had NOT emitted a report at the time this ledger was written; its two sampled evals were still writing rows. The ledger therefore carries Task A's measured floor (L03) and the superseded prior reference (L04) but no Task B result. This is a gap in the ledger, not a null result."
+  },
+  "verification": {
+    "acc_final_equals_acc_strict_all_items_all_steps": true,
+    "bucket_rules_imported_from": "scripts/m5c_lost_item_forensics.py::STEM_RULES",
+    "bucket_rules_in_order": [
+      {
+        "name": "area",
+        "regex": "\\barea\\b"
+      },
+      {
+        "name": "perimeter",
+        "regex": "\\bperimeter\\b"
+      },
+      {
+        "name": "circumference",
+        "regex": "\\bcircumference\\b"
+      },
+      {
+        "name": "volume",
+        "regex": "\\bvolume\\b"
+      },
+      {
+        "name": "arc_measure",
+        "regex": "\\\\widehat|\\barc\\b"
+      },
+      {
+        "name": "angle_measure",
+        "regex": "\\\\angle|\u2220|\\bm\\s*\\\\angle"
+      },
+      {
+        "name": "ratio",
+        "regex": "\\bratio\\b"
+      },
+      {
+        "name": "length_measure",
+        "regex": "\\blength\\b|\\bmeasure\\b|\\bperimeter\\b"
+      },
+      {
+        "name": "solve_for_variable",
+        "regex": "\\bfind\\s+\\$?\\\\?[xyz]\\$?\\b|\\bfind\\s+the\\s+value\\b"
+      }
+    ],
+    "bucket_rules_match_published_artifact": true,
+    "chi2_statistics_reproduce_published_artifact": {
+      "gained_match_1e-9": true,
+      "gained_observed_chi2_here": 8.806222174140693,
+      "gained_observed_chi2_published": 8.806222174140693,
+      "lost_match_1e-9": true,
+      "lost_observed_chi2_here": 11.776932937816078,
+      "lost_observed_chi2_published": 11.776932937816078,
+      "note": "The chi-square STATISTIC is deterministic and must match to machine precision. The permutation p may differ in the 3rd decimal from the published value because the published run drew its permutations from an RNG stream shared with the Jaccard and gold-entropy statistics, whereas this run uses a dedicated stream at the same seed. Both are valid Monte-Carlo estimates of the same p.",
+      "published_gained_p": 0.13338666133386662,
+      "published_lost_p": 0.0428957104289571
+    },
+    "gold_identical_across_steps": true,
+    "item_key_sets_identical": true,
+    "problem_sha256_identical_across_steps": true,
+    "set_sizes_reproduce_forensics_artifact": {
+      "gained": true,
+      "lost": true,
+      "stable_correct": true,
+      "stable_wrong": true
+    },
+    "substrate_rows": 601,
+    "substrate_sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864",
+    "substrate_value_mismatches_vs_runs": 0,
+    "test_item_counts": {
+      "100": 601,
+      "150": 601,
+      "200": 601,
+      "300": 601,
+      "400": 601
+    }
+  }
+}
