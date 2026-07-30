@@ -15,11 +15,15 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MODEL_PATH="${VIRL_MODEL_PATH:-artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct}"
 MODEL_LOCATION="${VIRL_MODEL_LOCATION:-shared}"
 MODEL_REVISION="${VIRL_MODEL_REVISION:-Qwen/Qwen2.5-VL-3B-Instruct@66285546d2b821cf421d4f5eb2576359d3770cd3}"
-MANIFEST="data/virl39k_blind_sample_4096.jsonl"
-SAMPLE_SPEC="reports/virl39k_blind_sample_4096.json"
+MANIFEST="${VIRL_MANIFEST:-data/virl39k_blind_sample_4096.jsonl}"
+SAMPLE_SPEC="${VIRL_SAMPLE_SPEC:-reports/virl39k_blind_sample_4096.json}"
+SPLITS="${VIRL_SPLITS:-audit}"
 FORMAT_PROMPT="artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja"
 CAPTION_RUN="${VIRL_CAPTION_RUN:-experiments/runs/virl39k_sample4096_qwen25vl3b_captionstore384_20260710T094300Z}"
 CAPTION_EXPECTED_SHARDS="${VIRL_CAPTION_EXPECTED_SHARDS:-3}"
+# Space-separated caption-store files. When set, these are used verbatim and the
+# sharded CAPTION_RUN layout (run_manifest.json + shards/) is not consulted.
+CAPTION_SHARDS="${VIRL_CAPTION_SHARDS:-}"
 RUN_PREFIX="${VIRL_RUN_PREFIX:-blind_solvability_virl39k_v1}"
 JOB_TYPE="${VIRL_JOB_TYPE:-l10_virl39k_blind_solvability_v1}"
 SYMBOLIC_GRADER_TIMEOUT_SECONDS=5.0
@@ -42,6 +46,10 @@ if [[ ! "${MODEL_LOCATION}" =~ ^(shared|node-local)$ ]]; then
 fi
 if [[ ! "${CAPTION_EXPECTED_SHARDS}" =~ ^[1-9][0-9]*$ ]]; then
   echo "VIRL_CAPTION_EXPECTED_SHARDS must be positive" >&2
+  exit 2
+fi
+if [[ -z "${SPLITS// }" ]]; then
+  echo "VIRL_SPLITS must name at least one split" >&2
   exit 2
 fi
 
@@ -74,18 +82,35 @@ fi
 CAPTION_ARGS=""
 DATA_FILES=("${MANIFEST}" "${SAMPLE_SPEC}" "${FORMAT_PROMPT}")
 if [[ "${CONDITION}" == "caption" ]]; then
-  if ! jq -e '(.status == "complete") and (.max_new_tokens == 384)' "${CAPTION_RUN}/run_manifest.json" >/dev/null; then
-    echo "Fixed ViRL39K caption store is not complete" >&2
-    exit 2
+  if [[ -n "${CAPTION_SHARDS}" ]]; then
+    read -r -a CAPTION_FILES <<< "${CAPTION_SHARDS}"
+    if [[ "${#CAPTION_FILES[@]}" -eq 0 ]]; then
+      echo "VIRL_CAPTION_SHARDS is set but names no files" >&2
+      exit 2
+    fi
+    for shard in "${CAPTION_FILES[@]}"; do
+      if [[ ! -s "${shard}" ]]; then
+        echo "VIRL_CAPTION_SHARDS entry is absent or empty: ${shard}" >&2
+        exit 2
+      fi
+    done
+    printf -v CAPTION_ARGS ' %q' "${CAPTION_FILES[@]}"
+    CAPTION_ARGS="--caption-shards${CAPTION_ARGS}"
+    DATA_FILES+=("${CAPTION_FILES[@]}")
+  else
+    if ! jq -e '(.status == "complete") and (.max_new_tokens == 384)' "${CAPTION_RUN}/run_manifest.json" >/dev/null; then
+      echo "Fixed ViRL39K caption store is not complete" >&2
+      exit 2
+    fi
+    mapfile -t CAPTION_FILES < <(find "${CAPTION_RUN}/shards" -maxdepth 1 -type f -name 'store_shard_*.jsonl' -size +0c | sort)
+    if [[ "${#CAPTION_FILES[@]}" -ne "${CAPTION_EXPECTED_SHARDS}" ]]; then
+      echo "Fixed ViRL39K caption store has ${#CAPTION_FILES[@]} shards; expected ${CAPTION_EXPECTED_SHARDS}" >&2
+      exit 2
+    fi
+    printf -v CAPTION_ARGS ' %q' "${CAPTION_FILES[@]}"
+    CAPTION_ARGS="--caption-shards${CAPTION_ARGS}"
+    DATA_FILES+=("${CAPTION_RUN}/run_manifest.json" "${CAPTION_FILES[@]}")
   fi
-  mapfile -t CAPTION_FILES < <(find "${CAPTION_RUN}/shards" -maxdepth 1 -type f -name 'store_shard_*.jsonl' -size +0c | sort)
-  if [[ "${#CAPTION_FILES[@]}" -ne "${CAPTION_EXPECTED_SHARDS}" ]]; then
-    echo "Fixed ViRL39K caption store has ${#CAPTION_FILES[@]} shards; expected ${CAPTION_EXPECTED_SHARDS}" >&2
-    exit 2
-  fi
-  printf -v CAPTION_ARGS ' %q' "${CAPTION_FILES[@]}"
-  CAPTION_ARGS="--caption-shards${CAPTION_ARGS}"
-  DATA_FILES+=("${CAPTION_RUN}/run_manifest.json" "${CAPTION_FILES[@]}")
 fi
 
 RESUME_ARGS=""
@@ -117,7 +142,7 @@ FORMAT_PROMPT_HASH="$(sha256sum "${FORMAT_PROMPT}" | awk '{print $1}')"
 SAMPLE_SIZE="$(jq -r '.sample_size' "${SAMPLE_SPEC}")"
 MAX_IMAGES="$(jq -r '.max_images_per_item' "${SAMPLE_SPEC}")"
 DATA_HASH="$(sha256sum "${DATA_FILES[@]}" | sort -k2 | sha256sum | awk '{print $1}')"
-COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits audit --batch-size 2 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --symbolic-grader-timeout-seconds ${SYMBOLIC_GRADER_TIMEOUT_SECONDS} --seed 20260710"
+COMMAND="TRANSFORMERS_OFFLINE=1 HF_HOME=${ROOT}/artifacts/hf_home CUDA_VISIBLE_DEVICES=${GPU} VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path ${MODEL_PATH} --manifest ${MANIFEST} --format-prompt ${FORMAT_PROMPT} --condition ${CONDITION} --output ${OUTPUT} --cache-dir ${CACHE_DIR} --run-manifest ${RUN_MANIFEST} ${CAPTION_ARGS}${RESUME_ARGS} --splits ${SPLITS} --batch-size 2 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --symbolic-grader-timeout-seconds ${SYMBOLIC_GRADER_TIMEOUT_SECONDS} --seed 20260710"
 
 mkdir -p "${RUN_DIR}/logs" "${RUN_DIR}/pids"
 jq -n \
@@ -137,6 +162,10 @@ jq -n \
   --arg output "${OUTPUT}" \
   --arg cache "${CACHE_DIR}" \
   --arg caption_run "${CAPTION_RUN}" \
+  --arg caption_shards "${CAPTION_SHARDS}" \
+  --arg data_manifest "${MANIFEST}" \
+  --arg sample_spec "${SAMPLE_SPEC}" \
+  --arg splits "${SPLITS}" \
   --arg model_revision "${MODEL_REVISION}" \
   --arg model_path "${MODEL_PATH}" \
   --arg model_location "${MODEL_LOCATION}" \
@@ -162,10 +191,10 @@ jq -n \
     condition: $condition,
     git_hash: $git_hash,
     config_hash: $config_hash,
-    data_manifest: "data/virl39k_blind_sample_4096.jsonl",
+    data_manifest: $data_manifest,
     data_manifest_hash: $data_hash,
     source_manifest_sha256: $source_hash,
-    sample_spec: "reports/virl39k_blind_sample_4096.json",
+    sample_spec: $sample_spec,
     sample_spec_sha256: $sample_hash,
     sample_size: $sample_size,
     max_images_per_item: $max_images,
@@ -196,7 +225,11 @@ jq -n \
       max_tokens: 2048,
       seed: 20260710
     },
-    caption_source_run: (if $condition == "caption" then $caption_run else null end),
+    splits: ($splits | split(" ") | map(select(length > 0))),
+    caption_source_run: (if $condition == "caption" and $caption_shards == "" then $caption_run else null end),
+    caption_shards: (if $condition == "caption" and $caption_shards != ""
+                     then ($caption_shards | split(" ") | map(select(length > 0)))
+                     else null end),
     resume_from: (if $resume == "-" then null else $resume end),
     local_condition_cache: $cache,
     command: $command,

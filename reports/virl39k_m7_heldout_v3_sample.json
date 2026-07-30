@@ -1,0 +1,54 @@
+{
+  "answer_type_counts": {
+    "multiple_choice": 1328,
+    "numeric": 1998,
+    "text_or_expression": 913
+  },
+  "category_counts": {
+    "(GradeSchool) Geometric": 1178,
+    "(GradeSchool) Non-Geo Math": 1510,
+    "(GradeSchool) Science": 449,
+    "Broader STEM Topics": 146,
+    "Commonsense": 13,
+    "Social Science": 69,
+    "Spatial Reasoning": 253,
+    "Tables/Diagrams/Charts": 621
+  },
+  "derivation": "Lossless re-shape of `images` from list[str] to list[{path, sha256}] using metadata.image_sha256; every digest re-verified against the bytes on disk. All other fields, and row order, are unchanged.",
+  "eval_manifest": "data/virl39k_m7_heldout_v3_eval.jsonl",
+  "eval_manifest_schema_version": "blind-gains.virl39k-m7-heldout-eval.v1",
+  "eval_manifest_sha256": "c0097102496b3d979f77fb1f19e4c277d0de6886f57683917613c4e03a898432",
+  "image_count_counts": {
+    "1": 4239
+  },
+  "image_references": 4239,
+  "max_images_per_item": 1,
+  "purpose": "Sample spec for the M7 step-0 base evaluation over the frozen held-out split. Consumed by scripts/launch_virl39k_blind_v1_condition.sh via VIRL_SAMPLE_SPEC (.sample_size and .max_images_per_item).",
+  "sample_size": 4239,
+  "schema_version": "blind-gains.virl39k-m7-heldout-sample.v1",
+  "source_counts": {
+    "K12": 147,
+    "M3CoT": 175,
+    "M3CoTConverted": 16,
+    "MMK12": 1727,
+    "MMK12Converted": 27,
+    "MMMath": 428,
+    "Processed": 1201,
+    "R1OneVision": 105,
+    "R1OneVisionConverted": 17,
+    "ScienceQA": 53,
+    "ai2d": 107,
+    "chartqa": 9,
+    "dvqa": 71,
+    "geoqa_plus": 118,
+    "geoqa_plusConverted": 38
+  },
+  "source_manifest": "data/virl39k_m7_heldout_v3.jsonl",
+  "source_manifest_schema_version": "blind-gains.virl39k-filtered-training.v1",
+  "source_manifest_sha256": "50f3b85c11c4046ef2512c544faec04286648688bb6d47548995f18cab40716c",
+  "split_counts": {
+    "train": 4239
+  },
+  "unique_images": 3657,
+  "verified_image_digests": 4239
+}
