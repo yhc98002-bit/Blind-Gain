@@ -1,0 +1,588 @@
+{
+  "schema_version": "blind-gains.mini-a5-f8-eval-plan.v1",
+  "title": "Mini-A5 F8 endpoint evaluation plan (prepared; nothing executed, no accuracy read)",
+  "prepared_utc": "2026-07-29",
+  "repo_root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain",
+  "git_branch": "agent/gate2-recovery",
+  "git_head_at_start_of_planning": "a0ff9d5c44a754002b2b95d5e31da2fcb70b3158",
+  "git_head_at_start_of_planning_subject": "Register the Mini-A5 endpoint readout spec and the M7 seed-scope amendment",
+  "git_head_at_end_of_planning": "23c53ff8b75487c403039a8079afc2068373cae5",
+  "git_head_at_end_of_planning_subject": "M7 arms 2-4: model-only checkpoints at unchanged save_freq 20, seed 1 in execution scope",
+  "concurrent_commit_note": "HEAD advanced from a0ff9d5 to 23c53ff during this preparation because the M7 workstream committed on the same branch. Verified with 'git diff --name-only a0ff9d5 23c53ff' over scripts/launch_fliptrack_eval_shards.sh, scripts/eval_qwen_vl_fliptrack.py, scripts/compare_fliptrack_runs.py, scripts/aggregate_fliptrack_eval.py, src/eval, src/analysis/blind_solvability.py and the two data manifests: ZERO drift in the FlipTrack evaluation path. Every preflight result in this file therefore holds at 23c53ff. The registration commit a0ff9d5 remains an ancestor of HEAD.",
+  "status": "PLAN ONLY. No model was instantiated, no generation was run, no prediction/metric/accuracy file was opened.",
+  "governing_documents": [
+    "docs/registered_mini_a5_endpoint_readout_v1.md (merged at HEAD; binding)",
+    "docs/registered_mini_a5_main_v1.md"
+  ],
+
+  "harness": {
+    "worker": "scripts/eval_qwen_vl_fliptrack.py",
+    "launcher": "scripts/launch_fliptrack_eval_shards.sh",
+    "finalizer_chain": [
+      "scripts/launch_remote_sharded_finalizer.sh (invoked by the launcher as its last step)",
+      "scripts/finalize_sharded_run.py <RUN_DIR>/run_manifest.json --wait (runs under nohup on the compute node)"
+    ],
+    "launcher_usage_verbatim": "Usage: scripts/launch_fliptrack_eval_shards.sh NODE SHARD_OFFSET NUM_SHARDS MODEL_PATH MANIFEST RUN_DIR MAX_NEW_TOKENS [GPU_LIST] [IMAGE_MODE]",
+    "worker_cli_verbatim_as_launched": "nohup env PYTHONUNBUFFERED=1 PYTHONHASHSEED=${EVAL_SEED} TRANSFORMERS_OFFLINE=1 HF_HOME='${ROOT}/artifacts/hf_home' CUDA_VISIBLE_DEVICES=${GPU} python scripts/eval_qwen_vl_fliptrack.py --model-path '${MODEL_PATH}' --manifest '${MANIFEST}' --output '${OUT_PATH}' --metrics-output '${METRICS_PATH}' --num-shards ${NUM_SHARDS} --shard-index ${SHARD_INDEX} --image-mode '${IMAGE_MODE}' --image-cache-dir '${RUN_DIR}/${IMAGE_MODE}_image_cache' --seed ${EVAL_SEED} --noise-seed ${EVAL_SEED} --max-new-tokens ${MAX_NEW_TOKENS} > '${LOG_PATH}' 2>&1 < /dev/null &",
+    "worker_cli_source": "scripts/launch_fliptrack_eval_shards.sh line 286 (quoted byte-for-byte from the file)",
+    "decoding": {
+      "do_sample": false,
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "n": 1,
+      "max_new_tokens": 32
+    },
+    "prompt_contract": {
+      "contract_id": "answer-tags-v1",
+      "schema_version": "blind-gains.prompt-contract.v1",
+      "response_format": "single_final_answer_tag",
+      "sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "verified_identical_to_paper1_reference_run": true
+    },
+    "scorer": "src.eval.fliptrack_metrics.pair_score -> pair_correct (lenient) and strict_pair_correct (contract-strict)"
+  },
+
+  "reference_invocation_copied": {
+    "why": "Task step 1 requires copying the invocation shape of an EXISTING completed FlipTrack eval of a trained checkpoint that produced Paper-1-comparable numbers.",
+    "reference_run": "experiments/runs/m5_r19_step400_real_an12_20260728T052218Z",
+    "reference_run_status": "complete",
+    "reference_job_type": "fliptrack_v02_image_evaluation",
+    "reference_command_verbatim": "scripts/launch_fliptrack_eval_shards.sh an12 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl experiments/runs/m5_r19_step400_real_an12_20260728T052218Z 32 '0 1 2 3' real",
+    "reference_env": {
+      "BLIND_GAINS_M5_SOURCE_RUN": "experiments/runs/m5_anchor_longhorizon_segment350_400_an12_20260727T073429Z",
+      "BLIND_GAINS_M5_GLOBAL_STEP": "400",
+      "BLIND_GAINS_EVAL_SEED": "0"
+    },
+    "reference_recorded_fields": {
+      "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "seed": 0,
+      "noise_seed": 0,
+      "max_new_tokens": 32,
+      "image_mode": "real",
+      "replica_count": 4,
+      "tensor_parallel_width": 1
+    },
+    "observed_wall_clock": "start_time_utc 2026-07-28T05:22:26Z; last shard jsonl mtime 2026-07-28T05:29:11Z; end_time_utc 2026-07-28T05:29:32Z => ~7 minutes for 1200 pairs on 4 A800 GPUs (mtimes only; no shard content was opened).",
+    "what_changes_for_mini_a5": [
+      "MODEL_PATH -> the two Mini-A5 step-120 merged HF checkpoints",
+      "MANIFEST -> unchanged for R19 (same locked manifest); R20 and chart-v08 for the other two sets",
+      "RUN_DIR -> new Mini-A5 F8 run directories",
+      "NODE -> an29 (an12 GPUs 0-3 are running M7 arm 1 and are off-limits)",
+      "checkpoint-binding env vars -> ABSENT (see blocking_limitations.launcher_has_no_mini_a5_binding_branch)"
+    ]
+  },
+
+  "blocking_limitations": [
+    {
+      "id": "launcher_has_no_mini_a5_binding_branch",
+      "severity": "provenance, not correctness",
+      "finding": "scripts/launch_fliptrack_eval_shards.sh accepts a checkpoint provenance binding only for job_type l13_mechanical_pilot_arm / m3_mechanical_pilot_arm (BLIND_GAINS_PILOT_*) or m5_anchor_longhorizon_400 (BLIND_GAINS_M5_*). The Mini-A5 training runs carry job_type m6_mini_a5_registered_main, which no branch accepts.",
+      "verified_by": "grep -n mini_a5 scripts/launch_fliptrack_eval_shards.sh -> no match; jq .job_type on both Mini-A5 training manifests -> m6_mini_a5_registered_main",
+      "consequence": "The 6 F8 runs must be launched on the UNBOUND path (no BLIND_GAINS_PILOT_*/BLIND_GAINS_M5_* env vars). Their run_manifest.json will therefore record source_training_run=null, source_training_job_type=null, global_step=null, checkpoint_index_sha256=null, evaluation_scope=null.",
+      "mitigation_chosen": "Provenance is carried out-of-band by this plan file and by a post-run reports/mini_a5_f8_run_provenance_v1.json that records, per run dir: arm, source training run, global_step 120, checkpoint path, checkpoint index sha256, manifest sha256. No contract file is modified.",
+      "mitigation_not_chosen": "Adding an m6_mini_a5_registered_main branch to scripts/launch_fliptrack_eval_shards.sh. That file is a named M5 contract file (git-diff-gated by scripts/launch_m5_fliptrack_checkpoint_eval.sh); amending it is a registration decision, not a preparation step. NOT DONE.",
+      "side_effect_that_is_actually_safe": "The launcher's 'locked R19 manifest' guard (line 171) fires only when a binding is present. On the unbound path the R20 and chart-v08 manifests are accepted, which is what the addendum requires."
+    },
+    {
+      "id": "per_template_bootstrap_seed_is_derived",
+      "severity": "documented deviation",
+      "finding": "The addendum pins bootstrap seed 20260729. scripts/compare_fliptrack_runs.py uses the passed seed for the pooled summary (lenient) and seed+1 (strict), and for the k-th template in sorted order uses seed+100+10k (lenient) / seed+100+10k+1 (strict).",
+      "resolved_seeds_with_seed_20260729": {
+        "pooled_lenient": 20260729,
+        "pooled_strict": 20260730,
+        "coordinate_register_twenty_point_x_v02_lenient": 20260829,
+        "coordinate_register_twenty_point_x_v02_strict": 20260830,
+        "header_cued_table_code_v02_lenient": 20260839,
+        "header_cued_table_code_v02_strict": 20260840,
+        "starred_series_value_nine_v07_lenient": 20260849,
+        "starred_series_value_nine_v07_strict": 20260850
+      },
+      "assessment": "Deterministic derivation from the pinned seed, fixed before any value is read. Recorded here rather than discovered later."
+    },
+    {
+      "id": "aggregate_script_ci_is_not_the_registered_interval",
+      "severity": "reporting hazard",
+      "finding": "scripts/aggregate_fliptrack_eval.py reports pair_accuracy_ci95_low/high from a SINGLE-ARM bootstrap with seed hard-coded to 0 inside src.eval.fliptrack_metrics.pair_accuracy_ci, and only on the lenient contract.",
+      "consequence": "Those fields are descriptive per-arm intervals. The registered interval is the PAIRED CP-minus-member interval from scripts/compare_fliptrack_runs.py. Do not report the aggregate CI as the endpoint interval."
+    },
+    {
+      "id": "working_tree_dirty_and_head_moving_under_a_concurrent_workstream",
+      "severity": "record-keeping",
+      "finding": "The repo is shared with the live M7 workstream on the same branch. During this preparation the M7 staged edits (configs/train/m7_virl_*.yaml, reports/m7_arm_configs_v1.json, scripts/build_m7_configs.py) were committed as 23c53ff, moving HEAD. A modified reports/storage_usage_snapshot.json and many untracked tmp/ files remain. The unbound launcher path performs no cleanliness gate; it records git_hash from HEAD only.",
+      "consequence": "The git_hash recorded in each F8 run_manifest.json will be whatever HEAD is at launch, which may again differ from 23c53ff, and will not describe the untracked/modified remainder. No dirty or concurrently-committed file is in the FlipTrack evaluation path - verified by an explicit git diff --name-only over the launcher, worker, comparison/aggregation scripts, src/eval, src/analysis/blind_solvability.py and the two data manifests.",
+      "recommended_action_for_execution_step": "Re-run 'git status --porcelain' immediately before launch and record it verbatim in reports/mini_a5_f8_run_provenance_v1.json."
+    },
+    {
+      "id": "r20_pair_ids_are_rekeyed_vs_prior_base_model_r20_runs",
+      "severity": "cross-run comparability",
+      "finding": "The addendum pins data/fliptrack_r20_source_manifest.jsonl. Every prior base-model R20 FlipTrack eval used experiments/runs/caption_qa_pair_build_fliptrack_r20_private_full_v1_20260711T124039Z/shards/captions_shard_0.jsonl (sha256 525e1104...). Verified: the two describe the SAME 1200 items (identical image_a/image_b sha256 pair set; pinned pair_id set == prior source_pair_id set; same 3 template ids) but use DIFFERENT pair_id keys.",
+      "consequence": "CP-vs-member F8 R20 comparison is unaffected (both arms use the pinned manifest, so pair_ids join). Any later join of F8 R20 numbers to the Paper-1 base-model R20 numbers must go through source_pair_id, not pair_id; scripts/compare_fliptrack_runs.py joins on pair_id and would raise a coverage mismatch."
+    },
+    {
+      "id": "secondaries_out_of_scope_or_instrument_absent",
+      "severity": "scope",
+      "items": [
+        "Catch-trial stability: instrument-absent per addendum section 6.2 (scripts/audit_mini_a5_catch.py never instantiates a checkpoint). Not planned here.",
+        "'The registered task benchmark': unresolvable from the registration per addendum section 6.3. Not planned here.",
+        "Free-generation vs candidate-ranking (scripts/eval_qwen_vl_visual_evidence_ranking.py): runnable, will be run, but is NOT one of the 6 cells in this plan."
+      ]
+    }
+  ],
+
+  "preflight": {
+    "type": "NON-EVALUATIVE",
+    "what_was_not_done": [
+      "No model instantiated",
+      "No generation",
+      "No prediction file opened",
+      "No metrics/aggregate/comparison file opened",
+      "No accuracy of any kind read"
+    ],
+    "scripts_used": [
+      "tmp/f8_preflight.py (checkpoint inventory + index parse; manifest sha256, row/template counts, schema keys, image existence)",
+      "tmp/f8_preflight2.py (pair_id disjointness; decontamination cross-check)",
+      "tmp/f8_preflight3.py (locked-R19 vs certified-R19 item identity)",
+      "tmp/f8_preflight4.py (pinned-R20 vs prior-R20 item identity)",
+      "tmp/f8_imports.py (import-only readiness on an29 with CUDA_VISIBLE_DEVICES empty)"
+    ],
+    "checkpoints": [
+      {
+        "arm": "cp",
+        "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+        "exists": true,
+        "index_present": true,
+        "index_parses": true,
+        "index_tensor_count": 825,
+        "index_total_size_bytes": 8131575808,
+        "index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+        "safetensors_shards": ["model-00001-of-00002.safetensors", "model-00002-of-00002.safetensors"],
+        "missing_shard_files": [],
+        "shard_bytes_on_disk": 8131667976,
+        "architectures": ["Qwen2_5_VLForConditionalGeneration"],
+        "model_type": "qwen2_5_vl",
+        "processor_files_present": true,
+        "file_inventory_identical_to_reference_m5_checkpoint": true
+      },
+      {
+        "arm": "member",
+        "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+        "exists": true,
+        "index_present": true,
+        "index_parses": true,
+        "index_tensor_count": 825,
+        "index_total_size_bytes": 8131575808,
+        "index_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+        "safetensors_shards": ["model-00001-of-00002.safetensors", "model-00002-of-00002.safetensors"],
+        "missing_shard_files": [],
+        "shard_bytes_on_disk": 8131668008,
+        "architectures": ["Qwen2_5_VLForConditionalGeneration"],
+        "model_type": "qwen2_5_vl",
+        "processor_files_present": true,
+        "file_inventory_identical_to_reference_m5_checkpoint": true
+      }
+    ],
+    "checkpoint_size_note": "index metadata.total_size = 8,131,575,808 bytes on both arms, matching the figure in the task statement. On-disk shard bytes are ~92 KB larger because safetensors header bytes are not counted in metadata.total_size. Not a mismatch.",
+    "manifests": [
+      {
+        "set": "R19",
+        "path": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+        "sha256_expected": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+        "sha256_observed": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+        "sha256_match": true,
+        "matches_R19_MANIFEST_SHA256_hardcoded_in_launcher": true,
+        "rows": 1200,
+        "unique_pair_ids": 1200,
+        "template_counts": {
+          "coordinate_register_twenty_point_x_v02": 600,
+          "header_cued_table_code_v02": 300,
+          "starred_series_value_nine_v07": 300
+        },
+        "schema_ok": true,
+        "image_refs": 2400,
+        "missing_images": 0
+      },
+      {
+        "set": "R20",
+        "path": "data/fliptrack_r20_source_manifest.jsonl",
+        "sha256_expected": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+        "sha256_observed": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+        "sha256_match": true,
+        "rows": 1200,
+        "unique_pair_ids": 1200,
+        "template_counts": {
+          "coordinate_register_twenty_point_x_v02": 600,
+          "header_cued_table_code_v02": 300,
+          "starred_series_value_nine_v07": 300
+        },
+        "schema_ok": true,
+        "image_refs": 2400,
+        "missing_images": 0
+      },
+      {
+        "set": "chart_v08",
+        "path": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+        "sha256_expected": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+        "sha256_observed": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+        "sha256_match": true,
+        "rows": 100,
+        "unique_pair_ids": 100,
+        "template_counts": {
+          "chart_v08_legend_target_flip": 50,
+          "chart_v08_point_value_flip": 50
+        },
+        "schema_ok": true,
+        "image_refs": 200,
+        "missing_images": 0,
+        "prior_base_model_run_used_this_exact_manifest": "experiments/runs/chart_v08_calibration_qwen25vl3b_real_an29_20260715T185645Z (directly comparable, same path and sha256)"
+      }
+    ],
+    "decontamination_cross_check": {
+      "source": "data/mini_a5_train_v1/decontamination.json -> evaluation_manifests",
+      "entries": [
+        {"path": "data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl", "sha256": "23dd24452670392d6355c06b6b167a1c868660c11d21b20e0bae393dc82126f0", "observed_match": true},
+        {"path": "data/fliptrack_r20_source_manifest.jsonl", "sha256": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3", "observed_match": true},
+        {"path": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl", "sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292", "observed_match": true}
+      ]
+    },
+    "locked_r19_vs_certified_r19_identity": {
+      "question": "The corpus audit certified data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl (23dd2445...), but the addendum evaluates through the locked manifest (e1dde984...). Are they the same items?",
+      "locked_pair_id_set_equals_source_pair_id_set": false,
+      "locked_source_pair_id_set_equals_source_pair_id_set": true,
+      "image_sha256_pair_set_identical": true,
+      "template_ids_identical": true,
+      "rows_both": 1200,
+      "conclusion": "The locked manifest is a re-keyed view of exactly the same 1200 items. The decontamination certification transfers. Verified, not assumed."
+    },
+    "set_disjointness": {
+      "r19_r20_shared_pair_ids": 0,
+      "r19_chart_shared_pair_ids": 0,
+      "r20_chart_shared_pair_ids": 0,
+      "union_rows_all_three": 2500,
+      "distinct_template_ids_across_all_three": 5,
+      "matches_addendum_claim": true
+    },
+    "gpu_state_observed_2026_07_29": {
+      "an29": {
+        "gpus_total": 8,
+        "gpus_with_compute_apps": 0,
+        "memory_used_mib_per_gpu": [2, 2, 2, 2, 2, 2, 2, 2],
+        "mem_available_kib": 932511124,
+        "verdict": "all 8 free"
+      },
+      "an12": {
+        "memory_used_mib_per_gpu": [44880, 49614, 49614, 44792, 2, 2, 2, 2],
+        "compute_app_pids": [705417, 705929, 705930, 705931],
+        "verdict": "GPUs 0-3 occupied by M7 arm 1 - OFF LIMITS. GPUs 4-7 free but not used by this plan (single-node placement on an29)."
+      }
+    },
+    "environment_readiness_an29": {
+      "how": "Import-only check on an29 with CUDA_VISIBLE_DEVICES empty. No model was constructed and no GPU was touched.",
+      "python": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/.venv/bin/python",
+      "torch": "2.5.1+cu121",
+      "transformers": "4.56.2",
+      "cuda_device_count_with_CUDA_VISIBLE_DEVICES_empty": 0,
+      "imports_ok": true,
+      "modules_verified_importable": [
+        "torch", "transformers", "qwen_vl_utils",
+        "transformers.AutoProcessor", "transformers.Qwen2_5_VLForConditionalGeneration",
+        "src.eval.fliptrack_metrics.pair_score", "src.eval.image_conditions.materialize_image",
+        "src.eval.prompt_contract.DEFAULT_PROMPT_CONTRACT"
+      ],
+      "prompt_contract_sha256_on_an29": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+    },
+    "image_path_resolution": {
+      "form": "All three manifests carry repo-relative image paths (e.g. data/fliptrack_v02r19_artifact_expanded/images/decfc2c6141d8a21.png).",
+      "resolves_because": "The launcher starts every worker with cd '${ROOT}', so relative paths resolve against the repo root.",
+      "image_mode_real_writes_nothing": "src.eval.image_conditions.materialize_image returns image_path unchanged when mode == 'real'; the ${RUN_DIR}/real_image_cache directory is created but stays empty."
+    },
+    "storage": {
+      "filesystem": "/XYFS02",
+      "avail": "7.8P",
+      "use_percent": "25%",
+      "verdict": "ample; 6 prediction shard sets are order-of-MB"
+    },
+    "training_run_provenance": [
+      {"arm": "cp", "run": "experiments/runs/mini_a5_cp_main_an29_20260727T064527Z", "job_type": "m6_mini_a5_registered_main", "status": "complete", "exit_code": 0, "seed": 20260716, "config_hash": "8d7736f5364bd8bfd5595584aa05917a71306888282eeb2a37682ebf02c325e8", "git_hash": "9f95cbee879f5beaee538d7c1c83e70e2bd0dfc2", "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1"},
+      {"arm": "member", "run": "experiments/runs/mini_a5_member_main_an29_20260728T023715Z", "job_type": "m6_mini_a5_registered_main", "status": "complete", "exit_code": 0, "seed": 20260716, "config_hash": "358e6d7cd40c3748e9e5dbae6715310611fcb295bab107e1138b4071ea0fcd9b", "git_hash": "9a2145f6f24425ea17ed6762905a0da427031fd5", "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1"}
+    ]
+  },
+
+  "cells": [
+    {
+      "cell_id": "F8-C1",
+      "arm": "cp",
+      "set": "R19",
+      "role": "primary endpoint carrier (per-template split below)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "rows": 1200,
+      "node": "an29",
+      "gpus": "0 1 2 3",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 1
+    },
+    {
+      "cell_id": "F8-C2",
+      "arm": "member",
+      "set": "R19",
+      "role": "primary endpoint carrier (per-template split below)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "manifest_sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "rows": 1200,
+      "node": "an29",
+      "gpus": "4 5 6 7",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 1
+    },
+    {
+      "cell_id": "F8-C3",
+      "arm": "cp",
+      "set": "R20",
+      "role": "private confirmatory twin; separate scientific role, never pooled with R19 (I13)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "manifest": "data/fliptrack_r20_source_manifest.jsonl",
+      "manifest_sha256": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "rows": 1200,
+      "node": "an29",
+      "gpus": "0 1 2 3",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 2
+    },
+    {
+      "cell_id": "F8-C4",
+      "arm": "member",
+      "set": "R20",
+      "role": "private confirmatory twin; separate scientific role, never pooled with R19 (I13)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "manifest": "data/fliptrack_r20_source_manifest.jsonl",
+      "manifest_sha256": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "rows": 1200,
+      "node": "an29",
+      "gpus": "4 5 6 7",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_r20_member_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_r20_member_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_r20_member_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 2
+    },
+    {
+      "cell_id": "F8-C5",
+      "arm": "cp",
+      "set": "chart_v08",
+      "role": "calibration set; separate scientific role, never pooled (I13)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+      "manifest_sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+      "rows": 100,
+      "node": "an29",
+      "gpus": "0 1 2 3",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 3
+    },
+    {
+      "cell_id": "F8-C6",
+      "arm": "member",
+      "set": "chart_v08",
+      "role": "calibration set; separate scientific role, never pooled (I13)",
+      "checkpoint": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "checkpoint_index_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+      "manifest_sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+      "rows": 100,
+      "node": "an29",
+      "gpus": "4 5 6 7",
+      "num_shards": 4,
+      "shard_offset": 0,
+      "image_mode": "real",
+      "max_new_tokens": 32,
+      "eval_seed": 0,
+      "run_dir": "experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_${RUN_TS}",
+      "output_predictions": "experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_${RUN_TS}/shards/shard_{0..3}.jsonl",
+      "output_metrics": "experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_${RUN_TS}/metrics/shard_{0..3}.json",
+      "stage": 3
+    }
+  ],
+
+  "execution": {
+    "where_to_run_the_launcher": "From a login node (ln206/ln207), cwd = repo root. The launcher itself ssh's to an29 and starts every worker and the finalizer under nohup on the compute node, so no long-lived process remains on the login node.",
+    "required_shell_prelude": [
+      "cd /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain",
+      "export PATH=$HOME/.local/bin:$PATH   # jq is not on the non-interactive ssh PATH; the launcher dies without it",
+      "RUN_TS=\"$(date -u +%Y%m%dT%H%M%SZ)\"   # set ONCE; shared by all six run dirs"
+    ],
+    "env_vars_that_must_be_UNSET": [
+      "BLIND_GAINS_PILOT_SOURCE_RUN",
+      "BLIND_GAINS_PILOT_GLOBAL_STEP",
+      "BLIND_GAINS_M5_SOURCE_RUN",
+      "BLIND_GAINS_M5_GLOBAL_STEP"
+    ],
+    "serialization_note": "scripts/launch_fliptrack_eval_shards.sh takes flock -n on /tmp/blind_gains_an29_fliptrack_eval_launch.lock. Two launcher invocations must not overlap; launch the two cells of a stage one after the other (each returns in seconds), not in parallel.",
+    "stage_gate": "Before starting the next stage, wait until BOTH run_manifest.json files of the current stage report .status == \"complete\". The launcher refuses any GPU with a live compute app (exit 75), so an early next-stage launch fails closed rather than colliding.",
+    "commands": [
+      {
+        "stage": 1,
+        "order": 1,
+        "cell_id": "F8-C1",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_${RUN_TS} 32 '0 1 2 3' real"
+      },
+      {
+        "stage": 1,
+        "order": 2,
+        "cell_id": "F8-C2",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl experiments/runs/mini_a5_f8_r19_member_step120_real_an29_${RUN_TS} 32 '4 5 6 7' real"
+      },
+      {
+        "stage": 2,
+        "order": 3,
+        "cell_id": "F8-C3",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface data/fliptrack_r20_source_manifest.jsonl experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_${RUN_TS} 32 '0 1 2 3' real"
+      },
+      {
+        "stage": 2,
+        "order": 4,
+        "cell_id": "F8-C4",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface data/fliptrack_r20_source_manifest.jsonl experiments/runs/mini_a5_f8_r20_member_step120_real_an29_${RUN_TS} 32 '4 5 6 7' real"
+      },
+      {
+        "stage": 3,
+        "order": 5,
+        "cell_id": "F8-C5",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface data/fliptrack_chart_v08_calibration_v1_manifest.jsonl experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_${RUN_TS} 32 '0 1 2 3' real"
+      },
+      {
+        "stage": 3,
+        "order": 6,
+        "cell_id": "F8-C6",
+        "command": "BLIND_GAINS_EVAL_SEED=0 bash scripts/launch_fliptrack_eval_shards.sh an29 0 4 /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface data/fliptrack_chart_v08_calibration_v1_manifest.jsonl experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_${RUN_TS} 32 '4 5 6 7' real"
+      }
+    ],
+    "stage_wait_command": "until [ \"$(jq -r .status experiments/runs/<RUN_DIR_A>/run_manifest.json)\" = complete ] && [ \"$(jq -r .status experiments/runs/<RUN_DIR_B>/run_manifest.json)\" = complete ]; do sleep 30; done",
+    "expected_wall_clock": "~7 min per 1200-pair cell on 4 A800s (measured from the M5 step-400 reference run). Stage 1 ~7 min, stage 2 ~7 min, stage 3 ~1-2 min. Total under 30 minutes including gaps.",
+    "failure_modes_and_exit_codes": {
+      "2": "argument/validation error (bad shard math, GPU list, manifest guard)",
+      "3": "contract-file drift (only reachable on the M5 branch; not reachable here)",
+      "73": "RUN_DIR already exists - the launcher refuses to overwrite an evaluation run directory",
+      "75": "a target GPU on an29 is occupied, or another FlipTrack launch preflight holds the flock",
+      "76": "host MemAvailable gate (M5 branch only; not reachable here)"
+    },
+    "worker_level_overwrite_guard": "scripts/eval_qwen_vl_fliptrack.py raises FileExistsError rather than overwriting any existing predictions or metrics file."
+  },
+
+  "readout_step_commands": {
+    "warning": "These OPEN accuracy. They belong to the readout step, NOT to this preparation step. None of them has been run.",
+    "per_cell_aggregate": {
+      "template": "PYTHONPATH=. .venv/bin/python scripts/aggregate_fliptrack_eval.py --inputs 'experiments/runs/<RUN_DIR>/shards/shard_*.jsonl' --output reports/mini_a5_f8_<set>_<arm>_aggregate_v1.json --bootstrap 10000 --permutations 1000",
+      "count": 6,
+      "note": "Yields lenient pair_accuracy and contract-strict strict_pair_accuracy plus per_template breakdowns (I7). Its pair_accuracy_ci95_* fields are single-arm and are NOT the registered interval."
+    },
+    "paired_comparisons": [
+      {
+        "set": "R19",
+        "command": "PYTHONPATH=. .venv/bin/python scripts/compare_fliptrack_runs.py --left 'experiments/runs/mini_a5_f8_r19_member_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --right 'experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --left-label mini_a5_same_data_seed1_step120 --right-label mini_a5_cp_seed1_step120 --output reports/mini_a5_f8_r19_paired_comparison_v1.json --bootstrap-draws 10000 --seed 20260729"
+      },
+      {
+        "set": "R20",
+        "command": "PYTHONPATH=. .venv/bin/python scripts/compare_fliptrack_runs.py --left 'experiments/runs/mini_a5_f8_r20_member_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --right 'experiments/runs/mini_a5_f8_r20_cp_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --left-label mini_a5_same_data_seed1_step120 --right-label mini_a5_cp_seed1_step120 --output reports/mini_a5_f8_r20_paired_comparison_v1.json --bootstrap-draws 10000 --seed 20260729"
+      },
+      {
+        "set": "chart_v08",
+        "command": "PYTHONPATH=. .venv/bin/python scripts/compare_fliptrack_runs.py --left 'experiments/runs/mini_a5_f8_chartv08_member_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --right 'experiments/runs/mini_a5_f8_chartv08_cp_step120_real_an29_${RUN_TS}/shards/shard_*.jsonl' --left-label mini_a5_same_data_seed1_step120 --right-label mini_a5_cp_seed1_step120 --output reports/mini_a5_f8_chartv08_paired_comparison_v1.json --bootstrap-draws 10000 --seed 20260729"
+      }
+    ],
+    "sign_convention": "--left = member (same-data standard GRPO), --right = CP. The script reports right minus left, i.e. CP minus member, which is the registered direction.",
+    "instrument_conformance_to_addendum_section_4": {
+      "paired_item_bootstrap": "yes - src.analysis.blind_solvability.bootstrap_mean_ci resamples the per-pair difference vector, which is identical to resampling both arms on the same pair indices per replicate",
+      "draws_10000": "yes via --bootstrap-draws 10000",
+      "seed_20260729": "passed via --seed; see blocking_limitations.per_template_bootstrap_seed_is_derived for the derived per-template seeds",
+      "percentile_2p5_97p5": "yes - np.quantile(means, 0.025) / np.quantile(means, 0.975)",
+      "unit_pair_id": "yes - scripts/compare_fliptrack_runs.py indexes both arms by pair_id, rejects duplicates, and raises on any coverage or template mismatch",
+      "exact_mcnemar_two_sided": "yes - _paired_exact, reported for both contracts (mcnemar and strict_mcnemar)",
+      "both_contracts_I7": "yes - pair_accuracy_delta (lenient) and strict_pair_accuracy_delta (contract-strict), each with its own CI and McNemar"
+    }
+  },
+
+  "endpoint_extraction": {
+    "primary": {
+      "source_file": "reports/mini_a5_f8_r19_paired_comparison_v1.json",
+      "json_path": "per_template['coordinate_register_twenty_point_x_v02']",
+      "n_pairs": 600,
+      "role": "primary visual anchor - coordinate survey register",
+      "fields_to_report": [
+        "left_pair_accuracy", "right_pair_accuracy", "pair_accuracy_delta",
+        "pair_accuracy_delta_ci95_low", "pair_accuracy_delta_ci95_high", "mcnemar.p_value",
+        "left_strict_pair_accuracy", "right_strict_pair_accuracy", "strict_pair_accuracy_delta",
+        "strict_pair_accuracy_delta_ci95_low", "strict_pair_accuracy_delta_ci95_high", "strict_mcnemar.p_value"
+      ]
+    },
+    "secondaries_same_file_separate_rows": [
+      {"json_path": "per_template['header_cued_table_code_v02']", "n_pairs": 300, "role": "saturated positive control / retention canary; a drop signals damage"},
+      {"json_path": "per_template['starred_series_value_nine_v07']", "n_pairs": 300, "role": "oracle-localized readout control"}
+    ],
+    "I13_guard": "scripts/compare_fliptrack_runs.py also emits POOLED top-level R19 numbers over all 1200 pairs. Those pool three distinct scientific roles and MUST NOT be reported as an endpoint. Report them, if at all, only as a labelled non-endpoint diagnostic.",
+    "decision_rule_verbatim_from_addendum": "'Moves' means the CP-minus-member difference on the primary anchor has a 95% paired-bootstrap CI excluding zero in the positive direction. A positive point estimate whose interval contains zero is reported as not moved, not as a trend.",
+    "sets_reported_separately": "R19, R20 and chart-v08 are three different instruments and are never averaged together (I13)."
+  },
+
+  "post_run_provenance_artifact": {
+    "path": "reports/mini_a5_f8_run_provenance_v1.json",
+    "why": "The unbound launcher path leaves source_training_run / global_step / checkpoint_index_sha256 / evaluation_scope null in each run_manifest.json.",
+    "must_record_per_run_dir": [
+      "cell_id, arm, set",
+      "source training run dir and its run_manifest sha256",
+      "global_step 120",
+      "checkpoint path and checkpoint index sha256",
+      "manifest path and sha256",
+      "node, gpu list, num_shards, image_mode, max_new_tokens, eval seed",
+      "git rev-parse HEAD and verbatim git status --porcelain at launch time",
+      "run_manifest config_hash, data_manifest_hash, prompt_contract_sha256, artifact_sha256, start/end time, status"
+    ]
+  },
+
+  "invariants_respected": {
+    "I7": "Both lenient and contract-strict scoring are produced and reported for every metric in every cell.",
+    "I11": "R19 and R20 are read-only. Nothing in this plan modifies, regenerates or trains on them; the only writes are new run directories under experiments/runs/ and new files under reports/.",
+    "I13": "Per-template (per-role) reporting is mandatory; pooled R19 numbers are marked non-endpoint. The three evaluation sets are never aggregated together.",
+    "resource_isolation": "All six cells run on an29 only. an12 GPUs 0-3 (M7 arm 1) are never touched; an12 GPUs 4-7 are left unused.",
+    "single_node_placement": "Each cell is 4 TP1 replicas on one node. No cell spans an12 and an29."
+  }
+}
