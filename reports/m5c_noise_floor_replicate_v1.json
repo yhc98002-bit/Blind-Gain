@@ -1,0 +1,753 @@
+{
+  "checkpoint_identity": {
+    "100": {
+      "cached_checkpoint_index_sha256": null,
+      "cached_model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+      "replicate_checkpoint_index_sha256": "ceaedcaab63781b5ed051d465f8e652c5436db035be6da0d98dd2fe404fefadb",
+      "replicate_model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+      "same_resolved_path": true
+    },
+    "400": {
+      "cached_checkpoint_index_sha256": "4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1",
+      "cached_model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+      "replicate_checkpoint_index_sha256": "4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1",
+      "replicate_model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+      "same_resolved_path": true
+    }
+  },
+  "contract_provenance_caveat": {
+    "step_100": "R1-vs-R2 is an exact within-harness replicate. R-vs-CACHED is additionally a CROSS-HARNESS comparison: the cached step-100 substrate column came from scripts/run_blind_solvability_v2.py (greedy n=1 PLUS 16 samples at temperature 1.0 in the same vLLM session, an12 gpu5, 2026-07-12), rescored on the login node by scripts/rescore_blind_solvability_v2_guarded.py, whereas the replicates used the greedy-only pilot harness. Any R-vs-cached step-100 difference could therefore reflect harness difference rather than nondeterminism; agreement across that gap is correspondingly stronger evidence than a same-harness match.",
+    "step_400": "EXACT replicate. The cached step-400 run and both replicates invoke the same script scripts/run_pilot_geo3k_step100_eval.py with the same --batch-size 4, --max-model-len 8192, --max-tokens 2048, --seed 20260710, temperature 0, top_p 1, and the same checkpoint index sha256 4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1; only output paths, node and GPU differ (cached an12 gpu0 2026-07-28; replicates an29 gpu0/gpu1 2026-07-30)."
+  },
+  "floor_vs_turnover_arithmetic": {
+    "100": {
+      "acc_final": {
+        "observed_turnover_count": 137,
+        "replicate_discordance_count": 0,
+        "replicate_discordance_fraction": 0.0,
+        "turnover_minus_floor_count": 137,
+        "turnover_over_floor_ratio": null
+      },
+      "acc_strict": {
+        "observed_turnover_count": 137,
+        "replicate_discordance_count": 0,
+        "replicate_discordance_fraction": 0.0,
+        "turnover_minus_floor_count": 137,
+        "turnover_over_floor_ratio": null
+      }
+    },
+    "400": {
+      "acc_final": {
+        "observed_turnover_count": 137,
+        "replicate_discordance_count": 0,
+        "replicate_discordance_fraction": 0.0,
+        "turnover_minus_floor_count": 137,
+        "turnover_over_floor_ratio": null
+      },
+      "acc_strict": {
+        "observed_turnover_count": 137,
+        "replicate_discordance_count": 0,
+        "replicate_discordance_fraction": 0.0,
+        "turnover_minus_floor_count": 137,
+        "turnover_over_floor_ratio": null
+      }
+    }
+  },
+  "generated_utc": "2026-07-30T12:33:30Z",
+  "git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd",
+  "question": "Does re-evaluating the SAME checkpoint twice under the cached run's decoding contract produce zero discordant items? The R1-vs-R2 discordance is the harness noise floor against which the observed 137/601 step-100-to-400 turnover must be read.",
+  "readout": {
+    "determinism_strength": "Beyond the binary metric, all 601 greedy response STRINGS are byte-identical across every compared pair (R1 vs R2, R1 vs cached, R2 vs cached, at both steps). Greedy decoding in this harness is bitwise reproducible across replicate, across node (an12 vs an29), across GPU index, across date, and -- at step 100 -- across generation harness.",
+    "max_replicate_discordance_count_across_cells": 0,
+    "measured_floor_is_zero": true,
+    "response_text_byte_identical_across_all_pairs": true,
+    "statement": "MEASURED FLOOR IS ZERO. Re-evaluating the same checkpoint twice under the cached decoding contract produced 0/601 discordant items on acc_final and 0/601 on acc_strict, at BOTH step 400 and step 100, and both replicate accuracies equal the cached accuracy exactly (step 400: 267/601 = 0.4442595674; step 100: 262/601 = 0.4359400998). The turnover/floor ratio is undefined because the denominator is zero; the floor-subtracted turnover is 137 - 0 = 137 items. Measurement noise in this harness is therefore 0 items, and all 137 step-100-to-400 flips are policy differences between the two checkpoints, not evaluation or decoding noise."
+  },
+  "reference_observed_turnover": {
+    "count": 137,
+    "fraction": 0.22795341098169716,
+    "n": 601,
+    "source": "reports/m5c_turnover_v1.json (step 100 -> 400, acc_final)"
+  },
+  "results": {
+    "100": {
+      "accuracy": {
+        "acc_final": {
+          "cached": 0.43594009983361065,
+          "cached_count": 262,
+          "r1": 0.43594009983361065,
+          "r1_count": 262,
+          "r2": 0.43594009983361065,
+          "r2_count": 262
+        },
+        "acc_strict": {
+          "cached": 0.43594009983361065,
+          "cached_count": 262,
+          "r1": 0.43594009983361065,
+          "r1_count": 262,
+          "r2": 0.43594009983361065,
+          "r2_count": 262
+        }
+      },
+      "r1_vs_cached": {
+        "acc_final": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "r2_vs_cached": {
+        "acc_final": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "replicate_discordance": {
+        "acc_final": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.43594009983361065,
+          "a_correct_b_wrong": 0,
+          "a_count": 262,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.43594009983361065,
+          "b_correct_a_wrong": 0,
+          "b_count": 262,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "response_text_identity": {
+        "r1_vs_cached": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        },
+        "r1_vs_r2": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        },
+        "r2_vs_cached": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        }
+      }
+    },
+    "400": {
+      "accuracy": {
+        "acc_final": {
+          "cached": 0.4442595673876872,
+          "cached_count": 267,
+          "r1": 0.4442595673876872,
+          "r1_count": 267,
+          "r2": 0.4442595673876872,
+          "r2_count": 267
+        },
+        "acc_strict": {
+          "cached": 0.4442595673876872,
+          "cached_count": 267,
+          "r1": 0.4442595673876872,
+          "r1_count": 267,
+          "r2": 0.4442595673876872,
+          "r2_count": 267
+        }
+      },
+      "r1_vs_cached": {
+        "acc_final": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "r2_vs_cached": {
+        "acc_final": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "replicate_discordance": {
+        "acc_final": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        },
+        "acc_strict": {
+          "a_acc": 0.4442595673876872,
+          "a_correct_b_wrong": 0,
+          "a_count": 267,
+          "acc_diff_b_minus_a": 0.0,
+          "agreement_count": 601,
+          "agreement_rate": 1.0,
+          "b_acc": 0.4442595673876872,
+          "b_correct_a_wrong": 0,
+          "b_count": 267,
+          "discordant_count": 0,
+          "discordant_fraction": 0.0,
+          "discordant_item_keys": [],
+          "n": 601,
+          "net_b_minus_a": 0
+        }
+      },
+      "response_text_identity": {
+        "r1_vs_cached": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        },
+        "r1_vs_r2": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        },
+        "r2_vs_cached": {
+          "byte_identical_count": 601,
+          "byte_identical_fraction": 1.0,
+          "n": 601,
+          "text_differing_count": 0,
+          "text_differing_fraction": 0.0,
+          "text_differing_item_keys_first_25": []
+        }
+      }
+    }
+  },
+  "runs": {
+    "step100_cached": {
+      "batch_size": null,
+      "checkpoint_index_sha256": null,
+      "command": ".venv/bin/python scripts/storage_guard.py --tier S --path experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z --operation l7_guarded_rescore_real --required-bytes 200000000 && flock -n --no-fork /tmp/blind_gains_l7_guarded_rescore_real.run.lock env PYTHONPATH=. .venv/bin/python scripts/rescore_blind_solvability_v2_guarded.py --source-run experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z --condition real --output experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z/per_item.jsonl --run-manifest experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z/run_manifest.json",
+      "decoding": {
+        "greedy": {
+          "n": 1,
+          "temperature": 0,
+          "top_p": 1
+        },
+        "max_tokens": 2048,
+        "sampled": {
+          "n": 16,
+          "temperature": 1.0,
+          "top_p": 1
+        },
+        "seed": 20260710
+      },
+      "deviations": [
+        "Responses were generated by the recorded source run; every score field is recomputed under the pinned L3 guard because legacy source prefixes lacked uniform runtime-guard stamps."
+      ],
+      "end_time_utc": "2026-07-12T08:22:21Z",
+      "exit_code": 0,
+      "git_hash": "6ab7b570f7941c45c09258816cd93318e702c5b6",
+      "global_step": null,
+      "gpu_allocation": [],
+      "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+      "node": "login",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z/per_item.jsonl",
+      "per_item_sha256": "22d93ad3f5510c49d9755d82dd0cdb148ea0818f75db77e7363b757b8ed0d8c4",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": null,
+      "run_id": "blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-12T08:21:32Z",
+      "status": "complete"
+    },
+    "step100_r1": {
+      "batch_size": 4,
+      "checkpoint_index_sha256": "ceaedcaab63781b5ed051d465f8e652c5436db035be6da0d98dd2fe404fefadb",
+      "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=2 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain:/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm anchor_real --condition real --model-path /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --output experiments/runs/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/condition_cache --run-manifest experiments/runs/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/run_manifest.json --source-training-manifest experiments/runs/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/source_training_manifest_snapshot.json --checkpoint-index-sha256 ceaedcaab63781b5ed051d465f8e652c5436db035be6da0d98dd2fe404fefadb --batch-size 4 --max-model-len 8192 --max-tokens 2048 --seed 20260710 --global-step 100 --row-schema-version blind-gains.pilot-geo3k-step100-eval.v1",
+      "decoding": {
+        "max_tokens": 2048,
+        "n": 1,
+        "seed": 20260710,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "deviations": [],
+      "end_time_utc": "2026-07-30T02:09:56Z",
+      "exit_code": 0,
+      "git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd",
+      "global_step": 100,
+      "gpu_allocation": [
+        "2"
+      ],
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+      "node": "an29",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/per_item.jsonl",
+      "per_item_sha256": "4a4a840f9a3edb1bdd95fc604e7c5cef243b3b9c843fe1ed7eb3932a2fde94ac",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": "r1",
+      "run_id": "m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-30T01:55:24Z",
+      "status": "complete"
+    },
+    "step100_r2": {
+      "batch_size": 4,
+      "checkpoint_index_sha256": "ceaedcaab63781b5ed051d465f8e652c5436db035be6da0d98dd2fe404fefadb",
+      "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=3 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain:/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm anchor_real --condition real --model-path /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --output experiments/runs/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/condition_cache --run-manifest experiments/runs/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/run_manifest.json --source-training-manifest experiments/runs/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/source_training_manifest_snapshot.json --checkpoint-index-sha256 ceaedcaab63781b5ed051d465f8e652c5436db035be6da0d98dd2fe404fefadb --batch-size 4 --max-model-len 8192 --max-tokens 2048 --seed 20260710 --global-step 100 --row-schema-version blind-gains.pilot-geo3k-step100-eval.v1",
+      "decoding": {
+        "max_tokens": 2048,
+        "n": 1,
+        "seed": 20260710,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "deviations": [],
+      "end_time_utc": "2026-07-30T02:10:08Z",
+      "exit_code": 0,
+      "git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd",
+      "global_step": 100,
+      "gpu_allocation": [
+        "3"
+      ],
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+      "node": "an29",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/per_item.jsonl",
+      "per_item_sha256": "4a4a840f9a3edb1bdd95fc604e7c5cef243b3b9c843fe1ed7eb3932a2fde94ac",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": "r2",
+      "run_id": "m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-30T01:56:01Z",
+      "status": "complete"
+    },
+    "step400_cached": {
+      "batch_size": 4,
+      "checkpoint_index_sha256": "4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1",
+      "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=0 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain:/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm anchor_real --condition real --model-path /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --output experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/m5_geo3k_step400_an12_gpu0_20260728T053115Z/condition_cache --run-manifest experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z/run_manifest.json --source-training-manifest experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z/source_training_manifest_snapshot.json --checkpoint-index-sha256 4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1 --batch-size 4 --max-model-len 8192 --max-tokens 2048 --seed 20260710 --global-step 400 --row-schema-version blind-gains.m5-geo3k-checkpoint-eval.v1",
+      "decoding": {
+        "max_tokens": 2048,
+        "n": 1,
+        "seed": 20260710,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "deviations": [],
+      "end_time_utc": "2026-07-28T05:38:54Z",
+      "exit_code": 0,
+      "git_hash": "4dc541b3814f2db2b09302ee80068fd2ab86d49d",
+      "global_step": 400,
+      "gpu_allocation": [
+        "0"
+      ],
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+      "node": "an12",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/m5_geo3k_step400_an12_gpu0_20260728T053115Z/per_item.jsonl",
+      "per_item_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": null,
+      "run_id": "m5_geo3k_step400_an12_gpu0_20260728T053115Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-28T05:31:31Z",
+      "status": "complete"
+    },
+    "step400_r1": {
+      "batch_size": 4,
+      "checkpoint_index_sha256": "4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1",
+      "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=0 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain:/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm anchor_real --condition real --model-path /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --output experiments/runs/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/condition_cache --run-manifest experiments/runs/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/run_manifest.json --source-training-manifest experiments/runs/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/source_training_manifest_snapshot.json --checkpoint-index-sha256 4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1 --batch-size 4 --max-model-len 8192 --max-tokens 2048 --seed 20260710 --global-step 400 --row-schema-version blind-gains.m5-geo3k-checkpoint-eval.v1",
+      "decoding": {
+        "max_tokens": 2048,
+        "n": 1,
+        "seed": 20260710,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "deviations": [],
+      "end_time_utc": "2026-07-30T02:03:13Z",
+      "exit_code": 0,
+      "git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd",
+      "global_step": 400,
+      "gpu_allocation": [
+        "0"
+      ],
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+      "node": "an29",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/per_item.jsonl",
+      "per_item_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": "r1",
+      "run_id": "m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-30T01:52:38Z",
+      "status": "complete"
+    },
+    "step400_r2": {
+      "batch_size": 4,
+      "checkpoint_index_sha256": "4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1",
+      "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=1 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain:/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1 .venv/bin/python scripts/run_pilot_geo3k_step100_eval.py --arm anchor_real --condition real --model-path /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --output experiments/runs/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/condition_cache --run-manifest experiments/runs/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/run_manifest.json --source-training-manifest experiments/runs/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/source_training_manifest_snapshot.json --checkpoint-index-sha256 4e6c95b75959c3bf7ad9895beb6ce9f77074973f3287f225cb49726a584c0fb1 --batch-size 4 --max-model-len 8192 --max-tokens 2048 --seed 20260710 --global-step 400 --row-schema-version blind-gains.m5-geo3k-checkpoint-eval.v1",
+      "decoding": {
+        "max_tokens": 2048,
+        "n": 1,
+        "seed": 20260710,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "deviations": [],
+      "end_time_utc": "2026-07-30T02:03:13Z",
+      "exit_code": 0,
+      "git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd",
+      "global_step": 400,
+      "gpu_allocation": [
+        "1"
+      ],
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400_resume150/global_step_400/actor/huggingface",
+      "node": "an29",
+      "parser_version": "canonical-v2",
+      "per_item_path": "experiments/runs/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/per_item.jsonl",
+      "per_item_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+      "pilot_reward_version": "pilot-reward-v1",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "replicate": "r2",
+      "run_id": "m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "start_time_utc": "2026-07-30T01:53:14Z",
+      "status": "complete"
+    }
+  },
+  "schema_version": "blind-gains.m5c-noise-floor-replicate.v1",
+  "scope_note": "This report addresses only the TURNOVER-MAGNITUDE soft spot. The separate reproducible-LOST-items result (3-way Jaccard 0.3118 vs permutation null 0.0221, p<=1e-4) is unaffected either way: per-item noise would reduce cross-checkpoint agreement, not manufacture it. The two results are not conflated here.",
+  "scorer": {
+    "callable": "src.eval.blind_solvability.score_greedy_item_pilot",
+    "note": "Every acc_final/acc_strict in this report was recomputed from the raw greedy_response text by this one scorer; stored row fields are cross-checked, not trusted.",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+  },
+  "superseded_reference": {
+    "field": "reports/m5c_turnover_v1.json :: noise_reference_not_a_test",
+    "prior_figure_basis": "16-sample temperature-1.0 dispersion at step 100, treating each item as two independent Bernoulli(p_i) draws.",
+    "prior_figure_expected_discordance_fraction": 0.21327735024958402,
+    "status": "That figure describes temperature-1.0 sampling dispersion, not the greedy evaluation harness. It is NOT the replicate noise floor and is superseded by the directly measured floor in this report."
+  },
+  "verification": {
+    "determinism_audit": {
+      "step100_r1": {
+        "cache_dir_is_run_scoped_node_local": true,
+        "command_contains_resume_from_flag": false,
+        "last_processed_total_in_log": [
+          601,
+          601
+        ],
+        "last_resumed_count_in_log": 0,
+        "log_paths": [
+          "experiments/runs/m5c_noisefloor_step100_r1_an29_gpu2_20260730T015523Z/logs/an29_gpu2.log"
+        ],
+        "manifest_resume_from": null,
+        "safetensors_shard_load_completed_lines": 2,
+        "vllm_model_weight_load_observed": true
+      },
+      "step100_r2": {
+        "cache_dir_is_run_scoped_node_local": true,
+        "command_contains_resume_from_flag": false,
+        "last_processed_total_in_log": [
+          601,
+          601
+        ],
+        "last_resumed_count_in_log": 0,
+        "log_paths": [
+          "experiments/runs/m5c_noisefloor_step100_r2_an29_gpu3_20260730T015600Z/logs/an29_gpu3.log"
+        ],
+        "manifest_resume_from": null,
+        "safetensors_shard_load_completed_lines": 2,
+        "vllm_model_weight_load_observed": true
+      },
+      "step400_r1": {
+        "cache_dir_is_run_scoped_node_local": true,
+        "command_contains_resume_from_flag": false,
+        "last_processed_total_in_log": [
+          601,
+          601
+        ],
+        "last_resumed_count_in_log": 0,
+        "log_paths": [
+          "experiments/runs/m5c_noisefloor_step400_r1_an29_gpu0_20260730T015228Z/logs/an29_gpu0.log"
+        ],
+        "manifest_resume_from": null,
+        "safetensors_shard_load_completed_lines": 2,
+        "vllm_model_weight_load_observed": true
+      },
+      "step400_r2": {
+        "cache_dir_is_run_scoped_node_local": true,
+        "command_contains_resume_from_flag": false,
+        "last_processed_total_in_log": [
+          601,
+          601
+        ],
+        "last_resumed_count_in_log": 0,
+        "log_paths": [
+          "experiments/runs/m5c_noisefloor_step400_r2_an29_gpu1_20260730T015314Z/logs/an29_gpu1.log"
+        ],
+        "manifest_resume_from": null,
+        "safetensors_shard_load_completed_lines": 2,
+        "vllm_model_weight_load_observed": true
+      }
+    },
+    "eval_harness_unchanged_between_cached_and_replicate_commits": {
+      "cached_step400_git_hash": "4dc541b3814f2db2b09302ee80068fd2ab86d49d",
+      "git_diff_empty": true,
+      "paths_compared": [
+        "scripts/run_pilot_geo3k_step100_eval.py",
+        "src/eval/",
+        "src/rewards/"
+      ],
+      "replicate_git_hash": "ed4aa962f2bd945638b0183316be73137299cbcd"
+    },
+    "item_key_definition": "(split, row_index) on the Geometry3K test split",
+    "recomputed_cached_vs_substrate": {
+      "100": {
+        "acc_final": {
+          "match_count": 601,
+          "match_rate": 1.0,
+          "n": 601
+        },
+        "acc_strict": {
+          "match_count": 601,
+          "match_rate": 1.0,
+          "n": 601
+        }
+      },
+      "400": {
+        "acc_final": {
+          "match_count": 601,
+          "match_rate": 1.0,
+          "n": 601
+        },
+        "acc_strict": {
+          "match_count": 601,
+          "match_rate": 1.0,
+          "n": 601
+        }
+      }
+    },
+    "stored_vs_recomputed_agreement": {
+      "step100_cached": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      },
+      "step100_r1": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      },
+      "step100_r2": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      },
+      "step400_cached": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      },
+      "step400_r1": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      },
+      "step400_r2": {
+        "acc_final": 601,
+        "acc_final_missing": 0,
+        "acc_strict": 601,
+        "acc_strict_missing": 0,
+        "n": 601
+      }
+    },
+    "substrate_path": "reports/m5c_item_substrate_v1.jsonl",
+    "substrate_sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864"
+  },
+  "whole_file_identity": {
+    "100": {
+      "all_identical": true,
+      "cached_excluded_reason": "The cached step-100 column lives in a different row schema (guarded rescore, 1889 rows incl. train, greedy_* field names), so whole-file sha comparison is not meaningful there; the per-item and per-response comparisons above cover it.",
+      "note": "per_item.jsonl rows carry no run id or timestamp, so an identical whole-file sha256 means every response and every score field reproduced bit-for-bit.",
+      "per_item_sha256": {
+        "step100_r1": "4a4a840f9a3edb1bdd95fc604e7c5cef243b3b9c843fe1ed7eb3932a2fde94ac",
+        "step100_r2": "4a4a840f9a3edb1bdd95fc604e7c5cef243b3b9c843fe1ed7eb3932a2fde94ac"
+      }
+    },
+    "400": {
+      "all_identical": true,
+      "matches_turnover_report_recorded_provenance_sha256": true,
+      "note": "per_item.jsonl rows carry no run id or timestamp, so an identical whole-file sha256 means every response and every score field reproduced bit-for-bit.",
+      "per_item_sha256": {
+        "step400_cached": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+        "step400_r1": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458",
+        "step400_r2": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458"
+      },
+      "turnover_report_recorded_provenance_sha256": "60eac65a8b5bb9b3682c8ea180add6f16791164d550be25989768a17bc601458"
+    }
+  }
+}
