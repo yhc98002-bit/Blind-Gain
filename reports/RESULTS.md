@@ -21,10 +21,12 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | D4 caption test column (4×3 → 4×4) | F1 | **complete** — branch (a), evidence-general |
 | M5 long horizon → step 400 | **R2** | **complete — verdict FALLING** |
 | M5b two-axis trajectory | R2 / title upgrade | **complete** — dissociation holds; **upgrade condition not met** (§12b) |
-| CHANCE null-corrected retention | **F0 contract** | **complete** (partial coverage: 5 benchmarks have no blind run) — §13/§13b rewritten |
+| CHANCE null-corrected retention | **F0 contract** | **complete** — §13/§13b rewritten |
+| E1c blind columns, 5 remaining benchmarks | **F0 audit** | **complete** — audit now spans **7 benchmarks**; MMVP exactly 0.000, MMMU/MathVerse MC 0.53–0.64 (§13b-bis) |
+| M5c item-level turnover + noise floor | R2 / mechanism | **complete** — 137/601 flips against a **measured zero** noise floor; churn structured but orthogonal to visual necessity (§12c) |
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
 | E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
-| M7 ViRL39K stratified | R3 | ready; pre-launch registration cleared |
+| M7 ViRL39K stratified | R3 | **arm 1 complete (step 100/100)**; arms 2–4 training concurrently across an12+an29 under `registered_m7_seed_scope_v1.md` (seed 1 only, per-seed reporting). Four-arm access matrix on the second corpus expected ~2026-08-02 |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
@@ -1300,6 +1302,23 @@ review.
    step 200 has no on-quota weights at all and survives only on ln207 scratch (index
    `d77c3fcb…`, which *does* match its eval run), with its raw shards deleted, so it
    can be **restored but never re-merged**.
+14. **A run manifest saying `"running"` does not mean a run is live** — the mirror of
+   entry 4. M7 arm 1 finished at step 100 with all five checkpoints written, and its
+   manifest still reads `"status": "running", "end_time_utc": null`; arm 4's OOM-killed
+   first attempt reads the same. There is no M7 finalizer, so **M7 manifests are not
+   authoritative for the R3 readout** until reconciled. Recorded rather than
+   hand-patched, because silently editing a run manifest is worse than a known-stale one.
+15. **M7 arm 4's first attempt was killed by a race between two of our own
+   workstreams.** The launcher checks GPU occupancy and then spends minutes in vLLM init
+   holding no GPU memory; two `run_blind_solvability_v2.py` evaluation cells seized an29
+   GPUs 4–5 inside that window (~62 GiB each, 7 minutes after launch) and the trainer
+   OOM'd on KV-cache allocation. **The GPU-scope colocation guard was not at fault** — it
+   correctly allowed GPUs that were genuinely free at check time. The defect is a
+   time-of-check/time-of-use window plus the fact that only M7 launches consult the
+   guard, so nothing protects an already-launched arm from a later non-M7 job. Arm 4 was
+   relaunched on the quad arm 1 vacated; no scientific quantity is affected, and the
+   guard's own log shows it consulting compute-app occupancy as well as trainer
+   manifests. Recorded as an implementation defect, not a result.
 
 ---
 
@@ -1342,30 +1361,87 @@ variance resolvable *only* through distinctions the encoder can make but the
 policy does not yet use — which is the argument Paper 2 is built on, and why
 scalar answer rewards cannot supply it.
 
-**What would falsify this reading.** A training signal that moves hard-negative
-discrimination, binding, or chained premise while holding the task reward fixed.
-That is precisely what Mini-A5 (F8) is testing, and its result is not yet known
-to us — the arms are sealed until both complete.
+**Three further results sharpen it, all obtained after the account above was written.**
+
+- **The gain is distribution-specific (E1b, 48 cells).** Across blind and
+  with-image conditions, four arms, three seeds and two external benchmarks, **not
+  one lenient comparison moves** — 24 intervals, all containing zero. What does
+  transfer out of domain is output-format compliance, and it is access-dependent.
+  So the readout policy is a policy over *this* task distribution's evidence, not a
+  portable "answer better" capability. It also means **public benchmarks are
+  insensitive instruments for both the gain and the damage**, which is the
+  empirical case for the instrument (C4) rather than an aside about it.
+- **The churn is real, structured, and invisible in the aggregate (M5c).** A flat
+  geo3k score hides 137 of 601 items changing state against a **measured zero**
+  noise floor — bitwise-identical replicates across node, GPU and date. Which items
+  degrade reproduces across checkpoints (Jaccard 0.312 vs null 0.022); what they
+  degrade *to* is dispersed, unlike the gray arm's identical-wrong-answer attractor.
+  The churn is orthogonal to measured visual necessity.
+- **Visual necessity is now measured across seven benchmarks (F0/E1c)** and spans
+  the full range: exactly 0.000 on MMVP (blind = 0.5000 on a uniformly two-way set)
+  through 0.53–0.64 on MMMU and MathVerse's MC slices. The ordering is not
+  recoverable from naive retention.
+
+**The falsification test ran, and the reading survived it.** The stated falsifier
+was a training signal that moves hard-negative discrimination, binding or chained
+premise while holding task reward fixed — which is what Mini-A5 was built to be.
+Its endpoints are now read (§8): CP-GRPO's reward is structurally unsatisfiable by
+a text prior, and **it did not move the primary visual anchor** on any of three
+independent measurements (ranking lenient, ranking strict, generation lenient). The
+one contract that moved decomposes to response formatting with a 1e−17 residual, and
+85.7% of that comes from the comparison arm degrading. What CP *did* move is the
+**oracle-localized readout control**, replicated on the one-shot private twin — the
+same layer ordinary RLVR moves.
+
+So the ceiling argument is no longer only implied by the pattern; it has withstood a
+purpose-built attempt to breach it. That is a stronger claim than the one this
+section originally made, and it is the claim Paper 2 inherits.
 
 ---
 
 ## 19. Still in flight
 
-- **D4 caption column** — **complete**, see §2b. Branch (a), evidence-general.
-- **F8 Mini-A5** — member arm 17/120; sealed until the acceptance gate passes.
-- **R3 M7** — **launched** 2026-07-28 on an12 (arm 1 of 8, `a1_real` seed 1);
-  per-stratum estimands and the merged pre-launch prediction verified present.
-- **R4 C5 7B** — no 7B training configs exist yet; two must be authored (A1 and
-  A2-gray) against the 3B recipe, with a registered sizing decision.
-- **E1b external access matrix** — registered
-  `docs/registered_e1b_external_access_matrix_v1.md` **before any cell was run**.
-  48 cells (4 arms × 3 seeds × 2 benchmarks × 2 conditions). The **blind column
-  (24 cells) is running** on an12 GPUs 4–7; the with-image column follows. Item
-  sets pinned to the E1a base items (1500/1500 MMStar, 999/999 MathVista verified
-  present). Reported under the CHANCE contract, never naive retention.
-  **Resource isolation is explicit and enforced**: M7 holds GPUs 0–3 at its
-  registered 4-GPU width and is not widened, paused, or touched; the orchestrator
-  aborts if GPUs 4–7 are not free.
-- **LH2 second long-horizon seed** — the staged sequence is *not* auto-triggered.
-  §12b weakens the case that motivated it (the benchmark axis is flat at 400, not
-  rising), so whether LH2 is worth multiple days is a PI decision, not mine.
+*Current as of 2026-07-30. D4, F8 and E1b have all landed and moved to their own
+sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open.*
+
+**Running now**
+
+- **R3 M7** — **arm 1 complete at step 100/100**, all five checkpoints on disk. Arms
+  2–4 (`a2_gray`, `a2b_noimage`, `a3_caption`, seed 1) training concurrently across
+  an12 and an29 under `docs/registered_m7_seed_scope_v1.md`: seed 1 only for all four
+  arms, estimands reported **per-seed** rather than as the registered two-seed mean
+  (seed 2 deferred, not abandoned), and `save_model_only: true` for arms 2–4 with
+  `save_freq: 20` unchanged so the registered matched *cadence* holds. Four-arm access
+  matrix on the second corpus expected **~2026-08-02**.
+
+**Open decisions (PI's, not mine)**
+
+- **R4 C5 7B** — the only completely empty rung on the claim ladder. No 7B training
+  configs exist; two must be authored (A1 and A2-gray) against the 3B recipe with a
+  registered sizing decision. The 1 TiB quota top-up makes it affordable.
+- **LH2 second long-horizon seed** — not auto-triggered. §12b weakened the case that
+  motivated it (the benchmark axis is flat at step 400 vs 100, not rising), so whether
+  a multi-day run is worth a Tier-3 upgrade is a judgement call.
+- **Title upgrade** — resolved **negatively** by M5b against the registered condition;
+  current title stands (§1 of PAPER1).
+
+**Engineering debt that affects trust in artifacts**
+
+- **M7 run manifests are not currently authoritative.** There is no M7 finalizer:
+  arm 1's manifest still reads `"status": "running"` with `end_time_utc: null` despite
+  finishing at step 100, and arm 4's first (OOM-killed) run reads `"running"` too.
+  Both must be reconciled before the R3 readout treats manifests as ground truth —
+  this is the mirror of the M11 lesson already in §17.
+- **The launcher has a time-of-check/time-of-use window.** `launch_m7_virl_arm.sh`
+  checks GPU occupancy, then the trainer spends minutes in vLLM init holding no GPU
+  memory. A non-M7 job can seize the GPUs inside that window, which is exactly how M7
+  arm 4's first attempt died. The GPU-scope guard is not at fault; the gap is that only
+  M7 launches consult it, so nothing protects an already-launched arm.
+
+**Blocked on an instrument that does not exist**
+
+- **Paper 2's invariance/specificity axis.** Per §8e, no metric field expresses the
+  invariance criterion — `collapsed` is gated on `answer_a != answer_b` and so is inert
+  on equal-gold pairs. The scorer is specified but unbuilt, and `PAPER2` §2 C2 calls
+  invariance "required, not optional". This blocks Phase-1 development groups that would
+  be validated against it.
