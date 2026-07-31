@@ -1,0 +1,197 @@
+{
+  "binding_env_vars_present_at_launch": [],
+  "cells": [
+    {
+      "arm": "cp",
+      "cell_id": "CATCH-C1",
+      "checkpoint_index_sha256_recomputed_post_run": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "data_manifest": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl",
+      "data_manifest_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+      "eval_seed": 0,
+      "generations": 600,
+      "global_step": 120,
+      "gpu_list": "5",
+      "image_mode": "real",
+      "launcher_exit_code": 0,
+      "max_new_tokens": 32,
+      "node": "an29",
+      "num_shards": 1,
+      "pairs": 300,
+      "per_row_scored_output": "experiments/runs/mini_a5_catch_cp_step120_real_an29_20260731T162926Z/catch_stability_rows_cp.jsonl",
+      "per_row_scored_output_sha256": "b7ec214dac530696d939f4c6941eb347474ba43afe59232694979976284bc7e8",
+      "run_dir": "experiments/runs/mini_a5_catch_cp_step120_real_an29_20260731T162926Z",
+      "run_manifest": {
+        "artifact_sha256": "57e51d42c60cbc2b0d346b9f82e101e3afd9b688c885b15bbdad2cc22f4c6bb5",
+        "checkpoint_index_sha256_field": null,
+        "config_hash": "400664ec17e72602d76e6e6d0f1cfe30cf045422a24c73f61b2fb116943f1d2d",
+        "data_manifest_hash": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+        "end_time_utc": "2026-07-31T16:33:16Z",
+        "evaluation_scope_field": null,
+        "git_hash": "b1ace8662291481f803747536bcfdd3f71d11194",
+        "global_step_field": null,
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "source_training_run_field": null,
+        "start_time_utc": "2026-07-31T16:29:43Z",
+        "status": "complete"
+      },
+      "set": "mini_a5_catch_v1",
+      "shard_metrics_sha256": "8f77346590933ad86da29f528b835120c4dd8923719f3ca00cf51a7f0a9e362f",
+      "shard_output": "experiments/runs/mini_a5_catch_cp_step120_real_an29_20260731T162926Z/shards/shard_0.jsonl",
+      "shard_output_sha256": "90708819d06dddbb1492582e9032948cd020a5f95c5090b1ce6108dc15886c2f",
+      "source_training_job_type": "m6_mini_a5_registered_main",
+      "source_training_run": "experiments/runs/mini_a5_cp_main_an29_20260727T064527Z",
+      "source_training_run_manifest_sha256": "992b74376eee0fee6bb8c273bb4488a7a3a7d1cfd71f1460c2332013defbffe4",
+      "worker_pid": 914574
+    },
+    {
+      "arm": "member",
+      "cell_id": "CATCH-C2",
+      "checkpoint_index_sha256_recomputed_post_run": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "checkpoint_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "data_manifest": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl",
+      "data_manifest_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+      "eval_seed": 0,
+      "generations": 600,
+      "global_step": 120,
+      "gpu_list": "7",
+      "image_mode": "real",
+      "launcher_exit_code": 0,
+      "max_new_tokens": 32,
+      "node": "an29",
+      "num_shards": 1,
+      "pairs": 300,
+      "per_row_scored_output": "experiments/runs/mini_a5_catch_member_step120_real_an29_20260731T162926Z/catch_stability_rows_member.jsonl",
+      "per_row_scored_output_sha256": "858882ffa274cca2be57436884f48fbe8d129b8e8ec6aa26a3a40de506064526",
+      "run_dir": "experiments/runs/mini_a5_catch_member_step120_real_an29_20260731T162926Z",
+      "run_manifest": {
+        "artifact_sha256": "b31641a43d5632ea71243b479cad75ec1f1b15625350782ceec801002609f8d1",
+        "checkpoint_index_sha256_field": null,
+        "config_hash": "2542f97c90ecfa43df0df31d1ef66aa412aa1106f83ee2de2deedbfbc8548c7e",
+        "data_manifest_hash": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+        "end_time_utc": "2026-07-31T16:33:20Z",
+        "evaluation_scope_field": null,
+        "git_hash": "b1ace8662291481f803747536bcfdd3f71d11194",
+        "global_step_field": null,
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "source_training_run_field": null,
+        "start_time_utc": "2026-07-31T16:29:47Z",
+        "status": "complete"
+      },
+      "set": "mini_a5_catch_v1",
+      "shard_metrics_sha256": "3501c71fa397bb9da974277eba98eaf18ad3f56fd942a624e9c1c002abb0abd9",
+      "shard_output": "experiments/runs/mini_a5_catch_member_step120_real_an29_20260731T162926Z/shards/shard_0.jsonl",
+      "shard_output_sha256": "8a93fcf7604953faf370844ed65a91a0869d23805915d2d44dacc58376c745af",
+      "source_training_job_type": "m6_mini_a5_registered_main",
+      "source_training_run": "experiments/runs/mini_a5_member_main_an29_20260728T023715Z",
+      "source_training_run_manifest_sha256": "68e2dd1b9bc9b87c0f7eb103562651d4795d14c90a60ebf3fc352ee75fbfc880",
+      "worker_pid": 914773
+    }
+  ],
+  "driver": "scripts/launch_mini_a5_catch_stability_eval.sh",
+  "driver_state_dir": "experiments/runs/mini_a5_catch_driver_state_20260731T162926Z",
+  "eval_seed_env": {
+    "BLIND_GAINS_EVAL_SEED": "0"
+  },
+  "git_head_at_launch": "b1ace8662291481f803747536bcfdd3f71d11194",
+  "git_status_at_launch_porcelain": " M reports/storage_usage_snapshot.json\n?? reports/m7_r3_readout_v1_partial.json\n?? reports/m7_r3_readout_v1_partial.md\n?? reports/mini_a5_s1_ranking_git_status_at_launch_20260730T011842Z.txt\n?? scripts/launch_m5c_sampled_endpoint_eval.sh\n?? scripts/launch_mini_a5_catch_stability_eval.sh\n?? scripts/m5c_expected_discordance_null.py\n?? scripts/r3_partial_waiter.sh\n?? scripts/relaunch_m7_arm4_watch.sh\n?? scripts/render_m5c_expected_discordance_null_md.py\n?? tmp/a1_merge_launch.log\n?? tmp/a3_merge_run.txt\n?? tmp/add_external.py\n?? tmp/adv_seed3_err.txt\n?? tmp/adv_seed3_err2.txt\n?? tmp/adv_seed3_out.json\n?? tmp/adv_seed3_out2.json\n?? tmp/adv_seed3_verify.py\n?? tmp/adv_seed3_verify2.py\n?? tmp/adv_seed3_verify3.py\n?? tmp/b1_base_final.txt\n?? tmp/b1_caption_run.txt\n?? tmp/b1_premise_probe.txt\n?? tmp/base_remeasure.txt\n?? tmp/bench_imgs/\n?? tmp/bench_stats.json\n?? tmp/benchmark_sample_full.json\n?? tmp/benchmark_sample_pairs.json\n?? tmp/bg_caption_run_dir.txt\n?? tmp/bg_du_inventory_20260723.txt\n?? tmp/big_files.txt\n?? tmp/budget.py\n?? tmp/build_f8_readout.py\n?? tmp/c5_claim_dryprobe.sh\n?? tmp/c5_commit.sh\n?? tmp/caption_store_launch_20260723T150716Z.log\n?? tmp/caption_store_launch_20260723T151428Z.log\n?? tmp/capture_default_commands.sh\n?? tmp/capture_override_commands.sh\n?? tmp/catch_probe.py\n?? tmp/check_a1a3.py\n?? tmp/check_cov.py\n?? tmp/check_m7_images.py\n?? tmp/check_progress.sh\n?? tmp/check_v3.py\n?? tmp/cl_base.txt\n?? tmp/cl_v2base.txt\n?? tmp/cleanup_execute_20260723.log\n?? tmp/cmd_after.txt\n?? tmp/cmd_after.txt.err\n?? tmp/cmd_before.txt\n?? tmp/cmd_before.txt.err\n?? tmp/commit.sh\n?? tmp/commit2.sh\n?? tmp/commit2_g02.sh\n?? tmp/commit_g02.sh\n?? tmp/commit_msg2.txt\n?? tmp/commit_msg_m7_chain.txt\n?? tmp/commit_msg_r3.txt\n?? tmp/commit_msg_r3_readout.txt\n?? tmp/commit_push.sh\n?? tmp/commit_r3_readout.sh\n?? tmp/commit_secondaries.sh\n?? tmp/commitmsg_taskc.txt\n?? tmp/corrections.py\n?? tmp/coverage.py\n?? tmp/d2_seed3_amendment.md\n?? tmp/d3_queue.txt\n?? tmp/diff_worker.sh\n?? tmp/do_commit.sh\n?? tmp/do_push.sh\n?? tmp/dtypes.py\n?? tmp/e1c_analysis.log\n?? tmp/e1c_commit.sh\n?? tmp/e1c_final_check.py\n?? tmp/e1c_guard_control.py\n?? tmp/e1c_inspect.py\n?? tmp/e1c_inspect2.py\n?? tmp/e1c_launch.sh\n?? tmp/e1c_mkconfigs.py\n?? tmp/e1c_mv_diff.py\n?? tmp/e1c_patch_analysis.py\n?? tmp/e1c_patch_hb.py\n?? tmp/e1c_patch_lib.py\n?? tmp/e1c_patch_render.py\n?? tmp/e1c_patch_render2.py\n?? tmp/e1c_patch_test.py\n?? tmp/e1c_preflight.log\n?? tmp/e1c_preflight.py\n?? tmp/e1c_push.sh\n?? tmp/e1c_report_nums.py\n?? tmp/e1c_xcheck.py\n?? tmp/eta.py\n?? tmp/f8_boot.sh\n?? tmp/f8_commit.sh\n?? tmp/f8_commitmsg.txt\n?? tmp/f8_decomp.py\n?? tmp/f8_decomp_err.txt\n?? tmp/f8_decomp_out.json\n?? tmp/f8_driver.pid\n?? tmp/f8_driver.sh\n?? tmp/f8_imports.py\n?? tmp/f8_pin.py\n?? tmp/f8_preflight.py\n?? tmp/f8_preflight2.py\n?? tmp/f8_preflight3.py\n?? tmp/f8_preflight4.py\n?? tmp/f8_preflight_err.txt\n?? tmp/f8_preflight_out.json\n?? tmp/f8_provenance.py\n?? tmp/f8_readout.sh\n?? tmp/f8_run_ts.txt\n?? tmp/f8_verify.py\n?? tmp/f8_verify_err.txt\n?? tmp/f8_verify_out.json\n?? tmp/f8_wait.sh\n?? tmp/final.sh\n?? tmp/final_check_m7.sh\n?? tmp/fix_c5_ledger_row.py\n?? tmp/fix_devlog.py\n?? tmp/fix_f8.py\n?? tmp/fix_limit_images.py\n?? tmp/fix_m7_guard.py\n?? tmp/fix_m7_imagedir.py\n?? tmp/fix_m7_launcher.py\n?? tmp/fix_m7_v3.py\n?? tmp/fix_parity_guard.py\n?? tmp/fix_results.py\n?? tmp/gate0_patch.py\n?? tmp/gate1_commit_msg.txt\n?? tmp/gate1_completion_commit.sh\n?? tmp/gen_ids.txt\n?? tmp/gen_t.txt\n?? tmp/inspect1.sh\n?? tmp/inspect2.py\n?? tmp/inspect2.sh\n?? tmp/inspect_step100.py\n?? tmp/instrument.py\n?? tmp/launch_a2.sh\n?? tmp/launch_arm4.sh\n?? tmp/launch_if_207.sh\n?? tmp/launch_m7_step0.sh\n?? tmp/launch_mini_a5_ranking.sh\n?? tmp/launcher_orig_backup.sh\n?? tmp/ledger2.py\n?? tmp/ledger3.py\n?? tmp/ledger4.py\n?? tmp/ledger5.py\n?? tmp/ledger6.py\n?? tmp/ledger7.py\n?? tmp/ledger_patch.py\n?? tmp/m5_r19_step400.txt\n?? tmp/m5b_probe.py\n?? tmp/m5b_summ.py\n?? tmp/m5b_traj.py\n?? tmp/m5c_dup.py\n?? tmp/m5c_err.txt\n?? tmp/m5c_fixup.py\n?? tmp/m5c_out.txt\n?? tmp/m5c_patch.py\n?? tmp/m5c_substrate.py\n?? tmp/m5c_verify.py\n?? tmp/m5c_verr.txt\n?? tmp/m7_bookkeeping_commit_msg.txt\n?? tmp/m7_config_backup_pre_seedscope/\n?? tmp/m7_run.txt\n?? tmp/m7_step0_run_dirs.txt\n?? tmp/m7msg.txt\n?? tmp/m7msg2.txt\n?? tmp/m7msg3.txt\n?? tmp/mark_dead.py\n?? tmp/mcn_check.py\n?? tmp/mini_a5_member.txt\n?? tmp/msg.txt\n?? tmp/nodes.sh\n?? tmp/oom_probe_m7.sh\n?? tmp/patch_ablation.py\n?? tmp/patch_caption_shards.py\n?? tmp/patch_d2_seed3.py\n?? tmp/patch_d3.py\n?? tmp/patch_d3_resume.py\n?? tmp/patch_launcher.py\n?? tmp/patch_m5_gate_severity.py\n?? tmp/patch_mini_a5_raytmp.py\n?? tmp/patch_mini_a5_watch.py\n?? tmp/patch_orchestrators.py\n?? tmp/patch_ssh_resilient.py\n?? tmp/patch_x1_instruments.py\n?? tmp/post.sh\n?? tmp/post2.sh\n?? tmp/probe1.sh\n?? tmp/probe10.sh\n?? tmp/probe11.sh\n?? tmp/probe12.sh\n?? tmp/probe13.sh\n?? tmp/probe14.sh\n?? tmp/probe2.sh\n?? tmp/probe2_c5.sh\n?? tmp/probe2_nullcorr.py\n?? tmp/probe3.sh\n?? tmp/probe3_nullcorr.py\n?? tmp/probe4.sh\n?? tmp/probe4_nullcorr.py\n?? tmp/probe5.sh\n?? tmp/probe5_nullcorr.py\n?? tmp/probe6.sh\n?? tmp/probe6_nullcorr.py\n?? tmp/probe7.sh\n?? tmp/probe7_nullcorr.py\n?? tmp/probe8.sh\n?? tmp/probe9.sh\n?? tmp/probe_7b_c5.sh\n?? tmp/probe_catch_metric.py\n?? tmp/probe_fix2.sh\n?? tmp/probe_gate1_completion_1.sh\n?? tmp/probe_gate1_completion_2.sh\n?? tmp/probe_gate1_completion_3.sh\n?? tmp/probe_gate1_completion_4.sh\n?? tmp/probe_gate1_completion_5.sh\n?? tmp/probe_gate1_completion_6.sh\n?? tmp/probe_guard.sh\n?? tmp/probe_m7_fixes.sh\n?? tmp/probe_nullcorr.py\n?? tmp/push.sh\n?? tmp/push2.sh\n?? tmp/push_g02.sh\n?? tmp/push_m7_bg.sh\n?? tmp/push_m7_fixes.sh\n?? tmp/push_m7_wrap.sh\n?? tmp/push_r3_20260730.sh\n?? tmp/push_secondaries.sh\n?? tmp/quota_breakdown.txt\n?? tmp/r19_captions.json\n?? tmp/r3_probe_20260730.py\n?? tmp/rates.sh\n?? tmp/reflection.md\n?? tmp/reg_ids.txt\n?? tmp/reg_t.txt\n?? tmp/regen.sh\n?? tmp/registered_m7_amendment_v1.md\n?? tmp/results_append.md\n?? tmp/run_a1_merge.sh\n?? tmp/run_r3_partial_20260730.sh\n?? tmp/s1_spotcheck.py\n?? tmp/seed3_readout_run.txt\n?? tmp/smoke_disc_null.json\n?? tmp/smoke_disc_null.md\n?? tmp/smoke_eval_manifest.py\n?? tmp/test_stats.py\n?? tmp/timeline_m7.sh\n?? tmp/update_audit_status.py\n?? tmp/update_base.py\n?? tmp/update_pooled.py\n?? tmp/update_research_doc.py\n?? tmp/update_results_d3.py\n?? tmp/v3_header.md\n?? tmp/verify_a1.py\n?? tmp/verify_all.sh\n?? tmp/verify_chance1.py\n?? tmp/verify_chance10.out\n?? tmp/verify_chance10.py\n?? tmp/verify_chance11.py\n?? tmp/verify_chance12.py\n?? tmp/verify_chance13.py\n?? tmp/verify_chance14.out\n?? tmp/verify_chance14.py\n?? tmp/verify_chance15.py\n?? tmp/verify_chance16.py\n?? tmp/verify_chance2.py\n?? tmp/verify_chance3.py\n?? tmp/verify_chance4.py\n?? tmp/verify_chance5.out\n?? tmp/verify_chance5.py\n?? tmp/verify_chance6.py\n?? tmp/verify_chance7.py\n?? tmp/verify_chance8.py\n?? tmp/verify_chance9.py\n?? tmp/verify_fields.py\n?? tmp/verify_m7_fixes.sh\n?? tmp/verify_m7_seedscope.py\n?? tmp/verify_m7_step0.py\n?? tmp/verify_seed3_repl.py\n?? tmp/verify_step100.py\n?? tmp/wait47.sh\n?? tmp/wait_bounded.sh\n?? tmp/watch_m7_step0.sh\n?? tmp/x1_addendum.md\n?? tmp7x7wat9l/\n?? tmpccmr2iw4/\n?? tmpimt82o_1/\n?? tmpmyx_7j6u/\n?? tmpv0fr5oux/\n?? tmpw50m166g/\n?? tmpyhqdwjf0/\n",
+  "gpu_claims": {
+    "claim_run_id": "mini_a5_catch_stability_v1_20260731T162926Z",
+    "gpus": [
+      5,
+      7
+    ],
+    "node": "an29",
+    "protocol": "scripts/m7_gpu_occupancy_guard.py pass 1 -> claims written under /dev/shm/blind-gains/gpu_claims -> guard pass 2 with --ignore-claim-run-id -> launch -> worker pids stamped into claims",
+    "removed_after_completion": true
+  },
+  "hash_checks": {
+    "adapter": {
+      "pass": true,
+      "path": "scripts/build_mini_a5_catch_eval_manifest.py",
+      "recomputed_sha256": "b7b964f3c17f650d2355e36ab532e2893de8fb49aa51bb427a352e2fc995e93e",
+      "registered_sha256": "b7b964f3c17f650d2355e36ab532e2893de8fb49aa51bb427a352e2fc995e93e"
+    },
+    "catch_audit": {
+      "pass": true,
+      "path": "reports/mini_a5_catch_audit_v1.json",
+      "recomputed_sha256": "37b9662c1f873c6b6cb7ee04a87a954dadef54ea974933c0e50e5ab8c60c2317",
+      "registered_sha256": "37b9662c1f873c6b6cb7ee04a87a954dadef54ea974933c0e50e5ab8c60c2317"
+    },
+    "catch_decontamination": {
+      "pass": true,
+      "path": "data/mini_a5_catch_v1/decontamination.json",
+      "recomputed_sha256": "19ed9a833665aead2aee1f4494279a26055c4f531fed68d3e3340af8a1a16bda",
+      "registered_sha256": "19ed9a833665aead2aee1f4494279a26055c4f531fed68d3e3340af8a1a16bda"
+    },
+    "catch_source_pairs": {
+      "pass": true,
+      "path": "data/mini_a5_catch_v1/pairs.jsonl",
+      "recomputed_sha256": "fbd83d52fa01103bfb839fa2572eb9164c532f8c3a3431da6ca8f6033d6a9728",
+      "registered_sha256": "fbd83d52fa01103bfb839fa2572eb9164c532f8c3a3431da6ca8f6033d6a9728"
+    },
+    "checkpoint_index_cp": {
+      "pass": true,
+      "path": "checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface/model.safetensors.index.json",
+      "recomputed_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "registered_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21"
+    },
+    "checkpoint_index_member": {
+      "pass": true,
+      "path": "checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface/model.safetensors.index.json",
+      "recomputed_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "registered_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6"
+    },
+    "derived_eval_manifest": {
+      "pass": true,
+      "path": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl",
+      "recomputed_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+      "registered_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a"
+    },
+    "derived_eval_manifest_provenance": {
+      "pass": true,
+      "path": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl.provenance.json",
+      "recomputed_sha256": "47f35dce7f76e3b43902951f7a0f24cdd147d9d3e576f6fb019fcfffddaa8ad8",
+      "registered_sha256": "47f35dce7f76e3b43902951f7a0f24cdd147d9d3e576f6fb019fcfffddaa8ad8"
+    },
+    "readout_inputs_are_these_runs": {
+      "note": "readout JSON inputs.{cp,member}_scores paths+sha256 equal the shard outputs of the two runs launched by this driver",
+      "pass": true
+    },
+    "scorer": {
+      "pass": true,
+      "path": "src/eval/catch_stability.py",
+      "recomputed_sha256": "d15eaa5d878cb757aa8dbae17d446c98cd6675cdc10fbd1a23bac1d7af1d8e91",
+      "registered_sha256": "d15eaa5d878cb757aa8dbae17d446c98cd6675cdc10fbd1a23bac1d7af1d8e91"
+    },
+    "tracked_manifest_record": {
+      "output_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+      "pass": true,
+      "path": "experiments/manifests/mini_a5_catch_eval_manifest_v1.json"
+    }
+  },
+  "instrument_commit": "fc57cb8",
+  "instrument_tests": {
+    "result": "27 passed",
+    "run_at_git_head": "b1ace8662291481f803747536bcfdd3f71d11194",
+    "suite": "tests/test_catch_stability.py"
+  },
+  "readout": {
+    "json": "reports/mini_a5_catch_stability_readout_v1.json",
+    "json_sha256": "f723aa9d08066d92a0f5f7cf265c997500d5217fd314a92827151548e13620c5",
+    "md": "reports/mini_a5_catch_stability_readout_v1.md"
+  },
+  "registration": "docs/registered_mini_a5_catch_stability_v1.md",
+  "registration_sha256": "a1993f41b895b9260b8c545acea4529635d3fde6d22f68f2db2ec35dfb0c29f9",
+  "schema_version": "blind-gains.mini-a5-catch-run-provenance.v1",
+  "scope_note": "Fills the instrument-absent F8 secondary (catch-trial stability, reports/f8_secondaries_v1.md section 2). No decision branch is attached; the published F8 primary readout and its branch decision are unaffected.",
+  "scorer": {
+    "exit_code": 0,
+    "invocation": "PYTHONPATH=. .venv/bin/python src/eval/catch_stability.py --cp-scores experiments/runs/mini_a5_catch_cp_step120_real_an29_20260731T162926Z/shards/shard_0.jsonl --member-scores experiments/runs/mini_a5_catch_member_step120_real_an29_20260731T162926Z/shards/shard_0.jsonl --output reports/mini_a5_catch_stability_readout_v1.json --per-row-output-cp experiments/runs/mini_a5_catch_cp_step120_real_an29_20260731T162926Z/catch_stability_rows_cp.jsonl --per-row-output-member experiments/runs/mini_a5_catch_member_step120_real_an29_20260731T162926Z/catch_stability_rows_member.jsonl --expect registered",
+    "path": "src/eval/catch_stability.py",
+    "sha256": "d15eaa5d878cb757aa8dbae17d446c98cd6675cdc10fbd1a23bac1d7af1d8e91"
+  },
+  "title": "Mini-A5 catch-trial stability: out-of-band post-run checkpoint provenance (registered secondary 2)",
+  "why_out_of_band": "scripts/launch_fliptrack_eval_shards.sh has no m6_mini_a5_registered_main binding branch (reports/f8_eval_plan_v1.json blocking limitation 'launcher_has_no_mini_a5_binding_branch'), so both run_manifest.json files record null for source_training_run/global_step/checkpoint_index_sha256/evaluation_scope. This record carries that provenance out-of-band, exactly as reports/mini_a5_f8_run_provenance_v1.json did for the six F8 cells; checkpoint index sha256s here are recomputed from disk post-run.",
+  "written_utc": "2026-07-31T16:38:46Z"
+}
