@@ -459,6 +459,40 @@ explicitly not adopted — the convention arms train *on* Geometry3K while Mini-
 `data/mini_a5_train_v1`, so adopting it would silently convert the endpoint into an
 out-of-domain transfer measurement.
 
+### 8f. The invariance instrument, built and read — and it completes the pattern
+
+`reports/mini_a5_catch_stability_readout_v1.{json,md}`, instrument registered in
+`docs/registered_mini_a5_catch_stability_v1.md` before its evaluation ran (27/27
+adversarial fixtures, headed by the decisive agree-but-both-wrong case; per-template
+output only — pooling structurally impossible in the schema). Both step-120 arms, 300
+equal-gold catch pairs, same F8 shard path, ~3.5 min per arm.
+
+**On answer content, invariance is at ceiling for both arms** (per template, n=100;
+counts lenient / strict):
+
+| template | CP stable | member stable | CP correct | member correct |
+|---|---|---|---|---|
+| matrix | 100 / 95 | 100 / 89 | 100 / 95 | 100 / 89 |
+| scatter | 100 / 100 | 100 / 100 | 100 / 100 | 100 / 100 |
+| trajectory | 98 / 64 | 96 / 28 | 96 / 64 | 95 / 28 |
+
+All lenient CP−member contrasts are null (largest +0.02 [0.00, +0.05], p = 0.5), and
+joint stable-and-correct equals correctness in every cell of both arms. **Neither arm
+shows change-detector pathology**: under a non-queried visual change, both hold their
+answer essentially always. The specificity axis Paper 2 requires (I5, I13) now has a
+working instrument, and at Gate-1 scale it reads clean.
+
+**The strict contrasts repeat the session's most replicated finding.** CP − member on
+strict stability: trajectory **+0.36 [+0.27, +0.46], p = 2.9e−11** (discordant 0/36),
+matrix +0.06 [+0.02, +0.11], p = 0.031, scatter at ceiling. With lenient at ceiling,
+a strict-only gap is once again **answer-contract compliance, not content** — the same
+formatting layer that produced F8's +0.07 strict "win" (§8b), E1b's only transfer
+(§13c), and the F8 canary's strict drop. Four independent measurements now localise the
+CP-vs-member difference to format compliance; none place it in visual competence.
+
+*Recorded as the registration requires: this fills the instrument-absent F8 secondary
+and cannot alter the published F8 primary or branch decision.*
+
 *Scope.* Mini-A5 is Gate 1 — 120 steps, one run per arm; intervals are evaluation
 uncertainty, not run-to-run RL variance. chart-v08 cells are n = 50 per template.
 Attribution (VAG, `PAPER2` §3B) requires a matched blind control that is not among the
