@@ -1468,15 +1468,32 @@ sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open
   `docs/registered_m7_seed_scope_v1.md`: seed 1 only, per-seed reporting, and
   `save_model_only: true` with `save_freq: 20` unchanged so the registered matched
   *cadence* holds. Four-arm access matrix on the second corpus expected **~2026-08-02**.
-- **R3 step-0 held-out evaluations — launched 2026-07-30T15:45Z** and generating
-  (fresh decode, `resumed: 0`, frozen contract hash `7ac39f53…` verified):
-  `m7_step0_heldout_base_{real,gray,none,caption}_an29_20260730T1544*`, one condition
-  per an29 GPU 4–7, 4,239 items × 16 samples each, ETA ~02:00–04:00Z. These close two
-  provenance gaps at once, established by exhaustive sweep of all 1,614 run dirs
-  before launching: **no M7 held-out per-item evaluation had ever been run**, and
-  frozen per-item `q_i` covered only 448/4,239 held-out items — one
-  `--sample-count 16` pass emits both `Acc_final(step_0)` and `q_i`, so `gain` and
-  `q_bar` come from the same runs. Step-100 evaluations follow when training lands.
+- **R3 step-0 held-out evaluations — COMPLETE** (all four manifests finalized
+  2026-07-31 ~02:40Z), and the autonomous waiter ran the author-validated partial
+  readout the moment they landed: `reports/m7_r3_readout_v1_partial.{json,md}`
+  (rc = 0, `status: partial-step0-only`; every gain/recovery/ρ estimand refused by
+  construction until step-100 exists). **R3's substrate is now real numbers:**
+
+  | arm (own condition) | n | q̄ (blind opportunity) | Acc_final step 0 |
+  |---|---:|---:|---:|
+  | A1 real | 4,239 | 0.5122 | 0.2744 |
+  | A2 gray | 4,239 | 0.4235 | 0.1894 |
+  | A3 caption | 4,239 | 0.4458 | 0.1849 |
+  | A2b no-image | 4,239 | 0.4154 | 0.1538 |
+
+  Strata recount confirmed in production: 60 joint (source, category) strata =
+  **22 eligible + 38 descriptive-small-n**, exactly as the fixture-validated
+  assertion demands. The per-stratum q̄ spread is wide — `dvqa` charts are strongly
+  image-dependent (q̄ A1 0.657 vs A2b 0.145) while `MMMath` non-geo is nearly fully
+  blind-solvable (0.565 vs 0.547) — which is precisely the heterogeneity the
+  registered prediction (stratum recovery tracks stratum blind-opportunity) needs to
+  be a discriminating test rather than a formality.
+- **C5 7B base cells — launched 2026-07-31T12:37Z** on an29 GPUs 4–5 through the
+  project's own guarded launcher (`blind_solvability_v2_c5_7b_base_{real,gray}`),
+  per the registration's explicit authorisation ("inference-only and may run before
+  the training arms"). Same harness family as the 3B base rows, so the 7B access
+  matrix will be methodologically parallel; 16-sample runs also bank per-item 7B
+  `q_i` for future use.
 - **R3 readout script — built and validated before its data exists** (`7b5176c`).
   `scripts/build_m7_r3_readout.py` implements the registered estimands exactly
   (q_bar / gain / recovery with the ≥2·paired_se stability rule, tie-corrected
