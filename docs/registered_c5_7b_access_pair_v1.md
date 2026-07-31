@@ -197,3 +197,4 @@ interpreted, and bound into the affected run manifest.
 
 | Time UTC | Training unit | Deviation | Reason | Effect on estimands | PI disposition |
 | --- | --- | --- | --- | --- | --- |
+| 2026-07-31T00:30Z (logged, pre-launch) | The "~17 GB/save, ~85 GB/arm" storage projection in this registration inherits the bf16 HF-export size. First production measurement of `save_model_only: true` (M7 arms 2-4, step 20) shows the flag writes fp32 FSDP model shards — ~16 GB at 3B, i.e. 4 bytes/param — so at 7B (8.29B params) expect **~33 GB per save, ~165 GB per arm, ~330 GB for the pair**, and a config+tokenizer-stub `huggingface/` requiring the standard HF merge before any evaluation. | Measured before launch; no C5 value exists yet. | None on any estimand; storage floor in the launcher (150 GB) should be read against the ~330 GB pair total when scheduling. Headroom is ample (~1.7 TB free). | Logged. |
