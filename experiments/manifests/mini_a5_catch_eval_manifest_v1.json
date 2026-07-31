@@ -1,0 +1,16 @@
+{
+  "generator": "scripts/build_mini_a5_catch_eval_manifest.py",
+  "key_mapping": "pair_id := pair_group_uid; every source field preserved unchanged",
+  "n_rows": 300,
+  "note": "data/ is gitignored (generated datasets stay local; checksums tracked here). The derived manifest is rebuilt deterministically (byte-identical) by the generator after verifying the source against source_sha256.",
+  "output_path": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl",
+  "output_sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a",
+  "schema_version": "blind-gains.mini-a5-catch-eval-manifest-provenance.v1",
+  "source_path": "data/mini_a5_catch_v1/pairs.jsonl",
+  "source_sha256": "fbd83d52fa01103bfb839fa2572eb9164c532f8c3a3431da6ca8f6033d6a9728",
+  "template_pair_counts": {
+    "mini_a5_catch_distractor_matrix_v1": 100,
+    "mini_a5_catch_distractor_scatter_v1": 100,
+    "mini_a5_catch_distractor_trajectory_v1": 100
+  }
+}
