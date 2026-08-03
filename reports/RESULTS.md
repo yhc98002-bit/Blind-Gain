@@ -1490,7 +1490,32 @@ section originally made, and it is the claim Paper 2 inherits.
 *Current as of 2026-07-30. D4, F8 and E1b have all landed and moved to their own
 sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open.*
 
-**Running now**
+**Running now** *(refreshed 2026-08-03T16:00Z; 14 of 16 GPUs working, the idle
+pair on an12 held as the right-sized reserve for Gate 1's Δq pass pending PI
+ratification)*
+
+- **R3 endgame.** All four arms trained to step 100. The completion chain closed
+  a1_real and a2b_noimage end-to-end autonomously; its loud give-up on the other
+  two was orchestration, not science — a2_gray crossed step 100 **37 minutes
+  after** the chain's 30-h limit expired, and a3_caption's eval launches died on
+  the recurring jq PATH trap inside ssh-to-an12. Recovery 2026-08-03: a2_gray
+  closed with full evidence and true completion time preserved
+  (`observed_completion_utc: 2026-08-01T22:53:47Z`), merged and index-verified
+  (825 / 8,131,575,808); both missing step-100 evals relaunched and generating;
+  `r3_full_waiter.sh` armed to fire the **full R3 readout ~02:00Z 2026-08-04**.
+  One orchestrator wobble recorded honestly in the gray eval's manifest: it was
+  wrongly marked failed for ~20 min on a suspected merge race; log timestamps
+  prove it loaded the merged weights cleanly after merge completion and was
+  never interrupted.
+- **C5 both 7B arms training.** A1-real at step ~80/100 (ahead of the 67–91
+  min/step projection; ~08-04); A2-gray launched 2026-08-03 on an12 4–7
+  (~08-06). Peak memory 73–78 GB of 79.33 at `gpu_memory_utilization 0.45` —
+  inside the registered margin on both arms.
+- **M7 seed 2 begun.** `a1_real` seed 2 launched on the freed an29 quad —
+  registered work requiring no amendment (the seed-scope amendment deferred
+  seed 2 explicitly as "not abandoned"), converting idle billed GPUs into the
+  upgrade path from per-seed reporting back to the originally registered
+  two-seed estimator. Full checkpoints (~205 GB) against 1,308 GiB free.
 
 - **R3 M7 training** — **arm 1 complete at step 100/100**, all five checkpoints on
   disk; its step-100 checkpoint is **merged and verified** (825 weight entries,
