@@ -1,0 +1,70 @@
+{
+  "arm_counts": {
+    "a1_real": 16,
+    "a2_gray": 1,
+    "a2b_noimage": 5,
+    "a3_caption": 2
+  },
+  "arm_provenance": {
+    "a1_real": {
+      "baseline_per_item": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_real_login_20260712T050905Z/per_item.jsonl",
+      "baseline_per_item_sha256": "021da42f00eab94bc431ed0e7924110c237f77454b23ded5a8f1064c48fd6aa3",
+      "candidate_path": "experiments/runs/pilot_4arm_seed1_readout_retry_login_20260716T161914Z/artifacts/support_candidates_a1_real.jsonl",
+      "candidate_sha256": "2f373e957e23a43cee381515ce31fb30ff7b45997f4b9b74b40105a816ace495",
+      "condition": "real",
+      "step100_audit": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a1_real_seed1_step100_an12_gpu4_20260715T210056Z_20260715T211733Z/audit.json",
+      "step100_audit_sha256": "81cca198e1a0496b07d671daab32f2e60bdd14435f9a3ce463e820a0b8e6b2b8",
+      "step100_per_item": "experiments/runs/m2_geo3k_a1_real_seed1_step100_an12_gpu4_20260715T210056Z/per_item.jsonl",
+      "step100_per_item_sha256": "541b7cb18be0ac357aaeddea3cce94c47aa39ccf827c842666399b6e61d7dda5"
+    },
+    "a2_gray": {
+      "baseline_per_item": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_gray_login_20260712T050908Z/per_item.jsonl",
+      "baseline_per_item_sha256": "55a215966904306e69fbbe1d2c5be8c7829873d0e653ec7738cd36df8f0b24a8",
+      "candidate_path": "experiments/runs/pilot_4arm_seed1_readout_retry_login_20260716T161914Z/artifacts/support_candidates_a2_gray.jsonl",
+      "candidate_sha256": "38391899c09c1ad287d7da2c8b8e148b55c096778f492c7a0bed31e4bb9d3cfe",
+      "condition": "gray",
+      "step100_audit": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a2_gray_seed1_step100_an12_gpu4_20260716T155345Z_20260716T161002Z/audit.json",
+      "step100_audit_sha256": "1ef8f0ab68fca039f5ae6beda7110d7e95317f74725158e78cdf5fce0e534640",
+      "step100_per_item": "experiments/runs/m2_geo3k_a2_gray_seed1_step100_an12_gpu4_20260716T155345Z/per_item.jsonl",
+      "step100_per_item_sha256": "3b5d00a19f15646f16fb8e69555a01f4c344307cd7b03958e3db6d90ae3cb742"
+    },
+    "a2b_noimage": {
+      "baseline_per_item": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_none_login_20260712T055030Z/per_item.jsonl",
+      "baseline_per_item_sha256": "60db78c675680507f1c3bc28ae7294da4cf5811f5cea75306dfdb70318ea2a6d",
+      "candidate_path": "experiments/runs/pilot_4arm_seed1_readout_retry_login_20260716T161914Z/artifacts/support_candidates_a2b_noimage.jsonl",
+      "candidate_sha256": "210730fd1deb09cf4ef235ce64e9ac68c075b8a4cd02c38065bf0f9874d10985",
+      "condition": "none",
+      "step100_audit": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a2b_noimage_seed1_step100_an12_gpu5_20260715T210056Z_20260715T211906Z/audit.json",
+      "step100_audit_sha256": "b2d88f529f209c49615e06f188abcd7c41e8f30c0447d7a643ae7d265878fbce",
+      "step100_per_item": "experiments/runs/m2_geo3k_a2b_noimage_seed1_step100_an12_gpu5_20260715T210056Z/per_item.jsonl",
+      "step100_per_item_sha256": "2589d1eb5e12ac22545144448a536e49382b8baf8fb9c4fd27ca88b883993f27"
+    },
+    "a3_caption": {
+      "baseline_per_item": "experiments/runs/blind_solvability_v2_guarded_rescore_geo3k_filtered_v2_retry_caption_login_20260712T050913Z/per_item.jsonl",
+      "baseline_per_item_sha256": "6c04277cca314dc22396c3a56175336e2ea0d81661ea2d52a96e5873d7746bd2",
+      "candidate_path": "experiments/runs/pilot_4arm_seed1_readout_retry_login_20260716T161914Z/artifacts/support_candidates_a3_caption.jsonl",
+      "candidate_sha256": "6ddf02172b260f25cc335365b8fe04d4c818d6e6d1b3e98e59a2b599552e4775",
+      "condition": "caption",
+      "step100_audit": "experiments/runs/pilot_geo3k_step100_audit_m2_geo3k_a3_caption_seed1_step100_an12_gpu6_20260715T210056Z_20260715T212255Z/audit.json",
+      "step100_audit_sha256": "2044a44668010eeeb85eff7e863e3bda63fbcd4d44fae11d3ffe8a9c9dacc4c0",
+      "step100_per_item": "experiments/runs/m2_geo3k_a3_caption_seed1_step100_an12_gpu6_20260715T210056Z/per_item.jsonl",
+      "step100_per_item_sha256": "ec4bdc6a5782fbf6c4337e463cb3a38ddb824163b8e6c54e44e2afcfda7a665c"
+    }
+  },
+  "human_review_outcome": "pending",
+  "image_count": 22,
+  "item_count": 24,
+  "output_bytes": 624879,
+  "output_sha256": "c74ef0e46f5e18740be8fde1519eaee47ab20eb8468af9d9665ecfeb4b6bed14",
+  "output_zip": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/human_packages/blind_gains_support_expansion_24_review_20260804_v1.zip",
+  "schema_version": "blind-gains.support-expansion-review-bundle.v1",
+  "scientific_gate_decision": null,
+  "source_sha256": {
+    "geometry3k_images_manifest": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+    "pilot_readout_manifest": "a54a7f0570c8d93575804cc490df2cc0081bd8502e9d81d8fbf2d96374dc6f3a",
+    "reviewer_guide": "40323611d9095e48c100525003b6b0634d23f234d8091633d181cbc15710f756",
+    "support_sharpening_exec_config": "6cddeb4c3871759e239c698df02333beb104b6ec8e1c0684a0aebae6aac79cd8",
+    "support_sharpening_readout": "8ad68b170c5334bcbec6c2d0722aa4b00283eb6cefaa99843ecb1a6352f47cbc"
+  },
+  "status": "pass"
+}

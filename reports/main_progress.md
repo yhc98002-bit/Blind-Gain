@@ -65,8 +65,8 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | Item | Status |
 |---|---|
 | Chart-v08 no-zoom audit | blocked — package ready |
-| 24-candidate support-expansion review | blocked — viewer ready |
-| R20 human audit sample | blocked |
+| 24-candidate support-expansion review | blocked — package ready (`reports/human_packages/blind_gains_support_expansion_24_review_20260804_v1.zip`, 24 items, manifest `reports/support_expansion_review_bundle_v1.json`) |
+| R20 human audit sample | blocked — package ready (`reports/human_packages/blind_gains_r20_human_audit_20260804_v1.zip`, 60 pairs mirroring the R19 audit design, manifest `reports/r20_human_audit_bundle_v1.json`) |
 | Cue-ladder legibility spot-check | blocked — awaits Phase-1 rungs |
 | Sign-off merges (D3 estimand, P1.2 split, Gate-1) | blocked |
 

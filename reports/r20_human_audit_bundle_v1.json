@@ -1,0 +1,48 @@
+{
+  "audit_contract": {
+    "decision_count": 6,
+    "mode": "standard"
+  },
+  "human_audit_outcome": "pending",
+  "image_count": 120,
+  "pair_count": 60,
+  "portable_zip": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/human_packages/blind_gains_r20_human_audit_20260804_v1.zip",
+  "portable_zip_bytes": 4876658,
+  "portable_zip_sha256": "662e8c393ed6327bae27c20f9d44676b727d1e8b1d06ceebf33018fb55003497",
+  "r19_design_provenance": {
+    "delivered_bundle": "reports/review_packages/blind_gains_r19_human_audit_20260712_v3.zip",
+    "delivered_bundle_sha256": "e455de54c4d00d024cc8eea18c98141ff326ba4188844e3661dc1025e0fcd25a",
+    "pairs_per_template": 20,
+    "r19_audit_report": "reports/fliptrack_v02r19_human_audit.md",
+    "r19_guide": "docs/HUMAN_AUDIT_GUIDE.md",
+    "selection_rule": "first_n_per_template_in_source_manifest_order"
+  },
+  "schema_version": "blind-gains.r20-human-audit-bundle.v1",
+  "scientific_gate_decision": null,
+  "selection": {
+    "pairs_per_template": 20,
+    "rng": "none; deterministic given the frozen R20 source manifest order",
+    "strategy": "first_n_per_template_in_source_manifest_order"
+  },
+  "source_paths": {
+    "package_dir": "data/fliptrack_r20",
+    "private_answer_key": ".private/fliptrack_r20_key.jsonl",
+    "release_manifest": "data/fliptrack_r20/manifest.jsonl",
+    "reviewer_guide": "docs/R20_HUMAN_AUDIT_GUIDE.md",
+    "source_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+    "viewer": "tools/human_audit_viewer.html"
+  },
+  "source_sha256": {
+    "private_answer_key": "136055580e05164ded27aac476a75ead3eb2de37b59ed0e90150f7b96291f0ec",
+    "release_manifest": "be033f67bd78d6207fb6dd1a3156810f3515416203b48fc65ae59334308255b4",
+    "reviewer_guide": "18f07a3779264c52097ee19c6be7af0cedd3569251ac4a66f6f33a895f3f23f9",
+    "source_manifest": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+    "viewer": "e32aaadd4d3e43440204f13dfd582be4b031b4c9091b7d2b8860e9f88d7d29e1"
+  },
+  "status": "pass",
+  "template_counts": {
+    "coordinate_register_twenty_point_x_v02": 20,
+    "header_cued_table_code_v02": 20,
+    "starred_series_value_nine_v07": 20
+  }
+}
