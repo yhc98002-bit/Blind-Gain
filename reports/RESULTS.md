@@ -1678,3 +1678,30 @@ ratification)*
   on equal-gold pairs. The scorer is specified but unbuilt, and `PAPER2` §2 C2 calls
   invariance "required, not optional". This blocks Phase-1 development groups that would
   be validated against it.
+
+## 20. E2 — recipe variation: the dissociation is not the pilot recipe's artifact (2026-08-04, assembly only)
+
+`reports/e2_recipe_variation_v1.{json,md}` + `scripts/build_e2_recipe_variation_v1.py`
+(commit ab8530b, pushed to agent/gate2-recovery and master). No new runs, no GPU —
+every number is read programmatically from the canonical artifacts (17 sources, sha256
+recorded) and the build fails on any mismatch with RESULTS §§3, 6, 12, 12b.
+
+Side-by-side, step 100 vs the same frozen base, same geo3k test split (n=601) and same
+R19 geometry primary anchor (n=600 pairs):
+
+| config | benchmark Δ (canonical / pilot-lenient) | primary grounding Δ (lenient) |
+|---|---|---|
+| pilot A1 — frozen tower, pilot reward, filtered 1,288-row corpus, 3 seeds | +0.2435 / +0.2684 (mean; every per-seed CI excludes zero) | +0.0056 [−0.0183, +0.0294] (all 3 seeds inside SESOI ±0.05, equivalence supported) |
+| anchor — unfrozen tower, native r1v, unfiltered corpus, 1 seed | +0.2562 / +0.2862 (p ≤ 5.1e−31) | +0.0083 [−0.0217, +0.0367] (p = 0.6445) |
+
+**Insight.** The benchmark-up / grounding-flat dissociation reproduces under a recipe
+that differs in all three factors a reviewer would blame — tower freezing, reward
+function, corpus filtering — so it is not an artifact of the pilot's frozen-tower /
+canonical-reward configuration. The two configurations even land nearly identical
+numbers on both axes, which was not guaranteed. Only the anchor was extended past 100:
+benchmark peak-and-return (+0.0083 vs step 100, p = 0.73) against monotone grounding
+decline (−0.0667, p = 2.4e−06) — reported with the I19 attribution clause verbatim.
+Caveats stated plainly in the artifact: anchor is one seed; three coupled factors, so
+no single-factor attribution — robustness evidence, not a factorial experiment; the
+anchor's strict step-100 grounding delta is nominally +0.0367 (p = 0.026) purely
+because strict scoring charges the frozen base's contract failures.
