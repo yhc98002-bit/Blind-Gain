@@ -1705,3 +1705,32 @@ Caveats stated plainly in the artifact: anchor is one seed; three coupled factor
 no single-factor attribution — robustness evidence, not a factorial experiment; the
 anchor's strict step-100 grounding delta is nominally +0.0367 (p = 0.026) purely
 because strict scoring charges the frozen base's contract failures.
+
+## Human-review packages round (2026-08-04): the two missing PI packages are built
+
+Both outstanding human-review packages from the ledger's "Human items" table now exist
+under `reports/human_packages/` (deterministic builds, no GPU touched, zips gitignored;
+build scripts + manifests committed, `83d3b66`, pushed to `main` and `agent/gate2-recovery`):
+
+| package | zip | size | contents |
+|---|---|---|---|
+| 24-candidate support-expansion review (~30 min) | `blind_gains_support_expansion_24_review_20260804_v1.zip` | 624,879 B, sha256 `c74ef0e4...4b6bed14` | all 24 high-confidence M10 seed-1 candidates (A1 16 / A2 1 / A2b 5 / A3 2), 22 images, static viewer, `response_sheet.csv` (2 decisions/item: trained_answer_verdict, item_legible), one-page guide |
+| R20 human audit sample (~30 min) | `blind_gains_r20_human_audit_20260804_v1.zip` | 4,876,658 B, sha256 `662e8c39...55003497` | 60 pairs / 120 images, first-20-source-order per template (exact R19 audit design and builder), same viewer + six-check contract, R20-adapted guide carrying the R19 chart construct notes |
+
+Selection is RNG-free in both packages (exhaustive over the 24 qualifying items;
+first-N-per-template source order for R20 — the same deterministic rule the accepted R19
+audit used), with every source manifest sha256-pinned in
+`reports/support_expansion_review_bundle_v1.json` and `reports/r20_human_audit_bundle_v1.json`.
+
+**Insight.** Assembling the 24-candidate set surfaced two things worth the reviewer's
+attention before any interpretation: (1) two geo3k test items (rows 55 and 253) are
+support-expansion candidates in *both* A1-real and A2b-no-image — the same question was
+outside the base's sampled support under two different input conditions, so whatever the
+trained arms installed there is not condition-specific; (2) several step-100 "correct"
+answers match gold only through canonical normalization (`13` vs `13.0`, `45^\circ` vs
+`45`, `\( 6\sqrt{3} \)` vs `6 \sqrt { 3 }`) — exactly the cases the `artifact` verdict in
+the response sheet exists to separate from genuine solves. A2b's five items remain the
+qualitative window: all five have plain integer golds and open with <think> reasoning
+chains (673-2,434 chars), and one of them (`a2b_noimage_test_0055`) states "the problem
+statement is not provided" mid-chain yet still lands the gold answer - the sharpest
+guess-vs-solve call in the set.
