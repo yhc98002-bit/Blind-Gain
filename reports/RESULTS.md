@@ -26,7 +26,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M5c item-level turnover + noise floor | R2 / mechanism | **complete** — 137/601 flips against a **measured zero** noise floor; churn structured but orthogonal to visual necessity (§12c) |
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
 | E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
-| M7 ViRL39K stratified | R3 | **arm 1 complete (step 100/100)**; arms 2–4 training concurrently across an12+an29 under `registered_m7_seed_scope_v1.md` (seed 1 only, per-seed reporting). Four-arm access matrix on the second corpus expected ~2026-08-02 |
+| M7 ViRL39K stratified | R3 | **complete (seed 1)** — matched recovery **0.72–0.88 vs 0.08–0.12 on geo3k** (registered secondary passes, +0.63–0.64, stable); ρ_gain direction **fails** all arms (gains track headroom); ρ_recovery point-positive for blind arms (§12d). Seed 2 relaunches after C5 |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
@@ -916,6 +916,65 @@ hiding **large, item-reproducible, policy-driven churn — 137 flips against a m
 noise floor, with the movers sticky rather than random — that is orthogonal to measured
 visual necessity.** The corrosion established on FlipTrack (§6, §6a, §12b) has no visible
 geo3k counterpart at the level of *which kinds of item* move.
+
+---
+
+## 12d. R3 — the second corpus lands, and the access result generalises dramatically
+
+`reports/m7_r3_readout_v1.{json,md}` (full registered readout, rc = 0, produced
+autonomously by the waiter 2026-08-04T00:22Z). Four arms × 100 steps on the
+decontaminated single-image ViRL39K corpus; every number carries the registered
+**one-seed** tag; 4,239 paired held-out items; 5,000 within-stratum bootstrap
+draws at seed 20260716; readout code fixture-validated before the data existed.
+
+**Corpus aggregate — every arm gains, and the ladder orders as registered:**
+
+| arm | q̄ (own condition) | step 0 | step 100 | gain [95% CI] |
+|---|---:|---:|---:|---:|
+| A1 real | 0.5122 | 0.2744 | 0.4805 | **+0.2062** [0.190, 0.222] |
+| A3 caption | 0.4458 | 0.1849 | 0.3668 | **+0.1819** [0.167, 0.197] |
+| A2b no-image | 0.4154 | 0.1538 | 0.3074 | **+0.1536** [0.140, 0.168] |
+| A2 gray | 0.4235 | 0.1894 | 0.3373 | **+0.1479** [0.134, 0.162] |
+
+**The headline: matched-evaluation recovery is corpus-dependent by a factor of
+six to eight, exactly as the blind-opportunity audit predicted.** The registered
+secondary — ViRL aggregate recovery greater than the fixed Geometry3K anchors —
+passes with enormous margins, stable intervals, 0/5000 undefined draws:
+
+| blind arm | geo3k anchor | ViRL recovery | difference [95% CI] |
+|---|---:|---:|---:|
+| A2 gray | 0.0789 | **0.7174** | **+0.6385** [0.563, 0.719] |
+| A2b no-image | 0.1184 | **0.7449** | **+0.6265** [0.552, 0.706] |
+| A3 caption | (no anchor) | 0.8822 | — |
+
+On geo3k, blind arms recovered 8–12% of A1's gain under matched evaluation; on
+ViRL39K they recover **72–88% under the same matched protocol**. This is the
+corpus-level confirmation of §13's audit: ViRL39K's reward opportunity is largely
+blind-attainable (free-form corrected retention 0.727 for Gemma-3), so a
+blind-trained readout policy captures most of what image training captures. The
+access matrix's "two regimes" are not a benchmark quirk — **which regime a corpus
+sits in is measurable in advance from its blind-opportunity audit.**
+
+**The registered stratum-rank prediction fails in direction, and the failure is
+informative.** ρ_gain — gain vs stratum blind opportunity q̄ — is **negative for
+all three blind arms** (A2 −0.259 [−0.446, −0.119]; A2b −0.265 [−0.437, −0.102];
+A3 −0.734 [−0.809, −0.554]; all stable, direction > 0 **fails**). Gains
+concentrate where the arm's own step-0 accuracy is *low* — headroom — not where
+blind opportunity is high. ρ_recovery, which normalises by A1 within stratum, is
+point-positive for both blind arms (A2 +0.210 [−0.139, +0.478]; A2b **+0.504**
+[−0.036, +0.659]; 18/22 strata with stable denominators) and fails for A3
+(−0.115). Reported exactly as registered: a failed direction on the primary rank
+statistic, a passed direction on recovery for the blind arms with intervals
+crossing zero. This is the third independent appearance of the same structure —
+G0.2's headroom control and M5c's necessity-orthogonal churn found it on geo3k —
+**raw gains track headroom; opportunity effects only emerge after normalising by
+what the full-information arm achieves on the same items.**
+
+*Scope, stated once: one seed; single-image restriction (93.2% / 94.2% retained);
+per-stratum tables (22 eligible + 38 descriptive-small-n), source-only and
+category-only views, and M10 candidates are in the report; the anchor comparison
+is informed, not fully prospective (disclosure in the amendment); seed 2's first
+attempt died in the 08-03 host-memory cascade and relaunches after the C5 pair.*
 
 ---
 
