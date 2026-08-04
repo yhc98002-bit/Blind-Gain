@@ -1,0 +1,534 @@
+{
+  "anchor_only_extension_100_to_400": {
+    "benchmark_series_acc_final": [
+      0.43594009983361065,
+      0.46921797004991683,
+      0.4891846921797005,
+      0.47420965058236275,
+      0.4442595673876872
+    ],
+    "benchmark_series_canonical": [
+      0.43094841930116473,
+      0.46256239600665555,
+      0.4825291181364393,
+      0.46422628951747086,
+      0.43594009983361065
+    ],
+    "benchmark_step400_vs_step100": {
+      "acc_final": {
+        "b01_b10": [
+          71.0,
+          66.0
+        ],
+        "ci95": [
+          -0.028286189683860232,
+          0.04492512479201331
+        ],
+        "delta": 0.008319467554076539,
+        "mcnemar_exact_p": 0.7326840935910409
+      },
+      "canonical_final": {
+        "b01_b10": [
+          70.0,
+          67.0
+        ],
+        "ci95": [
+          -0.033277870216306155,
+          0.04326123128119801
+        ],
+        "delta": 0.004991680532445923,
+        "mcnemar_exact_p": 0.8644049750099483
+      },
+      "shape": "peak-and-return: argmax at step 200 (0.4892), terminal 0.4443; step-400 vs step-100 +0.0083 [-0.0283, +0.0449], p = 0.7327"
+    },
+    "grounding_series_pair_correct": [
+      0.48,
+      0.47333333333333333,
+      0.4633333333333333,
+      0.44666666666666666,
+      0.41333333333333333
+    ],
+    "grounding_step400_vs_step100": {
+      "lenient_equals_strict": {
+        "b01_b10": [
+          16.0,
+          56.0
+        ],
+        "ci95": [
+          -0.09333333333333334,
+          -0.04
+        ],
+        "delta": -0.06666666666666667,
+        "mcnemar_exact_p": 2.397319809534421e-06
+      },
+      "shape": "monotone non-increasing from step 100; first below frozen base at step 200; terminal vs base -0.0583 [-0.0900, -0.0267] lenient (p = 4.25e-04), -0.0300 [-0.0633, +0.0033] strict",
+      "terminal_vs_base_lenient": {
+        "b01_b10": [
+          30.0,
+          65.0
+        ],
+        "ci95": [
+          -0.09,
+          -0.02666666666666667
+        ],
+        "delta": -0.058333333333333334,
+        "mcnemar_exact_p": 0.00042479272889474573
+      },
+      "terminal_vs_base_strict": {
+        "b01_b10": [
+          47.0,
+          65.0
+        ],
+        "ci95": [
+          -0.06333333333333334,
+          0.0033333333333333335
+        ],
+        "delta": -0.03,
+        "mcnemar_exact_p": 0.10778227965475412
+      }
+    },
+    "i19_attribution_clause_verbatim": "*Attribution, required in every mention:* this extends the **anchor** configuration \u2014 unfrozen vision tower, native r1v reward, unfiltered corpus \u2014 never pilot A1. The unfrozen tower is what makes it consequential: corrosion occurs with gradients reaching the visual encoder. The unfiltered corpus is named as part of the configuration because abundant cheap reward is mechanistically relevant, not incidental. *Scope:* one trajectory; intervals quantify evaluation uncertainty, not run-to-run RL variance.",
+    "i19_clause_source": "docs/PAPER1_RESEARCH_DOC.md, F6 Tier 2 (invariant I19, docs/EXPERIMENT_TODO.md)",
+    "m5c_turnover_citation": {
+      "gained_lost": [
+        71,
+        66
+      ],
+      "what": "Item-level turnover under the flat benchmark: between step 100 and step 400, 71 items gained and 66 lost (net +5, +0.0083) \u2014 137 of 601 items (22.8%) change state; the turnover is not organised by visual necessity (reports/m5c_turnover_v1.json, reports/m5c_necessity_stratification_v1.*)."
+    },
+    "scope": "Only the anchor configuration was extended past step 100; there is no pilot 100->400 series.",
+    "steps": [
+      100,
+      150,
+      200,
+      300,
+      400
+    ],
+    "terminal_rule_readout": {
+      "ci95": [
+        -0.09333333333333334,
+        -0.04
+      ],
+      "delta": -0.06666666666666667,
+      "endpoint": "R19 geometry pair accuracy, step 400 minus step 100",
+      "sesoi": 0.05,
+      "source": "reports/m5_terminal_readout_v1.json",
+      "verdict": "FALLING"
+    }
+  },
+  "configuration_table": {
+    "image_condition_machinery": {
+      "anchor": "absent (stock EasyR1 data path)",
+      "field": "data.image_condition / data.caption_store_paths",
+      "note": "pilot arm-condition infrastructure; A1 runs image_condition=real, so training images are the real ones in both configurations",
+      "pilot_a1": {
+        "caption_store_paths": 3,
+        "image_condition": "real",
+        "image_condition_seed": 20260710
+      }
+    },
+    "reward": {
+      "anchor": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1/examples/reward_function/r1v.py:compute_score",
+      "anchor_kwargs": null,
+      "field": "worker.reward.reward_function",
+      "note": "pilot: pilot_reward.py (format_weight 0.5, shadow log, guarded symbolic grader); anchor: EasyR1 native r1v.py, no kwargs",
+      "pilot_a1": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/src/rewards/pilot_reward.py:compute_score",
+      "pilot_a1_kwargs": {
+        "format_weight": 0.5,
+        "require_shadow_log": true,
+        "symbolic_grader_timeout_seconds": 5.0
+      }
+    },
+    "rollout_tensor_parallel_size": {
+      "anchor": 2,
+      "field": "worker.rollout.tensor_parallel_size",
+      "note": "inference-engine sharding only; no optimizer-facing difference",
+      "pilot_a1": 1
+    },
+    "seeds": {
+      "anchor": [
+        1
+      ],
+      "field": "data.seed",
+      "note": "pilot: three independent runs (mech_a1_real{,_seed2,_seed3}); anchor: one run",
+      "pilot_a1": [
+        1,
+        2,
+        3
+      ]
+    },
+    "shared_fields_verified_identical": {
+      "algorithm.adv_estimator": "grpo",
+      "algorithm.disable_kl": false,
+      "algorithm.kl_coef": 0.01,
+      "algorithm.kl_penalty": "low_var_kl",
+      "algorithm.use_kl_loss": true,
+      "data.max_pixels": 4194304,
+      "data.max_prompt_length": 2048,
+      "data.max_response_length": 2048,
+      "data.min_pixels": 262144,
+      "data.rollout_batch_size": 512,
+      "data.val_files": "hiyouga/geometry3k@test",
+      "trainer.max_steps": 100,
+      "trainer.n_gpus_per_node": 4,
+      "trainer.nnodes": 1,
+      "trainer.total_epochs": 1,
+      "trainer.val_before_train": true,
+      "trainer.val_freq": 10,
+      "worker.actor.global_batch_size": 128,
+      "worker.actor.model.model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+      "worker.actor.optim.lr": 1e-06,
+      "worker.actor.optim.weight_decay": 0.01,
+      "worker.rollout.n": 5,
+      "worker.rollout.temperature": 1.0,
+      "worker.rollout.top_p": 1.0,
+      "worker.rollout.val_override_config": {
+        "n": 1,
+        "temperature": 0.0,
+        "top_p": 1.0
+      }
+    },
+    "steps": {
+      "anchor": "100 (anchor_a0_recipe_3b_geo3k.yaml), then extended to 400 by configs/train/m5_anchor_longhorizon_400.yaml (load_checkpoint_path = anchor global_step_100)",
+      "field": "trainer.max_steps",
+      "pilot_a1": 100
+    },
+    "training_corpus": {
+      "anchor": "hiyouga/geometry3k@train",
+      "anchor_detail": "unfiltered geometry3k train split (2,101 rows), loaded from the hub reference",
+      "field": "data.train_files",
+      "pilot_a1": "data/geo3k_pilot_filtered.jsonl",
+      "pilot_a1_detail": "frozen filtered subset, 1,288 of 2,101 geometry3k train rows (813 removed: union of Gate-2 Layer-1 and V4 train-vs-test conservative contamination candidates; reports/geo3k_filtered_subset.md), file sha256 f3d88dd1e52ccef833f266880e487eef252193f774c1076f7dfbccd180b450e6"
+    },
+    "vision_tower": {
+      "anchor": false,
+      "field": "worker.actor.model.freeze_vision_tower",
+      "note": "pilot: tower frozen; anchor: tower unfrozen (gradients reach the visual encoder)",
+      "pilot_a1": true
+    }
+  },
+  "dissociation_by_configuration": {
+    "anchor": {
+      "benchmark_geo3k_test_n601_greedy": {
+        "delta_step100_vs_base": {
+          "canonical_final": {
+            "b01_b10": [
+              176.0,
+              22.0
+            ],
+            "ci95": [
+              0.2146422628951747,
+              0.2978369384359401
+            ],
+            "delta": 0.2562396006655574,
+            "mcnemar_exact_p": 5.059203485655202e-31
+          },
+          "pilot_lenient_acc_final": {
+            "b01_b10": [
+              188.0,
+              16.0
+            ],
+            "ci95": [
+              0.24625623960066556,
+              0.3261231281198003
+            ],
+            "delta": 0.28618968386023297,
+            "mcnemar_exact_p": 1.9968615445377835e-38
+          },
+          "strict": {
+            "b01_b10": [
+              234.0,
+              8.0
+            ],
+            "ci95": [
+              0.33444259567387685,
+              0.4176372712146423
+            ],
+            "delta": 0.37603993344425957,
+            "mcnemar_exact_p": 7.6027460892339245e-59
+          }
+        },
+        "levels": {
+          "base": {
+            "acc_final": 0.1497504159733777,
+            "acc_strict": 0.059900166389351084,
+            "canonical_correct": 0.17470881863560733,
+            "contract_valid": 0.43926788685524126
+          },
+          "step100": {
+            "acc_final": 0.43594009983361065,
+            "acc_strict": 0.43594009983361065,
+            "canonical_correct": 0.43094841930116473,
+            "contract_valid": 0.9683860232945092
+          }
+        }
+      },
+      "configuration": "anchor A0 recipe: unfrozen vision tower, native r1v reward, unfiltered corpus; 1 seed x 100 steps, later extended to 400",
+      "corrosion_and_blind_floor_evidence": {
+        "source": "reports/m5b_trajectory_v1.json",
+        "what": "At step 400 the R19 geometry blind floors hold exactly: gray 0.0000 [0.0000, 0.0000] and noise 0.0000 [0.0000, 0.0000] pair accuracy with answer-collapse rate 1.0000 (600/600) in both conditions; paired delta vs step-400 real -0.4133 [-0.4533, -0.3750], p = 4.42e-75 for both conditions and both strictness levels. The decline measured on real images is therefore read against an intact blind floor."
+      },
+      "grounding_fliptrack_r19_geometry_n600_pairs": {
+        "delta_step100_vs_base": {
+          "lenient": {
+            "b01_b10": [
+              40.0,
+              35.0
+            ],
+            "ci95": [
+              -0.021666666666666667,
+              0.03666666666666667
+            ],
+            "delta": 0.008333333333333333,
+            "mcnemar_exact_p": 0.644463913894226
+          },
+          "strict": {
+            "b01_b10": [
+              56.0,
+              34.0
+            ],
+            "ci95": [
+              0.005,
+              0.065
+            ],
+            "delta": 0.03666666666666667,
+            "mcnemar_exact_p": 0.02630166513112228
+          }
+        },
+        "levels": {
+          "base": {
+            "collapsed": 0.12833333333333333,
+            "contract_valid": 0.95,
+            "pair_correct": 0.4716666666666667,
+            "strict_pair_correct": 0.44333333333333336
+          },
+          "step100": {
+            "collapsed": 0.08833333333333333,
+            "contract_valid": 1.0,
+            "pair_correct": 0.48,
+            "strict_pair_correct": 0.48
+          }
+        },
+        "note": "The strict step-100 delta (+0.0367, p = 0.0263) is nominally positive because strict scoring charges the frozen base for its contract failures (base contract_valid 0.9500 vs 1.0000 at step 100; base strict 0.4433 vs lenient 0.4717). The lenient pair metric is the like-for-like comparison; both are reported (I7)."
+      }
+    },
+    "pilot_a1": {
+      "benchmark_geo3k_test_n601_greedy": {
+        "metric_map_note": "Two scoring contracts (I7). 'pilot-lenient' is pilot-reward-v1 accuracy (field pilot_accuracy here; field acc_final in m5b_trajectory_v1); 'canonical-final' is canonical-v2 final-answer accuracy (field acc_final here; field canonical_correct in m5b_trajectory_v1). Base values 0.1498 / 0.1747 / strict 0.0599 are the same frozen model in both configurations, which is what makes the cross-configuration comparison contract-matched.",
+        "per_seed": {
+          "1": {
+            "canonical_final": {
+              "base": 0.17470881863560733,
+              "ci95": [
+                0.2096505823627288,
+                0.2945091514143095
+              ],
+              "delta": 0.2529118136439268,
+              "step100": 0.4276206322795341
+            },
+            "n": 601,
+            "pilot_lenient": {
+              "base": 0.1497504159733777,
+              "ci95": [
+                0.23627287853577372,
+                0.3194675540765391
+              ],
+              "delta": 0.2778702163061564,
+              "step100": 0.4276206322795341
+            },
+            "strict": {
+              "base": 0.059900166389351084,
+              "step100": 0.4276206322795341,
+              "strict_gain": 0.36772046589018303
+            }
+          },
+          "2": {
+            "canonical_final": {
+              "base": 0.17470881863560733,
+              "ci95": [
+                0.20299500831946754,
+                0.2895174708818636
+              ],
+              "delta": 0.24625623960066556,
+              "step100": 0.4209650582362729
+            },
+            "n": 601,
+            "pilot_lenient": {
+              "base": 0.1497504159733777,
+              "ci95": [
+                0.22961730449251247,
+                0.31281198003327787
+              ],
+              "delta": 0.27121464226289516,
+              "step100": 0.4209650582362729
+            },
+            "strict": {
+              "base": 0.059900166389351084,
+              "step100": 0.4209650582362729,
+              "strict_gain": 0.3610648918469218
+            }
+          },
+          "3": {
+            "canonical_final": {
+              "base": 0.17470881863560733,
+              "ci95": [
+                0.1913477537437604,
+                0.27287853577371046
+              ],
+              "delta": 0.23128119800332778,
+              "step100": 0.4059900166389351
+            },
+            "n": 601,
+            "pilot_lenient": {
+              "base": 0.1497504159733777,
+              "ci95": [
+                0.21630615640599002,
+                0.2978369384359401
+              ],
+              "delta": 0.2562396006655574,
+              "step100": 0.4059900166389351
+            },
+            "strict": {
+              "base": 0.059900166389351084,
+              "step100": 0.4059900166389351,
+              "strict_gain": 0.34608985024958405
+            }
+          }
+        },
+        "three_seed_mean_delta": {
+          "canonical_final": 0.24348308374930672,
+          "pilot_lenient": 0.2684414864115363,
+          "strict": 0.3582917359955629
+        }
+      },
+      "configuration": "pilot A1-real: frozen vision tower, pilot reward, filtered corpus; 3 seeds x 100 steps",
+      "corrosion_evidence_blind_arm": {
+        "sources": [
+          "reports/x3_a2_degradation_forensics_v1.json",
+          "reports/x3_seed3_corrosion_replication_v1.json"
+        ],
+        "what": "In the same pilot configuration the A2-gray arm shows replicated, item-identifiable grounding corrosion on the same primary anchor: delta vs base -0.0450 [-0.0733, -0.0167] (seed 1), -0.0450 [-0.0717, -0.0183] (seed 2), -0.0367 [-0.0633, -0.0100] (seed 3); seed1-seed2 overlap 42 shared pairs, Jaccard 0.724 vs permutation null 0.098 (p = 1e-4); three-way Jaccard 0.661 vs null 0.012 (p = 1e-4); identical extracted wrong answer on 39/40 three-way shared wrong slots."
+      },
+      "grounding_fliptrack_r19_geometry_n600_pairs": {
+        "note": "All three per-seed lenient CIs span zero and lie inside the registered SESOI of +/-0.05; no_material_change_supported is true for all three seeds. Strict per-seed step-100 values (0.3167 / 0.4767 / 0.4167 vs base 0.4433) are volatile because strict penalizes contract failures; the lenient pair metric is the like-for-like series (I7: both reported).",
+        "per_seed": {
+          "1": {
+            "lenient": {
+              "base": 0.4716666666666667,
+              "ci95": [
+                -0.028333333333333332,
+                0.025
+              ],
+              "delta": -0.0016666666666666668,
+              "no_material_change_supported": true,
+              "sesoi": [
+                -0.05,
+                0.05
+              ],
+              "step100": 0.47
+            },
+            "n_pairs": 600,
+            "strict": {
+              "base": 0.44333333333333336,
+              "step100": 0.31666666666666665
+            }
+          },
+          "2": {
+            "lenient": {
+              "base": 0.4716666666666667,
+              "ci95": [
+                -0.016666666666666666,
+                0.03333333333333333
+              ],
+              "delta": 0.008333333333333333,
+              "no_material_change_supported": true,
+              "sesoi": [
+                -0.05,
+                0.05
+              ],
+              "step100": 0.48
+            },
+            "n_pairs": 600,
+            "strict": {
+              "base": 0.44333333333333336,
+              "step100": 0.4766666666666667
+            }
+          },
+          "3": {
+            "lenient": {
+              "base": 0.4716666666666667,
+              "ci95": [
+                -0.015,
+                0.035
+              ],
+              "delta": 0.01,
+              "no_material_change_supported": true,
+              "sesoi": [
+                -0.05,
+                0.05
+              ],
+              "step100": 0.4816666666666667
+            },
+            "n_pairs": 600,
+            "strict": {
+              "base": 0.44333333333333336,
+              "step100": 0.4166666666666667
+            }
+          }
+        },
+        "primary_endpoint": "category:geometry_coordinate_indexing at step 100 (registered primary visual anchor)",
+        "three_seed_mean_delta_lenient": {
+          "ci95": [
+            -0.018333333333333333,
+            0.029444444444444447
+          ],
+          "estimate": 0.005555555555555553,
+          "per_seed_delta": [
+            -0.0016666666666666668,
+            0.008333333333333333,
+            0.01
+          ],
+          "source": "reports/f2d_template_decomposition_v1.json"
+        }
+      }
+    }
+  },
+  "generated_utc": "2026-08-04T17:24:55Z",
+  "limitations": [
+    "The anchor is one seed and one trajectory. Its intervals are paired item bootstraps and quantify evaluation uncertainty only, not run-to-run RL variance (m5b_trajectory_v1 limitation, carried verbatim in spirit).",
+    "The two configurations differ in three coupled factors at once (vision-tower freezing, reward function, corpus filtering) plus non-scientific plumbing (rollout tensor_parallel_size, checkpoint cadence, experiment naming). No single-factor attribution is possible from this comparison; it is robustness evidence, not a factorial experiment.",
+    "The unfiltered anchor corpus is itself a named confound (I19): it includes the 813 conservative contamination-candidate rows the pilot removed, so anchor benchmark levels are not comparable to pilot levels as measurements of clean generalization; only the presence of the benchmark-up / grounding-flat pattern is compared, and both sides are read on the same held-out geometry3k test split and the same R19 pair set against the same frozen base.",
+    "The 100->400 extension exists only for the anchor; nothing here shows what a prolonged pilot-A1 run would do.",
+    "Pilot strict grounding per-seed values are volatile (0.3167-0.4767) because strict scoring charges contract failures; the strict pilot grounding series is reported but not interpreted.",
+    "Benchmark and grounding are different datasets with different item counts and scorers; no cross-axis difference statistic is computed here (same limitation as m5b)."
+  ],
+  "mode": "assembly and citation of cached canonical artifacts only; no new runs, no GPU, no new inference, no new scoring",
+  "registered_framing_sentence": "the anchor (unfrozen tower, native r1v reward, unfiltered corpus) alongside the pilot as evidence the dissociation is not an artifact of the frozen-tower / canonical-reward configuration",
+  "registered_row": "docs/EXPERIMENT_TODO.md row E2 (robustness of the dissociation across configurations)",
+  "repo_git_hash_at_assembly": "239c21358d7126378f25729f730e6877a78be6d8",
+  "schema_version": "blind-gains.e2-recipe-variation.v1",
+  "sources_sha256": {
+    "configs/train/anchor_a0_recipe_3b_geo3k.yaml": "fdd39cead00fa6932d03c3040d90e76b71599983623b7478d67a309ce4dc3862",
+    "configs/train/m5_anchor_longhorizon_400.yaml": "73ff58bd3b6a5a9a190f6f379a927bc6405c88001bd524f61846ffb22996f48c",
+    "configs/train/mech_a1_real_3b_geo3k.yaml": "abf9e9d9a48e35dd5f29e86a51dd674d1a666a088f9ced9f7acc86338a53560e",
+    "configs/train/mech_a1_real_seed2_3b_geo3k.yaml": "c357a636fd6596dbe2ca3eb1e9677f30396d6d256b806c27812f203da3d629a5",
+    "configs/train/mech_a1_real_seed3_3b_geo3k.yaml": "f066d29bebb540fc63d1a4db6a62e6e6f5de59e9624c204d8917d741df7481b3",
+    "data/geo3k_pilot_filtered.jsonl": "f3d88dd1e52ccef833f266880e487eef252193f774c1076f7dfbccd180b450e6",
+    "reports/anchor_step100_fliptrack_r19_v2.json": "618b8ffaaa527860f611bdbcb6961631557ea1d183558f237421f831d4b533d1",
+    "reports/f2d_template_decomposition_v1.json": "b0c9e3203f9c0fee0a190b7f79f10eb8374db9910520ed3a1598fa8d6dfdafca",
+    "reports/geo3k_filtered_subset.md": "3d05624e909971437a96df2b0d7db9c4d7993b62cdd80e48aceb7648f41e3ebf",
+    "reports/m5_terminal_readout_v1.json": "fbb500a0609688f2da5bbe85c0a705c06315ebe1add4c12c28a7ede2567e6994",
+    "reports/m5b_trajectory_v1.json": "ec42a7ff613c19bfbe140729480fc539ef7851686b01c2287c37da53160cf36a",
+    "reports/m5c_turnover_v1.json": "7584ee6b070dfe4f73a7b017913f40206fffb99973ea8809bc9024f7c9752a73",
+    "reports/pilot_4arm_seed1_results_v1.json": "56ce2b6372fd90212bdabe2ce4f78b0b0d8bab7c2e64d72aa8b35d803051c7f4",
+    "reports/pilot_4arm_seed2_results_v1.json": "2e6f3b58408bb803d0f985b95eb8c88864b44de32343f9127ee04b70b377028a",
+    "reports/pilot_4arm_seed3_results_v1.json": "b519d85be0b3ab91d04732c7e84a9759e447cb5192e9630dc270e8d315d87df3",
+    "reports/x3_a2_degradation_forensics_v1.json": "35746ccb5b16fb9bdf4cae96b755a52c32996451cc96e3f4cee3e9e1767aa800",
+    "reports/x3_seed3_corrosion_replication_v1.json": "20fc6b3e8eaa78bdb520a9a77413781c3fbdbf41e985a6758328cc623ff34e55"
+  },
+  "verdict": {
+    "registered_framing_sentence": "the anchor (unfrozen tower, native r1v reward, unfiltered corpus) alongside the pilot as evidence the dissociation is not an artifact of the frozen-tower / canonical-reward configuration",
+    "statement": "The numbers support the registered sentence. Under both configurations the benchmark rises by a large, CI-excluding-zero margin at step 100 (pilot A1: +0.2435 canonical / +0.2684 pilot-lenient three-seed mean, every per-seed CI excluding zero; anchor: +0.2862 pilot-lenient / +0.2562 canonical, McNemar p <= 5.1e-31) while the registered primary grounding anchor does not rise materially (pilot A1: three-seed mean +0.0056 [-0.0183, +0.0294], all seeds inside SESOI +/-0.05 with equivalence supported; anchor: +0.0083 lenient, p = 0.6445). The dissociation therefore appears under the frozen-tower / pilot-reward / filtered-corpus recipe and under the unfrozen-tower / native-r1v / unfiltered-corpus recipe alike, so it is not an artifact of the pilot's frozen-tower / canonical-reward configuration. One qualifier is stated plainly: at anchor step 100 the strict grounding delta vs base is nominally +0.0367 (p = 0.0263), an artifact of the frozen base's contract failures under strict scoring, not of the trained checkpoints; and only the anchor was extended, where grounding declines monotonically to below base (-0.0667 vs step 100, p = 2.40e-06) while the benchmark peak-and-returns (+0.0083, p = 0.7327).",
+    "supported": true
+  }
+}
