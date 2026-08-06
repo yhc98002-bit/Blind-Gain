@@ -1,0 +1,140 @@
+{
+  "build_seed": 20260731,
+  "builder": "scripts/build_mini_a5_necessity_corpus.py",
+  "delta_q_summary": {
+    "delta_q_max": 1.0,
+    "delta_q_mean": 0.35088541666666667,
+    "delta_q_min": -0.0625,
+    "delta_q_quantiles": {
+      "p05": 0.0,
+      "p25": 0.125,
+      "p50": 0.3125,
+      "p75": 0.5625,
+      "p95": 0.8125
+    },
+    "max_min_draw_ratio": 17.0,
+    "n_delta_q_negative_clipped_to_floor": 1,
+    "n_delta_q_positive": 5556,
+    "n_delta_q_zero": 443,
+    "n_weight_at_floor": 444,
+    "q_blind_mean": 0.00084375,
+    "q_real_mean": 0.35172916666666665,
+    "rows": 6000,
+    "weight_floor": 0.0625,
+    "weight_max": 1.0625,
+    "weight_min": 0.0625
+  },
+  "numpy_version": "1.26.4",
+  "output_sha256": {
+    "delta_q.jsonl": "57d6251bc8f9b12563d61c75e55b8b65ceb62628b3e2dd3dc755221bd4d51885",
+    "source_map.jsonl": "1f60357a91389090f37a6cef4c8223d6aa56208712f6142b606c2797ccd4e448",
+    "train.jsonl": "fc19892065a3d57c733f3cc5b749e921be8c819d01f65b6e4a0d95a2319064be",
+    "train.parquet": "205ca7fd007cc03086174ebd25ec0b22d2c76bb68377b87260b51252976fc4c9"
+  },
+  "parquet_serialization_deterministic": true,
+  "pseudo_pairs": 3000,
+  "registration": "docs/registered_mini_a5_gate1_completion_v1.md#2-R2",
+  "resample_audit": {
+    "checks": {
+      "adjacent_synthetic_pseudo_pairs": true,
+      "draw_reproducible_from_build_seed": true,
+      "empirical_draw_frequency_consistent": true,
+      "seven_column_schema": true,
+      "slots_byte_identical_to_source": true,
+      "source_map_contiguous": true,
+      "status_pass": true,
+      "support_complete_and_ratio_bounded": true,
+      "synthetic_uids_disjoint_from_real_uids": true,
+      "weight_law_exact": true
+    },
+    "errors": [],
+    "frequency_stats": {
+      "chi_square_over_strata": 10.75646534985286,
+      "chi_square_threshold": 60.0,
+      "max_realized_count": 7,
+      "strata": [
+        {
+          "expected_draws": 114.29723328125789,
+          "items": 600,
+          "realized_draws": 112.0
+        },
+        {
+          "expected_draws": 210.60323539787333,
+          "items": 600,
+          "realized_draws": 213.0
+        },
+        {
+          "expected_draws": 303.7343143677872,
+          "items": 600,
+          "realized_draws": 320.0
+        },
+        {
+          "expected_draws": 385.8287557325002,
+          "items": 600,
+          "realized_draws": 382.0
+        },
+        {
+          "expected_draws": 481.83238421609644,
+          "items": 600,
+          "realized_draws": 449.0
+        },
+        {
+          "expected_draws": 588.721463488384,
+          "items": 600,
+          "realized_draws": 644.0
+        },
+        {
+          "expected_draws": 713.1482134757852,
+          "items": 600,
+          "realized_draws": 678.0
+        },
+        {
+          "expected_draws": 888.0713601773928,
+          "items": 600,
+          "realized_draws": 895.0
+        },
+        {
+          "expected_draws": 1057.7029683011642,
+          "items": 600,
+          "realized_draws": 1037.0
+        },
+        {
+          "expected_draws": 1256.06007156176,
+          "items": 600,
+          "realized_draws": 1270.0
+        }
+      ],
+      "unique_source_rows_drawn": 3420
+    }
+  },
+  "rows": 6000,
+  "sampling_law": "w_i = max(delta_q_i, 0) + 1/16; p_i = w_i / sum(w); 6000 slots i.i.d. with replacement; necessity enters only through p_i (I1)",
+  "schema_version": "blind-gains.mini-a5-necessity-corpus.v1",
+  "source_dir": "data/mini_a5_train_v1",
+  "source_sha256": {
+    "train.jsonl": "07d785ee6ae4a3b5325e12595f7830c5924e31c49565554f1e88b2abffc5fa5c",
+    "train.parquet": "0b0f0965987d1c340c3ebd78da742c9d99b319b61524b5cb42960519fd9c9b28"
+  },
+  "synthetic_uid_prefix": "nec1_",
+  "t2_manifest_sha256": "4eb4ddd28b1e95874f68bebb07347e80418c6c9e073705fd2517eae3e6c7ce7d",
+  "t3_runs": {
+    "none": {
+      "config_hash": "02ad8db2f1b60587bfda7a4d262b54289c0b19e450d84611ee1f6eda3399190c",
+      "end_time_utc": "2026-08-06T17:15:17Z",
+      "git_hash": "83abe26d61fd2e3f370fefe2d92e39fa17536c71",
+      "per_item_sha256": "ed9279adbc8d71b3b77d553abf96d7db771966cedc5d1767310415b0950d4387",
+      "run_dir": "experiments/runs/blind_solvability_mini_a5_train_v1_none_an12_20260806T153317Z",
+      "run_id": "blind_solvability_mini_a5_train_v1_none_an12_20260806T153317Z",
+      "seed": 20260710
+    },
+    "real": {
+      "config_hash": "c009b160213ff8034a3043f551622f2d834ce089c84dadec60e40d2704287174",
+      "end_time_utc": "2026-08-06T18:36:42Z",
+      "git_hash": "83abe26d61fd2e3f370fefe2d92e39fa17536c71",
+      "per_item_sha256": "58ed852e6ca0f07f7050b85db21f638f2f1f9259eeaf7aef55fb503965f44e33",
+      "run_dir": "experiments/runs/blind_solvability_mini_a5_train_v1_real_an12_20260806T153316Z",
+      "run_id": "blind_solvability_mini_a5_train_v1_real_an12_20260806T153316Z",
+      "seed": 20260710
+    }
+  }
+}
