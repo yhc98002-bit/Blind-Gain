@@ -316,3 +316,21 @@ version with an adversarial fixture.
 ## 10. Deviations log
 
 (empty at filing)
+
+## Ratification
+
+**2026-08-06 — PI ratification of both flagged blocks.** The two blocks marked
+"Flagged, not chosen silently" — §2 R1 (three bullets: the same-scene unpaired
+projection (i) over a 3,000-row corpus (ii) or fresh scenes (iii); member **a**
+kept per pair; the pseudo-pair member-mode route over `pair_group_mode: "none"`)
+and §2 R2 (four bullets: blind condition `none`; `q` := `p_sample`;
+`f(Δq) = max(Δq, 0) + 1/16`; pre-materialized resampling fixed for all epochs) —
+were ratified by the PI on 2026-08-06.
+
+Mechanism: the orchestrator's decision question, answered by the PI with the
+option "Ratify all three (recommended)". That option's description carried the
+substance of the R2 bullets explicitly (blind condition none, q := p_sample,
+f(dq)=max(dq,0)+1/16, pre-materialized resampling); the compressed phrasing
+"three choices" in the decision question covered the substance of all seven
+bullets across the two blocks. Prework T1–T7 executes under this ratification.
+This note is recorded before any prework artifact is built or committed.
