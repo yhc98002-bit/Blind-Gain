@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 2 || $# -gt 3 ]]; then
-  echo "Usage: $0 {cp|member} NODE [CUDA_VISIBLE_DEVICES]" >&2
+  echo "Usage: $0 {cp|member|std|necessity} NODE [CUDA_VISIBLE_DEVICES]" >&2
   exit 2
 fi
 
@@ -20,8 +20,18 @@ case "${MODE}" in
     EXPECTED_GROUP_MODE="member"
     EXPECTED_REWARD_SUFFIX="src/rewards/cp_grpo_reward.py:compute_member_score"
     ;;
+  std)
+    SOURCE_CONFIG="configs/train/mini_a5_std_3b_v1.yaml"
+    EXPECTED_GROUP_MODE="member"
+    EXPECTED_REWARD_SUFFIX="src/rewards/cp_grpo_reward.py:compute_member_score"
+    ;;
+  necessity)
+    SOURCE_CONFIG="configs/train/mini_a5_necessity_3b_v1.yaml"
+    EXPECTED_GROUP_MODE="member"
+    EXPECTED_REWARD_SUFFIX="src/rewards/cp_grpo_reward.py:compute_member_score"
+    ;;
   *)
-    echo "mode must be cp or member" >&2
+    echo "mode must be cp, member, std, or necessity" >&2
     exit 2
     ;;
 esac
@@ -37,11 +47,25 @@ fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT}"
-REGISTRATION_DOC="docs/registered_mini_a5_main_v1.md"
-REGISTRATION_MARKER="reports/mini_a5_main_registration_marker_v1.json"
+case "${MODE}" in
+  cp|member)
+    REGISTRATION_DOC="docs/registered_mini_a5_main_v1.md"
+    REGISTRATION_MARKER="reports/mini_a5_main_registration_marker_v1.json"
+    TRAIN_DATA="data/mini_a5_train_v1/train.parquet"
+    ;;
+  std)
+    REGISTRATION_DOC="docs/registered_mini_a5_gate1_completion_v1.md"
+    REGISTRATION_MARKER="reports/mini_a5_gate1_completion_registration_marker_v1.json"
+    TRAIN_DATA="data/mini_a5_std_train_v1/train.parquet"
+    ;;
+  necessity)
+    REGISTRATION_DOC="docs/registered_mini_a5_gate1_completion_v1.md"
+    REGISTRATION_MARKER="reports/mini_a5_gate1_completion_registration_marker_v1.json"
+    TRAIN_DATA="data/mini_a5_necessity_train_v1/train.parquet"
+    ;;
+esac
 EASYR1_DIR="${ROOT}/artifacts/repos/EasyR1-mini-a5"
 PINNED_EASYR1_REVISION="dd71bbd252694f5f850213eec15795b6b88d9fea"
-TRAIN_DATA="data/mini_a5_train_v1/train.parquet"
 VAL_DATA="data/mini_a5_plumbing_val_v1.jsonl"
 CHECKPOINT_PATH="$(${ROOT}/.venv/bin/python - "${SOURCE_CONFIG}" <<'PY'
 import sys, yaml
@@ -73,19 +97,43 @@ git diff --quiet -- \
 REGISTRATION_COMMIT="$(jq -er '.registration_commit' "${REGISTRATION_MARKER}")"
 git cat-file -e "${REGISTRATION_COMMIT}^{commit}"
 git merge-base --is-ancestor "${REGISTRATION_COMMIT}" HEAD
-jq -e \
-  --arg mode "${MODE}" \
-  --arg doc_sha "$(sha256sum "${REGISTRATION_DOC}" | awk '{print $1}')" \
-  --arg config_sha "$(sha256sum "${SOURCE_CONFIG}" | awk '{print $1}')" \
-  --arg corpus_sha "$(sha256sum "${TRAIN_DATA}" | awk '{print $1}')" \
-  --arg launcher_sha "$(sha256sum scripts/launch_mini_a5_main.sh | awk '{print $1}')" \
-  '(.status == "registered")
-   and (.registration_document_sha256 == $doc_sha)
-   and (.main_config_sha256[$mode] == $config_sha)
-   and (.train_corpus_sha256 == $corpus_sha)
-   and (.launcher_sha256 == $launcher_sha)
-   and (.main_optimizer_steps_authorized_per_arm == 120)' \
-  "${REGISTRATION_MARKER}" >/dev/null
+if [[ "${MODE}" == "cp" || "${MODE}" == "member" ]]; then
+  jq -e \
+    --arg mode "${MODE}" \
+    --arg doc_sha "$(sha256sum "${REGISTRATION_DOC}" | awk '{print $1}')" \
+    --arg config_sha "$(sha256sum "${SOURCE_CONFIG}" | awk '{print $1}')" \
+    --arg corpus_sha "$(sha256sum "${TRAIN_DATA}" | awk '{print $1}')" \
+    --arg launcher_sha "$(sha256sum scripts/launch_mini_a5_main.sh | awk '{print $1}')" \
+    '(.status == "registered")
+     and (.registration_document_sha256 == $doc_sha)
+     and (.main_config_sha256[$mode] == $config_sha)
+     and (.train_corpus_sha256 == $corpus_sha)
+     and (.launcher_sha256 == $launcher_sha)
+     and (.main_optimizer_steps_authorized_per_arm == 120)' \
+    "${REGISTRATION_MARKER}" >/dev/null
+else
+  # Gate-1 completion marker: per-mode corpus hashes, explicit arm authorization.
+  jq -e \
+    --arg mode "${MODE}" \
+    --arg doc_sha "$(sha256sum "${REGISTRATION_DOC}" | awk '{print $1}')" \
+    --arg config_sha "$(sha256sum "${SOURCE_CONFIG}" | awk '{print $1}')" \
+    --arg corpus_sha "$(sha256sum "${TRAIN_DATA}" | awk '{print $1}')" \
+    --arg launcher_sha "$(sha256sum scripts/launch_mini_a5_main.sh | awk '{print $1}')" \
+    '(.status == "registered")
+     and (.registration_document_sha256 == $doc_sha)
+     and (.main_config_sha256[$mode] == $config_sha)
+     and (.train_corpus_sha256[$mode] == $corpus_sha)
+     and (.launcher_sha256 == $launcher_sha)
+     and ((.arms_authorized | index($mode)) != null)
+     and (.main_optimizer_steps_authorized_per_arm == 120)' \
+    "${REGISTRATION_MARKER}" >/dev/null
+  # Acceptance condition 8 (matched-difference audit): the mode config differs
+  # from the member template in exactly train_files/experiment_name/
+  # save_checkpoint_path — machine-checked at launch.
+  PYTHONPATH="${ROOT}" "${ROOT}/.venv/bin/python" scripts/check_mini_a5_matched_diff.py \
+    --candidate "${SOURCE_CONFIG}" \
+    --template configs/train/mini_a5_same_data_3b_v1.yaml
+fi
 
 [[ "$(git -C "${EASYR1_DIR}" rev-parse HEAD)" == "${PINNED_EASYR1_REVISION}" ]] || {
   echo "isolated EasyR1 worktree revision drift" >&2
@@ -150,9 +198,15 @@ import sys, yaml
 print(yaml.safe_load(open(sys.argv[1], encoding="utf-8"))["trainer"]["max_steps"])
 PY
 )"
+RESOLVED_TRAIN="$(${ROOT}/.venv/bin/python - "${EFFECTIVE_CONFIG}" <<'PY'
+import sys, yaml
+print(yaml.safe_load(open(sys.argv[1], encoding="utf-8"))["data"]["train_files"])
+PY
+)"
 [[ "${RESOLVED_MODE}" == "${EXPECTED_GROUP_MODE}" ]] || { echo "group-mode mismatch" >&2; exit 2; }
 [[ "${RESOLVED_REWARD}" == *"${EXPECTED_REWARD_SUFFIX}" ]] || { echo "reward callback mismatch" >&2; exit 2; }
 [[ "${RESOLVED_STEPS}" == "120" ]] || { echo "max_steps mismatch: ${RESOLVED_STEPS}" >&2; exit 2; }
+[[ "${RESOLVED_TRAIN}" == "${TRAIN_DATA}" ]] || { echo "train_files mismatch: ${RESOLVED_TRAIN} != ${TRAIN_DATA}" >&2; exit 2; }
 
 COMMAND="PYTHONPATH=${EASYR1_DIR}:${ROOT} python -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE_CONFIG}"
 GPU_IDS_JSON="$(printf '%s\n' "${GPUS[@]}" | jq -sc 'map(tonumber)')"
@@ -175,6 +229,7 @@ jq -n \
   --arg config_hash "$(sha256sum "${EFFECTIVE_CONFIG}" | awk '{print $1}')" \
   --arg data_hash "${DATA_HASH}" \
   --arg command "${COMMAND}" \
+  --arg train_data "${TRAIN_DATA}" \
   --arg start_time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --arg log "${LOG}" \
   --arg checkpoint "${CHECKPOINT_PATH}" \
@@ -201,7 +256,7 @@ jq -n \
     registration_marker_sha256: $registration_marker_sha256,
     config_path: $config_path,
     config_hash: $config_hash,
-    data_manifest: "data/mini_a5_train_v1/train.parquet",
+    data_manifest: $train_data,
     data_manifest_hash: $data_hash,
     model_revision: "ModelScope Qwen/Qwen2.5-VL-3B-Instruct master; tree 84c656fb6d6a5f4ef3ccbf47c3880c3a3d22c63eb8736a88fa7a0ddb542e3568",
     seed: 20260716,
