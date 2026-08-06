@@ -1,0 +1,112 @@
+{
+  "bootstrap": {
+    "draws": 5000,
+    "registered_draws": 5000,
+    "registered_seed": 20260730,
+    "seed": 20260730,
+    "unit": "item-paired bootstrap over the evaluation items, preserving item identity across all six cells; percentile 95% intervals"
+  },
+  "checks": {
+    "bootstrap_draws_registered_5000": true,
+    "bootstrap_seed_registered_20260730": true,
+    "conditions_match_cells": true,
+    "content_identity_exact": true,
+    "contract_fields_boolean": true,
+    "contracts_never_merged": true,
+    "decoding_seed_registered_20260710": true,
+    "expected_test_rows": 601,
+    "format_prompt_sha256_registered": true,
+    "greedy_temperature_zero_n1": true,
+    "item_identity_exact": true,
+    "manifests_complete": true,
+    "model_identity_verified": true,
+    "partial_refuses_all_estimands": true,
+    "prompt_contract_sha256_registered": true,
+    "row_field_consistency_across_cells": true,
+    "source_manifest_sha256_registered": true,
+    "test_rows_per_cell": {
+      "base:gray": 601,
+      "base:real": 601
+    },
+    "train_filter_sha256_registered": true
+  },
+  "contract_policy": "Both scoring contracts (I7) are computed separately and never merged: canonical = greedy_canonical_correct, strict = greedy_acc_strict.",
+  "partial_mode": {
+    "reason": "not all six cells are bound; per the registered inspection discipline no accuracy or performance value is computed or emitted before both arms complete (docs/registered_c5_7b_access_pair_v1.md)",
+    "refused_estimands": [
+      "cell_accuracy",
+      "matched_gain_a1_real",
+      "matched_gain_a2_gray",
+      "crossed_gain_a2_gray",
+      "descriptive_a1_tested_gray",
+      "crossed_recovery_trainshare_a2_gray",
+      "bootstrap_intervals"
+    ],
+    "verifies": [
+      "manifest completeness and cell conditions",
+      "test-split extraction and row counts",
+      "item and content identity across the provided cells",
+      "model identity",
+      "row-level contract-field consistency and registered hashes",
+      "scoring-contract fields present and boolean"
+    ]
+  },
+  "provenance": {
+    "analysis_git_head": "d8f0eae3c850e6fefa830a79b5b2d1f069d7c36e",
+    "bootstrap": {
+      "draws": 5000,
+      "seed": 20260730,
+      "stream_mechanism": "deterministic statistic/cell labels hashed into independent streams via src.analysis.pilot_fourarm.deterministic_seed"
+    },
+    "cells": {
+      "base:gray": {
+        "config_hash": "dfdf75026ff85666c73ceac7cbc36123aeecd24988f1ae07fa3ea3a0cd47665d",
+        "eval_git_hash": "553221fc3b97c3259143973273c9e8841d053b3c",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+        "node": "an29",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "a1457d0a5319e13d91159472df05e26973502daad1d17f9f78f09b160cf12659",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_base_gray_an29_20260731T123835Z",
+        "run_id": "blind_solvability_v2_c5_7b_base_gray_an29_20260731T123835Z",
+        "run_manifest_sha256": "8b33775b7eb7f49c2666d8761b3bb25cbb9f6a51a986f26d9750915d76a214cb",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "base:real": {
+        "config_hash": "4a1edf97d2ef3000d2e868e83cfc1bd75fb9ed19e044c2680084af424f01113b",
+        "eval_git_hash": "553221fc3b97c3259143973273c9e8841d053b3c",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+        "node": "an29",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "6ffc7d5500fbc270490e79c21ba4275c72e00c198917c1d33774d84099a8dbac",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_base_real_an29_20260731T123739Z",
+        "run_id": "blind_solvability_v2_c5_7b_base_real_an29_20260731T123739Z",
+        "run_manifest_sha256": "3889338a9c1f3255c7359e71427b253de6bc6dd37712db26ca433081f1365d13",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      }
+    },
+    "registered_documents": [
+      "docs/registered_c5_7b_access_pair_v1.md",
+      "docs/registered_extensions_v1.md"
+    ],
+    "shared_row_contract": {
+      "decoding_seed": 20260710,
+      "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+      "parser_version": "canonical-v2",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+      "train_filter_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1"
+    },
+    "train_rows_note": "split == 'train' rows are never used in any estimand and are counted here only; the pairing identity is row_index within the test split"
+  },
+  "schema_version": "blind-gains.c5-r4-readout.v1",
+  "seed_scope": {
+    "statement": "Seed scope: one seed (data.seed 1) and a single 7B training pair; every accuracy, gain, and recovery below is a one-seed number and no between-seed variance claim is made (docs/registered_c5_7b_access_pair_v1.md).",
+    "tag": "one seed (data.seed 1; single 7B training pair)"
+  },
+  "status": "partial-verify-only"
+}
