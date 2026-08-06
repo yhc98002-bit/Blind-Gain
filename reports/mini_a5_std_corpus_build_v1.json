@@ -1,0 +1,36 @@
+{
+  "builder": "scripts/build_mini_a5_std_corpus.py",
+  "kept_member": "a",
+  "output_dir": "data/mini_a5_std_train_v1",
+  "output_sha256": {
+    "train.jsonl": "1e2f8a34e032835a02224be07e54d8c8607d12a9db7caad990c469237e4fb4c8",
+    "train.parquet": "b06373f5fd259e9c77bb66c3332f4ddf1e26a31dd3150e0fd025e3142fe623aa"
+  },
+  "parquet_serialization_deterministic": true,
+  "projection_audit": {
+    "checks": {
+      "adjacent_pseudo_pairs": true,
+      "every_kept_scene_exposed_exactly_twice": true,
+      "image_sha256_matches_pairs_record": true,
+      "no_member_b_rendering_referenced": true,
+      "row_count_is_twice_pair_count": true,
+      "row_for_row_identity_with_member_a": true,
+      "seven_column_schema": true,
+      "status_pass": true,
+      "synthetic_uid_prefix_and_uniqueness": true,
+      "synthetic_uids_disjoint_from_real_uids": true
+    },
+    "errors": []
+  },
+  "pseudo_pairs": 3000,
+  "registration": "docs/registered_mini_a5_gate1_completion_v1.md#2-R1",
+  "rows": 6000,
+  "schema_version": "blind-gains.mini-a5-std-corpus.v1",
+  "source_dir": "data/mini_a5_train_v1",
+  "source_sha256": {
+    "pairs.jsonl": "c592d8560cf3f5544fea36a12b3b52642d0faf0056c4ef9fddc0dde1f75f34bd",
+    "train.jsonl": "07d785ee6ae4a3b5325e12595f7830c5924e31c49565554f1e88b2abffc5fa5c",
+    "train.parquet": "0b0f0965987d1c340c3ebd78da742c9d99b319b61524b5cb42960519fd9c9b28"
+  },
+  "synthetic_uid_prefix": "std1_"
+}
