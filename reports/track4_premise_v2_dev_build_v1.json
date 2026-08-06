@@ -1,0 +1,87 @@
+{
+  "attempts_by_type": {
+    "chained_premise": 994,
+    "chained_premise_easy": 363,
+    "fact_read": 107,
+    "premise_transition": 3304,
+    "premise_transition_easy": 595
+  },
+  "b1_image_sha_collisions": [],
+  "batch_seed": 20260806,
+  "blind_solvability": "pending on every group; measured by the registered acceptance evals",
+  "command": "scripts/build_track4_premise_v2_dev_batch.py",
+  "declared_groups": 160,
+  "file_sha256": {
+    "attacker_key.jsonl": "ac80ec2a0708e62d1828beb72b6541c6553017020ecd1230aa592bee5583a61a",
+    "attacker_release/manifest.jsonl": "308afc9eee235f5a3b8c4eee5162557415a17e5d247a1f6e96487dd46143b151",
+    "groups_v2.jsonl": "cf730da172448544af24e59503ab3ac975c45e1967bef41019dcd413dcac7783",
+    "manifest_causal_pairs.jsonl": "5963dd0f9899dc8b0ea38463edbaba546ae5c85c6630dd55c1fedbf8db4143a3",
+    "manifest_invariance_pairs.jsonl": "ee645cba108115bd7b5255699f7a8855525e8cd44b1d68587ef0c72abe4d9921",
+    "manifest_premise_probe.jsonl": "693ef38bea73fb81e5f3e4b7cc2d0712a634f98b4b06413e4939e8ddaf7e7290"
+  },
+  "git_hash": "fb677d121610bccec25428c84afc5119516031e4",
+  "gray_control_sha256": "2aebae80610fa3826f125326be0445ed659fb69e555e058d805b135f1123904b",
+  "group_schema_version": "blind-gains.intervention-group.v2",
+  "invariance_member_kinds": {
+    "distractor_move": 80,
+    "style_twin": 80
+  },
+  "margins": {
+    "chained_stay_margin": 0.5,
+    "margin_a": 1.0,
+    "margin_b": 1.0,
+    "margin_d3": 1.0
+  },
+  "node": "ln206",
+  "one_shot": "declared development batch; no acceptance iteration",
+  "out_dir": "data/track4_premise_v2_dev_v1",
+  "per_intervention": {
+    "chained_premise": {
+      "groups": 20,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "chained_premise_easy": {
+      "groups": 40,
+      "n_points": 8,
+      "template_id": "t4v2_coordinate_register_n8_v1"
+    },
+    "fact_read": {
+      "groups": 20,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "premise_transition": {
+      "groups": 40,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "premise_transition_easy": {
+      "groups": 40,
+      "n_points": 8,
+      "template_id": "t4v2_coordinate_register_n8_v1"
+    }
+  },
+  "premise_probe_rows": 140,
+  "premise_transition_rows": 80,
+  "registration": "docs/registered_track4_premise_v2_design_v1.md",
+  "schema_version": "blind-gains.track4-premise-v2-dev-build.v1",
+  "split_rule": {
+    "buckets": {
+      "confirmatory": [
+        80,
+        100
+      ],
+      "development": [
+        60,
+        80
+      ],
+      "training": [
+        0,
+        60
+      ]
+    },
+    "enforcement": "builder rejects any scene program outside the development bucket",
+    "hash": "sha256(scene_program_id + '|split-v1')[:8] % 100"
+  }
+}
