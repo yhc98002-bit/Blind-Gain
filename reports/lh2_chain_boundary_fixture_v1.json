@@ -1,0 +1,16 @@
+{
+  "schema": "blind-gains.lh2-chain-boundary-fixture.v1",
+  "exit_codes": {
+    "clean_audit": 0,
+    "clean_jq_contract": 0,
+    "missing_optim_shard": 1,
+    "wrong_expected_step": 1
+  },
+  "expected": {
+    "clean_audit": 0,
+    "clean_jq_contract": 0,
+    "missing_optim_shard": "nonzero",
+    "wrong_expected_step": "nonzero"
+  },
+  "status": "pass"
+}
