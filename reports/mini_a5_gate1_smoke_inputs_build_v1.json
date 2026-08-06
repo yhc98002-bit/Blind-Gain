@@ -1,0 +1,62 @@
+{
+  "arms": {
+    "necessity": {
+      "audit": {
+        "checks": {
+          "smoke_adjacency_preserved": true,
+          "smoke_row_count_exact": true,
+          "smoke_rows_identical_to_corpus_prefix": true,
+          "status_pass": true,
+          "step0_pair_count_exact": true,
+          "step0_pairs_identical_to_registered_slice": true
+        },
+        "errors": []
+      },
+      "corpus": "data/mini_a5_necessity_train_v1/train.parquet",
+      "smoke_subset": "data/mini_a5_necessity_plumbing_train_v1.jsonl",
+      "smoke_subset_sha256": "e5cf19f39cbc6a36cb38544af1ea90a5a71c4d9295f6c8af5f442cdad516d990",
+      "step0_member_template_counts": {
+        "mini_a5_train_code_matrix_v1": 224,
+        "mini_a5_train_labeled_scatter_v1": 100,
+        "mini_a5_train_named_trajectory_v1": 60
+      },
+      "step0_sample": "data/mini_a5_necessity_step0_sample_v1.jsonl",
+      "step0_sample_sha256": "3725e7b2ea91e2fb35678fc14ed7d8a3f2b2efe01401987109c75a3925473fad"
+    },
+    "std": {
+      "audit": {
+        "checks": {
+          "smoke_adjacency_preserved": true,
+          "smoke_row_count_exact": true,
+          "smoke_rows_identical_to_corpus_prefix": true,
+          "status_pass": true,
+          "step0_pair_count_exact": true,
+          "step0_pairs_identical_to_registered_slice": true
+        },
+        "errors": []
+      },
+      "corpus": "data/mini_a5_std_train_v1/train.parquet",
+      "smoke_subset": "data/mini_a5_std_plumbing_train_v1.jsonl",
+      "smoke_subset_sha256": "233217dcf1b872781972ebd60bf39a6c6f4070b683f18f0693c57588b7e2ba44",
+      "step0_member_template_counts": {
+        "mini_a5_train_code_matrix_v1": 126,
+        "mini_a5_train_labeled_scatter_v1": 140,
+        "mini_a5_train_named_trajectory_v1": 118
+      },
+      "step0_sample": "data/mini_a5_std_step0_sample_v1.jsonl",
+      "step0_sample_sha256": "0df91fdb3f06b39e541cd21f2aff53e275160f44c16748f62545af40aea305e1"
+    }
+  },
+  "builder": "scripts/build_mini_a5_gate1_smoke_inputs.py",
+  "pinned_sha256": {
+    "data/mini_a5_necessity_train_v1/source_map.jsonl": "1f60357a91389090f37a6cef4c8223d6aa56208712f6142b606c2797ccd4e448",
+    "data/mini_a5_necessity_train_v1/train.parquet": "205ca7fd007cc03086174ebd25ec0b22d2c76bb68377b87260b51252976fc4c9",
+    "data/mini_a5_std_train_v1/train.parquet": "b06373f5fd259e9c77bb66c3332f4ddf1e26a31dd3150e0fd025e3142fe623aa",
+    "data/mini_a5_train_v1/pairs.jsonl": "c592d8560cf3f5544fea36a12b3b52642d0faf0056c4ef9fddc0dde1f75f34bd"
+  },
+  "registration": "docs/registered_mini_a5_gate1_completion_v1.md#6-T7",
+  "schema_version": "blind-gains.mini-a5-gate1-smoke-inputs.v1",
+  "smoke_pairs": 24,
+  "step0_offset_pairs": 24,
+  "step0_pairs": 192
+}
