@@ -127,7 +127,7 @@ Phase 2 (premise curriculum) expands only if P0.1 shows learnable signal; if pre
 ### 2E. Training stages
 | Stage | Arms | Notes |
 |---|---|---|
-| Gate 1 | standard GRPO · paired-data + answer-only · necessity + answer-only · full IGPO | Small. Answers data / selection / relational-reward in sequence. |
+| Gate 1 | standard GRPO · paired-data + answer-only · necessity + answer-only · full IGPO | Small. Answers data / selection / relational-reward in sequence. **🔄 EXECUTING 2026-08-07:** ratified; T1–T7 all complete (Δq: q_blind 0.00084, mean Δq 0.3509, draw ratio 17.0; both smokes audited combined-PASS; both step-0 summaries pass, zero reward disagreement over 1,920 responses). **std arm training on an29 8-GPU** (`mini_a5_std_main_an29_20260807T013033Z`, lands ~08-07 22Z); necessity arm auto-chains after (~08-08 19Z); then four-arm endpoint readout + catch-stability. |
 | Stage 2 (3B) | standard · paired-data · necessity-only · relation-only · full IGPO | Ablations: drop causal / drop invariance / drop premise / drop necessity; C1 sampling-vs-loss-weight form. |
 | Stage 3 (7B) | standard · full IGPO · minimal blind control | Three runs, not a matrix. |
 | Efficiency ablation | blind-first curriculum at matched total compute | Registered probe: Paper-1's 42-item corrosion set. Not headline. |

@@ -1,0 +1,72 @@
+{
+  "arm": "necessity",
+  "checks": {
+    "identity_sets_complete": true,
+    "pair_count_exact": true,
+    "reward_recompute_identical": true,
+    "row_count_exact": true,
+    "single_arm": true
+  },
+  "contract_valid": {
+    "hit_rate": 0.6588541666666666,
+    "n": 1920,
+    "population_variance": 0.2247653537326389
+  },
+  "errors": [],
+  "main_optimizer_steps_authorized_by_this_audit": 0,
+  "member_reward": {
+    "hit_rate": 0.3026041666666667,
+    "n": 1920,
+    "population_variance": 0.2110348849826389
+  },
+  "member_reward_by_pseudo_member": {
+    "a": {
+      "hit_rate": 0.29791666666666666,
+      "n": 960,
+      "population_variance": 0.20916232638888888
+    },
+    "b": {
+      "hit_rate": 0.3072916666666667,
+      "n": 960,
+      "population_variance": 0.2128634982638889
+    }
+  },
+  "member_reward_by_template": {
+    "mini_a5_train_code_matrix_v1": {
+      "hit_rate": 0.41875,
+      "n": 1120,
+      "population_variance": 0.2433984375
+    },
+    "mini_a5_train_labeled_scatter_v1": {
+      "hit_rate": 0.154,
+      "n": 500,
+      "population_variance": 0.130284
+    },
+    "mini_a5_train_named_trajectory_v1": {
+      "hit_rate": 0.11666666666666667,
+      "n": 300,
+      "population_variance": 0.10305555555555555
+    }
+  },
+  "optimizer_steps": 0,
+  "pairs": 192,
+  "provenance": {
+    "gpu_ids": [
+      1
+    ],
+    "node": "an29",
+    "predictions": "experiments/runs/mini_a5_necessity_step0_qwen25vl3b_an29_20260807T012310Z/predictions.jsonl",
+    "predictions_sha256": "75787fcda41f5f6741258465ccfc65b22eabe04e7b0a20e0b07e321fa843980a",
+    "run_exit_code": 0,
+    "run_id": "mini_a5_necessity_step0_qwen25vl3b_an29_20260807T012310Z",
+    "run_manifest": "experiments/runs/mini_a5_necessity_step0_qwen25vl3b_an29_20260807T012310Z/run_manifest.json",
+    "run_status": "complete"
+  },
+  "recompute_mismatches": 0,
+  "reward_disagreement_reason_codes": {
+    "0.0": 1920
+  },
+  "rows": 1920,
+  "schema_version": "blind-gains.mini-a5-gate1-step0-audit.v1",
+  "status": "pass"
+}
