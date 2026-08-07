@@ -27,7 +27,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
 | E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
 | M7 ViRL39K stratified | R3 | **complete (seed 1)** — matched recovery **0.72–0.88 vs 0.08–0.12 on geo3k** (registered secondary passes, +0.63–0.64, stable); ρ_gain direction **fails** all arms (gains track headroom); ρ_recovery point-positive for blind arms (§12d). Seed 2 relaunches after C5 |
-| C5 7B access pair (A1 vs A2-gray) | R4 | **not built** — no 7B configs exist yet |
+| C5 7B access pair (A1 vs A2-gray) | R4 | **complete** — crossed TrainShare **0.78–0.84 vs 0.49 at 3B**, intervals disjoint; matched gain replicates (+0.2479 vs +0.2435). **Ladder R1–R5 closed** (§12e) |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
@@ -978,6 +978,56 @@ attempt died in the 08-03 host-memory cascade and relaunches after the C5 pair.*
 
 ---
 
+## 12e. R4 — the 7B access pair: the phenomenon grows with scale
+
+`reports/c5_r4_readout_v1.{json,md}` (registered readout, produced autonomously by the
+completion cascade 2026-08-07T00:25Z; all 18 registered checks true; 5,000 paired
+bootstrap draws seed 20260730, 5000/5000 retained; both contracts computed and never
+merged; every number one-seed-tagged). **This closes Paper 1's claim ladder: R1–R5 all
+complete.**
+
+**Cell accuracies, canonical contract** (n = 601 geo3k test items per cell):
+
+| model | test real | test gray |
+|---|---:|---:|
+| 7B base | 0.2346 | 0.0799 |
+| A1 real | **0.4825** | 0.1248 |
+| A2 gray | **0.4276** | 0.1314 |
+
+**Registered estimands:**
+
+| estimand | canonical | strict |
+|---|---:|---:|
+| matched gain A1 | **+0.2479** [0.203, 0.291] | +0.3644 [0.325, 0.404] |
+| matched gain A2-gray | +0.0516 [0.027, 0.078] | +0.1115 [0.083, 0.140] |
+| crossed gain A2-gray | **+0.1930** [0.153, 0.235] | +0.3062 [0.265, 0.346] |
+| **crossed TrainShare A2-gray** | **0.7785 [0.6418, 0.9214]** | **0.8402 [0.7457, 0.9456]** |
+
+Denominator stable under the M7 rule on both contracts (paired SE 0.0218 / 0.0209).
+Cross-scale descriptive anchor, labelled as such and not recomputed: the 3B pooled
+crossed TrainShare was **0.487 [0.383, 0.588]**.
+
+**The scale result, plainly.** A1's matched gain is nearly identical across scales
+(+0.2435 at 3B, +0.2479 at 7B) — the recipe transfers. But the gray-trained arm now
+recovers **78% (canonical) to 84% (strict)** of the full-image arm's gain under crossed
+evaluation, versus 49% at 3B, and the two intervals do not overlap. Under matched
+evaluation the 7B gray arm still shows only +0.05 — the two-regime structure of F1
+reproduces exactly at scale, with the crossed/matched gap *wider*.
+
+**Insight (hypothesis-level, per §9 locks).** The readout-policy account predicts this
+direction: a larger pretrained encoder carries more latent visual competence, so a
+readout policy learned *without images* has more to exploit at inference. Scale
+amplifies rather than cures learning-without-looking — the blind-attainable share of
+the gain is an increasing function of pretrained capability, which is exactly the wrong
+direction for anyone hoping bigger models make outcome-reward RLVR more visual.
+Consistent with, and sharpening, the representational-ceiling argument: the ceiling
+rises with scale, and the policy's cheap path to it rises faster.
+
+*Scope: one seed, single 7B pair; cross-scale comparison descriptive; A2b not run at
+7B (registered choice, fired M8 fork rule).*
+
+---
+
 ## 13. R5 — Cross-family generalization (complete)
 
 `reports/generalization_audits_v2.json`, from
@@ -1734,3 +1784,144 @@ qualitative window: all five have plain integer golds and open with <think> reas
 chains (673-2,434 chars), and one of them (`a2b_noimage_test_0055`) states "the problem
 statement is not provided" mid-chain yet still lands the gold answer - the sharpest
 guess-vs-solve call in the set.
+
+## 2026-08-06 — C5/R4 registered readout script + adversarial fixtures (pre-data, plumbing only)
+
+Built `scripts/build_c5_r4_readout.py` (the registered R4 readout for the 7B access
+pair) BEFORE its arm data exists, bound to the "Registered Readout" section of
+`docs/registered_c5_7b_access_pair_v1.md`: six cells {7B base, A1-real, A2-gray} x
+test {real, gray}; matched gains, A2 crossed gain, crossed recovery TrainShare under
+the M7 stability rule (denominator > 0 and >= 2*paired_se, else
+undefined-unstable-denominator with the ratio not computed); A1-tested-gray
+descriptive; 5,000 item-paired bootstrap draws, seed 20260730, percentile 95%; both
+I7 scoring contracts (greedy_canonical_correct / greedy_acc_strict) computed
+separately and never merged; every number carries the one-seed tag.
+
+Adversarial fixtures (I10), all 8 passing on the remote
+(`tests/test_c5_r4_readout_fixture.py`): planted matched/crossed gains and
+TrainShare (0.5/0.5) recovered exactly under both contracts; poisoned train-split
+rows with overlapping row_index never leak into estimands; unstable canonical A1
+denominator (+1/40 vs 2SE~0.113) -> undefined-unstable-denominator with strict
+still stable at 0.5 (contract independence); missing item -> loud item-identity
+failure, no outputs; incomplete manifest refused; two runs at seed 20260730
+byte-identical (JSON, markdown, joined artifact); partial mode verify-only.
+
+Real-data proof: `--partial` run against the two existing 7B base cells (601 test
+rows each) exits 0 with every check true (registered source-manifest / prompt /
+format / filter hashes, decoding seed 20260710, item+content identity across
+cells) and emits ZERO accuracy or performance values — the C5 inspection
+discipline holds until both arms complete. Artifacts:
+`reports/c5_r4_readout_v1_partial.{json,md}`. A recon disclosure (uniq -c over the
+contract booleans during schema recon) was appended to the registration's
+deviations log. Insight: the harness's train/test row_index ranges overlap
+(train 0..2099, test 0..600), so pairing identity must be row_index WITHIN the
+test split — a naive whole-file join would silently mispair; the readout gates on
+exactly this.
+
+## Round: LH2 stage-1 registration (2026-08-06, registration only — no training launched)
+
+Filed `docs/registered_lh2_stage1_v1.md` + `configs/train/lh2_anchor_seed2_3b_geo3k.yaml`
+(commit 7ab887e, pushed to agent/gate2-recovery + master + main). LH2 is the F6
+Tier-3 second long-horizon seed of the anchor recipe. Design decision: a genuine
+second seed CANNOT warm-start from the archived step-100 anchor — that checkpoint
+IS seed 1's trajectory — so stage 1 is a fresh 0->200 run from the frozen base
+with data.seed 2 (the only experiment-level stochasticity control the recipe
+exposes; EasyR1 consumes it as the train-shuffle generator seed, verified in
+verl/trainer/data_loader.py; the rollout seed stays at package default in both
+seeds, matching every existing mech_*/m7_* seed-2 config). Cost from the measured
+clean M5 segments (22.34 h + 21.73 h per 50 steps): 44.1 h/100 steps at 4 GPUs;
+stage 1 ~88 h (~3.7 d), full 0->400 on GO ~176 h. Mandatory 50-step process
+segmentation with hash-verified boundaries (the unsegmented M5 process died of
+the Ray host-memory ramp, `reports/m5_host_memory_incident_v1.md`). Evals at
+100/150/200 under the locked M5 contracts; registered go/no-go at 200: GO iff
+g(200)-g(100) < 0 within seed 2 (directional only, no magnitude threshold, no
+discretion); NO-GO -> stop, Tier 2 stands. Config diff machine-checked
+(`scripts/check_lh2_config_diff.py`, exactly 5 leaves vs each reference config)
+with an I10 adversarial fixture (clean passes, unregistered-leaf and
+wrong-seed tampers both fail). Insight: the sharpest design fact is that
+"second seed" is a property of the 0->100 history, not of the continuation —
+any warm start from the existing anchor would have silently degraded Tier 3
+into a second continuation of seed 1, and the registration now states that
+disqualification explicitly so it cannot be relitigated at launch time.
+
+## 2026-08-07 — Track-4 premise-construct v2: registration + schema v2 + generator + 160-group dev batch (CPU round, no GPU evals)
+
+Design registered (docs/registered_track4_premise_v2_design_v1.md, commit
+fb677d1) before any item existed; batch built one-shot after (commit 94fbd52).
+The new premise_transition type inverts B1's frozen geometry instead of its
+conditional: B1 constrains the moved nearest neighbour to STAY nearest
+(dist(T,N') < d2-0.5), v2 pushes it beyond the runner-up with margin
+(dist(T,N') >= d2+1.0) plus d3-d2 >= 1.0 so the B-side premise carries the
+same >= 1.0 decidability margin as the A-side; the runner-up M never moves, so
+the final-answer change is carried entirely by the premise change. premise_answer
+becomes per-member (premise_answer_a/b); the old "premise_transition_accuracy"
+(equal-gold rescore = invariance) is renamed premise_stability and the
+redefined transition metric requires each member's premise to match its OWN
+gold with golds differing by construction — a premise-frozen policy scores 0
+(adversarial fixture proves the old metric rewarded exactly that policy).
+Easier variant: n_points 20 -> 8, the only lever the frozen renderer already
+parameterizes; registered band 0.40-0.60 base premise accuracy on
+chained_premise_easy with pre-committed branches (n=12 if too easy, n=5 if too
+hard, one re-measure, then declare the lever insufficient).
+
+Numbers: schema v2 fixtures 27/27 (v1 loader refuses v2 and vice versa; frozen
+v1 fixtures still 13/13; training path refuses measurement_state=pending);
+generator fixtures 7/7. Batch: 160 groups (premise_transition 40 n20,
+premise_transition_easy 40 n8, chained_premise_easy 40 n8, chained_premise 20
+n20, fact_read 20 n20), 160 causal + 160 invariance pair rows (80 style twins /
+80 answer-and-premise-preserving distractor moves), 140 premise-probe rows of
+which 80 genuine transitions, all groups blind_solvability=pending, 0 frozen-B1
+image-SHA collisions, attempts max 3304/120000 cap. Independent from-disk
+verification recomputed every premise+final gold from serialized scene programs
+on both physical sides, re-hashed all 640 images, confirmed all 80 transitions
+violate B1's stay-nearest filter: 0 problems
+(reports/track4_premise_v2_dev_build_v1_verification.json).
+
+Insight: the rejection-sampling cost asymmetry is itself evidence the construct
+is right — premise_transition burned 3304 attempts vs 363 for
+chained_premise_easy because demanding BOTH sides of a transition be decidable
+with margin >= 1.0 (plus the d3 gap) is genuinely harder geometry than letting
+the premise stay put; invariance was cheap for B1 precisely because it never
+had to pay for B-side decidability. GPU acceptance gates E1-E4 (difficulty
+band, blind floor, caption stress, DINOv2/pixel attacker) are registered with
+exact commands + pass criteria but NOT run; no training config exists or is
+authorized until they pass.
+
+## 2026-08-06 — LH2 stage 1: registration filed (no training launched)
+
+Registration round, no new experimental numbers. docs/registered_lh2_stage1_v1.md
+(commit 7ab887e) + configs/train/lh2_anchor_seed2_3b_geo3k.yaml register the F6
+Tier-3 test: a SECOND SEED of the anchor recipe, defined as a fresh 0->200 run
+from the frozen Qwen2.5-VL-3B base with data.seed 2 — NOT a warm start from the
+step-100 anchor checkpoint, because that checkpoint IS seed 1 (its 0->100
+history was optimized under data.seed 1; a continuation would only re-draw the
+100->200 suffix and could not support the word "systematic"). data.seed is the
+only experiment-level stochasticity control in the recipe (verified in EasyR1
+data_loader.py: it seeds the train-dataloader shuffle generator), matching every
+existing seed-2 config in the project. Machine-checked config diff: exactly 5
+leaves vs the anchor template (seed, max_steps, save_freq, two renames), checker
++ adversarial fixture pass at HEAD (reports/lh2_config_diff_check_v1.json,
+reports/lh2_adversarial_fixture_v1.json). Cost basis measured from the two
+clean M5 segments (22.34 h + 21.73 h per 50 steps): 44.1 h/100 steps at 4 GPUs,
+so stage 1 = ~88 h (~3.7 days); a full GO-through-400 LH2 = ~176 h. Go/no-go at
+step 200 is directional only: GO iff lenient R19 geometry pair accuracy
+g(200)-g(100) < 0 within seed 2; NO-GO -> stop, Tier 2 stands.
+
+This round also replaced the launch chain (commit 1b6e01e,
+scripts/lh2_segment_chain.sh): the prior draft died with its session and had
+three registration violations (no hash-verified boundary audit, constant
+experiment_name, checkpoint root missing the stage-run-id subdir) plus a
+counting bug ("cmd || echo 0" double-prints 0, so its eval-proc and fatal-line
+gates could never read clean). The rewrite audits every 50-step boundary with
+audit_easyr1_resume_checkpoint.py under the exact M5 jq contract; I10 fixture
+pass (reports/lh2_chain_boundary_fixture_v1.json: clean 0/contract 0, missing
+optimizer shard 1, wrong expected step 1). Nothing launched: registration only;
+gates verified read-only against an12 (GPU0 63.9 GB busy with live R4 evals —
+chain correctly holds).
+
+Insight: "second seed" is where long-horizon replications quietly go wrong —
+the cheap version (warm-start the existing step-100 checkpoint, vary the
+continuation) looks like a replication but shares 100% of the optimization
+prefix that produced the Tier-2 observation, so it tests only suffix
+sensitivity. Paying the full 0->100 cost again (~44 h) is exactly the price of
+the word "systematic" in the Tier-3 sentence.
