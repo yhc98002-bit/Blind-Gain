@@ -1,0 +1,493 @@
+{
+  "bootstrap": {
+    "draws": 5000,
+    "registered_draws": 5000,
+    "registered_seed": 20260730,
+    "seed": 20260730,
+    "unit": "item-paired bootstrap over the evaluation items, preserving item identity across all six cells; percentile 95% intervals"
+  },
+  "checks": {
+    "bootstrap_draws_registered_5000": true,
+    "bootstrap_seed_registered_20260730": true,
+    "conditions_match_cells": true,
+    "content_identity_exact": true,
+    "contract_fields_boolean": true,
+    "contracts_never_merged": true,
+    "decoding_seed_registered_20260710": true,
+    "expected_test_rows": 601,
+    "format_prompt_sha256_registered": true,
+    "greedy_temperature_zero_n1": true,
+    "item_identity_exact": true,
+    "manifests_complete": true,
+    "model_identity_verified": true,
+    "prompt_contract_sha256_registered": true,
+    "row_field_consistency_across_cells": true,
+    "source_manifest_sha256_registered": true,
+    "test_rows_per_cell": {
+      "a1_real:gray": 601,
+      "a1_real:real": 601,
+      "a2_gray:gray": 601,
+      "a2_gray:real": 601,
+      "base:gray": 601,
+      "base:real": 601
+    },
+    "train_filter_sha256_registered": true
+  },
+  "contract_policy": "Both scoring contracts (I7) are computed separately and never merged: canonical = greedy_canonical_correct, strict = greedy_acc_strict.",
+  "cross_scale_anchor": {
+    "comparison_policy": "scale comparisons against the 3B pilot are descriptive and labeled cross-scale; no cross-scale statistic is computed (docs/registered_c5_7b_access_pair_v1.md Registered Readout)",
+    "label": "cross-scale descriptive anchor (3B pilot, three seeds pooled); not a 7B estimand; not recomputed",
+    "pilot_pooled_crossed_trainshare_a2_gray": {
+      "ci95": [
+        0.383,
+        0.588
+      ],
+      "estimate": 0.487,
+      "source": "reports/d3_trainshare_v1.md"
+    }
+  },
+  "estimands": {
+    "canonical": {
+      "a1_tested_gray_descriptive": {
+        "crossed_difference": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.018302828618968387,
+            0.07154742096505824
+          ],
+          "definition": "Acc(A1, test gray) - Acc(base, test gray)",
+          "estimate": 0.04492512479201331,
+          "n": 601,
+          "paired_se": 0.01350694872939158,
+          "seed_label": "canonical:descriptive_crossed_diff:a1_real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "label": "descriptive",
+        "role": "the A1 crossed cell (A1 tested gray) is reported descriptively per the registered readout; it enters no registered gain or recovery estimand"
+      },
+      "cell_accuracy": {
+        "a1_real:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.09983361064891846,
+            0.15141430948419302
+          ],
+          "estimate": 0.12479201331114809,
+          "n": 601,
+          "paired_se": 0.013491909101686236,
+          "seed_label": "canonical:cell_acc:a1_real:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a1_real:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.4425956738768719,
+            0.5208402662229611
+          ],
+          "estimate": 0.4825291181364393,
+          "n": 601,
+          "paired_se": 0.020399949684860724,
+          "seed_label": "canonical:cell_acc:a1_real:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.10316139767054909,
+            0.15973377703826955
+          ],
+          "estimate": 0.1314475873544093,
+          "n": 601,
+          "paired_se": 0.013794269289159796,
+          "seed_label": "canonical:cell_acc:a2_gray:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.3876871880199667,
+            0.46589018302828616
+          ],
+          "estimate": 0.4276206322795341,
+          "n": 601,
+          "paired_se": 0.020197410194064715,
+          "seed_label": "canonical:cell_acc:a2_gray:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "base:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.05823627287853577,
+            0.10316139767054909
+          ],
+          "estimate": 0.07986688851913477,
+          "n": 601,
+          "paired_se": 0.011067080963937364,
+          "seed_label": "canonical:cell_acc:base:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "base:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.20133111480865223,
+            0.26955074875207985
+          ],
+          "estimate": 0.23460898502495842,
+          "n": 601,
+          "paired_se": 0.01729969215383698,
+          "seed_label": "canonical:cell_acc:base:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "crossed_gain": {
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.15307820299500832,
+            0.23460898502495842
+          ],
+          "definition": "Acc(A2, test real) - Acc(base, test real)",
+          "estimate": 0.1930116472545757,
+          "n": 601,
+          "paired_se": 0.021170061801755638,
+          "seed_label": "canonical:crossed_gain:a2_gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "crossed_recovery_trainshare": {
+        "a2_gray": {
+          "denominator": {
+            "definition": "matched gain A1 (test real)",
+            "estimate": 0.24792013311148087,
+            "paired_se": 0.02184373866650674,
+            "stable": true
+          },
+          "numerator_definition": "crossed gain A2-gray (test real)",
+          "ratio": {
+            "bootstrap_draws": 5000,
+            "ci95": [
+              0.6417840045057731,
+              0.9214285714285715
+            ],
+            "denominator_estimate": 0.24792013311148087,
+            "estimate": 0.7785234899328859,
+            "retained_bootstrap_draws": 5000,
+            "seed_label": "canonical:trainshare:a2_gray"
+          },
+          "rule": "gain[A1, test real] > 0 and gain[A1, test real] >= 2 * paired_se (M7 stability rule); otherwise undefined-unstable-denominator and the ratio is not computed",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "status": "stable"
+        }
+      },
+      "field": "greedy_canonical_correct",
+      "matched_gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.20299500831946754,
+            0.2911813643926789
+          ],
+          "definition": "Acc(A1, test real) - Acc(base, test real)",
+          "estimate": 0.24792013311148087,
+          "n": 601,
+          "paired_se": 0.02184373866650674,
+          "seed_label": "canonical:matched_gain:a1_real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.026622296173044926,
+            0.07820299500831947
+          ],
+          "definition": "Acc(A2, test gray) - Acc(base, test gray)",
+          "estimate": 0.051580698835274545,
+          "n": 601,
+          "paired_se": 0.013467262573384535,
+          "seed_label": "canonical:matched_gain:a2_gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "strict": {
+      "a1_tested_gray_descriptive": {
+        "crossed_difference": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.07321131447587355,
+            0.1281198003327787
+          ],
+          "definition": "Acc(A1, test gray) - Acc(base, test gray)",
+          "estimate": 0.10149750415973377,
+          "n": 601,
+          "paired_se": 0.014012973571071173,
+          "seed_label": "strict:descriptive_crossed_diff:a1_real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "label": "descriptive",
+        "role": "the A1 crossed cell (A1 tested gray) is reported descriptively per the registered readout; it enters no registered gain or recovery estimand"
+      },
+      "cell_accuracy": {
+        "a1_real:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.09983361064891846,
+            0.1497920133111475
+          ],
+          "estimate": 0.12479201331114809,
+          "n": 601,
+          "paired_se": 0.013491909101686236,
+          "seed_label": "strict:cell_acc:a1_real:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a1_real:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.4459234608985025,
+            0.5257903494176372
+          ],
+          "estimate": 0.4858569051580699,
+          "n": 601,
+          "paired_se": 0.0204042468156465,
+          "seed_label": "strict:cell_acc:a1_real:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.10815307820299501,
+            0.16306156405990016
+          ],
+          "estimate": 0.13477537437603992,
+          "n": 601,
+          "paired_se": 0.013941005035376647,
+          "seed_label": "strict:cell_acc:a2_gray:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.389351081530782,
+            0.46921797004991683
+          ],
+          "estimate": 0.4276206322795341,
+          "n": 601,
+          "paired_se": 0.020197410194064718,
+          "seed_label": "strict:cell_acc:a2_gray:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "base:gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.011647254575707155,
+            0.036605657237936774
+          ],
+          "estimate": 0.02329450915141431,
+          "n": 601,
+          "paired_se": 0.006157904810730267,
+          "seed_label": "strict:cell_acc:base:gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "base:real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.09650582362728785,
+            0.1480865224625624
+          ],
+          "estimate": 0.12146422628951747,
+          "n": 601,
+          "paired_se": 0.013336083134451832,
+          "seed_label": "strict:cell_acc:base:real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "crossed_gain": {
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.26451747088186356,
+            0.34608985024958405
+          ],
+          "definition": "Acc(A2, test real) - Acc(base, test real)",
+          "estimate": 0.30615640599001664,
+          "n": 601,
+          "paired_se": 0.02104238791136368,
+          "seed_label": "strict:crossed_gain:a2_gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "crossed_recovery_trainshare": {
+        "a2_gray": {
+          "denominator": {
+            "definition": "matched gain A1 (test real)",
+            "estimate": 0.3643926788685524,
+            "paired_se": 0.020879046021080084,
+            "stable": true
+          },
+          "numerator_definition": "crossed gain A2-gray (test real)",
+          "ratio": {
+            "bootstrap_draws": 5000,
+            "ci95": [
+              0.7456896551724139,
+              0.945554589242708
+            ],
+            "denominator_estimate": 0.3643926788685524,
+            "estimate": 0.8401826484018264,
+            "retained_bootstrap_draws": 5000,
+            "seed_label": "strict:trainshare:a2_gray"
+          },
+          "rule": "gain[A1, test real] > 0 and gain[A1, test real] >= 2 * paired_se (M7 stability rule); otherwise undefined-unstable-denominator and the ratio is not computed",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "status": "stable"
+        }
+      },
+      "field": "greedy_acc_strict",
+      "matched_gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.324459234608985,
+            0.4043261231281198
+          ],
+          "definition": "Acc(A1, test real) - Acc(base, test real)",
+          "estimate": 0.3643926788685524,
+          "n": 601,
+          "paired_se": 0.020879046021080084,
+          "seed_label": "strict:matched_gain:a1_real",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.08319467554076539,
+            0.13976705490848584
+          ],
+          "definition": "Acc(A2, test gray) - Acc(base, test gray)",
+          "estimate": 0.11148086522462562,
+          "n": 601,
+          "paired_se": 0.014084246757943085,
+          "seed_label": "strict:matched_gain:a2_gray",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    }
+  },
+  "joined_items_artifact": "reports/c5_r4_readout_v1_artifacts/c5_joined_items.jsonl",
+  "joined_items_sha256": "b475432d5cf5d8df83a7bfc53b9968ab11f16ae886b42efcfd19da19f0f428a1",
+  "provenance": {
+    "analysis_git_head": "9be9f9d0b99a4f67ad26d72c279f2aa6b2357865",
+    "bootstrap": {
+      "draws": 5000,
+      "seed": 20260730,
+      "stream_mechanism": "deterministic statistic/cell labels hashed into independent streams via src.analysis.pilot_fourarm.deterministic_seed"
+    },
+    "cells": {
+      "a1_real:gray": {
+        "config_hash": "332ef2dcccc8cab30136d94816ca3c5b269133df19aff2c1205c2ae4b44f683f",
+        "eval_git_hash": "9be9f9d0b99a4f67ad26d72c279f2aa6b2357865",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+        "node": "an12",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "05a2d2655c4f3b4c2d6a06effab64c50cf80fa15a089bbbe1c8487557a939ff2",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_a1_real_gray_an12_20260806T212430Z",
+        "run_id": "blind_solvability_v2_c5_7b_a1_real_gray_an12_20260806T212430Z",
+        "run_manifest_sha256": "3a3ad1130bd8ca17f8bf252d28b6e6f25caa17b0542ae2bf4e4f7a795377de45",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "a1_real:real": {
+        "config_hash": "16cb1cc7abea72eb4bdc73167685d6302169900dc61793ea5c3448a70a6053e2",
+        "eval_git_hash": "9be9f9d0b99a4f67ad26d72c279f2aa6b2357865",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+        "node": "an12",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "dbfa2bf8cb295f0811f2d688c769d6a1dff31938d2370424cab09220e2df083d",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_a1_real_real_an12_20260806T212352Z",
+        "run_id": "blind_solvability_v2_c5_7b_a1_real_real_an12_20260806T212352Z",
+        "run_manifest_sha256": "037c2a69eb099cddae43db2743fc796b33096319f6ab6adc2ca48d32efd17db1",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "a2_gray:gray": {
+        "config_hash": "12ec189f33c4b9aa67804522785309fdabd605ad6f41e48e828e8cbbd540266e",
+        "eval_git_hash": "081fed4d0e975b5d9c7795124fdd856406e9e515",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+        "node": "an12",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "2f1e880316e0cb141930c6ab4379dcb3f36fa1c08279c1a1b9e9516f96624a53",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_a2_gray_gray_an12_20260806T064655Z",
+        "run_id": "blind_solvability_v2_c5_7b_a2_gray_gray_an12_20260806T064655Z",
+        "run_manifest_sha256": "91c034588b8ef6822c5b6134a65121aed1bdc3295af0f97d4d6588baa991d04b",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "a2_gray:real": {
+        "config_hash": "ccb28085131bdda1e499ea881166071a6fabc5439cc1faaabfdea490cbaff3ed",
+        "eval_git_hash": "081fed4d0e975b5d9c7795124fdd856406e9e515",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+        "node": "an12",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "e09129d0c52da6811b54b700ab66914f248c97ead957d41ab92f46efd63f94e0",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_a2_gray_real_an12_20260806T064621Z",
+        "run_id": "blind_solvability_v2_c5_7b_a2_gray_real_an12_20260806T064621Z",
+        "run_manifest_sha256": "a35a042884572073b0595defad64281efb6a0b06a12f5ab48f06725bac1b05bc",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "base:gray": {
+        "config_hash": "dfdf75026ff85666c73ceac7cbc36123aeecd24988f1ae07fa3ea3a0cd47665d",
+        "eval_git_hash": "553221fc3b97c3259143973273c9e8841d053b3c",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+        "node": "an29",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "a1457d0a5319e13d91159472df05e26973502daad1d17f9f78f09b160cf12659",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_base_gray_an29_20260731T123835Z",
+        "run_id": "blind_solvability_v2_c5_7b_base_gray_an29_20260731T123835Z",
+        "run_manifest_sha256": "8b33775b7eb7f49c2666d8761b3bb25cbb9f6a51a986f26d9750915d76a214cb",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      },
+      "base:real": {
+        "config_hash": "4a1edf97d2ef3000d2e868e83cfc1bd75fb9ed19e044c2680084af424f01113b",
+        "eval_git_hash": "553221fc3b97c3259143973273c9e8841d053b3c",
+        "job_type": "l7_blind_solvability_geo3k_v2",
+        "model_revision": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+        "node": "an29",
+        "per_item_schema_version": "blind-gains.blind-solvability-pilot.v1",
+        "per_item_sha256": "6ffc7d5500fbc270490e79c21ba4275c72e00c198917c1d33774d84099a8dbac",
+        "run_dir": "experiments/runs/blind_solvability_v2_c5_7b_base_real_an29_20260731T123739Z",
+        "run_id": "blind_solvability_v2_c5_7b_base_real_an29_20260731T123739Z",
+        "run_manifest_sha256": "3889338a9c1f3255c7359e71427b253de6bc6dd37712db26ca433081f1365d13",
+        "test_row_count": 601,
+        "train_row_count": 1288
+      }
+    },
+    "registered_documents": [
+      "docs/registered_c5_7b_access_pair_v1.md",
+      "docs/registered_extensions_v1.md"
+    ],
+    "shared_row_contract": {
+      "decoding_seed": 20260710,
+      "format_prompt_sha256": "f1b62cb8332bdbec38efc8689aff6e9ce65174c0db8967937307880f95f58fca",
+      "parser_version": "canonical-v2",
+      "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+      "scoring_mode": "pilot-reward-v1+canonical-v2",
+      "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+      "train_filter_sha256": "8631d015ee8593669b46cc707b9fe1fb3690391520bccf416b64bbb2306ff7d1"
+    },
+    "train_rows_note": "split == 'train' rows are never used in any estimand and are counted here only; the pairing identity is row_index within the test split"
+  },
+  "schema_version": "blind-gains.c5-r4-readout.v1",
+  "seed_scope": {
+    "statement": "Seed scope: one seed (data.seed 1) and a single 7B training pair; every accuracy, gain, and recovery below is a one-seed number and no between-seed variance claim is made (docs/registered_c5_7b_access_pair_v1.md).",
+    "tag": "one seed (data.seed 1; single 7B training pair)"
+  },
+  "status": "complete"
+}
