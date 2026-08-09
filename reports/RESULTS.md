@@ -30,6 +30,7 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | C5 7B access pair (A1 vs A2-gray) | R4 | **complete** — crossed TrainShare **0.78–0.84 vs 0.49 at 3B**, intervals disjoint; matched gain replicates (+0.2479 vs +0.2435). **Ladder R1–R5 closed** (§12e) |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
+| Gate 1 four-arm completion (std · member · necessity · cp) | Paper 2 | **complete 2026-08-09** — acceptance audit 9/9 PASS before unsealing. **No arm moves held-out content on the primary anchor** (lenient NOT MOVED, all contrasts, all roles); every registered difference is strict/format. **All four recipes move the oracle-localized readout +0.15–0.23** — F3's layer selectivity is recipe-independent. Data axis costs format (member −0.32 strict on the canary); necessity partially repairs it (+0.043 [0.018, 0.070]). See the 2026-08-09 Gate-1 section |
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
 | Cue ladder | Paper 2 P1.1 | **closed — both validity gates failed** |
 
@@ -1925,3 +1926,56 @@ continuation) looks like a replication but shares 100% of the optimization
 prefix that produced the Tier-2 observation, so it tests only suffix
 sensitivity. Paying the full 0->100 cost again (~44 h) is exactly the price of
 the word "systematic" in the Tier-3 sentence.
+
+## 2026-08-09 — GATE 1 COMPLETE: the four-arm completion readout — no axis buys content; the readout layer moves under every recipe
+
+Both new arms (arm 1 std = standard GRPO answer-only; arm 3 necessity = Δq-necessity-
+sampled answer-only) trained 120 optimizer steps on an29 under
+`docs/registered_mini_a5_gate1_completion_v1.md`; the section-9 acceptance audit
+(`reports/mini_a5_gate1_acceptance_audit_v1.{json,md}`, new instrument
+`scripts/audit_mini_a5_gate1_acceptance.py` with a 22-fixture adversarial suite incl. a
+sealing guard) passed **9/9 conditions** before any endpoint value was read. Readout:
+`reports/mini_a5_gate1_endpoint_readout_v1.json` (four arms on frozen R19 held-out, both
+contracts, per-role, F8 cp/member cells carried not re-decided). One seed per arm.
+
+**Primary visual anchor (600 pairs), lenient pair accuracy:** base 0.472, std 0.468,
+member 0.482, necessity 0.493, cp 0.472 — **flat everywhere**. Registered contrasts:
+
+| contrast (axis) | primary lenient | primary strict | canary strict | oracle strict |
+|---|---|---|---|---|
+| member − std (data/pairing) | NOT MOVED (+0.013) | **−0.080** (p=5.3e−7) | **−0.323** (p=4.1e−27) | −0.077 (p=2.2e−3) |
+| necessity − member (selection) | NOT MOVED (+0.012) | **+0.043** [0.018, 0.070] | NOT MOVED (−0.023) | +0.057 |
+
+**The one thing that moves is the oracle-localized readout, and it moves for every
+recipe:** vs frozen base, lenient +0.18 (std), ≈+0.15 (member), ≈+0.18 (necessity),
++0.23 (cp). The primary anchor moves for none of them. F3/F8's layer selectivity —
+readout trainable, search+binding not — is therefore **recipe-independent**: it survives
+changes of data organization (pairing), sampling (necessity), and objective (relational
+CP), not just the pilot recipe.
+
+**Catch-trial stability (100 catch trials/arm):** lenient at ceiling for all four
+(std 0.96, member 0.96, necessity 0.99, cp 0.98); strict separates: cp 0.64 ≈ std 0.62 >
+necessity 0.49 > member 0.28 (`reports/mini_a5_catch_stability_{std,necessity}_v1.json`
+via the new single-arm scorer; cp/member from the registered two-arm readout, pins
+intact). Fifth independent localisation of arm differences to format.
+
+**What Gate 1 answers for Paper 2 (data / selection / relational-reward in sequence):**
+none of the three axes adds held-out content at 3B/step-120. The paired-data
+organization alone (member) is strictly a format tax; necessity sampling refunds part of
+that tax; the relational reward's remaining increment over plain GRPO is format-shaped
+(F8's four-way localisation, now extended). The pre-committed branch structure and the
+Paper-2 direction call on it are the PI's to read.
+
+**Insight (hypothesis-level, per §9 locks).** The readout-policy account predicted the
+oracle-readout movement would be objective-general: outcome reward at this scale can
+strengthen how existing percepts are read out into answers, but supplies no gradient
+through the search-and-binding stage that the primary anchor requires — under any of
+the four reward/data configurations tried. If that is the right abstraction, the lever
+that remains is not reward *shape* but reward *resolvability*: reward variance that only
+encoder-level distinctions can resolve (the Track-4 premise-v2 construct is built to
+test exactly this).
+
+*Scope: one seed per arm; single scale (3B); R19 instrument; catch strict levels share
+the format story. Operational deviations (first-attempt eval launches without merged
+weights; two chain-script path bugs — fixed, committed, memory-noted) affected timing
+only, never numbers; the acceptance audit binds the analysis cells regardless.*

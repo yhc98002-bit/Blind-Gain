@@ -1,0 +1,587 @@
+{
+  "arms": {
+    "cp": {
+      "arm_number": 4,
+      "label": "mini_a5_cp_seed1_step120",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "n_pairs_total": 1200,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 0.9833333333333333,
+          "extraction_fallback_rate": 0.016666666666666666,
+          "lenient_member_accuracy": 0.6725,
+          "lenient_pair_accuracy": 0.4716666666666667,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "strict_member_accuracy": 0.66,
+          "strict_pair_accuracy": 0.4533333333333333
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.4583333333333333,
+          "extraction_fallback_rate": 0.5416666666666666,
+          "lenient_member_accuracy": 0.94,
+          "lenient_pair_accuracy": 0.9233333333333333,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "strict_member_accuracy": 0.4166666666666667,
+          "strict_pair_accuracy": 0.22
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 0.9733333333333334,
+          "extraction_fallback_rate": 0.02666666666666667,
+          "lenient_member_accuracy": 0.8033333333333333,
+          "lenient_pair_accuracy": 0.6666666666666666,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "strict_member_accuracy": 0.7766666666666666,
+          "strict_pair_accuracy": 0.62
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.6333333333333333,
+        "strict_pair_accuracy": 0.43666666666666665
+      },
+      "run_dir": "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z",
+      "run_manifest_status": "complete"
+    },
+    "member": {
+      "arm_number": 2,
+      "label": "mini_a5_same_data_seed1_step120",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "n_pairs_total": 1200,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 0.9016666666666666,
+          "extraction_fallback_rate": 0.09833333333333333,
+          "lenient_member_accuracy": 0.6733333333333333,
+          "lenient_pair_accuracy": 0.4816666666666667,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "strict_member_accuracy": 0.6033333333333334,
+          "strict_pair_accuracy": 0.38333333333333336
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.5066666666666667,
+          "extraction_fallback_rate": 0.49333333333333335,
+          "lenient_member_accuracy": 0.94,
+          "lenient_pair_accuracy": 0.9233333333333333,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "strict_member_accuracy": 0.4633333333333333,
+          "strict_pair_accuracy": 0.26
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 0.9416666666666667,
+          "extraction_fallback_rate": 0.058333333333333334,
+          "lenient_member_accuracy": 0.7616666666666667,
+          "lenient_pair_accuracy": 0.59,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "strict_member_accuracy": 0.7116666666666667,
+          "strict_pair_accuracy": 0.5233333333333333
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.6191666666666666,
+        "strict_pair_accuracy": 0.3875
+      },
+      "run_dir": "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z",
+      "run_manifest_status": "complete"
+    },
+    "necessity": {
+      "arm_number": 3,
+      "label": "mini_a5_necessity_seed1_step120",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_necessity_seed1/global_step_120/actor/huggingface",
+      "n_pairs_total": 1200,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 0.9358333333333333,
+          "extraction_fallback_rate": 0.06416666666666666,
+          "lenient_member_accuracy": 0.6875,
+          "lenient_pair_accuracy": 0.49333333333333335,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "strict_member_accuracy": 0.6391666666666667,
+          "strict_pair_accuracy": 0.4266666666666667
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.47833333333333333,
+          "extraction_fallback_rate": 0.5216666666666666,
+          "lenient_member_accuracy": 0.9433333333333334,
+          "lenient_pair_accuracy": 0.9266666666666666,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "strict_member_accuracy": 0.43666666666666665,
+          "strict_pair_accuracy": 0.23666666666666666
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 0.98,
+          "extraction_fallback_rate": 0.02,
+          "lenient_member_accuracy": 0.7766666666666666,
+          "lenient_pair_accuracy": 0.6133333333333333,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "strict_member_accuracy": 0.7566666666666667,
+          "strict_pair_accuracy": 0.58
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.6316666666666667,
+        "strict_pair_accuracy": 0.4175
+      },
+      "run_dir": "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z",
+      "run_manifest_status": "complete"
+    },
+    "std": {
+      "arm_number": 1,
+      "label": "mini_a5_std_seed1_step120",
+      "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_std_seed1/global_step_120/actor/huggingface",
+      "n_pairs_total": 1200,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 0.995,
+          "extraction_fallback_rate": 0.005,
+          "lenient_member_accuracy": 0.6658333333333334,
+          "lenient_pair_accuracy": 0.4683333333333333,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "strict_member_accuracy": 0.6625,
+          "strict_pair_accuracy": 0.4633333333333333
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.79,
+          "extraction_fallback_rate": 0.21,
+          "lenient_member_accuracy": 0.9383333333333334,
+          "lenient_pair_accuracy": 0.9166666666666666,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "strict_member_accuracy": 0.7333333333333333,
+          "strict_pair_accuracy": 0.5833333333333334
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 0.9916666666666667,
+          "extraction_fallback_rate": 0.008333333333333333,
+          "lenient_member_accuracy": 0.775,
+          "lenient_pair_accuracy": 0.6166666666666667,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "strict_member_accuracy": 0.7666666666666667,
+          "strict_pair_accuracy": 0.6
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.6175,
+        "strict_pair_accuracy": 0.5275
+      },
+      "run_dir": "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z",
+      "run_manifest_status": "complete"
+    }
+  },
+  "carried_from_f8_not_re_decided": {
+    "contrast": "arm4_cp_minus_arm2_member",
+    "f8_branch_fired": "branch_2",
+    "f8_primary_endpoint": {
+      "contract_strict_strict_pair_correct": {
+        "ci95_high": 0.09833333333333333,
+        "ci95_low": 0.041666666666666664,
+        "ci_excludes_zero": true,
+        "cp_accuracy": 0.4533333333333333,
+        "cp_minus_member": 0.07,
+        "decision_rule_outcome": "MOVED",
+        "mcnemar_b01_member_wrong_cp_right": 59.0,
+        "mcnemar_b10_member_right_cp_wrong": 17.0,
+        "mcnemar_exact_two_sided_p": 1.3968718113140024e-06,
+        "member_accuracy": 0.38333333333333336
+      },
+      "definition": "CP-GRPO minus same-data standard GRPO at global_step_120 on the R19 coordinate survey register (primary visual anchor), 600 pairs",
+      "json_path": "per_template['coordinate_register_twenty_point_x_v02']",
+      "lenient_pair_correct": {
+        "ci95_high": 0.01,
+        "ci95_low": -0.03,
+        "ci_excludes_zero": false,
+        "cp_accuracy": 0.4716666666666667,
+        "cp_minus_member": -0.01,
+        "decision_rule_outcome": "NOT MOVED",
+        "mcnemar_b01_member_wrong_cp_right": 15.0,
+        "mcnemar_b10_member_right_cp_wrong": 21.0,
+        "mcnemar_exact_two_sided_p": 0.40503224614076316,
+        "member_accuracy": 0.4816666666666667
+      },
+      "n_pairs": 600,
+      "role": "primary visual anchor (search + binding + read)",
+      "set": "r19",
+      "source_file": "reports/mini_a5_f8_r19_paired_comparison_v1.json",
+      "template_id": "coordinate_register_twenty_point_x_v02"
+    },
+    "f8_schema_version": "blind-gains.mini-a5-f8-endpoint-readout.v1",
+    "source_report": "reports/f8_mini_a5_endpoint_readout_v1.json",
+    "source_report_sha256": "799368f53d168f615f3502bd507418b90600d30930444c40f47e8f59d6503c27",
+    "statement": "the arm 4 - arm 2 contrast was read in F8 and is not re-decided; its numbers stand (docs/registered_mini_a5_gate1_completion_v1.md)"
+  },
+  "governing_documents": [
+    "docs/registered_mini_a5_gate1_completion_v1.md",
+    "docs/registered_mini_a5_endpoint_readout_v1.md",
+    "docs/registered_mini_a5_main_v1.md",
+    "docs/registered_gate1_four_arm_v1.md"
+  ],
+  "inputs_sha256": {
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/run_manifest.json": "aa18ee83374ce02273e964f4db5ff715029a0fe966d5aa31906f5bcd47409730",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_0.jsonl": "b64d494a92f924c845c236627a18f71e414ed2808c4f1147bf9bb51ae73eb3df",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_1.jsonl": "7cff26a7dba5189dd3f12bfd72f77c85a16b420b416e939164469662e0c8738d",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_2.jsonl": "99aa7c0a6d084482cb8d4fc53f513ad9fee25fdc7ee4279511930e6c3bf0203e",
+    "experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z/shards/shard_3.jsonl": "44886d210976be34d3bbda8b8ab7a3f4426bebad0a9736f329640b84b56981c4",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/run_manifest.json": "7a67ff060b484baa5a9317cad317c5a04cdbc90185803c4d3a61b3f219ef0085",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_0.jsonl": "84ad0b4a405b7b90b482da19ce99f98852b338a7ac3fd6c1e6e73a49974f359b",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_1.jsonl": "a424b91871fe6770f601258b2d386cfbf2d7adbc738758d8c8b03aeb8d90885a",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_2.jsonl": "e1466d0ff4df7d0eef94451c48707a187bf20577587452066f7a7452cf45c1e1",
+    "experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z/shards/shard_3.jsonl": "1349bc46683041bf33e12814fe03240471865f5d06bc6c25b3750f747187aa08",
+    "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z/run_manifest.json": "93f08f8cc624f43c0b9b1c0db278770ad0d62522ff2b2da1eed282e0fcd24e9e",
+    "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z/shards/shard_0.jsonl": "de82fe1923678fc05a71e492eb8322ddf009d2bcad5950ca6124afe65b79e28e",
+    "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z/shards/shard_1.jsonl": "03b6c9787c72cfe1a1c645e86be7097b5a5dcc84db42816f0c3bc86de6307d65",
+    "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z/shards/shard_2.jsonl": "c7b8fe52efb2a0efc5d1c9e3f2116ff5751e25e2660648ba19f09c226887a8b9",
+    "experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z/shards/shard_3.jsonl": "ffb9269dc3bbadf58e78151f3d3986e711e03c75d6357885f0df920f281b5001",
+    "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z/run_manifest.json": "a966b2fe6c8c4fac955443e0fc7182949d6ac32d29210f2939bc54b5dd3a2852",
+    "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z/shards/shard_0.jsonl": "883756ba7d9cd458b09e711f48eb67b9cb43d1a24a399a01ffd75cd96ad09822",
+    "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z/shards/shard_1.jsonl": "fc2f606dc9ec4c2dd95bc80b671496809b8bde1843f4aabeebecff6239932c50",
+    "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z/shards/shard_2.jsonl": "3f6b2562f5c191fae54af5ec4a68c7b8d139cd917c9248dc64f434a8aca6ae7c",
+    "experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z/shards/shard_3.jsonl": "c814bb17122108daaa6e21b6b3019fb020de5c3b5c7fed942486910b6bdbe81f",
+    "reports/f2d_template_decomposition_v1.json": "b0c9e3203f9c0fee0a190b7f79f10eb8374db9910520ed3a1598fa8d6dfdafca",
+    "reports/f8_mini_a5_endpoint_readout_v1.json": "799368f53d168f615f3502bd507418b90600d30930444c40f47e8f59d6503c27"
+  },
+  "instrument": {
+    "bootstrap": {
+      "draws": 10000,
+      "interval": 0.95,
+      "seed": 20260729,
+      "seed_derivation": "per contrast: pooled lenient seed=seed, pooled strict seed=seed+1, k-th template in sorted order seed=seed+100+10k (lenient) / +1 (strict); both sides resampled on the same pair indices per replicate",
+      "unit": "paired item (pair_id)"
+    },
+    "comparison_engine": "scripts.compare_fliptrack_runs.compare_rows (F8 instrument, imported unchanged)",
+    "decision_rule": "MOVED iff the 95% paired-bootstrap CI excludes zero in the positive direction; a positive point estimate whose interval contains zero is NOT MOVED; MOVED_NEGATIVE_DIRECTION iff the CI lies entirely below zero",
+    "expectation_mode": "registered",
+    "mcnemar": "scripts.compare_fliptrack_runs._paired_exact (exact two-sided)",
+    "scorer": "src.eval.fliptrack_metrics.pair_score",
+    "variance_note": "intervals quantify evaluation uncertainty on a fixed pair set, not run-to-run RL variance; each arm is one run"
+  },
+  "invariants": {
+    "I13": "task roles reported separately and never pooled as endpoints; pooled numbers appear only under keys labeled NOT_AN_ENDPOINT",
+    "I15": "schema_version carried at top level",
+    "I7": "both contracts (lenient pair_correct, contract-strict strict_pair_correct) reported for every cell; never merged or averaged; if they disagree, the disagreement is the result"
+  },
+  "registered_contrasts": {
+    "contrast_1_arm2_minus_arm1": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "left_arm": "std",
+      "left_label": "mini_a5_std_seed1_step120",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": -0.05,
+            "ci95_low": -0.11166666666666666,
+            "ci_excludes_zero": true,
+            "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION",
+            "left_accuracy": 0.4633333333333333,
+            "mcnemar_b01_left_wrong_right_correct": 22.0,
+            "mcnemar_b10_left_correct_right_wrong": 70.0,
+            "mcnemar_exact_two_sided_p": 5.348143171041869e-07,
+            "right_accuracy": 0.38333333333333336,
+            "right_minus_left": -0.08
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.035,
+            "ci95_low": -0.008333333333333333,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.4683333333333333,
+            "mcnemar_b01_left_wrong_right_correct": 27.0,
+            "mcnemar_b10_left_correct_right_wrong": 19.0,
+            "mcnemar_exact_two_sided_p": 0.3019956131896606,
+            "right_accuracy": 0.4816666666666667,
+            "right_minus_left": 0.013333333333333334
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)"
+        },
+        "header_cued_table_code_v02": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": -0.27,
+            "ci95_low": -0.38,
+            "ci_excludes_zero": true,
+            "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION",
+            "left_accuracy": 0.5833333333333334,
+            "mcnemar_b01_left_wrong_right_correct": 2.0,
+            "mcnemar_b10_left_correct_right_wrong": 99.0,
+            "mcnemar_exact_two_sided_p": 4.064211383698653e-27,
+            "right_accuracy": 0.26,
+            "right_minus_left": -0.3233333333333333
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.016666666666666666,
+            "ci95_low": 0.0,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.9166666666666666,
+            "mcnemar_b01_left_wrong_right_correct": 2.0,
+            "mcnemar_b10_left_correct_right_wrong": 0.0,
+            "mcnemar_exact_two_sided_p": 0.5,
+            "right_accuracy": 0.9233333333333333,
+            "right_minus_left": 0.006666666666666667
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage"
+        },
+        "starred_series_value_nine_v07": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": -0.03,
+            "ci95_low": -0.12333333333333334,
+            "ci_excludes_zero": true,
+            "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION",
+            "left_accuracy": 0.6,
+            "mcnemar_b01_left_wrong_right_correct": 15.0,
+            "mcnemar_b10_left_correct_right_wrong": 38.0,
+            "mcnemar_exact_two_sided_p": 0.0021901868838920535,
+            "right_accuracy": 0.5233333333333333,
+            "right_minus_left": -0.07666666666666666
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.013333333333333334,
+            "ci95_low": -0.06666666666666667,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.6166666666666667,
+            "mcnemar_b01_left_wrong_right_correct": 15.0,
+            "mcnemar_b10_left_correct_right_wrong": 23.0,
+            "mcnemar_exact_two_sided_p": 0.2558750795433298,
+            "right_accuracy": 0.59,
+            "right_minus_left": -0.02666666666666667
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict_strict_pair_correct": {
+          "ci95_high": -0.11583333333333333,
+          "ci95_low": -0.16416666666666666,
+          "ci_excludes_zero": true,
+          "decision_rule_outcome": "MOVED_NEGATIVE_DIRECTION",
+          "left_accuracy": 0.5275,
+          "mcnemar_b01_left_wrong_right_correct": 39.0,
+          "mcnemar_b10_left_correct_right_wrong": 207.0,
+          "mcnemar_exact_two_sided_p": 7.792918356118759e-29,
+          "right_accuracy": 0.3875,
+          "right_minus_left": -0.14
+        },
+        "lenient_pair_correct": {
+          "ci95_high": 0.0175,
+          "ci95_low": -0.013333333333333334,
+          "ci_excludes_zero": false,
+          "decision_rule_outcome": "NOT MOVED",
+          "left_accuracy": 0.6175,
+          "mcnemar_b01_left_wrong_right_correct": 44.0,
+          "mcnemar_b10_left_correct_right_wrong": 42.0,
+          "mcnemar_exact_two_sided_p": 0.9142116370824501,
+          "right_accuracy": 0.6191666666666666,
+          "right_minus_left": 0.0016666666666666668
+        }
+      },
+      "question": "is the paired data enough?",
+      "right_arm": "member",
+      "right_label": "mini_a5_same_data_seed1_step120",
+      "sign_convention": "delta = mini_a5_same_data_seed1_step120 minus mini_a5_std_seed1_step120"
+    },
+    "contrast_2_arm3_minus_arm2": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "left_arm": "member",
+      "left_label": "mini_a5_same_data_seed1_step120",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": 0.07,
+            "ci95_low": 0.018333333333333333,
+            "ci_excludes_zero": true,
+            "decision_rule_outcome": "MOVED",
+            "left_accuracy": 0.38333333333333336,
+            "mcnemar_b01_left_wrong_right_correct": 44.0,
+            "mcnemar_b10_left_correct_right_wrong": 18.0,
+            "mcnemar_exact_two_sided_p": 0.0012990027709550095,
+            "right_accuracy": 0.4266666666666667,
+            "right_minus_left": 0.043333333333333335
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.03166666666666667,
+            "ci95_low": -0.008333333333333333,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.4816666666666667,
+            "mcnemar_b01_left_wrong_right_correct": 23.0,
+            "mcnemar_b10_left_correct_right_wrong": 16.0,
+            "mcnemar_exact_two_sided_p": 0.3367836351899314,
+            "right_accuracy": 0.49333333333333335,
+            "right_minus_left": 0.011666666666666667
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)"
+        },
+        "header_cued_table_code_v02": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": 0.0033333333333333335,
+            "ci95_low": -0.05,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.26,
+            "mcnemar_b01_left_wrong_right_correct": 6.0,
+            "mcnemar_b10_left_correct_right_wrong": 13.0,
+            "mcnemar_exact_two_sided_p": 0.1670684814453125,
+            "right_accuracy": 0.23666666666666666,
+            "right_minus_left": -0.023333333333333334
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.013333333333333334,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.9233333333333333,
+            "mcnemar_b01_left_wrong_right_correct": 2.0,
+            "mcnemar_b10_left_correct_right_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "right_accuracy": 0.9266666666666666,
+            "right_minus_left": 0.0033333333333333335
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage"
+        },
+        "starred_series_value_nine_v07": {
+          "contract_strict_strict_pair_correct": {
+            "ci95_high": 0.09333333333333334,
+            "ci95_low": 0.02,
+            "ci_excludes_zero": true,
+            "decision_rule_outcome": "MOVED",
+            "left_accuracy": 0.5233333333333333,
+            "mcnemar_b01_left_wrong_right_correct": 24.0,
+            "mcnemar_b10_left_correct_right_wrong": 7.0,
+            "mcnemar_exact_two_sided_p": 0.003326892852783203,
+            "right_accuracy": 0.58,
+            "right_minus_left": 0.056666666666666664
+          },
+          "lenient_pair_correct": {
+            "ci95_high": 0.05333333333333334,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "decision_rule_outcome": "NOT MOVED",
+            "left_accuracy": 0.59,
+            "mcnemar_b01_left_wrong_right_correct": 15.0,
+            "mcnemar_b10_left_correct_right_wrong": 8.0,
+            "mcnemar_exact_two_sided_p": 0.21003961563110352,
+            "right_accuracy": 0.6133333333333333,
+            "right_minus_left": 0.023333333333333334
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict_strict_pair_correct": {
+          "ci95_high": 0.0475,
+          "ci95_low": 0.013333333333333334,
+          "ci_excludes_zero": true,
+          "decision_rule_outcome": "MOVED",
+          "left_accuracy": 0.3875,
+          "mcnemar_b01_left_wrong_right_correct": 74.0,
+          "mcnemar_b10_left_correct_right_wrong": 38.0,
+          "mcnemar_exact_two_sided_p": 0.0008605684481792974,
+          "right_accuracy": 0.4175,
+          "right_minus_left": 0.03
+        },
+        "lenient_pair_correct": {
+          "ci95_high": 0.025833333333333333,
+          "ci95_low": -0.0008333333333333334,
+          "ci_excludes_zero": false,
+          "decision_rule_outcome": "NOT MOVED",
+          "left_accuracy": 0.6191666666666666,
+          "mcnemar_b01_left_wrong_right_correct": 40.0,
+          "mcnemar_b10_left_correct_right_wrong": 25.0,
+          "mcnemar_exact_two_sided_p": 0.08168153394154005,
+          "right_accuracy": 0.6316666666666667,
+          "right_minus_left": 0.0125
+        }
+      },
+      "question": "is item selection enough?",
+      "right_arm": "necessity",
+      "right_label": "mini_a5_necessity_seed1_step120",
+      "sign_convention": "delta = mini_a5_necessity_seed1_step120 minus mini_a5_same_data_seed1_step120"
+    },
+    "contrast_3_absolute_levels_vs_frozen_base": {
+      "arm1_std_minus_base": {
+        "coordinate_register_twenty_point_x_v02": {
+          "arm_lenient_pair_accuracy": 0.4683333333333333,
+          "arm_minus_base_lenient": -0.003333333333333355,
+          "arm_minus_base_strict": 0.019999999999999962,
+          "arm_strict_pair_accuracy": 0.4633333333333333,
+          "base_lenient_pair_accuracy": 0.4716666666666667,
+          "base_strict_pair_accuracy": 0.44333333333333336,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)"
+        },
+        "header_cued_table_code_v02": {
+          "arm_lenient_pair_accuracy": 0.9166666666666666,
+          "arm_minus_base_lenient": 0.04999999999999993,
+          "arm_minus_base_strict": 0.4033333333333334,
+          "arm_strict_pair_accuracy": 0.5833333333333334,
+          "base_lenient_pair_accuracy": 0.8666666666666667,
+          "base_strict_pair_accuracy": 0.18,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage"
+        },
+        "starred_series_value_nine_v07": {
+          "arm_lenient_pair_accuracy": 0.6166666666666667,
+          "arm_minus_base_lenient": 0.18000000000000005,
+          "arm_minus_base_strict": 0.18,
+          "arm_strict_pair_accuracy": 0.6,
+          "base_lenient_pair_accuracy": 0.43666666666666665,
+          "base_strict_pair_accuracy": 0.42,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control"
+        }
+      },
+      "arm3_necessity_minus_base": {
+        "coordinate_register_twenty_point_x_v02": {
+          "arm_lenient_pair_accuracy": 0.49333333333333335,
+          "arm_minus_base_lenient": 0.021666666666666667,
+          "arm_minus_base_strict": -0.016666666666666663,
+          "arm_strict_pair_accuracy": 0.4266666666666667,
+          "base_lenient_pair_accuracy": 0.4716666666666667,
+          "base_strict_pair_accuracy": 0.44333333333333336,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)"
+        },
+        "header_cued_table_code_v02": {
+          "arm_lenient_pair_accuracy": 0.9266666666666666,
+          "arm_minus_base_lenient": 0.05999999999999994,
+          "arm_minus_base_strict": 0.05666666666666667,
+          "arm_strict_pair_accuracy": 0.23666666666666666,
+          "base_lenient_pair_accuracy": 0.8666666666666667,
+          "base_strict_pair_accuracy": 0.18,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage"
+        },
+        "starred_series_value_nine_v07": {
+          "arm_lenient_pair_accuracy": 0.6133333333333333,
+          "arm_minus_base_lenient": 0.17666666666666664,
+          "arm_minus_base_strict": 0.15999999999999998,
+          "arm_strict_pair_accuracy": 0.58,
+          "base_lenient_pair_accuracy": 0.43666666666666665,
+          "base_strict_pair_accuracy": 0.42,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control"
+        }
+      },
+      "base_source": "reports/f2d_template_decomposition_v1.json",
+      "base_source_sha256": "b0c9e3203f9c0fee0a190b7f79f10eb8374db9910520ed3a1598fa8d6dfdafca",
+      "interval": "none -- frozen aggregate base cells; point differences only",
+      "question": "absolute levels against the frozen base cells already cited in F8 section 6"
+    }
+  },
+  "schema_version": "blind-gains.mini-a5-gate1-endpoint-readout.v1",
+  "title": "Gate-1 four-arm endpoint readout: held-out FlipTrack, arms std/member/necessity/cp at global_step_120"
+}

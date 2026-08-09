@@ -1,0 +1,185 @@
+{
+  "aggregation_rule": "per catch template id only; never pooled across templates (I13)",
+  "arm": {
+    "arm_number": 3,
+    "checkpoint_token": "mini_a5_necessity_seed1",
+    "label": "necessity",
+    "model_path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_necessity_seed1/global_step_120/actor/huggingface",
+    "run_dir": "experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z",
+    "run_id": "mini_a5_catch_necessity_step120_real_an29_20260809T143630Z",
+    "run_manifest_status": "complete"
+  },
+  "automatic_branch_assignment": false,
+  "checks": {
+    "arm_label_allowed": true,
+    "arm_token_in_model_path": true,
+    "expectation_mode": "registered",
+    "item_set_matches_catch_manifest": true,
+    "n_pairs_scored": 300,
+    "run_manifest_data_manifest_hash_matches_catch_manifest": true,
+    "run_manifest_status_complete": true,
+    "template_ids_match_catch_manifest": true,
+    "template_pair_counts": {
+      "mini_a5_catch_distractor_matrix_v1": 100,
+      "mini_a5_catch_distractor_scatter_v1": 100,
+      "mini_a5_catch_distractor_trajectory_v1": 100
+    }
+  },
+  "contrast_note": "levels only: this instrument computes no cross-arm contrast, bootstrap, McNemar, or seed; the registered cp-vs-member contrast lives solely in src/eval/catch_stability.py, and any contrast involving this arm needs its own registered instrument and seeds",
+  "endpoint": "Mini-A5 secondary 2 (addendum section 6.2): catch-trial stability \u2014 self-consistency under a non-queried visual change; single-arm LEVELS readout for a Gate-1 completion arm",
+  "indicator_indices": {
+    "pair_correct": 2,
+    "stable_and_correct_lenient": 4,
+    "stable_and_correct_strict": 5,
+    "stable_lenient": 0,
+    "stable_strict": 1,
+    "strict_pair_correct": 3
+  },
+  "inputs": {
+    "catch_manifest": {
+      "path": "data/derived/mini_a5_catch_eval_manifest_v1.jsonl",
+      "sha256": "c4bb508f930ec47c9f3a2a4bc905693394f63bf6b4ebbd0f1332eef85afcbe4a"
+    },
+    "run_manifest": {
+      "path": "experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z/run_manifest.json",
+      "sha256": "b89fcb331022a5aed730e773e0f5d4f18cc890fee89457ec54be7444b766ce22"
+    },
+    "scores": [
+      {
+        "path": "experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z/shards/shard_0.jsonl",
+        "sha256": "afc74b85ede8d8feab98f7f61379b84c54f4b0b83f9701706df22dcf9d2d347c"
+      }
+    ]
+  },
+  "levels": {
+    "per_template": {
+      "mini_a5_catch_distractor_matrix_v1": {
+        "n_pairs": 100,
+        "pair_correct": {
+          "count": 100,
+          "indicator_family": "correctness",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_and_correct_lenient": {
+          "count": 100,
+          "indicator_family": "joint",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_and_correct_strict": {
+          "count": 94,
+          "indicator_family": "joint",
+          "rate": 0.94,
+          "severity": "strict"
+        },
+        "stable_lenient": {
+          "count": 100,
+          "indicator_family": "stability",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_strict": {
+          "count": 94,
+          "indicator_family": "stability",
+          "rate": 0.94,
+          "severity": "strict"
+        },
+        "strict_pair_correct": {
+          "count": 94,
+          "indicator_family": "correctness",
+          "rate": 0.94,
+          "severity": "strict"
+        }
+      },
+      "mini_a5_catch_distractor_scatter_v1": {
+        "n_pairs": 100,
+        "pair_correct": {
+          "count": 100,
+          "indicator_family": "correctness",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_and_correct_lenient": {
+          "count": 100,
+          "indicator_family": "joint",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_and_correct_strict": {
+          "count": 100,
+          "indicator_family": "joint",
+          "rate": 1.0,
+          "severity": "strict"
+        },
+        "stable_lenient": {
+          "count": 100,
+          "indicator_family": "stability",
+          "rate": 1.0,
+          "severity": "lenient"
+        },
+        "stable_strict": {
+          "count": 100,
+          "indicator_family": "stability",
+          "rate": 1.0,
+          "severity": "strict"
+        },
+        "strict_pair_correct": {
+          "count": 100,
+          "indicator_family": "correctness",
+          "rate": 1.0,
+          "severity": "strict"
+        }
+      },
+      "mini_a5_catch_distractor_trajectory_v1": {
+        "n_pairs": 100,
+        "pair_correct": {
+          "count": 96,
+          "indicator_family": "correctness",
+          "rate": 0.96,
+          "severity": "lenient"
+        },
+        "stable_and_correct_lenient": {
+          "count": 96,
+          "indicator_family": "joint",
+          "rate": 0.96,
+          "severity": "lenient"
+        },
+        "stable_and_correct_strict": {
+          "count": 49,
+          "indicator_family": "joint",
+          "rate": 0.49,
+          "severity": "strict"
+        },
+        "stable_lenient": {
+          "count": 99,
+          "indicator_family": "stability",
+          "rate": 0.99,
+          "severity": "lenient"
+        },
+        "stable_strict": {
+          "count": 49,
+          "indicator_family": "stability",
+          "rate": 0.49,
+          "severity": "strict"
+        },
+        "strict_pair_correct": {
+          "count": 49,
+          "indicator_family": "correctness",
+          "rate": 0.49,
+          "severity": "strict"
+        }
+      }
+    }
+  },
+  "parser_version": "canonical-v2",
+  "prompt_contract_id": "answer-tags-v1",
+  "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+  "registered_two_arm_instrument": {
+    "path": "src/eval/catch_stability.py",
+    "registration": "docs/registered_mini_a5_catch_stability_v1.md",
+    "schema_version": "blind-gains.mini-a5-catch-stability.v1"
+  },
+  "schema_version": "blind-gains.mini-a5-catch-stability-single-arm.v1",
+  "severity_rule": "every indicator reported lenient and contract-strict (I7)"
+}
