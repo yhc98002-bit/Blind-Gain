@@ -1597,34 +1597,29 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-09T15:45Z. Everything previously listed here has landed
-and moved to its own section: R3 (§12d), R4 (§12e — ladder closed), Gate 1
-(2026-08-09 section), M5c (§12c), catch-stability (§8 + Gate-1 section).*
+*Current as of 2026-08-10T14:50Z.*
 
-**Running now** *(16 GPUs: 15 working + 1 freed pending tonight's chained
-launch)*
+**Running now** *(one ramping ViRL trainer per node — placement rule generalized
+2026-08-10 after an12's double host-OOM: two colocated 3B Ray trainers exhaust a
+1007-GiB node in ~17 h; deviations rows in the M7 amendment and LH2 registrations)*
 
-- **LH2 stage 1 (F6 Tier-3, second seed).** Segment 1 (steps 0→50) training on
-  an12 0–3 under `docs/registered_lh2_stage1_v1.md`; 50-step segments to
-  step 200, then the registered directional go/no-go (GO iff g(200)−g(100) < 0
-  within seed 2). ~88 h total for stage 1.
-- **M7 seed 2 (two-seed estimator restoration).** a1_real complete (step-100
-  checkpoint banked, merged, pin-verified); its held-out eval is generating on
-  an29 gpu 6 (`m7_step100_heldout_seed2_a1_real_seed2_real_an29_20260809T144439Z`,
-  lands ~23:15Z), with a3_caption auto-chained behind it
-  (`scripts/a3_after_eval.sh`). a2_gray training on an12 4–7
-  (`m7_virl_a2_gray_seed2_an12_20260809T145133Z`) and a2b on an29 0–3
-  (`m7_virl_a2b_noimage_seed2_an29_20260809T150728Z`), both ~50 h → ~08-11
-  17:00Z. Then: three remaining seed-2 step-100 evals
-  (`scripts/launch_m7_seed2_eval.sh`, ~8.5 h each on one GPU; step-0 base cells
-  are seed-independent and reusable) → two-seed R3 readout rerun.
+- **M7 seed 2.** a1_real: complete + held-out eval banked. a2b: training solo on
+  an29 0–3 (step 60+, lands ~08-11 17Z); its eval + the a3_caption solo relaunch
+  auto-chain on completion (`scripts/seed2_an29_chain.sh`). a2_gray: attempt 2
+  training solo on an12 4–7 (`m7_virl_a2_gray_seed2_an12_20260810T143944Z`,
+  lands ~08-12 16Z; attempt 1 killed by the node OOM, checkpoints archived);
+  its eval + the LH2 chain relaunch auto-chain on completion
+  (`scripts/seed2_an12_chain.sh`). Then the two-seed R3 readout rerun (~08-14).
+- **LH2 stage 1.** Seg-1 attempt 2 died in the same an12 OOM (no boundary
+  banked, nothing read); chain stopped itself as designed. Restarts from step 0
+  solo on an12 0–3 after a2_gray completes (~08-12); go/no-go shifts ~2 days,
+  criteria unchanged. Backstop: `scripts/host_ram_watchdog.sh` (kills the
+  youngest trainer if a node falls under 120 GiB available with >1 trainer).
 
 **Open, not running**
 
-- **Track-4 premise-v2**: dev batch built; GPU acceptance gates E1–E4 registered
-  with exact commands but not yet run; no training config exists until they pass.
-- **Paper-2 direction call** on Gate 1's pre-committed branches — the PI reads
-  them (readout: no axis buys content; oracle readout moves under every recipe).
+- **Track-4 premise-v2**: GPU acceptance gates E1–E4 registered, not yet run.
+- **Paper-2 direction call** on Gate 1's pre-committed branches (PI reads them).
 - **PI-owned prose**: X6 related-work table; PAPER1 §3/§5 header-table wording.
 - **Richard's review** of the four delivered human packages.
 
