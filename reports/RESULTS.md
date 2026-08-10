@@ -1597,138 +1597,36 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-07-30. D4, F8 and E1b have all landed and moved to their own
-sections (§2b, §8, §13c–§13d); this list holds only what is genuinely open.*
+*Current as of 2026-08-09T15:45Z. Everything previously listed here has landed
+and moved to its own section: R3 (§12d), R4 (§12e — ladder closed), Gate 1
+(2026-08-09 section), M5c (§12c), catch-stability (§8 + Gate-1 section).*
 
-**Running now** *(refreshed 2026-08-03T16:00Z; 14 of 16 GPUs working, the idle
-pair on an12 held as the right-sized reserve for Gate 1's Δq pass pending PI
-ratification)*
+**Running now** *(16 GPUs: 15 working + 1 freed pending tonight's chained
+launch)*
 
-- **R3 endgame.** All four arms trained to step 100. The completion chain closed
-  a1_real and a2b_noimage end-to-end autonomously; its loud give-up on the other
-  two was orchestration, not science — a2_gray crossed step 100 **37 minutes
-  after** the chain's 30-h limit expired, and a3_caption's eval launches died on
-  the recurring jq PATH trap inside ssh-to-an12. Recovery 2026-08-03: a2_gray
-  closed with full evidence and true completion time preserved
-  (`observed_completion_utc: 2026-08-01T22:53:47Z`), merged and index-verified
-  (825 / 8,131,575,808); both missing step-100 evals relaunched and generating;
-  `r3_full_waiter.sh` armed to fire the **full R3 readout ~02:00Z 2026-08-04**.
-  One orchestrator wobble recorded honestly in the gray eval's manifest: it was
-  wrongly marked failed for ~20 min on a suspected merge race; log timestamps
-  prove it loaded the merged weights cleanly after merge completion and was
-  never interrupted.
-- **C5 both 7B arms training.** A1-real at step ~80/100 (ahead of the 67–91
-  min/step projection; ~08-04); A2-gray launched 2026-08-03 on an12 4–7
-  (~08-06). Peak memory 73–78 GB of 79.33 at `gpu_memory_utilization 0.45` —
-  inside the registered margin on both arms.
-- **M7 seed 2 begun.** `a1_real` seed 2 launched on the freed an29 quad —
-  registered work requiring no amendment (the seed-scope amendment deferred
-  seed 2 explicitly as "not abandoned"), converting idle billed GPUs into the
-  upgrade path from per-seed reporting back to the originally registered
-  two-seed estimator. Full checkpoints (~205 GB) against 1,308 GiB free.
+- **LH2 stage 1 (F6 Tier-3, second seed).** Segment 1 (steps 0→50) training on
+  an12 0–3 under `docs/registered_lh2_stage1_v1.md`; 50-step segments to
+  step 200, then the registered directional go/no-go (GO iff g(200)−g(100) < 0
+  within seed 2). ~88 h total for stage 1.
+- **M7 seed 2 (two-seed estimator restoration).** a1_real complete (step-100
+  checkpoint banked, merged, pin-verified); its held-out eval is generating on
+  an29 gpu 6 (`m7_step100_heldout_seed2_a1_real_seed2_real_an29_20260809T144439Z`,
+  lands ~23:15Z), with a3_caption auto-chained behind it
+  (`scripts/a3_after_eval.sh`). a2_gray training on an12 4–7
+  (`m7_virl_a2_gray_seed2_an12_20260809T145133Z`) and a2b on an29 0–3
+  (`m7_virl_a2b_noimage_seed2_an29_20260809T150728Z`), both ~50 h → ~08-11
+  17:00Z. Then: three remaining seed-2 step-100 evals
+  (`scripts/launch_m7_seed2_eval.sh`, ~8.5 h each on one GPU; step-0 base cells
+  are seed-independent and reusable) → two-seed R3 readout rerun.
 
-- **R3 M7 training** — **arm 1 complete at step 100/100**, all five checkpoints on
-  disk; its step-100 checkpoint is **merged and verified** (825 weight entries,
-  8,131,575,808 bytes — identical shape to every other 3B merge) and its manifest is
-  **closed via the standard finalizer** (`status: complete`; `end_time_utc` stamped at
-  finalizer run-time 15:45:49Z, true completion ~2026-07-30T20:57Z per checkpoint
-  mtime — recorded, not hidden). Arms 2–4 (`a2_gray`, `a2b_noimage`, `a3_caption`,
-  seed 1) training concurrently across an12 and an29 under
-  `docs/registered_m7_seed_scope_v1.md`: seed 1 only, per-seed reporting, and
-  `save_model_only: true` with `save_freq: 20` unchanged so the registered matched
-  *cadence* holds. Four-arm access matrix on the second corpus expected **~2026-08-02**.
-- **R3 step-0 held-out evaluations — COMPLETE** (all four manifests finalized
-  2026-07-31 ~02:40Z), and the autonomous waiter ran the author-validated partial
-  readout the moment they landed: `reports/m7_r3_readout_v1_partial.{json,md}`
-  (rc = 0, `status: partial-step0-only`; every gain/recovery/ρ estimand refused by
-  construction until step-100 exists). **R3's substrate is now real numbers:**
+**Open, not running**
 
-  | arm (own condition) | n | q̄ (blind opportunity) | Acc_final step 0 |
-  |---|---:|---:|---:|
-  | A1 real | 4,239 | 0.5122 | 0.2744 |
-  | A2 gray | 4,239 | 0.4235 | 0.1894 |
-  | A3 caption | 4,239 | 0.4458 | 0.1849 |
-  | A2b no-image | 4,239 | 0.4154 | 0.1538 |
-
-  Strata recount confirmed in production: 60 joint (source, category) strata =
-  **22 eligible + 38 descriptive-small-n**, exactly as the fixture-validated
-  assertion demands. The per-stratum q̄ spread is wide — `dvqa` charts are strongly
-  image-dependent (q̄ A1 0.657 vs A2b 0.145) while `MMMath` non-geo is nearly fully
-  blind-solvable (0.565 vs 0.547) — which is precisely the heterogeneity the
-  registered prediction (stratum recovery tracks stratum blind-opportunity) needs to
-  be a discriminating test rather than a formality.
-- **C5 7B base cells — launched 2026-07-31T12:37Z** on an29 GPUs 4–5 through the
-  project's own guarded launcher (`blind_solvability_v2_c5_7b_base_{real,gray}`),
-  per the registration's explicit authorisation ("inference-only and may run before
-  the training arms"). Same harness family as the 3B base rows, so the 7B access
-  matrix will be methodologically parallel; 16-sample runs also bank per-item 7B
-  `q_i` for future use.
-- **R3 readout script — built and validated before its data exists** (`7b5176c`).
-  `scripts/build_m7_r3_readout.py` implements the registered estimands exactly
-  (q_bar / gain / recovery with the ≥2·paired_se stability rule, tie-corrected
-  Spearman ρ_gain / ρ_recovery, 5,000 within-stratum bootstrap draws at seed 20260716
-  with label-hashed streams, the >5% undefined-draw unstable rule, Geometry3K anchors
-  0.0789/0.1184 labelled *informed*, M10 candidates, one-seed tag). **9/9 adversarial
-  fixtures pass**, including planted rank correlations recovering their sign, unstable
-  denominators excluded from ρ_recovery only, byte-identical reruns at the registered
-  seed, and loud failure on missing items. The stratum recount asserts 22 eligible +
-  38 descriptive-small-n from the jsonl (nearest boundary stratum has 34 items, so the
-  count is not knife-edge). A real `--partial` invocation against the live step-0 runs
-  passed the sha and recount assertions, then **refused at the readiness gate exactly
-  as designed** (manifests still `running`, coverage ~20%) — fail-closed behaviour
-  demonstrated on real data.
-
-- **C5 7B (R4) — authored, registered, adversarially verified** (`50a16a9`; nothing
-  launched). `docs/registered_c5_7b_access_pair_v1.md` amends Extension 4 to 2 arms ×
-  1 seed on the geo3k pilot recipe (the ViRL flagship is *deferred with its pending
-  fields intact, not discharged*), pins the 7B model by computed on-disk hashes (the
-  dir carries no revision marker; equality with the M8 upstream revision is explicitly
-  not asserted), quotes the fired M8 fork rule for A2-gray retention, and registers
-  the 6-cell readout ({base, A1, A2-gray} × {real, gray}) with the M7
-  stable-denominator rule at 5,000 draws seed 20260730. Configs verified byte-
-  identical to the pilot templates except the five declared fields; both mechanics
-  deviations (gpu_memory_utilization 0.45; save_model_only both arms) carried with
-  their measured memory rationale. **The TOCTOU window that killed M7 arm 4 is closed
-  and proven**: per-GPU claim files are now a third occupancy source in
-  `m7_gpu_occupancy_guard.py`, and `tests/test_c5_gpu_claim_guard.py` (17/17)
-  includes a test reproducing the exact arm-4 state, showing the old rule allows it
-  and the new rule refuses; dry-probed on live hardware.
-  **New launch precondition discovered and registered**: no geo3k evaluation of the
-  7B base exists anywhere (1,619 runs scanned), so both base cells (test-real,
-  test-gray) must be evaluated under the locked contract before any C5 estimand is
-  read — schedulable on an29 GPUs 4–7 as soon as the step-0 evals finish.
-
-**Open decisions (PI's, not mine)**
-
-- **R4 C5 7B** — the only completely empty rung on the claim ladder. No 7B training
-  configs exist; two must be authored (A1 and A2-gray) against the 3B recipe with a
-  registered sizing decision. The 1 TiB quota top-up makes it affordable.
-- **LH2 second long-horizon seed** — not auto-triggered. §12b weakened the case that
-  motivated it (the benchmark axis is flat at step 400 vs 100, not rising), so whether
-  a multi-day run is worth a Tier-3 upgrade is a judgement call.
-- **Title upgrade** — resolved **negatively** by M5b against the registered condition;
-  current title stands (§1 of PAPER1).
-
-**Engineering debt that affects trust in artifacts**
-
-- **M7 run manifests are not currently authoritative.** There is no M7 finalizer:
-  arm 1's manifest still reads `"status": "running"` with `end_time_utc: null` despite
-  finishing at step 100, and arm 4's first (OOM-killed) run reads `"running"` too.
-  Both must be reconciled before the R3 readout treats manifests as ground truth —
-  this is the mirror of the M11 lesson already in §17.
-- **The launcher has a time-of-check/time-of-use window.** `launch_m7_virl_arm.sh`
-  checks GPU occupancy, then the trainer spends minutes in vLLM init holding no GPU
-  memory. A non-M7 job can seize the GPUs inside that window, which is exactly how M7
-  arm 4's first attempt died. The GPU-scope guard is not at fault; the gap is that only
-  M7 launches consult it, so nothing protects an already-launched arm.
-
-**Blocked on an instrument that does not exist**
-
-- **Paper 2's invariance/specificity axis.** Per §8e, no metric field expresses the
-  invariance criterion — `collapsed` is gated on `answer_a != answer_b` and so is inert
-  on equal-gold pairs. The scorer is specified but unbuilt, and `PAPER2` §2 C2 calls
-  invariance "required, not optional". This blocks Phase-1 development groups that would
-  be validated against it.
+- **Track-4 premise-v2**: dev batch built; GPU acceptance gates E1–E4 registered
+  with exact commands but not yet run; no training config exists until they pass.
+- **Paper-2 direction call** on Gate 1's pre-committed branches — the PI reads
+  them (readout: no axis buys content; oracle readout moves under every recipe).
+- **PI-owned prose**: X6 related-work table; PAPER1 §3/§5 header-table wording.
+- **Richard's review** of the four delivered human packages.
 
 ## 20. E2 — recipe variation: the dissociation is not the pilot recipe's artifact (2026-08-04, assembly only)
 
@@ -1979,3 +1877,86 @@ test exactly this).
 the format story. Operational deviations (first-attempt eval launches without merged
 weights; two chain-script path bugs — fixed, committed, memory-noted) affected timing
 only, never numbers; the acceptance audit binds the analysis cells regardless.*
+
+## 21. Evidence & reproduction ledger (maintained)
+
+*Convention: every collection round appends or updates its row here. Each row:
+what the claim shows, where the registered definition lives, which artifacts
+carry the evidence, and how to reproduce. For rows without an inline command,
+the authoritative reproduction source is the report's own provenance block
+(`inputs_sha256` / run-dir lists) plus its registration doc — never a
+reconstructed command. All artifact paths are repo-relative on the cluster
+(`/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain`); the repo
+mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
+
+| claim (one line) | registration | evidence artifacts | reproduce via |
+|---|---|---|---|
+| F1 two-regime access matrix: blind arms flat tested-blind, ordered tested-sighted | D3 estimand registration | `reports/d3_condition_matrix_v1.json`, `gate0_stratification_v1.json` | report provenance |
+| R2: anchor-recipe gains FALL by step 400 | M5 registration | `reports/m5_terminal_readout_v1.*` | report provenance |
+| M5c: benchmark-flat hides huge non-visual turnover (noise floor exactly zero) | M5c task docs | `reports/m5c_*` incl. evidence ledger + noise-floor replicates | report provenance |
+| R3: ViRL blind arms recover 0.72–0.88 of A1 matched (vs 0.08–0.12 geo3k) | `docs/registered_m7_seed_scope_v1.md` | `reports/m7_r3_readout_v1.{json,md}` | inline cmd block A |
+| R4: 7B crossed TrainShare 0.7785/0.8402 vs 0.487 at 3B — grows with scale | `docs/registered_c5_7b_access_pair_v1.md` | `reports/c5_r4_readout_v1.{json,md}` + `_artifacts/` (6 cell run dirs + per-item sha256s) | inline cmd block B |
+| R5: cross-family generalization | M11 registration | `reports/m11_*` | report provenance |
+| F8: CP vs matched GRPO — content ceiling holds; strict gap = format (residual 1e−17) | Mini-A5 registrations + pre-filed addendum | `reports/f8_mini_a5_endpoint_readout_v1.*`, `f8_secondaries_v1.md` | report provenance |
+| Catch-stability (cp/member): invariance at ceiling; strict gap = format | `docs/registered_mini_a5_catch_stability_v1.md` (scorer + test sha256-pinned) | `reports/mini_a5_catch_stability_readout_v1.*`, `mini_a5_catch_run_provenance_v1.json` | report provenance |
+| Gate 1: no axis (data/selection/relational reward) buys held-out content; oracle readout moves under every recipe | `docs/registered_mini_a5_gate1_completion_v1.md` (§8 sealing, §9 acceptance) | `reports/mini_a5_gate1_acceptance_audit_v1.{json,md}`, `mini_a5_gate1_endpoint_readout_v1.json`, `mini_a5_catch_stability_{std,necessity}_v1.json` | inline cmd blocks C–E |
+| E1b/E1c: blind gain does not transfer out of domain; blind columns across 7 benchmarks | E1b access-matrix registration | `reports/e1b_*`, `e1c_blind_columns_v1.*`, `chance_corrected_retention_v1.*` | report provenance |
+
+**Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
+include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing
+`scripts.*`/`src.*` need `-m` module form or `PYTHONPATH=.`).*
+
+**A — R3 readout** (fired by `scripts/r4_readout_runner.sh`'s sibling flow; run
+dirs listed in the report's `runs` block):
+see `reports/m7_r3_readout_v1.json` `.runs` for the eight cell run dirs; the
+readout script is `scripts/build_m7_r3_readout.py` (fixture-validated).
+
+**B — R4 readout** (from `scripts/r4_readout_runner.sh`):
+
+    .venv/bin/python scripts/build_c5_r4_readout.py \
+      --cell base:real=experiments/runs/blind_solvability_v2_c5_7b_base_real_an29_20260731T123739Z \
+      --cell base:gray=experiments/runs/blind_solvability_v2_c5_7b_base_gray_an29_20260731T123835Z \
+      --cell a1_real:real=<logs/c5_endgame_state/cell_a1_real_real> \
+      --cell a1_real:gray=<logs/c5_endgame_state/cell_a1_real_gray> \
+      --cell a2_gray:real=<logs/c5_endgame_state/cell_a2_gray_real> \
+      --cell a2_gray:gray=<logs/c5_endgame_state/cell_a2_gray_gray> \
+      --json-output reports/c5_r4_readout_v1.json \
+      --markdown-output reports/c5_r4_readout_v1.md \
+      --artifact-dir reports/c5_r4_readout_v1_artifacts
+
+(the four `<...>` run dirs are recorded verbatim in the report's provenance table)
+
+**C — Gate-1 acceptance audit** (9/9 PASS, 2026-08-09; sealed-file guard active):
+
+    .venv/bin/python -m scripts.audit_mini_a5_gate1_acceptance \
+      --std-run experiments/runs/mini_a5_std_main_an29_20260807T013033Z \
+      --necessity-run experiments/runs/mini_a5_necessity_main_an29_20260807T222122Z \
+      --out-json reports/mini_a5_gate1_acceptance_audit_v1.json \
+      --out-md reports/mini_a5_gate1_acceptance_audit_v1.md
+
+**D — Gate-1 four-arm endpoint readout** (only after C passes; F8 cells carried,
+never re-run):
+
+    PYTHONPATH=. .venv/bin/python -m scripts.build_mini_a5_gate1_endpoint_readout \
+      --arm-std experiments/runs/mini_a5_gate1_r19_std_step120_real_an12_20260807T235840Z \
+      --arm-member experiments/runs/mini_a5_f8_r19_member_step120_real_an29_20260730T004031Z \
+      --arm-necessity experiments/runs/mini_a5_gate1_r19_necessity_step120_real_an29_20260809T143630Z \
+      --arm-cp experiments/runs/mini_a5_f8_r19_cp_step120_real_an29_20260730T004031Z \
+      --base-report reports/f2d_template_decomposition_v1.json \
+      --f8-report reports/f8_mini_a5_endpoint_readout_v1.json \
+      --output reports/mini_a5_gate1_endpoint_readout_v1.json
+
+**E — Gate-1 catch-stability, new arms** (single-arm scorer; the registered
+two-arm scorer stays sha256-pinned and untouched):
+
+    .venv/bin/python -m src.eval.catch_stability_single_arm --arm-label std \
+      --run-dir experiments/runs/mini_a5_catch_std_step120_real_an12_20260807T235840Z \
+      --output reports/mini_a5_catch_stability_std_v1.json --expect registered
+    .venv/bin/python -m src.eval.catch_stability_single_arm --arm-label necessity \
+      --run-dir experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z \
+      --output reports/mini_a5_catch_stability_necessity_v1.json --expect registered
+
+*Eval-cell generation for the Gate-1 arms (merge → R19/R20/chartv08/catch) is
+scripted end-to-end in `scripts/gate1_std_evals_chain.sh` and
+`scripts/gate1_necessity_evals_chain.sh`; M7 seed-2 held-out evals in
+`scripts/launch_m7_seed2_eval.sh`. All committed at `4ac5c57` or earlier.*
