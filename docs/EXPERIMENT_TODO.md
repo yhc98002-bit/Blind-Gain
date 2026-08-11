@@ -72,7 +72,7 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | ID | Experiment | Serves | Implementation requirement |
 |---|---|---|---|
 | M7 | **ViRL39K stratified decomposition — PROMOTED** (built, awaiting node) | ladder R3; second corpus for a bold claim | Strata = source × category with stratum-level q̄ attached; per-stratum estimands registered; pooled reported secondary. Prediction (merged pre-launch): recovery tracks stratum blind-opportunity. |
-| C5 | **7B access pair — BOTH ARMS TRAINING** | ladder R4; second scale | 🔄 A1 + A2-gray, one seed, registered `docs/registered_c5_7b_access_pair_v1.md` (amends Extension 4 to 2×1; A2-gray by the fired M8 fork rule). Both 7B base cells banked (real+gray, 1,889 rows each). A2-gray at step ~40+ (lands ~08-06); A1-real attempt 2 at step ~20+ (lands ~08-07; attempt 1 was killed at step 81 by the an29 host-memory cascade after a second trainer was colocated with its fp32 host offload — placement rule adopted: **no second trainer on a node running a 7B host-offload arm**). Readout: 6-cell access matrix under the locked pilot contract, 5,000 paired draws seed 20260730. |
+| C5 | 7B access pair | ladder R4; second scale | ✅ **complete 2026-08-07 — LADDER R1–R5 CLOSED.** Registered readout `reports/c5_r4_readout_v1.*`, all 18 checks true, 5000/5000 draws. Matched gain A1 **+0.2479** (vs +0.2435 at 3B — recipe transfers); crossed TrainShare A2-gray **0.7785 [0.6418, 0.9214]** canonical / **0.8402 [0.7457, 0.9456]** strict vs 3B pooled 0.487 [0.383, 0.588] (cross-scale descriptive, intervals disjoint) — **the access phenomenon grows with scale**. Matched A2-gray gain still only +0.0516: F1's two-regime structure reproduces at 7B with a wider crossed/matched gap. One seed; A2b not run (registered fired-fork choice). Collected: RESULTS §12e. |
 | M11 | Cross-family completion | ladder R5 | Inference only. Confirm current state in the ledger; snapshot is ambiguous between "validity confirmed" and "full matrix pending." |
 | X6 | Related-work nine-column table | positioning | **PI-owned, not a cluster task.** |
 | **D4** | **Caption test column — completes the D3 matrix** | **F1** — is the readout policy pixel-specific or evidence-general? | The registered matrix is 4×3 because A3's own condition is absent. Score all four arms × 3 seeds under *tested-with-caption* using the frozen 3B caption store, same locked decoding. If caption-at-test reproduces the real-image ordering, the policy reads evidence generally; if not, it is pixel-specific. **Inference only on existing checkpoints — the one addition to Paper 1.** |
@@ -127,7 +127,7 @@ Phase 2 (premise curriculum) expands only if P0.1 shows learnable signal; if pre
 ### 2E. Training stages
 | Stage | Arms | Notes |
 |---|---|---|
-| Gate 1 | standard GRPO · paired-data + answer-only · necessity + answer-only · full IGPO | Small. Answers data / selection / relational-reward in sequence. |
+| Gate 1 | standard GRPO · paired-data + answer-only · necessity + answer-only · full IGPO | Small. Answers data / selection / relational-reward in sequence. | ✅ **COMPLETE 2026-08-09.** Acceptance audit 9/9 PASS before unseal. **No axis buys held-out content on the primary anchor** (lenient NOT MOVED, every contrast, every role; absolute levels vs base flat). Pairing alone is a format tax (member −0.32 strict on the canary, p=4e−27); necessity refunds part (+0.043 [0.018, 0.070] strict primary); **all four recipes move the oracle-localized readout +0.15–0.23 lenient — F3 layer selectivity is recipe-independent.** Catch: lenient at ceiling ×4; strict cp 0.64 ≈ std 0.62 > necessity 0.49 > member 0.28 (5th format localisation). One seed/arm. `reports/mini_a5_gate1_{acceptance_audit,endpoint_readout}_v1.*`, catch v1 jsons. PI reads the pre-committed branches for the Paper-2 direction. |
 | Stage 2 (3B) | standard · paired-data · necessity-only · relation-only · full IGPO | Ablations: drop causal / drop invariance / drop premise / drop necessity; C1 sampling-vs-loss-weight form. |
 | Stage 3 (7B) | standard · full IGPO · minimal blind control | Three runs, not a matrix. |
 | Efficiency ablation | blind-first curriculum at matched total compute | Registered probe: Paper-1's 42-item corrosion set. Not headline. |
@@ -165,6 +165,17 @@ Supporting: external benchmarks with blind variants at matched compute; corrosio
 5. Finish **Mini-A5** and **M7** under their registered endpoints, unaltered.
 6. **E1b** — trained-arm external columns, so the public-benchmark result connects to the gain decomposition.
 7. **C5 7B configs** — author A1 and A2-gray after the current evidence chain is secured.
+
+## PART 2-ter — Execution status (2026-08-11)
+
+**Closed this round.**
+- **C6 mechanism at scale** — six 7B FlipTrack cells (3 models × R19/R20) on banked C5 checkpoints; registration filed pre-read (`docs/registered_c6_mechanism_at_scale_v1.md`); instrument `scripts/build_c6_mechanism_at_scale_readout.py` with 61 adversarial fixtures green before it touched a real cell; all 16 acceptance checks pass. A1-real fires branch (d) (anchor MOVED, readout NOT MOVED) on both instruments and both contracts; A2-gray fires branch (c) everywhere. `reports/c6_mechanism_at_scale_v1.*`.
+- **Track-4 E4** — PASS on the instrument's registered folded criterion. Registration wording to reconcile (prose says "CI includes 0.5"; the statistic is folded `max(AUC,1−AUC)` so the interval cannot include 0.5 by construction). No number changes.
+- **Track-4 E1/E2 per-type readout** — instrument + 26 fixtures built and run. E1 FAIL branch (c); E2 premise clause PASS at 0.000 blind, final clause FAIL for all five types.
+
+**Running.** E3 caption stress on an29 0–3 (`scripts/run_e3_caption_stress.sh`). M7 seed 2: a2_gray on an12 4–7, a3_caption on an29 4–7; evals auto-chain. LH2 stage 1 relaunches on `scripts/seed2_an12_chain.sh` when a2_gray finishes.
+
+**Next.** (1) Read E3 against its registered per-type criterion. (2) PI go/no-go on the E1 branch-(c) step to n=5 and on rebalancing the premise-v2 final-answer distribution (E2's failing clause); the premise construct itself passes and is not regenerated. (3) Two-seed R3 readout when the last seed-2 eval lands.
 
 ## PART 3 — Human items (Richard)
 - [ ] Chart-v08 no-zoom audit (~1–2 h; package ready) — blocks chart-v08 freeze and P2 of the benchmark build.

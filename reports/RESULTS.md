@@ -1597,7 +1597,7 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-10T14:50Z.*
+*Current as of 2026-08-11T16:00Z.*
 
 **Running now** *(one ramping ViRL trainer per node — placement rule generalized
 2026-08-10 after an12's double host-OOM: two colocated 3B Ray trainers exhaust a
@@ -1616,9 +1616,31 @@ section originally made, and it is the claim Paper 2 inherits.
   criteria unchanged. Backstop: `scripts/host_ram_watchdog.sh` (kills the
   youngest trainer if a node falls under 120 GiB available with >1 trainer).
 
+- **Track-4 E3 caption stress.** an29 0–3. The 7B captioner pass over all 480
+  distinct dev-batch images completed once (`t4v2_e3_caption_store_an29_
+  20260811T152952Z`, 4×120 rows, status complete) but its driver died before the
+  merge; the run is being repeated end-to-end under `tmux` so the whole chain
+  (caption → merge → QA build → eval) lands in one provenance record. Cost
+  ~20 min of 4-GPU time. The verdict is read separately against the registered
+  per-type criterion (caption member accuracy ≤ blind-floor threshold + 0.10).
+
+**Closed this round** *(2026-08-11)*
+
+- **C6 mechanism at scale** — six cells generated, registered readout run, all 16
+  acceptance checks pass. Branch (d) for A1-real, branch (c) for A2-gray, both
+  replicated on the R20 twin under both contracts.
+- **E4 attacker gate** — PASS on the instrument's registered folded criterion.
+- **E1/E2 per-type gate readout** — E1 FAIL (branch c), E2 FAIL on the final
+  clause / PASS on the premise clause for every type.
+
 **Open, not running**
 
-- **Track-4 premise-v2**: GPU acceptance gates E1–E4 registered, not yet run.
+- **Track-4 premise-v2 revision.** E1 branch (c) prescribes one pre-committed
+  step to `n=5`; E2's failing types are excluded from training use until the
+  final-answer distribution is balanced (the premise construct itself passes at
+  blind accuracy 0.000 and does not need regenerating). Both are PI go/no-go.
+- **E4 registration wording**: reconcile the prose criterion ("CI includes 0.5")
+  to the folded statistic the instrument computes; no number changes.
 - **Paper-2 direction call** on Gate 1's pre-committed branches (PI reads them).
 - **PI-owned prose**: X6 related-work table; PAPER1 §3/§5 header-table wording.
 - **Richard's review** of the four delivered human packages.
@@ -1873,6 +1895,164 @@ the format story. Operational deviations (first-attempt eval launches without me
 weights; two chain-script path bugs — fixed, committed, memory-noted) affected timing
 only, never numbers; the acceptance audit binds the analysis cells regardless.*
 
+## 2026-08-11 — C6: the mechanism at 7B. The dissociation does not survive scale — it **inverts**, and only for the real-image arm
+
+**What C6 asked.** Two of the program's strongest results ran along different
+axes. Gate 1 fixed scale (3B) and varied recipe: across four recipes, no axis
+bought held-out content on the primary visual anchor, while the oracle-localized
+readout moved under every recipe. R4 fixed recipe and varied scale: the
+blind-attainable share of the training gain *grows* at 7B. C6 joins them —
+does the readout/anchor dissociation still hold when the trained model is 7B?
+
+Six cells, three models × two instruments, on banked C5 checkpoints:
+frozen 7B base, `c5_a1_real_seed1_7b/global_step_100`,
+`c5_a2_gray_seed1_7b/global_step_100`, each on R19 (1,200 pairs, pinned
+`e1dde984…2ffb2`) and the R20 private twin (`20222e60…2ef3`, zero shared
+`pair_id`). Registered **before** any value was read
+(`docs/registered_c6_mechanism_at_scale_v1.md`, filed while the cells were still
+generating); instrument fixtures (61 adversarial cases) green before the
+instrument touched a real cell; all 16 registered acceptance checks pass.
+
+**Result — A1-real (trained on real images), per task role, arm minus base:**
+
+| role | R19 lenient | R19 strict | R20 lenient | R20 strict |
+|---|---|---|---|---|
+| **primary visual anchor** `coordinate_register_twenty_point_x_v02` (n=600) | **+0.0250 [0.0033, 0.0467] MOVED** | **+0.0250 [0.0050, 0.0467] MOVED** | **+0.0233 [0.0017, 0.0433] MOVED** | **+0.0233 [0.0033, 0.0450] MOVED** |
+| oracle-localized readout `starred_series_value_nine_v07` (n=300) | +0.0300 [−0.0067, 0.0667] NOT MOVED | +0.0300 [−0.0067, 0.0667] NOT MOVED | +0.0133 [−0.0300, 0.0600] NOT MOVED | +0.0133 [−0.0300, 0.0600] NOT MOVED |
+| saturated canary `header_cued_table_code_v02` (n=300) | 0.0000 NOT MOVED | 0.0000 NOT MOVED | 0.0000 NOT MOVED | +0.0067 NOT MOVED |
+
+**Result — A2-gray (blind-trained), same six numbers:** every role NOT MOVED on
+both instruments under both contracts (anchor +0.0067 / 0.0000, readout +0.0167 /
++0.0133, canary −0.0033 / −0.0067 with CIs touching zero).
+
+**Branches.** A1-real fires registered branch **(d) anchor MOVED, readout NOT
+MOVED** on R19 *and* on R20, under lenient *and* strict — a clean 4-way
+replication. A2-gray fires **(c) neither MOVED**, likewise 4-way. The two
+contracts agree everywhere; the canary holds everywhere (no damage flag).
+
+**Insight (H-C6, mechanism × scale).** *At 3B the movable layer was the
+oracle-localized readout and the primary visual anchor was immovable by every
+recipe we tried. At 7B that ordering reverses: the anchor moves and the readout
+does not.* This is the first result in the program where an RLVR arm moves the
+**primary visual anchor** on a held-out counterfactual instrument at all. The
+A2-gray control is what makes it a content statement rather than a
+format-or-competence statement: the blind-trained arm, same recipe, same steps,
+same everything but real pixels, moves **neither** role. So the anchor movement
+at 7B is *image-dependent* — it required real visual input to acquire.
+
+Read together with R4 this sharpens rather than softens the program's thesis.
+R4 says that on the *training* distribution the blind-attainable share grows with
+scale (TrainShare 0.78–0.84 at 7B vs 0.487 at 3B). C6 says that on a *held-out*
+counterfactual instrument the same 7B pair separates the arms in the opposite
+direction: only the sighted arm moves the visual anchor. Different estimands,
+different corpora, and no cross-scale or cross-corpus statistic is computed here
+— but jointly they locate exactly where visual content does and does not get
+bought, and they say the answer depends on scale.
+
+**Scope, stated plainly.** One seed, one 7B training pair; every number carries
+the one-seed tag. The anchor effect is small in absolute terms (+2.3 to +2.5
+points) against a strong base (0.757–0.785), and its interval clears zero without
+a wide margin — what carries it is that the *same* branch replicates on an
+instrument sharing no items, under both contracts, while the blind arm's does
+not. Branch (d) was named in the registration precisely so it could not be
+folded into (a) or (b), and it carries **no pre-committed interpretation**: the
+reading above is descriptive, and C6 re-decides neither Gate 1 nor R4.
+
+Artifacts: `reports/c6_mechanism_at_scale_v1.{json,md}`;
+instrument `scripts/build_c6_mechanism_at_scale_readout.py`;
+fixtures `tests/test_build_c6_mechanism_at_scale_readout_fixture.py` (61 passed).
+Cell pointers `logs/c6_cells/`, generation log `logs/c6_cells_chain.log`.
+
+*Fixture note (an instrument bug caught before any real cell was read):* the
+adversarial suite refused the instrument's own payload — its acceptance-check key
+`check_13_i13_labelling_and_no_shard_quantities` contained the substring "shard",
+which the I13 guard forbids in any emitted key. Renamed to
+`check_13_i13_labelling` with the full statement moved into the value (values are
+not scanned), so the guard stays universal rather than being exempted. This is
+what "fixtures before data" is for.
+
+---
+
+## 2026-08-11 — Track-4 premise-v2 acceptance gates: E4 PASS, E1 FAIL (branch c), E2 FAIL on the final clause, E3 running
+
+**E4 — attacker check: PASS.** DINOv2, pixel-frequency and metadata attackers
+over the packaged 160-pair / 320-member release, 5-fold grouped CV by pair.
+The instrument's registered gate is `status: true` on all three checks —
+`all_attackers_available`, `all_point_estimates_at_most_0_55`,
+`no_ci_upper_above_0_62`. Largest folded statistic 0.5460 (frequency_stat
+pooled), largest CI upper 0.5755. DINOv2 reaches train AUC 1.0 on every fold and
+still lands at OOF 0.529 — it memorises the training folds and transfers nothing
+across pairs, which is exactly what an artifact-free release looks like.
+
+*Criterion note (worth carrying).* The registration's prose criterion reads
+"every attacker's side-prediction accuracy 95% bootstrap CI includes 0.5", but
+`src/fliptrack/artifact_attackers.py` folds the statistic to `max(AUC, 1−AUC)`
+(line 228) before taking percentiles, so the interval lives on [0.5, 1] **by
+construction** and cannot include 0.5 for any attacker, signal or noise —
+`metadata`'s point estimate 0.4994 sits below its own CI lower bound 0.5002,
+which is the tell. The operative criterion is therefore the folded one the
+instrument implements and records (≤0.55 point, ≤0.62 CI upper), and E4 passes
+it comfortably. The prose should be reconciled to the folded statistic in the
+next registration revision; no number changes.
+Artifact: `reports/track4_premise_v2_attacker_gate_v1.json`,
+log `logs/track4_gates/e4_attacker_gate.log`.
+
+**E1 — difficulty band: FAIL, branch (c) "still too hard".** Carrier
+`chained_premise_easy`, premise member accuracy on real images = **0.2875**
+(23/80), target band [0.40, 0.60]. Both contracts agree. The registered branch
+(c) fires: one pre-committed step to `n=5`.
+
+**Insight (H-T4a, the lever did not lever).** The easier variant dropped the
+coordinate register from n=20 to n=8 — a 2.5× smaller search — and premise
+solvability moved from the P0.1 anchor 0.275 to 0.2875. Essentially nothing.
+Whatever makes this premise hard is **not** the size of the candidate set, so
+shrinking it further to n=5 is a weak lever; the registered step should be taken,
+but the diagnosis it will produce matters more than the number.
+
+**E2 — blind floor: premise clause PASSES everywhere, final clause FAILS
+everywhere.** Blind (gray and no_image) **premise** member accuracy is exactly
+**0.000** for all four premise-bearing types, against ceilings 0.105 (n=20) and
+0.286 (n=8) — the strongest possible pass. Blind **final** member accuracy
+exceeds the registered 0.133 ceiling for all five types:
+
+| type | blind final member acc (gray = no_image) | ceiling | verdict |
+|---|---|---|---|
+| `chained_premise` | 0.250 | 0.133 | FAIL |
+| `chained_premise_easy` | 0.225 | 0.133 | FAIL |
+| `premise_transition_easy` | 0.225 | 0.133 | FAIL |
+| `fact_read` | 0.200 | 0.133 | FAIL |
+| `premise_transition` | 0.1375 | 0.133 | FAIL |
+
+**Insight (H-T4b, the leak is degenerate, not visual).** Blind *pair* accuracy is
+0.000 and blind collapse rate is 1.000 across every failing cell: the blind model
+emits one constant answer for both members and is never right about a pair. What
+clears the 0.133 member ceiling is that constant colliding with a non-uniform
+gold distribution over the 15 offsets — a **generator** property (answer
+balance), not a visual leak, and the premise clause's exact 0.000 confirms the
+new construct itself is blind-unsolvable as designed. The registered consequence
+still binds — the failing types are excluded from training use until revised —
+but the fix is to balance the final-answer distribution, and the construct that
+Track 4 was built to test is the part that already works.
+
+Artifacts: `reports/track4_premise_v2_gate_readout_v1.{json,md}`;
+instrument `scripts/build_track4_premise_v2_gate_readout.py`;
+fixtures `tests/test_build_track4_premise_v2_gate_readout.py` (26 passed).
+
+**E3 — caption stress: running** on an29 GPUs 0–3. Under the PI's decision, the
+registered captioner command runs verbatim over all of `$DATA/images` (640 files
+/ 480 distinct sha256; all 480 captioned, store complete), the merge is given a
+derived coverage manifest whose hash set is exactly those 480 — so
+`merge_caption_rows`' exact-coverage assertion still runs and must report
+`coverage_complete=true`, with no override and no registered code touched — and
+the restriction to the 320-image causal release happens one step later at
+`build_caption_qa_pairs.py --allow-extra-captions`, carrying the 160 non-causal
+captions unused. Preflight verified `causal_equals_caption_qa_release=true` and
+`coverage_equals_image_dir=true` before any GPU was spent.
+Runner `scripts/run_e3_caption_stress.sh`, log
+`logs/track4_gates/e3_caption_stress.log`.
+
+---
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:
@@ -1896,6 +2076,9 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | Catch-stability (cp/member): invariance at ceiling; strict gap = format | `docs/registered_mini_a5_catch_stability_v1.md` (scorer + test sha256-pinned) | `reports/mini_a5_catch_stability_readout_v1.*`, `mini_a5_catch_run_provenance_v1.json` | report provenance |
 | Gate 1: no axis (data/selection/relational reward) buys held-out content; oracle readout moves under every recipe | `docs/registered_mini_a5_gate1_completion_v1.md` (§8 sealing, §9 acceptance) | `reports/mini_a5_gate1_acceptance_audit_v1.{json,md}`, `mini_a5_gate1_endpoint_readout_v1.json`, `mini_a5_catch_stability_{std,necessity}_v1.json` | inline cmd blocks C–E |
 | E1b/E1c: blind gain does not transfer out of domain; blind columns across 7 benchmarks | E1b access-matrix registration | `reports/e1b_*`, `e1c_blind_columns_v1.*`, `chance_corrected_retention_v1.*` | report provenance |
+| C6: at 7B the real-image arm moves the primary visual anchor (+0.025/+0.023, CIs exclude 0, both contracts, both instruments) and the readout does not; the blind arm moves neither | `docs/registered_c6_mechanism_at_scale_v1.md` (filed pre-read; §7 estimands, §8 branches, §9 checks) | `reports/c6_mechanism_at_scale_v1.{json,md}`, cell pointers `logs/c6_cells/`, gen log `logs/c6_cells_chain.log` | inline cmd block F |
+| E4: premise-v2 release carries no transferable artifact signal (folded gate 0.546 max, CI upper 0.576 max) | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 | `reports/track4_premise_v2_attacker_gate_v1.json`, `logs/track4_gates/e4_attacker_gate.log` | inline cmd block G |
+| E1/E2: premise clause blind-unsolvable (0.000); final clause leaks a degenerate constant above the 0.133 ceiling; difficulty branch (c) fires at 0.2875 | `docs/registered_track4_premise_v2_design_v1.md` §7-E1/E2, §5 branches | `reports/track4_premise_v2_gate_readout_v1.{json,md}`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z` | inline cmd block H |
 
 **Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
 include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing
@@ -1950,6 +2133,49 @@ two-arm scorer stays sha256-pinned and untouched):
     .venv/bin/python -m src.eval.catch_stability_single_arm --arm-label necessity \
       --run-dir experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z \
       --output reports/mini_a5_catch_stability_necessity_v1.json --expect registered
+
+**F — C6 mechanism-at-scale readout** (fixtures green first: `.venv/bin/python -m
+pytest tests/test_build_c6_mechanism_at_scale_readout_fixture.py` → 61 passed;
+cells generated by `scripts/c6_cells_chain.sh`, pointers in `logs/c6_cells/`):
+
+    .venv/bin/python -m scripts.build_c6_mechanism_at_scale_readout \
+      --cell r19:base=experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z \
+      --cell r19:a1_real=experiments/runs/c6_r19_a1real_an12_20260811T122252Z \
+      --cell r19:a2_gray=experiments/runs/c6_r19_a2gray_an12_20260811T123109Z \
+      --cell r20:base=experiments/runs/c6_r20_base7b_an12_20260811T124023Z \
+      --cell r20:a1_real=experiments/runs/c6_r20_a1real_an12_20260811T124736Z \
+      --cell r20:a2_gray=experiments/runs/c6_r20_a2gray_an12_20260811T125348Z \
+      --require-cell-pointers \
+      --json-output reports/c6_mechanism_at_scale_v1.json \
+      --markdown-output reports/c6_mechanism_at_scale_v1.md
+
+(defaults are the registered values: `--expect registered`, `--seed 20260712`,
+`--bootstrap-draws 2000`; the script refuses to overwrite an existing report)
+
+**G — E4 attacker gate** (run by `scripts/run_e4_gate.sh` on an29 GPU 2, guard →
+claim → release; the verdict is read separately against the registered
+criterion — see the criterion note above):
+
+    bash scripts/launch_artifact_gate_v02.sh an29 2 \
+      data/track4_premise_v2_dev_v1/attacker_release \
+      data/track4_premise_v2_dev_v1/attacker_key.jsonl \
+      reports/track4_premise_v2_attacker_gate_v1.json
+
+**H — E1/E2 per-type gate readout** (fixtures green first:
+`tests/test_build_track4_premise_v2_gate_readout.py` → 26 passed; the six cells
+were produced by `scripts/track4_premise_v2_gates.sh`, raw, no rescore):
+
+    R=experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z
+    D=data/track4_premise_v2_dev_v1
+    .venv/bin/python -m scripts.build_track4_premise_v2_gate_readout \
+      --probe-real $R/premise_probe --probe-gray $R/premise_probe_gray \
+      --probe-no-image $R/premise_probe_no_image \
+      --final-real $R/final --final-gray $R/final_gray \
+      --final-no-image $R/final_no_image \
+      --probe-manifest $D/manifest_premise_probe.jsonl \
+      --causal-manifest $D/manifest_causal_pairs.jsonl \
+      --json-output reports/track4_premise_v2_gate_readout_v1.json \
+      --markdown-output reports/track4_premise_v2_gate_readout_v1.md
 
 *Eval-cell generation for the Gate-1 arms (merge → R19/R20/chartv08/catch) is
 scripted end-to-end in `scripts/gate1_std_evals_chain.sh` and

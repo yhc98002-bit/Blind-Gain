@@ -1,0 +1,1631 @@
+{
+  "acceptance_checks": {
+    "check_01_six_cells_bound": "pass",
+    "check_02_model_identity": "pass",
+    "check_03_manifest_hash_pins": "pass (re-hashed on disk at readout time)",
+    "check_04_complete_run_manifests": "pass",
+    "check_05_locked_evaluation_contract": "pass",
+    "check_06_canonical_contract_fields_on_every_row": "pass",
+    "check_07_both_contracts_present": "pass",
+    "check_08_item_set_identity_across_models": "pass",
+    "check_09_instrument_separation": "pass (R19 x R20 pair_id intersection = 0)",
+    "check_10_per_role_n_pairs": "pass",
+    "check_11_bootstrap_parameters_as_registered": "pass",
+    "check_12_orientation_base_left_arm_right": "pass",
+    "check_13_i13_labelling": "pass (no pooled-across-roles quantity appears except under a NOT_AN_ENDPOINT key; no per-shard quantity is emitted at all)",
+    "check_14_one_seed_tagging": "pass",
+    "check_15_cross_scale_discipline": "pass (descriptive strings only)",
+    "check_16_determinism_and_immutability": "output contains no timestamps; existing outputs are never overwritten"
+  },
+  "cells": {
+    "r19:a1_real": {
+      "cell_pointer": "verified (logs/c6_cells/r19_a1real)",
+      "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r19",
+      "instrument_description": "R19 locked packaged FlipTrack manifest (primary instrument)",
+      "label": "r19_a1real",
+      "model": "a1_real",
+      "model_description": "A1-real (C5 arm 1, real images, outcome reward), global_step_100",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8891666666666667,
+          "lenient_pair_accuracy": 0.81,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8891666666666667,
+          "strict_pair_accuracy": 0.81
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.9933333333333333,
+          "extraction_fallback_rate": 0.006666666666666667,
+          "lenient_member_accuracy": 0.9966666666666667,
+          "lenient_pair_accuracy": 0.9933333333333333,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.99,
+          "strict_pair_accuracy": 0.98
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8366666666666667,
+          "lenient_pair_accuracy": 0.7033333333333334,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8366666666666667,
+          "strict_pair_accuracy": 0.7033333333333334
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.8291666666666667,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.8258333333333333
+      },
+      "registered_model_path": "checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+      "run_dir": "experiments/runs/c6_r19_a1real_an12_20260811T122252Z",
+      "run_id": "c6_r19_a1real_an12_20260811T122252Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "r19:a2_gray": {
+      "cell_pointer": "verified (logs/c6_cells/r19_a2gray)",
+      "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r19",
+      "instrument_description": "R19 locked packaged FlipTrack manifest (primary instrument)",
+      "label": "r19_a2gray",
+      "model": "a2_gray",
+      "model_description": "A2-gray (C5 arm 2, blind-trained), global_step_100",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.88,
+          "lenient_pair_accuracy": 0.7916666666666666,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.88,
+          "strict_pair_accuracy": 0.7916666666666666
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.995,
+          "extraction_fallback_rate": 0.005,
+          "lenient_member_accuracy": 0.9933333333333333,
+          "lenient_pair_accuracy": 0.99,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.9883333333333333,
+          "strict_pair_accuracy": 0.98
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8316666666666667,
+          "lenient_pair_accuracy": 0.69,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8316666666666667,
+          "strict_pair_accuracy": 0.69
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.8158333333333333,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.8133333333333334
+      },
+      "registered_model_path": "checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+      "run_dir": "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z",
+      "run_id": "c6_r19_a2gray_an12_20260811T123109Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "r19:base": {
+      "cell_pointer": "verified (logs/c6_cells/r19_base7b)",
+      "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r19",
+      "instrument_description": "R19 locked packaged FlipTrack manifest (primary instrument)",
+      "label": "r19_base7b",
+      "model": "base",
+      "model_description": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8716666666666667,
+          "lenient_pair_accuracy": 0.785,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8716666666666667,
+          "strict_pair_accuracy": 0.785
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.9933333333333333,
+          "extraction_fallback_rate": 0.005,
+          "lenient_member_accuracy": 0.995,
+          "lenient_pair_accuracy": 0.9933333333333333,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.9883333333333333,
+          "strict_pair_accuracy": 0.98
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8216666666666667,
+          "lenient_pair_accuracy": 0.6733333333333333,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8216666666666667,
+          "strict_pair_accuracy": 0.6733333333333333
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.8091666666666667,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.8058333333333333
+      },
+      "registered_model_path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "run_dir": "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z",
+      "run_id": "c6_r19_7b_base_real_an12_20260811T120648Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "r20:a1_real": {
+      "cell_pointer": "verified (logs/c6_cells/r20_a1real)",
+      "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+      "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r20",
+      "instrument_description": "R20 private twin (replication, never pooled with R19)",
+      "label": "r20_a1real",
+      "model": "a1_real",
+      "model_description": "A1-real (C5 arm 1, real images, outcome reward), global_step_100",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8691666666666666,
+          "lenient_pair_accuracy": 0.78,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8691666666666666,
+          "strict_pair_accuracy": 0.78
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.9966666666666667,
+          "extraction_fallback_rate": 0.0016666666666666668,
+          "lenient_member_accuracy": 0.9983333333333333,
+          "lenient_pair_accuracy": 0.9966666666666667,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.9966666666666667,
+          "strict_pair_accuracy": 0.9933333333333333
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.7983333333333333,
+          "lenient_pair_accuracy": 0.6366666666666667,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.7983333333333333,
+          "strict_pair_accuracy": 0.6366666666666667
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.7983333333333333,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.7975
+      },
+      "registered_model_path": "checkpoints/c5/c5_a1_real_seed1_7b/global_step_100/actor/huggingface",
+      "run_dir": "experiments/runs/c6_r20_a1real_an12_20260811T124736Z",
+      "run_id": "c6_r20_a1real_an12_20260811T124736Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "r20:a2_gray": {
+      "cell_pointer": "verified (logs/c6_cells/r20_a2gray)",
+      "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+      "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r20",
+      "instrument_description": "R20 private twin (replication, never pooled with R19)",
+      "label": "r20_a2gray",
+      "model": "a2_gray",
+      "model_description": "A2-gray (C5 arm 2, blind-trained), global_step_100",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8566666666666667,
+          "lenient_pair_accuracy": 0.7566666666666667,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8566666666666667,
+          "strict_pair_accuracy": 0.7566666666666667
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.9983333333333333,
+          "extraction_fallback_rate": 0.0016666666666666668,
+          "lenient_member_accuracy": 0.9933333333333333,
+          "lenient_pair_accuracy": 0.99,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.9933333333333333,
+          "strict_pair_accuracy": 0.99
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8,
+          "lenient_pair_accuracy": 0.6366666666666667,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8,
+          "strict_pair_accuracy": 0.6366666666666667
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.785,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.785
+      },
+      "registered_model_path": "checkpoints/c5/c5_a2_gray_seed1_7b/global_step_100/actor/huggingface",
+      "run_dir": "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z",
+      "run_id": "c6_r20_a2gray_an12_20260811T125348Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    },
+    "r20:base": {
+      "cell_pointer": "verified (logs/c6_cells/r20_base7b)",
+      "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+      "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "data_manifest_rehashed_at_readout": true,
+      "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+      "instrument": "r20",
+      "instrument_description": "R20 private twin (replication, never pooled with R19)",
+      "label": "r20_base7b",
+      "model": "base",
+      "model_description": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "model_revision": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "n_pairs_total": 1200,
+      "node": "an12",
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.8541666666666666,
+          "lenient_pair_accuracy": 0.7566666666666667,
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.8541666666666666,
+          "strict_pair_accuracy": 0.7566666666666667
+        },
+        "header_cued_table_code_v02": {
+          "contract_valid_rate": 0.995,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.9966666666666667,
+          "lenient_pair_accuracy": 0.9966666666666667,
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.9916666666666667,
+          "strict_pair_accuracy": 0.9866666666666667
+        },
+        "starred_series_value_nine_v07": {
+          "contract_valid_rate": 1.0,
+          "extraction_fallback_rate": 0.0,
+          "lenient_member_accuracy": 0.7916666666666666,
+          "lenient_pair_accuracy": 0.6233333333333333,
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "strict_member_accuracy": 0.7916666666666666,
+          "strict_pair_accuracy": 0.6233333333333333
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "lenient_pair_accuracy": 0.7833333333333333,
+        "note": "role-mixed cell level; under I13 not a C6 endpoint",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+        "strict_pair_accuracy": 0.7808333333333334
+      },
+      "registered_model_path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+      "run_dir": "experiments/runs/c6_r20_base7b_an12_20260811T124023Z",
+      "run_id": "c6_r20_base7b_an12_20260811T124023Z",
+      "run_manifest_status": "complete",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+    }
+  },
+  "cross_scale_descriptive_only": {
+    "cross_scale_statistic_computed": false,
+    "gate1_3b_anchor": "3B Gate 1 (descriptive): all four Mini-A5 recipes move the oracle-localized readout control +0.15-0.23 lenient while no axis buys held-out content on the primary anchor under any contrast or any role (reports/mini_a5_gate1_endpoint_readout_v1.json, docs/registered_mini_a5_endpoint_readout_v1.md)",
+    "r4_scale_anchor": "R4/C5 (descriptive): the blind-attainable share of the gain grows with scale -- crossed TrainShare for A2-gray 0.7785 [0.6418, 0.9214] canonical / 0.8402 [0.7457, 0.9456] strict at 7B against a 3B pooled 0.487 [0.383, 0.588] (reports/c5_r4_readout_v1.json, docs/registered_c5_7b_access_pair_v1.md)",
+    "status": "DESCRIPTIVE ONLY -- no cross-scale difference, ratio, interval or test is computed anywhere in this report"
+  },
+  "expectation_mode": "registered",
+  "governing_documents": [
+    "docs/registered_c6_mechanism_at_scale_v1.md",
+    "docs/registered_c5_7b_access_pair_v1.md",
+    "docs/registered_mini_a5_endpoint_readout_v1.md",
+    "docs/registered_gate1_four_arm_v1.md"
+  ],
+  "inputs_sha256": {
+    "data/fliptrack_r20_source_manifest.jsonl": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+    "docs/registered_c6_mechanism_at_scale_v1.md": "113dc544d93f259c69f0314905ebe39bbd6244f3f6ee27494c8811d6eb5dbbb9",
+    "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/run_manifest.json": "7e38be7e64e016c725aea857bbcb234085cc29a642e2d1df06cd6a5b4aa98352",
+    "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/shards/shard_0.jsonl": "9b444874d8cdb5ee4e6a72dbe02b98b80d83594658fbca29b8cc506555db191b",
+    "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/shards/shard_1.jsonl": "ebb3da61c66eb631e16906c8750a6feb6cb4a3a1c7a79fa8852435386a224f5f",
+    "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/shards/shard_2.jsonl": "3d4f6152a1aa0a0189a18e9804234a58088d734ec7854cf327a40111bd001db6",
+    "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/shards/shard_3.jsonl": "4b5d05c682ed8a35bb1cf6b78823a09583ad8ed0803a589aa0aee7928c5b5317",
+    "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/run_manifest.json": "1f4dacaec75af6875a9266341b2bbf5fb4f20ccb1b07b724f28c821e86ee12d5",
+    "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/shards/shard_0.jsonl": "98c99971216ba4951d714180fcce13de4f182b60139acfd895fba70f4c93224e",
+    "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/shards/shard_1.jsonl": "da89aac1c09af15e917c7db46044d74e9a9d0820650ec40ce8c970e8305d0249",
+    "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/shards/shard_2.jsonl": "cddf6883195dbfce25aa9b9cf470198a04929128a343fb369e735ebff6321d79",
+    "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/shards/shard_3.jsonl": "4bdcd288ca79887b46163d102ae5718b8b58b817d8322ac552566f2d2eb509ce",
+    "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/run_manifest.json": "252d210354c1b7967d641e848a5b3a015df708472e08ecf7345ca23fbe6237d6",
+    "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/shards/shard_0.jsonl": "4e280f4655642b0fb18aa0e2d4a5595e55c18722ac2078d6852a54a05fabb6f3",
+    "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/shards/shard_1.jsonl": "b9fff03d6f571f47731289208fec1f1405f08652dcc0c2045ef50af348dc06a5",
+    "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/shards/shard_2.jsonl": "3f39d37d09457ec3ded1688d368831cda733ff36ba5066367f74bf46b65b0aa3",
+    "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/shards/shard_3.jsonl": "884bf31104938ac29753ce00166f90a59f2cf45ef521fc39679ac5d3336e7431",
+    "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/run_manifest.json": "1d9864ab6ba9287fcec50abab9cf7ddc8a4c5f4c493749e3dd3fe30783445702",
+    "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/shards/shard_0.jsonl": "d9a33ea685deafb3e7d335f875194a483f3f5be578856616ab6ea7ea911b094f",
+    "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/shards/shard_1.jsonl": "2e99a40ec5d5918fe4f3b585bc84ebd20d07955b10eb0fca9fe2a6b9aa58f48e",
+    "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/shards/shard_2.jsonl": "b2a12fd2bcb944c17bc60a1a11064188c5252055a5a47046de0386a18a2e687f",
+    "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/shards/shard_3.jsonl": "c6ba9c4e57a471866bcdb39748df70268bc3e229a88616c18a4ab2046b3d43fa",
+    "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/run_manifest.json": "40edc7a8075dcbf2f9dd263fec286242b12aacc5d854e89263bccc220360d9b5",
+    "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/shards/shard_0.jsonl": "72f2184fa5baed2d00aa39fca931fb8d222a595e3d5132b615007253c1e779f8",
+    "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/shards/shard_1.jsonl": "455924a00f0d9f2e17ef698f1f96b9d3543ae6508f726d26113cc233a7c22aad",
+    "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/shards/shard_2.jsonl": "3d3f9c85c00ab841943f0e8fca9d0d1c4c5609c46fbfd7b87c196514c8e3844e",
+    "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/shards/shard_3.jsonl": "4fc31fc4acd64654c1d5e52673866bb498e3891d501383fa265ccb38423a6112",
+    "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/run_manifest.json": "eb575fa83c528f4075067dea57b86ade45e96c3d9fb7369adde79581390adbb3",
+    "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/shards/shard_0.jsonl": "f221464fb7106a605765864ef9bd181a8ebdb75d3aad2473f5b0dc65f3baaed5",
+    "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/shards/shard_1.jsonl": "1b97656fae95330ff726d0e17ee2f117ac2fb8962e1e7413ee33fdf5bbd9ff5f",
+    "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/shards/shard_2.jsonl": "c475c7fec3d2d48f844003d78d4ce5677d9e85db40dd51aa7c596c069b416bf6",
+    "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/shards/shard_3.jsonl": "5585446cf9c7d63b91d0c16b9a1844c27e893ec3dfb9043aca04ed61f7c6f07a",
+    "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2"
+  },
+  "instrument": {
+    "bootstrap": {
+      "draws": 2000,
+      "interval": 0.95,
+      "per_role_seeds": {
+        "coordinate_register_twenty_point_x_v02": {
+          "lenient": 20260812,
+          "strict": 20260813
+        },
+        "header_cued_table_code_v02": {
+          "lenient": 20260822,
+          "strict": 20260823
+        },
+        "starred_series_value_nine_v07": {
+          "lenient": 20260832,
+          "strict": 20260833
+        }
+      },
+      "percentile": [
+        0.025,
+        0.975
+      ],
+      "registered_values": {
+        "draws": 2000,
+        "seed": 20260712
+      },
+      "seed": 20260712,
+      "seed_derivation": "pooled lenient seed, pooled strict seed+1; for the k-th template in sorted order lenient seed+100+10k, strict +1; both sides resampled on the same pair indices per replicate",
+      "unit": "paired item (pair_id)",
+      "variance_note": "intervals quantify evaluation uncertainty on a fixed pair set; they do not estimate run-to-run RL variance -- each arm is one run"
+    },
+    "comparison_engine": "scripts.compare_fliptrack_runs.compare_rows (imported unchanged)",
+    "decision_rule": "**Decision rule.** **MOVED** iff the 95% paired-bootstrap CI excludes zero in the positive direction. A positive point estimate whose interval contains zero is **NOT MOVED** \u2014 not \"a trend\". **MOVED_NEGATIVE_DIRECTION** iff the CI lies entirely below zero. Identical to the Gate-1 rule (`reports/mini_a5_gate1_endpoint_readout_v1.json` \u2192 `instrument`).",
+    "editorial_stance": "the instrument reports; it does not editorialize",
+    "level_engine": "src.eval.fliptrack_metrics.aggregate_pair_metrics_by_template",
+    "mcnemar": "scripts.compare_fliptrack_runs._paired_exact (exact two-sided)",
+    "not_reused": "scripts/build_mini_a5_gate1_endpoint_readout.py -- its ARM_ORDER, ARM_LABELS and ARM_CHECKPOINT_TOKENS are hard-coded to the Mini-A5 arms and its --base-report is the 3B base",
+    "orientation": "every contrast is called with left = the 7B base cell and right = the arm cell, so every registered delta is arm minus base",
+    "scorer": "src.eval.fliptrack_metrics.pair_score (both members correct)"
+  },
+  "instrument_separation": {
+    "r19_x_r20_pair_id_intersection": 0,
+    "statement": "no estimand and no intermediate structure combines rows from the two instruments; R20 is a replication of R19, never a pool with it"
+  },
+  "invariants": {
+    "I10": "adversarial fixtures (tests/test_build_c6_mechanism_at_scale_readout_fixture.py) pass on synthetic cells before the instrument touches real cells",
+    "I13": "the three task roles are never aggregated into an endpoint; pooled values appear only under keys containing NOT_AN_ENDPOINT; no shard-level quantity appears at all",
+    "I15": "schema_version carried at top level",
+    "I7": "lenient and contract-strict reported for every cell, role and contrast; never merged or averaged; a disagreement is the result",
+    "seed_scope": "every emitted number carries seed_tag 'one seed (data.seed 1; single 7B training pair)'; no between-seed variance claim is made anywhere in C6"
+  },
+  "per_instrument_role_counts": {
+    "r19": {
+      "coordinate_register_twenty_point_x_v02": 600,
+      "header_cued_table_code_v02": 300,
+      "starred_series_value_nine_v07": 300
+    },
+    "r20": {
+      "coordinate_register_twenty_point_x_v02": 600,
+      "header_cued_table_code_v02": 300,
+      "starred_series_value_nine_v07": 300
+    }
+  },
+  "provenance": {
+    "analysis_git_hash": "2ebf8c0dbd9753c272498f0e999fdabba369b9f3",
+    "cells": {
+      "r19:a1_real": {
+        "cell_pointer": "verified (logs/c6_cells/r19_a1real)",
+        "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+        "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+        "generation_config_hash": "a950ea40efeab97d094fabc8c352a26b446dccc9be48df5994c416eec8eacf18",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r19_a1real_an12_20260811T122252Z",
+        "run_manifest": "experiments/runs/c6_r19_a1real_an12_20260811T122252Z/run_manifest.json",
+        "run_manifest_sha256": "1f4dacaec75af6875a9266341b2bbf5fb4f20ccb1b07b724f28c821e86ee12d5"
+      },
+      "r19:a2_gray": {
+        "cell_pointer": "verified (logs/c6_cells/r19_a2gray)",
+        "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+        "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+        "generation_config_hash": "9ac9b160bb05480f277ff9ce1c766497db294e3cb6fbb99994784589d2b95030",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z",
+        "run_manifest": "experiments/runs/c6_r19_a2gray_an12_20260811T123109Z/run_manifest.json",
+        "run_manifest_sha256": "252d210354c1b7967d641e848a5b3a015df708472e08ecf7345ca23fbe6237d6"
+      },
+      "r19:base": {
+        "cell_pointer": "verified (logs/c6_cells/r19_base7b)",
+        "data_manifest": "experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+        "data_manifest_hash": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+        "generation_config_hash": "37f1ea6abe7db97cb3dd8e3760a4201026787fa9b25d71da1316bc14cfe52bfc",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z",
+        "run_manifest": "experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z/run_manifest.json",
+        "run_manifest_sha256": "7e38be7e64e016c725aea857bbcb234085cc29a642e2d1df06cd6a5b4aa98352"
+      },
+      "r20:a1_real": {
+        "cell_pointer": "verified (logs/c6_cells/r20_a1real)",
+        "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+        "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+        "generation_config_hash": "b91a10543937ff5bd0a806652347e9b675378a816a6ec71945604f23a9c25ab5",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r20_a1real_an12_20260811T124736Z",
+        "run_manifest": "experiments/runs/c6_r20_a1real_an12_20260811T124736Z/run_manifest.json",
+        "run_manifest_sha256": "1d9864ab6ba9287fcec50abab9cf7ddc8a4c5f4c493749e3dd3fe30783445702"
+      },
+      "r20:a2_gray": {
+        "cell_pointer": "verified (logs/c6_cells/r20_a2gray)",
+        "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+        "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+        "generation_config_hash": "5c769e8a397b4dfa1bcae3e034168cb65fbd7116c53010bab766379b1753ab7f",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z",
+        "run_manifest": "experiments/runs/c6_r20_a2gray_an12_20260811T125348Z/run_manifest.json",
+        "run_manifest_sha256": "40edc7a8075dcbf2f9dd263fec286242b12aacc5d854e89263bccc220360d9b5"
+      },
+      "r20:base": {
+        "cell_pointer": "verified (logs/c6_cells/r20_base7b)",
+        "data_manifest": "data/fliptrack_r20_source_manifest.jsonl",
+        "data_manifest_hash": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+        "generation_config_hash": "54b5c41f7743f6fb7f2753e13a0c928a871b6b3574e746bc5e101df0f0e04739",
+        "generation_git_hash": "ee7fd256f321c39bfd5f7ed47614093fdb337bbd",
+        "run_dir": "experiments/runs/c6_r20_base7b_an12_20260811T124023Z",
+        "run_manifest": "experiments/runs/c6_r20_base7b_an12_20260811T124023Z/run_manifest.json",
+        "run_manifest_sha256": "eb575fa83c528f4075067dea57b86ade45e96c3d9fb7369adde79581390adbb3"
+      }
+    },
+    "registration": "docs/registered_c6_mechanism_at_scale_v1.md",
+    "registration_sha256": "113dc544d93f259c69f0314905ebe39bbd6244f3f6ee27494c8811d6eb5dbbb9"
+  },
+  "question": "does the readout/anchor dissociation established at 3B still hold when the trained model is 7B? Nothing else is at issue",
+  "registered_contrasts": {
+    "c6_1_a1real_minus_base_r19": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "contrast_id": "c6_1_a1real_minus_base_r19",
+      "instrument": "r19",
+      "instrument_description": "R19 locked packaged FlipTrack manifest (primary instrument)",
+      "left_cell": "r19:base",
+      "left_label": "r19_base7b",
+      "left_model": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "n_pairs_total": 1200,
+      "orientation": "left = 7B base cell, right = arm cell",
+      "orientation_asserted": true,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "bootstrap_seed_lenient": 20260812,
+          "bootstrap_seed_strict": 20260813,
+          "contract_strict": {
+            "arm_minus_base": 0.025,
+            "arm_pair_accuracy": 0.81,
+            "base_pair_accuracy": 0.785,
+            "bootstrap_seed": 20260813,
+            "ci95_high": 0.04666666666666667,
+            "ci95_low": 0.005,
+            "ci_excludes_zero": true,
+            "contract": "contract_strict",
+            "decision": "MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 30.0,
+            "mcnemar_b10_base_correct_arm_wrong": 15.0,
+            "mcnemar_exact_two_sided_p": 0.035697803555194696,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.025,
+            "arm_pair_accuracy": 0.81,
+            "base_pair_accuracy": 0.785,
+            "bootstrap_seed": 20260812,
+            "ci95_high": 0.04666666666666667,
+            "ci95_low": 0.0033333333333333335,
+            "ci_excludes_zero": true,
+            "contract": "lenient",
+            "decision": "MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 30.0,
+            "mcnemar_b10_base_correct_arm_wrong": 15.0,
+            "mcnemar_exact_two_sided_p": 0.035697803555194696,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "header_cued_table_code_v02": {
+          "bootstrap_seed_lenient": 20260822,
+          "bootstrap_seed_strict": 20260823,
+          "contract_strict": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.98,
+            "base_pair_accuracy": 0.98,
+            "bootstrap_seed": 20260823,
+            "ci95_high": 0.016666666666666666,
+            "ci95_low": -0.016666666666666666,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 3.0,
+            "mcnemar_b10_base_correct_arm_wrong": 3.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.9933333333333333,
+            "base_pair_accuracy": 0.9933333333333333,
+            "bootstrap_seed": 20260822,
+            "ci95_high": 0.01,
+            "ci95_low": -0.01,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 1.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "starred_series_value_nine_v07": {
+          "bootstrap_seed_lenient": 20260832,
+          "bootstrap_seed_strict": 20260833,
+          "contract_strict": {
+            "arm_minus_base": 0.03,
+            "arm_pair_accuracy": 0.7033333333333334,
+            "base_pair_accuracy": 0.6733333333333333,
+            "bootstrap_seed": 20260833,
+            "ci95_high": 0.06674999999999955,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 21.0,
+            "mcnemar_b10_base_correct_arm_wrong": 12.0,
+            "mcnemar_exact_two_sided_p": 0.16275565745308995,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.03,
+            "arm_pair_accuracy": 0.7033333333333334,
+            "base_pair_accuracy": 0.6733333333333333,
+            "bootstrap_seed": 20260832,
+            "ci95_high": 0.06674999999999955,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 21.0,
+            "mcnemar_b10_base_correct_arm_wrong": 12.0,
+            "mcnemar_exact_two_sided_p": 0.16275565745308995,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict": {
+          "arm_minus_base": 0.02,
+          "arm_pair_accuracy": 0.8258333333333333,
+          "base_pair_accuracy": 0.8058333333333333,
+          "bootstrap_seed": 20260713,
+          "ci95_high": 0.035,
+          "ci95_low": 0.005833333333333334,
+          "ci_excludes_zero": true,
+          "contract": "contract_strict",
+          "decision": "MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 54.0,
+          "mcnemar_b10_base_correct_arm_wrong": 30.0,
+          "mcnemar_exact_two_sided_p": 0.011634454119925829,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "lenient": {
+          "arm_minus_base": 0.02,
+          "arm_pair_accuracy": 0.8291666666666667,
+          "base_pair_accuracy": 0.8091666666666667,
+          "bootstrap_seed": 20260712,
+          "ci95_high": 0.035,
+          "ci95_low": 0.005,
+          "ci_excludes_zero": true,
+          "contract": "lenient",
+          "decision": "MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 52.0,
+          "mcnemar_b10_base_correct_arm_wrong": 28.0,
+          "mcnemar_exact_two_sided_p": 0.00968284992305757,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "note": "role-mixed pooled delta returned by the comparison engine; under I13 this is not a C6 endpoint and is never read as one"
+      },
+      "pre_committed_reading": {
+        "contract_disagreement_is_the_result": false,
+        "contract_disagreement_statement": "both contracts fire the same branch",
+        "contract_strict": {
+          "anchor_arm_minus_base": 0.025,
+          "anchor_ci95": [
+            0.005,
+            0.04666666666666667
+          ],
+          "anchor_decision": "MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "d",
+          "branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "canary_arm_minus_base": 0.0,
+          "canary_ci95": [
+            -0.016666666666666666,
+            0.016666666666666666
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "contract_strict",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.03,
+          "readout_ci95": [
+            -0.006666666666666667,
+            0.06674999999999955
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(d) anchor MOVED, readout NOT MOVED** \u2192 the remaining cell of the 2\u00d72. It is not anticipated by any prior result and no interpretation is pre-committed for it; it is reported descriptively, with the raw numbers, and explicitly flagged as an unregistered outcome. Naming it here prevents it from being quietly folded into (a) or (b).",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "contracts_agree": true,
+        "lenient": {
+          "anchor_arm_minus_base": 0.025,
+          "anchor_ci95": [
+            0.0033333333333333335,
+            0.04666666666666667
+          ],
+          "anchor_decision": "MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "d",
+          "branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "canary_arm_minus_base": 0.0,
+          "canary_ci95": [
+            -0.01,
+            0.01
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "lenient",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.03,
+          "readout_ci95": [
+            -0.006666666666666667,
+            0.06674999999999955
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(d) anchor MOVED, readout NOT MOVED** \u2192 the remaining cell of the 2\u00d72. It is not anticipated by any prior result and no interpretation is pre-committed for it; it is reported descriptively, with the raw numbers, and explicitly flagged as an unregistered outcome. Naming it here prevents it from being quietly folded into (a) or (b).",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "registered_contract_disagreement_text": "**Contract disagreement (I7).** The branch is evaluated separately under lenient and under contract-strict. If the two contracts fire different branches, **both branches are reported**, the disagreement is named as the result, and neither contract is chosen as the tie-breaker. No merged or averaged contract exists.",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+      },
+      "reading_scope": "central C6 statement: A1-real is the arm whose training condition matches the 3B Mini-A5 recipes (registration section 2)",
+      "right_cell": "r19:a1_real",
+      "right_label": "r19_a1real",
+      "right_model": "A1-real (C5 arm 1, real images, outcome reward), global_step_100",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+      "sign_convention": "delta = r19_a1real minus r19_base7b"
+    },
+    "c6_2_a2gray_minus_base_r19": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "contrast_id": "c6_2_a2gray_minus_base_r19",
+      "instrument": "r19",
+      "instrument_description": "R19 locked packaged FlipTrack manifest (primary instrument)",
+      "left_cell": "r19:base",
+      "left_label": "r19_base7b",
+      "left_model": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "n_pairs_total": 1200,
+      "orientation": "left = 7B base cell, right = arm cell",
+      "orientation_asserted": true,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "bootstrap_seed_lenient": 20260812,
+          "bootstrap_seed_strict": 20260813,
+          "contract_strict": {
+            "arm_minus_base": 0.006666666666666667,
+            "arm_pair_accuracy": 0.7916666666666666,
+            "base_pair_accuracy": 0.785,
+            "bootstrap_seed": 20260813,
+            "ci95_high": 0.028333333333333332,
+            "ci95_low": -0.013333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 24.0,
+            "mcnemar_b10_base_correct_arm_wrong": 20.0,
+            "mcnemar_exact_two_sided_p": 0.651587827208914,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.006666666666666667,
+            "arm_pair_accuracy": 0.7916666666666666,
+            "base_pair_accuracy": 0.785,
+            "bootstrap_seed": 20260812,
+            "ci95_high": 0.028333333333333332,
+            "ci95_low": -0.016666666666666666,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 24.0,
+            "mcnemar_b10_base_correct_arm_wrong": 20.0,
+            "mcnemar_exact_two_sided_p": 0.651587827208914,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "header_cued_table_code_v02": {
+          "bootstrap_seed_lenient": 20260822,
+          "bootstrap_seed_strict": 20260823,
+          "contract_strict": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.98,
+            "base_pair_accuracy": 0.98,
+            "bootstrap_seed": 20260823,
+            "ci95_high": 0.01,
+            "ci95_low": -0.01,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 1.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": -0.0033333333333333335,
+            "arm_pair_accuracy": 0.99,
+            "base_pair_accuracy": 0.9933333333333333,
+            "bootstrap_seed": 20260822,
+            "ci95_high": 0.0,
+            "ci95_low": -0.01,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 0.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "starred_series_value_nine_v07": {
+          "bootstrap_seed_lenient": 20260832,
+          "bootstrap_seed_strict": 20260833,
+          "contract_strict": {
+            "arm_minus_base": 0.016666666666666666,
+            "arm_pair_accuracy": 0.69,
+            "base_pair_accuracy": 0.6733333333333333,
+            "bootstrap_seed": 20260833,
+            "ci95_high": 0.04666666666666667,
+            "ci95_low": -0.013333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 13.0,
+            "mcnemar_b10_base_correct_arm_wrong": 8.0,
+            "mcnemar_exact_two_sided_p": 0.38331031799316406,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.016666666666666666,
+            "arm_pair_accuracy": 0.69,
+            "base_pair_accuracy": 0.6733333333333333,
+            "bootstrap_seed": 20260832,
+            "ci95_high": 0.04666666666666667,
+            "ci95_low": -0.013333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 13.0,
+            "mcnemar_b10_base_correct_arm_wrong": 8.0,
+            "mcnemar_exact_two_sided_p": 0.38331031799316406,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict": {
+          "arm_minus_base": 0.0075,
+          "arm_pair_accuracy": 0.8133333333333334,
+          "base_pair_accuracy": 0.8058333333333333,
+          "bootstrap_seed": 20260713,
+          "ci95_high": 0.020833333333333332,
+          "ci95_low": -0.005833333333333334,
+          "ci_excludes_zero": false,
+          "contract": "contract_strict",
+          "decision": "NOT MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 38.0,
+          "mcnemar_b10_base_correct_arm_wrong": 29.0,
+          "mcnemar_exact_two_sided_p": 0.3284320626971899,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "lenient": {
+          "arm_minus_base": 0.006666666666666667,
+          "arm_pair_accuracy": 0.8158333333333333,
+          "base_pair_accuracy": 0.8091666666666667,
+          "bootstrap_seed": 20260712,
+          "ci95_high": 0.02,
+          "ci95_low": -0.006666666666666667,
+          "ci_excludes_zero": false,
+          "contract": "lenient",
+          "decision": "NOT MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 37.0,
+          "mcnemar_b10_base_correct_arm_wrong": 29.0,
+          "mcnemar_exact_two_sided_p": 0.38905246054779274,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "note": "role-mixed pooled delta returned by the comparison engine; under I13 this is not a C6 endpoint and is never read as one"
+      },
+      "pre_committed_reading": {
+        "contract_disagreement_is_the_result": false,
+        "contract_disagreement_statement": "both contracts fire the same branch",
+        "contract_strict": {
+          "anchor_arm_minus_base": 0.006666666666666667,
+          "anchor_ci95": [
+            -0.013333333333333334,
+            0.028333333333333332
+          ],
+          "anchor_decision": "NOT MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "c",
+          "branch_reported_as": "(c) neither MOVED",
+          "canary_arm_minus_base": 0.0,
+          "canary_ci95": [
+            -0.01,
+            0.01
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "contract_strict",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.016666666666666666,
+          "readout_ci95": [
+            -0.013333333333333334,
+            0.04666666666666667
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(c) neither MOVED** \u2192 reported **descriptively as 7B recipe transfer**: the C5 recipe transferred to 7B on its own training distribution (R4) without moving either FlipTrack layer. No dissociation claim is made in either direction from this branch.",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "contracts_agree": true,
+        "lenient": {
+          "anchor_arm_minus_base": 0.006666666666666667,
+          "anchor_ci95": [
+            -0.016666666666666666,
+            0.028333333333333332
+          ],
+          "anchor_decision": "NOT MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "c",
+          "branch_reported_as": "(c) neither MOVED",
+          "canary_arm_minus_base": -0.0033333333333333335,
+          "canary_ci95": [
+            -0.01,
+            0.0
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "lenient",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.016666666666666666,
+          "readout_ci95": [
+            -0.013333333333333334,
+            0.04666666666666667
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(c) neither MOVED** \u2192 reported **descriptively as 7B recipe transfer**: the C5 recipe transferred to 7B on its own training distribution (R4) without moving either FlipTrack layer. No dissociation claim is made in either direction from this branch.",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "registered_contract_disagreement_text": "**Contract disagreement (I7).** The branch is evaluated separately under lenient and under contract-strict. If the two contracts fire different branches, **both branches are reported**, the disagreement is named as the result, and neither contract is chosen as the tie-breaker. No merged or averaged contract exists.",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+      },
+      "reading_scope": "blind-trained arm: same shape, same branches, different question -- what a blind-trained 7B arm does to a visual instrument (registration section 2); never netted against A1-real",
+      "right_cell": "r19:a2_gray",
+      "right_label": "r19_a2gray",
+      "right_model": "A2-gray (C5 arm 2, blind-trained), global_step_100",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+      "sign_convention": "delta = r19_a2gray minus r19_base7b"
+    },
+    "c6_3_a1real_minus_base_r20": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "contrast_id": "c6_3_a1real_minus_base_r20",
+      "instrument": "r20",
+      "instrument_description": "R20 private twin (replication, never pooled with R19)",
+      "left_cell": "r20:base",
+      "left_label": "r20_base7b",
+      "left_model": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "n_pairs_total": 1200,
+      "orientation": "left = 7B base cell, right = arm cell",
+      "orientation_asserted": true,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "bootstrap_seed_lenient": 20260812,
+          "bootstrap_seed_strict": 20260813,
+          "contract_strict": {
+            "arm_minus_base": 0.023333333333333334,
+            "arm_pair_accuracy": 0.78,
+            "base_pair_accuracy": 0.7566666666666667,
+            "bootstrap_seed": 20260813,
+            "ci95_high": 0.045,
+            "ci95_low": 0.0033333333333333335,
+            "ci_excludes_zero": true,
+            "contract": "contract_strict",
+            "decision": "MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 29.0,
+            "mcnemar_b10_base_correct_arm_wrong": 15.0,
+            "mcnemar_exact_two_sided_p": 0.048766765904474596,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.023333333333333334,
+            "arm_pair_accuracy": 0.78,
+            "base_pair_accuracy": 0.7566666666666667,
+            "bootstrap_seed": 20260812,
+            "ci95_high": 0.043333333333333335,
+            "ci95_low": 0.0016666666666666668,
+            "ci_excludes_zero": true,
+            "contract": "lenient",
+            "decision": "MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 29.0,
+            "mcnemar_b10_base_correct_arm_wrong": 15.0,
+            "mcnemar_exact_two_sided_p": 0.048766765904474596,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "header_cued_table_code_v02": {
+          "bootstrap_seed_lenient": 20260822,
+          "bootstrap_seed_strict": 20260823,
+          "contract_strict": {
+            "arm_minus_base": 0.006666666666666667,
+            "arm_pair_accuracy": 0.9933333333333333,
+            "base_pair_accuracy": 0.9866666666666667,
+            "bootstrap_seed": 20260823,
+            "ci95_high": 0.02,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 3.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 0.625,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.9966666666666667,
+            "base_pair_accuracy": 0.9966666666666667,
+            "bootstrap_seed": 20260822,
+            "ci95_high": 0.01,
+            "ci95_low": -0.01,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 1.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "starred_series_value_nine_v07": {
+          "bootstrap_seed_lenient": 20260832,
+          "bootstrap_seed_strict": 20260833,
+          "contract_strict": {
+            "arm_minus_base": 0.013333333333333334,
+            "arm_pair_accuracy": 0.6366666666666667,
+            "base_pair_accuracy": 0.6233333333333333,
+            "bootstrap_seed": 20260833,
+            "ci95_high": 0.06,
+            "ci95_low": -0.03,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 24.0,
+            "mcnemar_b10_base_correct_arm_wrong": 20.0,
+            "mcnemar_exact_two_sided_p": 0.651587827208914,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.013333333333333334,
+            "arm_pair_accuracy": 0.6366666666666667,
+            "base_pair_accuracy": 0.6233333333333333,
+            "bootstrap_seed": 20260832,
+            "ci95_high": 0.06,
+            "ci95_low": -0.03,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 24.0,
+            "mcnemar_b10_base_correct_arm_wrong": 20.0,
+            "mcnemar_exact_two_sided_p": 0.651587827208914,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict": {
+          "arm_minus_base": 0.016666666666666666,
+          "arm_pair_accuracy": 0.7975,
+          "base_pair_accuracy": 0.7808333333333334,
+          "bootstrap_seed": 20260713,
+          "ci95_high": 0.0325,
+          "ci95_low": 0.0016666666666666668,
+          "ci_excludes_zero": true,
+          "contract": "contract_strict",
+          "decision": "MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 56.0,
+          "mcnemar_b10_base_correct_arm_wrong": 36.0,
+          "mcnemar_exact_two_sided_p": 0.047011561644854,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "lenient": {
+          "arm_minus_base": 0.015,
+          "arm_pair_accuracy": 0.7983333333333333,
+          "base_pair_accuracy": 0.7833333333333333,
+          "bootstrap_seed": 20260712,
+          "ci95_high": 0.030833333333333334,
+          "ci95_low": -0.0008333333333333334,
+          "ci_excludes_zero": false,
+          "contract": "lenient",
+          "decision": "NOT MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 54.0,
+          "mcnemar_b10_base_correct_arm_wrong": 36.0,
+          "mcnemar_exact_two_sided_p": 0.07254953219246181,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "note": "role-mixed pooled delta returned by the comparison engine; under I13 this is not a C6 endpoint and is never read as one"
+      },
+      "pre_committed_reading": {
+        "contract_disagreement_is_the_result": false,
+        "contract_disagreement_statement": "both contracts fire the same branch",
+        "contract_strict": {
+          "anchor_arm_minus_base": 0.023333333333333334,
+          "anchor_ci95": [
+            0.0033333333333333335,
+            0.045
+          ],
+          "anchor_decision": "MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "d",
+          "branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "canary_arm_minus_base": 0.006666666666666667,
+          "canary_ci95": [
+            -0.006666666666666667,
+            0.02
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "contract_strict",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.013333333333333334,
+          "readout_ci95": [
+            -0.03,
+            0.06
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(d) anchor MOVED, readout NOT MOVED** \u2192 the remaining cell of the 2\u00d72. It is not anticipated by any prior result and no interpretation is pre-committed for it; it is reported descriptively, with the raw numbers, and explicitly flagged as an unregistered outcome. Naming it here prevents it from being quietly folded into (a) or (b).",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "contracts_agree": true,
+        "lenient": {
+          "anchor_arm_minus_base": 0.023333333333333334,
+          "anchor_ci95": [
+            0.0016666666666666668,
+            0.043333333333333335
+          ],
+          "anchor_decision": "MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "d",
+          "branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "canary_arm_minus_base": 0.0,
+          "canary_ci95": [
+            -0.01,
+            0.01
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "lenient",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.013333333333333334,
+          "readout_ci95": [
+            -0.03,
+            0.06
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(d) anchor MOVED, readout NOT MOVED** \u2192 the remaining cell of the 2\u00d72. It is not anticipated by any prior result and no interpretation is pre-committed for it; it is reported descriptively, with the raw numbers, and explicitly flagged as an unregistered outcome. Naming it here prevents it from being quietly folded into (a) or (b).",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "registered_contract_disagreement_text": "**Contract disagreement (I7).** The branch is evaluated separately under lenient and under contract-strict. If the two contracts fire different branches, **both branches are reported**, the disagreement is named as the result, and neither contract is chosen as the tie-breaker. No merged or averaged contract exists.",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+      },
+      "reading_scope": "replication of c6_1 on the private twin, not a vote",
+      "right_cell": "r20:a1_real",
+      "right_label": "r20_a1real",
+      "right_model": "A1-real (C5 arm 1, real images, outcome reward), global_step_100",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+      "sign_convention": "delta = r20_a1real minus r20_base7b"
+    },
+    "c6_4_a2gray_minus_base_r20": {
+      "comparison_schema_version": "blind-gains.fliptrack-paired-comparison.v2",
+      "contrast_id": "c6_4_a2gray_minus_base_r20",
+      "instrument": "r20",
+      "instrument_description": "R20 private twin (replication, never pooled with R19)",
+      "left_cell": "r20:base",
+      "left_label": "r20_base7b",
+      "left_model": "frozen 7B base (Qwen2.5-VL-7B-Instruct)",
+      "n_pairs_total": 1200,
+      "orientation": "left = 7B base cell, right = arm cell",
+      "orientation_asserted": true,
+      "per_task_role": {
+        "coordinate_register_twenty_point_x_v02": {
+          "bootstrap_seed_lenient": 20260812,
+          "bootstrap_seed_strict": 20260813,
+          "contract_strict": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.7566666666666667,
+            "base_pair_accuracy": 0.7566666666666667,
+            "bootstrap_seed": 20260813,
+            "ci95_high": 0.021666666666666667,
+            "ci95_low": -0.023333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 25.0,
+            "mcnemar_b10_base_correct_arm_wrong": 25.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.0,
+            "arm_pair_accuracy": 0.7566666666666667,
+            "base_pair_accuracy": 0.7566666666666667,
+            "bootstrap_seed": 20260812,
+            "ci95_high": 0.023333333333333334,
+            "ci95_low": -0.021666666666666667,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 25.0,
+            "mcnemar_b10_base_correct_arm_wrong": 25.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 600.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 600,
+          "role": "primary visual anchor (search + binding + read)",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "header_cued_table_code_v02": {
+          "bootstrap_seed_lenient": 20260822,
+          "bootstrap_seed_strict": 20260823,
+          "contract_strict": {
+            "arm_minus_base": 0.0033333333333333335,
+            "arm_pair_accuracy": 0.99,
+            "base_pair_accuracy": 0.9866666666666667,
+            "bootstrap_seed": 20260823,
+            "ci95_high": 0.016666666666666666,
+            "ci95_low": -0.006666666666666667,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 2.0,
+            "mcnemar_b10_base_correct_arm_wrong": 1.0,
+            "mcnemar_exact_two_sided_p": 1.0,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": -0.006666666666666667,
+            "arm_pair_accuracy": 0.99,
+            "base_pair_accuracy": 0.9966666666666667,
+            "bootstrap_seed": 20260822,
+            "ci95_high": 0.0,
+            "ci95_low": -0.016666666666666666,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 0.0,
+            "mcnemar_b10_base_correct_arm_wrong": 2.0,
+            "mcnemar_exact_two_sided_p": 0.5,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "saturated positive control / retention canary -- a DROP signals damage",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "starred_series_value_nine_v07": {
+          "bootstrap_seed_lenient": 20260832,
+          "bootstrap_seed_strict": 20260833,
+          "contract_strict": {
+            "arm_minus_base": 0.013333333333333334,
+            "arm_pair_accuracy": 0.6366666666666667,
+            "base_pair_accuracy": 0.6233333333333333,
+            "bootstrap_seed": 20260833,
+            "ci95_high": 0.05333333333333334,
+            "ci95_low": -0.023333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "contract_strict",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 18.0,
+            "mcnemar_b10_base_correct_arm_wrong": 14.0,
+            "mcnemar_exact_two_sided_p": 0.5966148958541453,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "lenient": {
+            "arm_minus_base": 0.013333333333333334,
+            "arm_pair_accuracy": 0.6366666666666667,
+            "base_pair_accuracy": 0.6233333333333333,
+            "bootstrap_seed": 20260832,
+            "ci95_high": 0.05,
+            "ci95_low": -0.023333333333333334,
+            "ci_excludes_zero": false,
+            "contract": "lenient",
+            "decision": "NOT MOVED",
+            "mcnemar_b01_base_wrong_arm_correct": 18.0,
+            "mcnemar_b10_base_correct_arm_wrong": 14.0,
+            "mcnemar_exact_two_sided_p": 0.5966148958541453,
+            "mcnemar_n_common": 300.0,
+            "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+          },
+          "n_pairs": 300,
+          "role": "oracle-localized readout control",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        }
+      },
+      "pooled_all_roles_NOT_AN_ENDPOINT": {
+        "contract_strict": {
+          "arm_minus_base": 0.004166666666666667,
+          "arm_pair_accuracy": 0.785,
+          "base_pair_accuracy": 0.7808333333333334,
+          "bootstrap_seed": 20260713,
+          "ci95_high": 0.019166666666666665,
+          "ci95_low": -0.01,
+          "ci_excludes_zero": false,
+          "contract": "contract_strict",
+          "decision": "NOT MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 45.0,
+          "mcnemar_b10_base_correct_arm_wrong": 40.0,
+          "mcnemar_exact_two_sided_p": 0.6646454904132143,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "lenient": {
+          "arm_minus_base": 0.0016666666666666668,
+          "arm_pair_accuracy": 0.785,
+          "base_pair_accuracy": 0.7833333333333333,
+          "bootstrap_seed": 20260712,
+          "ci95_high": 0.016666666666666666,
+          "ci95_low": -0.013333333333333334,
+          "ci_excludes_zero": false,
+          "contract": "lenient",
+          "decision": "NOT MOVED",
+          "mcnemar_b01_base_wrong_arm_correct": 43.0,
+          "mcnemar_b10_base_correct_arm_wrong": 41.0,
+          "mcnemar_exact_two_sided_p": 0.9132023622245966,
+          "mcnemar_n_common": 1200.0,
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "note": "role-mixed pooled delta returned by the comparison engine; under I13 this is not a C6 endpoint and is never read as one"
+      },
+      "pre_committed_reading": {
+        "contract_disagreement_is_the_result": false,
+        "contract_disagreement_statement": "both contracts fire the same branch",
+        "contract_strict": {
+          "anchor_arm_minus_base": 0.0,
+          "anchor_ci95": [
+            -0.023333333333333334,
+            0.021666666666666667
+          ],
+          "anchor_decision": "NOT MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "c",
+          "branch_reported_as": "(c) neither MOVED",
+          "canary_arm_minus_base": 0.0033333333333333335,
+          "canary_ci95": [
+            -0.006666666666666667,
+            0.016666666666666666
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "contract_strict",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.013333333333333334,
+          "readout_ci95": [
+            -0.023333333333333334,
+            0.05333333333333334
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(c) neither MOVED** \u2192 reported **descriptively as 7B recipe transfer**: the C5 recipe transferred to 7B on its own training distribution (R4) without moving either FlipTrack layer. No dissociation claim is made in either direction from this branch.",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "contracts_agree": true,
+        "lenient": {
+          "anchor_arm_minus_base": 0.0,
+          "anchor_ci95": [
+            -0.021666666666666667,
+            0.023333333333333334
+          ],
+          "anchor_decision": "NOT MOVED",
+          "anchor_template_id": "coordinate_register_twenty_point_x_v02",
+          "branch": "c",
+          "branch_reported_as": "(c) neither MOVED",
+          "canary_arm_minus_base": -0.006666666666666667,
+          "canary_ci95": [
+            -0.016666666666666666,
+            0.0
+          ],
+          "canary_damage": false,
+          "canary_decision": "NOT MOVED",
+          "canary_registered_text": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+          "canary_template_id": "header_cued_table_code_v02",
+          "contract": "lenient",
+          "negative_direction_note": "MOVED_NEGATIVE_DIRECTION is not MOVED for the purposes of the branch; it is recorded verbatim and never folded into MOVED",
+          "readout_arm_minus_base": 0.013333333333333334,
+          "readout_ci95": [
+            -0.023333333333333334,
+            0.05
+          ],
+          "readout_decision": "NOT MOVED",
+          "readout_template_id": "starred_series_value_nine_v07",
+          "registered_branch_text": "**(c) neither MOVED** \u2192 reported **descriptively as 7B recipe transfer**: the C5 recipe transferred to 7B on its own training distribution (R4) without moving either FlipTrack layer. No dissociation claim is made in either direction from this branch.",
+          "roles_moved_negative_direction": [],
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+        },
+        "registered_contract_disagreement_text": "**Contract disagreement (I7).** The branch is evaluated separately under lenient and under contract-strict. If the two contracts fire different branches, **both branches are reported**, the disagreement is named as the result, and neither contract is chosen as the tie-breaker. No merged or averaged contract exists.",
+        "seed_tag": "one seed (data.seed 1; single 7B training pair)"
+      },
+      "reading_scope": "replication of c6_2 on the private twin, not a vote",
+      "right_cell": "r20:a2_gray",
+      "right_label": "r20_a2gray",
+      "right_model": "A2-gray (C5 arm 2, blind-trained), global_step_100",
+      "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+      "sign_convention": "delta = r20_a2gray minus r20_base7b"
+    }
+  },
+  "registration": {
+    "path": "docs/registered_c6_mechanism_at_scale_v1.md",
+    "quoted_text": {
+      "branch_a": "**(a) readout MOVED, anchor NOT MOVED** \u2192 **the dissociation is scale-independent.** Reported as the central C6 result: outcome-reward RLVR at 7B moves the oracle-localized readout while leaving the primary visual anchor flat, as it does at 3B across four recipes.",
+      "branch_b": "**(b) readout MOVED and anchor MOVED** \u2192 **a scale-dependent mechanism.** Reported as such: at 7B the same recipe reaches the primary anchor, which the 3B recipes did not. This is a finding about scale, and it is reported without being softened into (a).",
+      "branch_c": "**(c) neither MOVED** \u2192 reported **descriptively as 7B recipe transfer**: the C5 recipe transferred to 7B on its own training distribution (R4) without moving either FlipTrack layer. No dissociation claim is made in either direction from this branch.",
+      "branch_d": "**(d) anchor MOVED, readout NOT MOVED** \u2192 the remaining cell of the 2\u00d72. It is not anticipated by any prior result and no interpretation is pre-committed for it; it is reported descriptively, with the raw numbers, and explicitly flagged as an unregistered outcome. Naming it here prevents it from being quietly folded into (a) or (b).",
+      "canary": "**In every branch, the canary is read in its own retention role.** `header_cued_table_code_v02` is a saturated positive control: it never contributes to the anchor/readout branch decision and is never netted against either. Its reading is independent and has its own consequence \u2014 **MOVED_NEGATIVE_DIRECTION on the canary is a damage signal** and is reported as damage, under whichever branch (a)\u2013(d) fired for the other two roles. A branch (a) accompanied by canary damage is reported as \"(a) with canary damage\", not as (a).",
+      "contract_disagreement": "**Contract disagreement (I7).** The branch is evaluated separately under lenient and under contract-strict. If the two contracts fire different branches, **both branches are reported**, the disagreement is named as the result, and neither contract is chosen as the tie-breaker. No merged or averaged contract exists.",
+      "decision_rule": "**Decision rule.** **MOVED** iff the 95% paired-bootstrap CI excludes zero in the positive direction. A positive point estimate whose interval contains zero is **NOT MOVED** \u2014 not \"a trend\". **MOVED_NEGATIVE_DIRECTION** iff the CI lies entirely below zero. Identical to the Gate-1 rule (`reports/mini_a5_gate1_endpoint_readout_v1.json` \u2192 `instrument`).",
+      "replication": "**R20 is a replication, not a vote.** Its branch reading is reported next to R19's. If the two instruments fire different branches, that is reported as a replication failure of the branch on the twin \u2014 it is not resolved by pooling, averaging, or majority."
+    },
+    "quotes_verified_present": true,
+    "sha256": "113dc544d93f259c69f0314905ebe39bbd6244f3f6ee27494c8811d6eb5dbbb9"
+  },
+  "replication_across_instruments": {
+    "arms": {
+      "a1_real": {
+        "contract_strict": {
+          "branches_agree": true,
+          "r19_branch": "d",
+          "r19_branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "r20_branch": "d",
+          "r20_branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "statement": "the branch replicates on the private twin"
+        },
+        "lenient": {
+          "branches_agree": true,
+          "r19_branch": "d",
+          "r19_branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "r20_branch": "d",
+          "r20_branch_reported_as": "(d) anchor MOVED, readout NOT MOVED",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "statement": "the branch replicates on the private twin"
+        },
+        "r19_contrast": "c6_1_a1real_minus_base_r19",
+        "r20_contrast": "c6_3_a1real_minus_base_r20"
+      },
+      "a2_gray": {
+        "contract_strict": {
+          "branches_agree": true,
+          "r19_branch": "c",
+          "r19_branch_reported_as": "(c) neither MOVED",
+          "r20_branch": "c",
+          "r20_branch_reported_as": "(c) neither MOVED",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "statement": "the branch replicates on the private twin"
+        },
+        "lenient": {
+          "branches_agree": true,
+          "r19_branch": "c",
+          "r19_branch_reported_as": "(c) neither MOVED",
+          "r20_branch": "c",
+          "r20_branch_reported_as": "(c) neither MOVED",
+          "seed_tag": "one seed (data.seed 1; single 7B training pair)",
+          "statement": "the branch replicates on the private twin"
+        },
+        "r19_contrast": "c6_2_a2gray_minus_base_r19",
+        "r20_contrast": "c6_4_a2gray_minus_base_r20"
+      }
+    },
+    "registered_replication_text": "**R20 is a replication, not a vote.** Its branch reading is reported next to R19's. If the two instruments fire different branches, that is reported as a replication failure of the branch on the twin \u2014 it is not resolved by pooling, averaging, or majority."
+  },
+  "schema_version": "blind-gains.c6-mechanism-at-scale-readout.v1",
+  "scope_limits": [
+    "one seed, one 7B training pair: every number is a one-seed number; C6 makes no between-seed variance claim",
+    "two arms, not four: C6 tests whether the dissociation holds at 7B for the transferred recipe; it does not establish recipe-independence at 7B",
+    "descriptive cross-scale only: nothing here licenses a tested claim that the dissociation is stronger, weaker, or equal at 7B vs 3B",
+    "no re-decision: Gate 1 and R4 stand as filed"
+  ],
+  "seed_scope_tag": "one seed (data.seed 1; single 7B training pair)",
+  "task_roles": {
+    "coordinate_register_twenty_point_x_v02": {
+      "read_as": "anchor half of the dissociation",
+      "registered_n_pairs": 600,
+      "role": "primary visual anchor (search + binding + read)"
+    },
+    "header_cued_table_code_v02": {
+      "read_as": "independent retention canary; never netted against the anchor or the readout",
+      "registered_n_pairs": 300,
+      "role": "saturated positive control / retention canary -- a DROP signals damage"
+    },
+    "starred_series_value_nine_v07": {
+      "read_as": "readout half of the dissociation",
+      "registered_n_pairs": 300,
+      "role": "oracle-localized readout control"
+    }
+  },
+  "title": "C6 mechanism at scale: does the readout/anchor dissociation hold at 7B? Frozen 7B base vs C5 A1-real and A2-gray on FlipTrack R19 and its private twin R20"
+}
