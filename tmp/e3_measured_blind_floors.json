@@ -1,0 +1,7 @@
+{
+ "chained_premise": 0.25,
+ "chained_premise_easy": 0.225,
+ "fact_read": 0.2,
+ "premise_transition": 0.1375,
+ "premise_transition_easy": 0.225
+}

@@ -1622,18 +1622,7 @@ section originally made, and it is the claim Paper 2 inherits.
   criteria unchanged. Backstop: `scripts/host_ram_watchdog.sh` (kills the
   youngest trainer if a node falls under 120 GiB available with >1 trainer).
 
-- **Track-4 E3 caption stress.** an29 GPU 3, registered runner relaunched
-  15:51:45Z from an immutable snapshot outside the repo
-  (`experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z`). The 7B
-  captioner pass over all 480 distinct dev-batch images had already completed
-  once under a second driver (`t4v2_e3_caption_store_an29_20260811T152952Z`,
-  4×120 rows, status complete), but that driver died before the merge when its
-  script file was overwritten mid-run, so the chain is being repeated
-  end-to-end (caption → merge → QA build → eval) to land in one provenance
-  record. Cost of the redundancy ~20 min of 4-GPU time; nothing contradictory,
-  the same registered command over the same images. The verdict is read
-  separately against the registered per-type criterion (caption member accuracy
-  ≤ blind-floor threshold + 0.10).
+*(E3 caption stress closed at 16:26Z — see "Closed this round".)*
 
 **Closed this round** *(2026-08-11)*
 
@@ -1643,6 +1632,12 @@ section originally made, and it is the claim Paper 2 inherits.
 - **E4 attacker gate** — PASS on the instrument's registered folded criterion.
 - **E1/E2 per-type gate readout** — E1 FAIL (branch c), E2 FAIL on the final
   clause / PASS on the premise clause for every type.
+- **E3 caption stress** — complete. Caption minus blind is ≤ 0 for four of five
+  types and +0.0375 for the fifth: the batch is **not caption-leaky**. All five
+  types pass against each type's own measured blind floor + 0.10; one type
+  (`chained_premise_easy`) fails against the registered literal 0.133 + 0.10,
+  and that failure is inherited from E2's answer-balance defect rather than from
+  captions. **All four premise-v2 acceptance gates have now run.**
 
 **Open, not running**
 
@@ -2136,20 +2131,72 @@ Artifacts: `reports/track4_premise_v2_gate_readout_v1.{json,md}`;
 instrument `scripts/build_track4_premise_v2_gate_readout.py`;
 fixtures `tests/test_build_track4_premise_v2_gate_readout.py` (26 passed).
 
-**E3 — caption stress: running** on an29 GPU 3 under the registered runner
-`scripts/run_e3_caption_stress.sh`, relaunched 15:51:45Z from an immutable
-snapshot (run `experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z`,
-caption store `…_caption_store_an29_20260811T155104Z`). Under the PI's decision,
-the registered captioner command runs verbatim over all of `$DATA/images` (640
-files / 480 distinct sha256), the merge is given a derived coverage manifest
-whose hash set is exactly those 480 — so `merge_caption_rows`' exact-coverage
-assertion still runs and must report `coverage_complete=true`, with no override
-and no registered code touched — and the restriction to the 320-image causal
-release happens one step later at `build_caption_qa_pairs.py
---allow-extra-captions`, carrying the 160 non-causal captions unused. Preflight
-verified `causal_equals_caption_qa_release=true` and
-`coverage_equals_image_dir=true` before any GPU was spent.
-Log `logs/track4_gates/e3_caption_stress.log`.
+**E3 — caption stress: COMPLETE. The batch is not caption-leaky — and for four
+of five types a caption is *worse* than no image at all.** The registered
+captioner command ran verbatim over all of `$DATA/images` (640 files / 480
+distinct sha256) on an29 GPU 3, 1,680 s, status complete. The merge received a
+coverage manifest whose hash set is exactly those 480, so
+`merge_caption_rows`' exact-coverage assertion still ran and reported
+`coverage_complete=true` — no override, no registered code touched. Restriction
+to the 320-member causal release happened one step later at
+`build_caption_qa_pairs.py --allow-extra-captions` (160 pairs / 320 members
+built; the 160 non-causal captions carried and unused), then the 3B caption-QA
+FlipTrack eval.
+
+Per-type, both contracts, never merged (I7); nothing pooled across types (I13):
+
+| type | n | caption member acc (lenient = strict) | blind floor (E2) | **caption − blind** | ceiling (a) 0.233 | ceiling (b) floor+0.10 |
+|---|---:|---:|---:|---:|---|---|
+| `fact_read` | 20 | 0.0750 | 0.200 | **−0.1250** | PASS | PASS |
+| `premise_transition` | 40 | 0.1125 | 0.1375 | **−0.0250** | PASS | PASS |
+| `premise_transition_easy` | 40 | 0.2125 | 0.225 | **−0.0125** | PASS | PASS |
+| `chained_premise` | 20 | 0.2250 | 0.250 | **−0.0250** | PASS | PASS |
+| `chained_premise_easy` | 40 | 0.2625 | 0.225 | **+0.0375** | **FAIL** | PASS |
+
+*The one thing the registration leaves open, reported rather than decided.*
+Section 7's "caption member accuracy ≤ blind-floor threshold + 0.10" does not say
+which blind-floor threshold. Reading **(a)** takes E2's registered literal 0.133,
+giving a 0.233 ceiling; reading **(b)** takes each type's own *measured* blind
+final member accuracy. Under (a) one type fails; under (b) all five pass. Both
+are reported and the choice is the PI's — the instrument does not pick.
+
+**Insight (H-T4c, the caption tells the model nothing, and often misleads).**
+The registered quantity E3 exists to bound is what a caption *buys* over
+blindness, and that increment is at or below zero for **four of the five types**
+(−0.125 to −0.0125) and +0.0375 for the fifth — every one of them far inside the
+registered 0.10 margin. These renders are coordinate registers; a 7B captioner
+cannot serialize twenty labelled point positions accurately, and a confidently
+wrong caption is worse than the prior-driven constant a blind model falls back
+on — which is exactly the shape of a −0.125 on `fact_read`, the pure reading
+control. So the single FAIL under reading (a) is **not** caption leakage: at
++0.0375 over blind, `chained_premise_easy` clears the 0.233 line only because its
+blind floor was already 0.225, i.e. the same degenerate final-answer imbalance
+E2 diagnosed. Reading (a) partly re-measures E2's generator defect; reading (b)
+isolates what E3 is actually about. **Balancing the final-answer distribution
+should clear E2 and E3 together**, and no caption-side revision is indicated.
+
+Taken with E2, the construct now has two independent clean bills: the premise
+clause is blind-unsolvable at exactly 0.000, and the items are not caption-
+solvable either. The one defect is a fixable property of the answer sampler.
+
+Artifacts: `reports/track4_premise_v2_e3_readout_v1.{json,md}`; instrument
+`scripts/build_track4_premise_v2_e3_readout.py`; fixtures
+`tests/test_build_track4_premise_v2_e3_readout.py` (14 passed, green before the
+instrument read a real cell). Predictions
+`experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z/finish_20260811T162332Z/`;
+caption store `…_caption_store_an29_20260811T155104Z` (480 rows); merge
+`experiments/runs/caption_store_merge_track4_premise_v2_dev_v1_20260811T162332Z`.
+Logs `logs/track4_gates/e3_caption_stress.log` (stage A) and
+`logs/track4_gates/e3_finish_from_banked_captions.log` (stages B–D).
+
+*One-line bug fixed to unblock the gate:*
+`scripts/launch_caption_store_merge.sh` guarded arity with `$# -lt 4`, i.e.
+RUN_TAG + RELEASE_MANIFEST + **two or more** shards, so it rejected the
+single-shard merge the registered E3 command produces and exited 2 with a usage
+message. Corrected to `-lt 3`. The captioner pass was **not** re-run: stages B–D
+were completed from the banked shard by
+`scripts/e3_finish_from_banked_captions.sh`, using the same underlying commands
+the aborted runner had already logged verbatim.
 
 *Concurrency incident, recorded (no E3 verdict affected — none had been
 produced).* A second E3 driver captioned the same 480 images on an29 GPUs 0–3 in
@@ -2198,6 +2245,7 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | C6: at 7B the real-image arm moves the primary visual anchor (+0.025/+0.023, CIs exclude 0, both contracts, both instruments) and the readout does not; the blind arm moves neither | `docs/registered_c6_mechanism_at_scale_v1.md` (filed pre-read; §7 estimands, §8 branches, §9 checks) | `reports/c6_mechanism_at_scale_v1.{json,md}` (report of record); independently reproduced, all 24 registered numbers exact, by `reports/c6_mechanism_at_scale_v1_independent_replicate.{json,md}`; cell pointers `logs/c6_cells/`, gen log `logs/c6_cells_chain.log` | inline cmd block F |
 | E4: premise-v2 release carries no transferable artifact signal (folded gate 0.546 max, CI upper 0.576 max) | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 | `reports/track4_premise_v2_attacker_gate_v1.json`, `logs/track4_gates/e4_attacker_gate.log` | inline cmd block G |
 | E1/E2: premise clause blind-unsolvable (0.000); final clause leaks a degenerate constant above the 0.133 ceiling; difficulty branch (c) fires at 0.2875 | `docs/registered_track4_premise_v2_design_v1.md` §7-E1/E2, §5 branches | `reports/track4_premise_v2_gate_readout_v1.{json,md}`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z` | inline cmd block H |
+| E3: the batch is not caption-leaky — caption minus blind ≤ 0 for four of five types, +0.0375 for the fifth; all five pass against their own measured floor + 0.10, one fails the registered literal ceiling for an E2-inherited reason | `docs/registered_track4_premise_v2_design_v1.md` §7-E3 | `reports/track4_premise_v2_e3_readout_v1.{json,md}`, caption store `experiments/runs/track4_premise_v2_caption_store_an29_20260811T155104Z`, merge `…caption_store_merge_track4_premise_v2_dev_v1_20260811T162332Z`, predictions under `…track4_premise_v2_e3_an29_20260811T155104Z/finish_20260811T162332Z/` | inline cmd block I |
 
 **Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
 include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing
@@ -2308,6 +2356,27 @@ were produced by `scripts/track4_premise_v2_gates.sh`, raw, no rescore):
       --causal-manifest $D/manifest_causal_pairs.jsonl \
       --json-output reports/track4_premise_v2_gate_readout_v1.json \
       --markdown-output reports/track4_premise_v2_gate_readout_v1.md
+
+**I — E3 caption stress** (fixtures green first:
+`tests/test_build_track4_premise_v2_e3_readout.py` → 14 passed). Generation:
+stage A is the registered captioner command, run by
+`scripts/run_e3_caption_stress.sh` on an29 GPU 3; stages B–D were completed from
+the banked shard by `scripts/e3_finish_from_banked_captions.sh` after the
+single-shard arity fix to `scripts/launch_caption_store_merge.sh`. The readout:
+
+    E=experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z/finish_20260811T162332Z
+    .venv/bin/python scripts/build_track4_premise_v2_e3_readout.py \
+      --predictions $E/caption_qa_predictions.jsonl \
+      --causal-manifest data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl \
+      --measured-blind-floors tmp/e3_measured_blind_floors.json \
+      --json-output reports/track4_premise_v2_e3_readout_v1.json \
+      --markdown-output reports/track4_premise_v2_e3_readout_v1.md
+
+(the measured floors are each type's blind final member accuracy read out of
+`reports/track4_premise_v2_gate_readout_v1.json`; omitting the flag reports
+reading (a) alone. Intervention type is taken from the causal manifest's own
+`intervention_type` field, never parsed from `pair_id` — the type names are
+prefixes of one another.)
 
 *Eval-cell generation for the Gate-1 arms (merge → R19/R20/chartv08/catch) is
 scripted end-to-end in `scripts/gate1_std_evals_chain.sh` and

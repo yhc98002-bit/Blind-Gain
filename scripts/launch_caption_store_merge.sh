@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 4 ]]; then
+if [[ $# -lt 3 ]]; then
   echo "Usage: $0 RUN_TAG RELEASE_MANIFEST SHARD [SHARD ...]" >&2
   exit 2
 fi
