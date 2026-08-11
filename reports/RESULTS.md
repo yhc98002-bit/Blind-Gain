@@ -1603,26 +1603,37 @@ section originally made, and it is the claim Paper 2 inherits.
 2026-08-10 after an12's double host-OOM: two colocated 3B Ray trainers exhaust a
 1007-GiB node in ~17 h; deviations rows in the M7 amendment and LH2 registrations)*
 
-- **M7 seed 2.** a1_real: complete + held-out eval banked. a2b: training solo on
-  an29 0–3 (step 60+, lands ~08-11 17Z); its eval + the a3_caption solo relaunch
-  auto-chain on completion (`scripts/seed2_an29_chain.sh`). a2_gray: attempt 2
-  training solo on an12 4–7 (`m7_virl_a2_gray_seed2_an12_20260810T143944Z`,
-  lands ~08-12 16Z; attempt 1 killed by the node OOM, checkpoints archived);
-  its eval + the LH2 chain relaunch auto-chain on completion
-  (`scripts/seed2_an12_chain.sh`). Then the two-seed R3 readout rerun (~08-14).
+- **M7 seed 2.** a1_real: complete + held-out eval banked. **a2b: complete —
+  training done and its held-out eval banked 2026-08-11T13:39:29Z** (status
+  `complete`, 4,239/4,239 items,
+  `m7_step100_heldout_seed2_a2b_noimage_seed2_none_an29_20260811T041120Z`); its
+  completion fired the chain that relaunched a3. a3_caption: attempt 2 training
+  solo on an29 4–7 (`m7_virl_a3_caption_seed2_an29_20260811T040410Z`, step 20 at
+  16:00Z, ~0.6 h/step → lands ~08-13 16Z), eval armed via
+  `scripts/a3_eval_chain.sh`. a2_gray: attempt 2 training solo on an12 4–7
+  (`m7_virl_a2_gray_seed2_an12_20260810T143944Z`, step 40 at 16:00Z,
+  ~0.63 h/step → lands ~08-13 06Z; attempt 1 killed by the node OOM, checkpoints
+  archived); its eval + the LH2 chain relaunch auto-chain on completion
+  (`scripts/seed2_an12_chain.sh`). Then the two-seed R3 readout rerun, now
+  ~08-14 once the last of the two evals lands.
 - **LH2 stage 1.** Seg-1 attempt 2 died in the same an12 OOM (no boundary
   banked, nothing read); chain stopped itself as designed. Restarts from step 0
   solo on an12 0–3 after a2_gray completes (~08-12); go/no-go shifts ~2 days,
   criteria unchanged. Backstop: `scripts/host_ram_watchdog.sh` (kills the
   youngest trainer if a node falls under 120 GiB available with >1 trainer).
 
-- **Track-4 E3 caption stress.** an29 0–3. The 7B captioner pass over all 480
-  distinct dev-batch images completed once (`t4v2_e3_caption_store_an29_
-  20260811T152952Z`, 4×120 rows, status complete) but its driver died before the
-  merge; the run is being repeated end-to-end under `tmux` so the whole chain
-  (caption → merge → QA build → eval) lands in one provenance record. Cost
-  ~20 min of 4-GPU time. The verdict is read separately against the registered
-  per-type criterion (caption member accuracy ≤ blind-floor threshold + 0.10).
+- **Track-4 E3 caption stress.** an29 GPU 3, registered runner relaunched
+  15:51:45Z from an immutable snapshot outside the repo
+  (`experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z`). The 7B
+  captioner pass over all 480 distinct dev-batch images had already completed
+  once under a second driver (`t4v2_e3_caption_store_an29_20260811T152952Z`,
+  4×120 rows, status complete), but that driver died before the merge when its
+  script file was overwritten mid-run, so the chain is being repeated
+  end-to-end (caption → merge → QA build → eval) to land in one provenance
+  record. Cost of the redundancy ~20 min of 4-GPU time; nothing contradictory,
+  the same registered command over the same images. The verdict is read
+  separately against the registered per-type criterion (caption member accuracy
+  ≤ blind-floor threshold + 0.10).
 
 **Closed this round** *(2026-08-11)*
 
@@ -1971,6 +1982,47 @@ which the I13 guard forbids in any emitted key. Renamed to
 not scanned), so the guard stays universal rather than being exempted. This is
 what "fixtures before data" is for.
 
+**Independent reproduction — all 24 registered numbers agree exactly
+(2026-08-11T15:41Z).** The C6 report was re-derived by a second instrument
+authored independently against the same registration, with no sight of the first
+instrument's source: different internal layout and different key names, but the
+same registered engine (`compare_rows`, seed 20260712, 2,000 draws), the same
+16 acceptance checks, and its own 24-case adversarial fixture suite (green before
+it touched a real cell). Every one of the four contrasts × three roles × two
+contracts matches to floating-point equality on all six reported quantities —
+base level, arm level, arm−base, both CI bounds, and the MOVED / NOT MOVED
+decision — and every branch reading and twin-replication verdict is identical.
+Branch (d) for A1-real on both instruments under both contracts, branch (c) for
+A2-gray, canary clean: reproduced independently.
+
+Two details make that reproduction worth more than a rerun. The two instruments
+were written from the registration alone, so the agreement tests the
+*registration's* determinacy, not just the code's. And they converged on the same
+latent trap without communicating: the second instrument's I13 guard also
+initially refused its own acceptance-check key for containing the substring
+"shard", and was fixed the same way — the guard stays universal, the prose moves
+into the value. A registration that induces the same bug and the same fix in two
+independent implementations is specified tightly enough to be reproducible.
+
+Reproduction artifacts:
+`reports/c6_mechanism_at_scale_v1_independent_replicate.{json,md}`;
+instrument `scripts/build_c6_mechanism_at_scale_readout.py` (the second author's,
+now the file at that path);
+fixtures `tests/test_build_c6_mechanism_at_scale_readout_fixture.py` (24 passed).
+
+*Why it was run, recorded (no estimand affected).* Two drivers advanced C6
+concurrently on shared storage. A file copy at 15:39:57Z replaced
+`scripts/build_c6_mechanism_at_scale_readout.py` with the second author's version
+about ninety seconds after the first had written
+`reports/c6_mechanism_at_scale_v1.json` at 15:38:00Z. The banked report and all
+six cells were untouched, but the instrument that produced the report no longer
+existed to re-run, so reproducibility could not be shown by byte-identity and was
+established by independent result agreement instead — which is the stronger of
+the two demonstrations, though it was not the one that was planned. Cost, stated:
+the first instrument's source is not recoverable, so the ledger's reproduction
+command names the second. The values in this section are the banked report's and
+are unchanged by any of it.
+
 ---
 
 ## 2026-08-11 — Track-4 premise-v2 acceptance gates: E4 PASS, E1 FAIL (branch c), E2 FAIL on the final clause, E3 running
@@ -2038,18 +2090,39 @@ Artifacts: `reports/track4_premise_v2_gate_readout_v1.{json,md}`;
 instrument `scripts/build_track4_premise_v2_gate_readout.py`;
 fixtures `tests/test_build_track4_premise_v2_gate_readout.py` (26 passed).
 
-**E3 — caption stress: running** on an29 GPUs 0–3. Under the PI's decision, the
-registered captioner command runs verbatim over all of `$DATA/images` (640 files
-/ 480 distinct sha256; all 480 captioned, store complete), the merge is given a
-derived coverage manifest whose hash set is exactly those 480 — so
-`merge_caption_rows`' exact-coverage assertion still runs and must report
-`coverage_complete=true`, with no override and no registered code touched — and
-the restriction to the 320-image causal release happens one step later at
-`build_caption_qa_pairs.py --allow-extra-captions`, carrying the 160 non-causal
-captions unused. Preflight verified `causal_equals_caption_qa_release=true` and
+**E3 — caption stress: running** on an29 GPU 3 under the registered runner
+`scripts/run_e3_caption_stress.sh`, relaunched 15:51:45Z from an immutable
+snapshot (run `experiments/runs/track4_premise_v2_e3_an29_20260811T155104Z`,
+caption store `…_caption_store_an29_20260811T155104Z`). Under the PI's decision,
+the registered captioner command runs verbatim over all of `$DATA/images` (640
+files / 480 distinct sha256), the merge is given a derived coverage manifest
+whose hash set is exactly those 480 — so `merge_caption_rows`' exact-coverage
+assertion still runs and must report `coverage_complete=true`, with no override
+and no registered code touched — and the restriction to the 320-image causal
+release happens one step later at `build_caption_qa_pairs.py
+--allow-extra-captions`, carrying the 160 non-causal captions unused. Preflight
+verified `causal_equals_caption_qa_release=true` and
 `coverage_equals_image_dir=true` before any GPU was spent.
-Runner `scripts/run_e3_caption_stress.sh`, log
-`logs/track4_gates/e3_caption_stress.log`.
+Log `logs/track4_gates/e3_caption_stress.log`.
+
+*Concurrency incident, recorded (no E3 verdict affected — none had been
+produced).* A second E3 driver captioned the same 480 images on an29 GPUs 0–3 in
+4 shards, completing at 15:47:59Z
+(`experiments/runs/t4v2_e3_caption_store_an29_20260811T152952Z`), while holding
+GPU claims on those four devices. The registered runner's guard did exactly its
+job: it refused to launch against the held GPUs twice (15:46:38Z, 15:47:51Z) and
+wrote a `…failed_*.json` provenance stub each time rather than colliding. The
+second driver's own chain then died between stages when its script file was
+overwritten at the same path — bash re-reads a running script at its saved byte
+offset, so the next boundary landed mid-sentence in the replacement file's
+prose and aborted at "line 79: syntax error" — leaving its captions banked and
+its merge / QA-build / eval stages unrun. Its claims were released and the
+registered runner relaunched from a snapshot outside the repo so the same
+overwrite cannot recur. The duplicate caption store is redundant rather than
+contradictory (same registered command, same image set, same captioner) and
+enters no gate. Two operational lessons, both already program invariants
+elsewhere: run long shell chains from an immutable copy, and give concurrent
+drivers distinct script paths.
 
 ---
 
@@ -2076,7 +2149,7 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | Catch-stability (cp/member): invariance at ceiling; strict gap = format | `docs/registered_mini_a5_catch_stability_v1.md` (scorer + test sha256-pinned) | `reports/mini_a5_catch_stability_readout_v1.*`, `mini_a5_catch_run_provenance_v1.json` | report provenance |
 | Gate 1: no axis (data/selection/relational reward) buys held-out content; oracle readout moves under every recipe | `docs/registered_mini_a5_gate1_completion_v1.md` (§8 sealing, §9 acceptance) | `reports/mini_a5_gate1_acceptance_audit_v1.{json,md}`, `mini_a5_gate1_endpoint_readout_v1.json`, `mini_a5_catch_stability_{std,necessity}_v1.json` | inline cmd blocks C–E |
 | E1b/E1c: blind gain does not transfer out of domain; blind columns across 7 benchmarks | E1b access-matrix registration | `reports/e1b_*`, `e1c_blind_columns_v1.*`, `chance_corrected_retention_v1.*` | report provenance |
-| C6: at 7B the real-image arm moves the primary visual anchor (+0.025/+0.023, CIs exclude 0, both contracts, both instruments) and the readout does not; the blind arm moves neither | `docs/registered_c6_mechanism_at_scale_v1.md` (filed pre-read; §7 estimands, §8 branches, §9 checks) | `reports/c6_mechanism_at_scale_v1.{json,md}`, cell pointers `logs/c6_cells/`, gen log `logs/c6_cells_chain.log` | inline cmd block F |
+| C6: at 7B the real-image arm moves the primary visual anchor (+0.025/+0.023, CIs exclude 0, both contracts, both instruments) and the readout does not; the blind arm moves neither | `docs/registered_c6_mechanism_at_scale_v1.md` (filed pre-read; §7 estimands, §8 branches, §9 checks) | `reports/c6_mechanism_at_scale_v1.{json,md}` (report of record); independently reproduced, all 24 registered numbers exact, by `reports/c6_mechanism_at_scale_v1_independent_replicate.{json,md}`; cell pointers `logs/c6_cells/`, gen log `logs/c6_cells_chain.log` | inline cmd block F |
 | E4: premise-v2 release carries no transferable artifact signal (folded gate 0.546 max, CI upper 0.576 max) | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 | `reports/track4_premise_v2_attacker_gate_v1.json`, `logs/track4_gates/e4_attacker_gate.log` | inline cmd block G |
 | E1/E2: premise clause blind-unsolvable (0.000); final clause leaks a degenerate constant above the 0.133 ceiling; difficulty branch (c) fires at 0.2875 | `docs/registered_track4_premise_v2_design_v1.md` §7-E1/E2, §5 branches | `reports/track4_premise_v2_gate_readout_v1.{json,md}`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z` | inline cmd block H |
 
@@ -2134,23 +2207,36 @@ two-arm scorer stays sha256-pinned and untouched):
       --run-dir experiments/runs/mini_a5_catch_necessity_step120_real_an29_20260809T143630Z \
       --output reports/mini_a5_catch_stability_necessity_v1.json --expect registered
 
-**F — C6 mechanism-at-scale readout** (fixtures green first: `.venv/bin/python -m
-pytest tests/test_build_c6_mechanism_at_scale_readout_fixture.py` → 61 passed;
-cells generated by `scripts/c6_cells_chain.sh`, pointers in `logs/c6_cells/`):
+**F — C6 mechanism-at-scale readout.** Two instruments have produced this
+readout; the command below is the one that reproduces it **today**, because the
+file at `scripts/build_c6_mechanism_at_scale_readout.py` is now the second,
+independently-authored instrument (see the reproduction note in the C6 section).
+It resolves all six cells through the pointer files `logs/c6_cells/<label>` —
+`r19_base7b`, `r19_a1real`, `r19_a2gray`, `r20_base7b`, `r20_a1real`,
+`r20_a2gray` — and re-verifies every binding field from each cell's own
+`run_manifest.json`, so cells are bound by manifest content and not by directory
+name (registration §5). Fixtures green first:
+`.venv/bin/python -m pytest tests/test_build_c6_mechanism_at_scale_readout_fixture.py`
+→ 24 passed. Cells generated by `scripts/c6_cells_chain.sh`.
 
-    .venv/bin/python -m scripts.build_c6_mechanism_at_scale_readout \
-      --cell r19:base=experiments/runs/c6_r19_7b_base_real_an12_20260811T120648Z \
-      --cell r19:a1_real=experiments/runs/c6_r19_a1real_an12_20260811T122252Z \
-      --cell r19:a2_gray=experiments/runs/c6_r19_a2gray_an12_20260811T123109Z \
-      --cell r20:base=experiments/runs/c6_r20_base7b_an12_20260811T124023Z \
-      --cell r20:a1_real=experiments/runs/c6_r20_a1real_an12_20260811T124736Z \
-      --cell r20:a2_gray=experiments/runs/c6_r20_a2gray_an12_20260811T125348Z \
-      --require-cell-pointers \
-      --json-output reports/c6_mechanism_at_scale_v1.json \
-      --markdown-output reports/c6_mechanism_at_scale_v1.md
+    .venv/bin/python scripts/build_c6_mechanism_at_scale_readout.py \
+      --output reports/c6_mechanism_at_scale_v1_independent_replicate.json \
+      --markdown-output reports/c6_mechanism_at_scale_v1_independent_replicate.md
 
-(defaults are the registered values: `--expect registered`, `--seed 20260712`,
-`--bootstrap-draws 2000`; the script refuses to overwrite an existing report)
+(defaults are the registered values: `--seed 20260712`, `--bootstrap-draws 2000`,
+pointer dir `logs/c6_cells`; non-registered values are refused by check 11 unless
+`--fixture-registry` is given, which is fixtures-only and stamps
+`fixture_mode: true` on the output. The script refuses to overwrite an existing
+report, which is why the reproduction writes to the `_independent_replicate`
+path rather than over the banked `reports/c6_mechanism_at_scale_v1.json`.)
+
+The first instrument produced `reports/c6_mechanism_at_scale_v1.json` — the
+banked report of record, cited by the C6 section — under the CLI
+`--cell <label>=<run_dir> … --require-cell-pointers --json-output …`, with a
+61-case fixture suite. Its source was overwritten before it could be re-run, so
+that command is recorded here for provenance but **will not execute**; the two
+reports agree on all 24 registered numbers, which is what licenses reproduction
+by the command above.
 
 **G — E4 attacker gate** (run by `scripts/run_e4_gate.sh` on an29 GPU 2, guard →
 claim → release; the verdict is read separately against the registered
