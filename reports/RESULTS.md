@@ -2023,6 +2023,52 @@ the first instrument's source is not recoverable, so the ledger's reproduction
 command names the second. The values in this section are the banked report's and
 are unchanged by any of it.
 
+**Third check, orthogonal to both instruments — and it closes off the format
+explanation.** Both readouts compute pair success by calling
+`fliptrack_metrics.pair_score`, which *re-derives* correctness from
+`prediction_a`/`prediction_b` at readout time. That shared code path is a common
+mode: if it were wrong, two independent instruments would agree and both be
+wrong. So the levels were recomputed a third way, from the `pair_correct` /
+`strict_pair_correct` fields written into each row at **generation** time, as
+plain arithmetic with no re-scoring
+(`scripts/verify_c6_stored_fields.py`). All eighteen per-role levels and all
+twelve role × contract arm-minus-base deltas reproduce exactly; 7,200 rows
+checked with **zero** internal field disagreements; R19 ∩ R20 = 0 pair_ids
+confirmed independently.
+
+That check surfaced something the branch reading did not need but strongly
+benefits from: **strict and lenient are identical on the anchor and the readout
+roles in all six cells** (0.7850/0.7850, 0.8100/0.8100, 0.6733/0.6733, …), while
+the canary separates (0.9933 lenient vs 0.9800 strict). Registration §6 excluded
+the 2026-07-10 base cells partly *because* their strict channel was degenerate,
+so this pattern had to be distinguished from that failure rather than assumed
+benign. Reading contract validity directly settles it
+(`scripts/verify_c6_contract_validity.py`):
+
+| role | contract validity, all six cells | strict−lenient gap |
+|---|---|---|
+| primary visual anchor (600) | **1.0000** (every cell, every model) | 0.0000 |
+| oracle-localized readout (300) | **1.0000** (every cell, every model) | 0.0000 |
+| saturated canary (300) | 0.9867 – 0.9967 | 0.0033 – 0.0133 |
+
+The strict channel is **live and discriminating** — it separates on the canary in
+five of six cells — and format compliance is simply *saturated* at 7B on the two
+roles that carry the branch decision.
+
+**Insight (H-C6b, the format explanation is arithmetically excluded here).**
+The single most persistent alternative explanation in this program has been that
+apparent gains are output-format compliance rather than visual content: F8's
++0.07 generation-strict gap decomposed exactly to contract validity (residual
+1e−17); E1b's strict external gains tracked `Format_valid` step for step; Gate 1
+found a fifth independent format localisation. On the C6 anchor there is
+**nothing left for format to contribute** — validity is pinned at 1.000 for base
+and both arms, so the strict and lenient channels are the same measurement — and
+the anchor still moves +0.0250 for the sighted arm and +0.0067 (NOT MOVED) for
+the blind one. Whatever A1-real acquired at 7B, it is not compliance. This does
+not upgrade branch (d) into a registered claim — it remains the unregistered cell
+of the 2×2, one seed, one training pair — but it removes the explanation that
+would otherwise have to be excluded before anyone could take it seriously.
+
 ---
 
 ## 2026-08-11 — Track-4 premise-v2 acceptance gates: E4 PASS, E1 FAIL (branch c), E2 FAIL on the final clause, E3 running
