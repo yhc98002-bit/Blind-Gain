@@ -7,7 +7,7 @@ Single results file for the programme. Organised by the paper's own argument
 endpoint appears, including those that went against the hypothesis. Numbers are
 copied from committed artifacts; each block names its artifact.
 
-Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
+Updated 2026-08-14. Model: Qwen2.5-VL-3B-Instruct unless stated.
 
 ---
 
@@ -26,13 +26,16 @@ Updated 2026-07-28. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M5c item-level turnover + noise floor | R2 / mechanism | **complete** — 137/601 flips against a **measured zero** noise floor; churn structured but orthogonal to visual necessity (§12c) |
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
 | E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
-| M7 ViRL39K stratified | R3 | **complete (seed 1)** — matched recovery **0.72–0.88 vs 0.08–0.12 on geo3k** (registered secondary passes, +0.63–0.64, stable); ρ_gain direction **fails** all arms (gains track headroom); ρ_recovery point-positive for blind arms (§12d). Seed 2 relaunches after C5 |
+| M7 ViRL39K stratified | R3 | **complete (seed 1)** — matched recovery **0.72–0.88 vs 0.08–0.12 on geo3k** (registered secondary passes, +0.63–0.64, stable); ρ_gain direction **fails** all arms (gains track headroom); ρ_recovery point-positive for blind arms (§12d). Seed 2: a1_real + a2b trained and eval-banked; a2_gray/a3_caption stalled at the 08-12 storage deadlock, resumed 08-14 (§19) |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **complete** — crossed TrainShare **0.78–0.84 vs 0.49 at 3B**, intervals disjoint; matched gain replicates (+0.2479 vs +0.2435). **Ladder R1–R5 closed** (§12e) |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
 | Gate 1 four-arm completion (std · member · necessity · cp) | Paper 2 | **complete 2026-08-09** — acceptance audit 9/9 PASS before unsealing. **No arm moves held-out content on the primary anchor** (lenient NOT MOVED, all contrasts, all roles); every registered difference is strict/format. **All four recipes move the oracle-localized readout +0.15–0.23** — F3's layer selectivity is recipe-independent. Data axis costs format (member −0.32 strict on the canary); necessity partially repairs it (+0.043 [0.018, 0.070]). See the 2026-08-09 Gate-1 section |
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
 | Cue ladder | Paper 2 P1.1 | **closed — both validity gates failed** |
+| C6 mechanism at 7B (A1/A2-gray on R19+R20) | F4 at scale / Paper 2 §5 | **complete 2026-08-11** — the 3B dissociation **inverts at 7B, and only for the real-image arm**: A1-real moves the primary anchor (+0.0250/+0.0233, CIs exclude 0, both contracts, both instruments — branch (d)); readout flat; A2-gray moves neither (branch (c)). One seed, descriptive; re-decides neither Gate 1 nor R4 (§ "2026-08-11 — C6") |
+| Track-4 premise-v2 acceptance gates E1–E4 | Paper 2 P1.5 / I14 | **all four run 2026-08-11** — E4 PASS (attacker at chance); E1 FAIL branch (c) — difficulty is not candidate-set size; E2 premise clause PASS at blind 0.000, final clause FAIL all types (answer-balance defect, not visual leak); E3 not caption-leaky. PI decisions taken: n=5 step approved; E2-failing types excluded from training until rebalanced (§ "2026-08-11 — Track-4") |
+| LH2 stage 1 (anchor seed 2) | Paper 1 §7 | **registered, not yet trained** — seg-1 died in the 08-10 an12 OOM (no boundary banked); relaunch chain re-armed 2026-08-14 behind a2_gray (§19) |
 
 ---
 
@@ -1597,32 +1600,46 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-11T16:00Z.*
+*Current as of 2026-08-14T15:35Z.*
 
-**Running now** *(one ramping ViRL trainer per node — placement rule generalized
-2026-08-10 after an12's double host-OOM: two colocated 3B Ray trainers exhaust a
-1007-GiB node in ~17 h; deviations rows in the M7 amendment and LH2 registrations)*
+**Storage deadlock 2026-08-12 → 08-14, cleared this round** *(operational
+finding + partial training telemetry — not a result)*
 
-- **M7 seed 2.** a1_real: complete + held-out eval banked. **a2b: complete —
-  training done and its held-out eval banked 2026-08-11T13:39:29Z** (status
-  `complete`, 4,239/4,239 items,
-  `m7_step100_heldout_seed2_a2b_noimage_seed2_none_an29_20260811T041120Z`); its
-  completion fired the chain that relaunched a3. a3_caption: attempt 2 training
-  solo on an29 4–7 (`m7_virl_a3_caption_seed2_an29_20260811T040410Z`, step 20 at
-  16:00Z, ~0.6 h/step → lands ~08-13 16Z), eval armed via
-  `scripts/a3_eval_chain.sh`. a2_gray: attempt 2 training solo on an12 4–7
-  (`m7_virl_a2_gray_seed2_an12_20260810T143944Z`, step 40 at 16:00Z,
-  ~0.63 h/step → lands ~08-13 06Z; attempt 1 killed by the node OOM, checkpoints
-  archived); its eval + the LH2 chain relaunch auto-chain on completion
-  (`scripts/seed2_an12_chain.sh`). Then the two-seed R3 readout rerun, now
-  ~08-14 once the last of the two evals lands.
-- **LH2 stage 1.** Seg-1 attempt 2 died in the same an12 OOM (no boundary
-  banked, nothing read); chain stopped itself as designed. Restarts from step 0
-  solo on an12 0–3 after a2_gray completes (~08-12); go/no-go shifts ~2 days,
-  criteria unchanged. Backstop: `scripts/host_ram_watchdog.sh` (kills the
-  youngest trainer if a node falls under 120 GiB available with >1 trainer).
+- **Cause and cost.** `checkpoints/` reached 2.4 T; from 08-12 the storage guard
+  saw 63.5 GB free against the 2.5 TiB soft quota and refused every 55 GB
+  checkpoint save (floor 21.5 GB), retrying every 300 s indefinitely. Both M7
+  seed-2 trainers wedged mid-save with unbanked steps in memory: **a2_gray at
+  the step-80 save** (banked through 60, best_val 0.6476,
+  `m7_virl_a2_gray_seed2_an12_20260810T143944Z`) and **a3_caption at the
+  step-60 save** (banked through 40, best_val 0.6690,
+  `m7_virl_a3_caption_seed2_an29_20260811T040410Z`). Both 60-h chain waiters
+  aborted 08-13; neither eval launched; the LH2 relaunch trigger never fired.
+- **Recovery (08-14, PI-approved policy).** 712,585,804,824 bytes of
+  clearly-redundant checkpoints deleted — archived failed-attempt dirs plus
+  non-terminal `global_step` dirs of complete, eval-banked, ledgered M7 runs;
+  every evaluated/best step kept (byte-exact record:
+  `reports/storage_cleanup_20260814.md`). The guard reads
+  `reports/storage_usage_snapshot.json`, so the snapshot was refreshed manually
+  rather than waiting out its 3-h loop. Both guards passed at 15:28/15:29Z;
+  saves and training resumed unaided; both chains re-armed 15:31:02Z under
+  fresh 60-h windows.
+- **Process lesson.** The 60-h waiter deadline converted a storage stall into
+  silent abandonment (a 149-byte log); waiters need a wedged-vs-dead
+  distinction, and the snapshot's `"status": "pass"` is not a health check.
 
-*(E3 caption stress closed at 16:26Z — see "Closed this round".)*
+**Running now** *(one ramping ViRL trainer per node, placement rule of
+2026-08-10; deviation filed in the M7 amendment and the LH2 registrations)* —
+**M7 seed 2:** a1_real and a2b complete with held-out evals
+banked (`m7_step100_heldout_seed2_a1_real_seed2_real_an29_20260809T144439Z`,
+`m7_step100_heldout_seed2_a2b_noimage_seed2_none_an29_20260811T041120Z`);
+a2_gray training 80 → 100 solo on an12 4–7; a3_caption training 60 → 100 solo
+on an29 4–7. On each completion the re-armed chains fire the held-out eval
+(`scripts/seed2_an12_chain.sh` an12 gpu 7, `scripts/a3_eval_chain.sh` an29
+gpu 1); a2_gray's completion also relaunches the **LH2 stage-1** chain on an12
+0–3 (seg-1 restarts from step 0 — the 08-10 OOM banked no boundary; go/no-go
+criteria unchanged; backstop `scripts/host_ram_watchdog.sh`, which kills the
+youngest trainer if a node falls under 120 GiB available with >1 trainer). The
+**two-seed R3 readout** runs once both evals land.
 
 **Closed this round** *(2026-08-11)*
 
@@ -1632,7 +1649,8 @@ section originally made, and it is the claim Paper 2 inherits.
 - **E4 attacker gate** — PASS on the instrument's registered folded criterion.
 - **E1/E2 per-type gate readout** — E1 FAIL (branch c), E2 FAIL on the final
   clause / PASS on the premise clause for every type.
-- **E3 caption stress** — complete. Caption minus blind is ≤ 0 for four of five
+- **E3 caption stress** — complete (closed 2026-08-11T16:26Z). Caption minus
+  blind is ≤ 0 for four of five
   types and +0.0375 for the fifth: the batch is **not caption-leaky**. All five
   types pass against each type's own measured blind floor + 0.10; one type
   (`chained_premise_easy`) fails against the registered literal 0.133 + 0.10,
@@ -1641,13 +1659,28 @@ section originally made, and it is the claim Paper 2 inherits.
 
 **Open, not running**
 
-- **Track-4 premise-v2 revision.** E1 branch (c) prescribes one pre-committed
-  step to `n=5`; E2's failing types are excluded from training use until the
-  final-answer distribution is balanced (the premise construct itself passes at
-  blind accuracy 0.000 and does not need regenerating). Both are PI go/no-go.
+- **E3 reading (a) vs (b) — PI call.** Four of five types pass caption-stress
+  under both readings; `chained_premise_easy` measures 0.2625 — **fails** the
+  registered-literal ceiling (0.133 + 0.10 = 0.233), **passes** its own
+  measured-floor ceiling (0.325); the (a)-failure is inherited from E2's
+  answer-balance defect. The instrument refuses to choose
+  (`reports/track4_premise_v2_e3_readout_v1.*`).
+- **Track-4 premise-v2 revision — decided 2026-08-11, not yet executed** (per
+  EXPERIMENT_TODO 2B-status): the approved branch-(c) step to `n=5`, and
+  final-answer rebalancing for the E2-failing types (excluded from training use
+  until balanced; the premise construct itself passes at blind 0.000 and is not
+  regenerated).
 - **E4 registration wording**: reconcile the prose criterion ("CI includes 0.5")
   to the folded statistic the instrument computes; no number changes.
-- **Paper-2 direction call** on Gate 1's pre-committed branches (PI reads them).
+- **Paper-2 direction call** on Gate 1's pre-committed branches (PI reads them);
+  the Aug-13 **GPT benchmark revision plan** (Discover → Ground → Read
+  hierarchy, two families × three layers × three counterfactual roles) awaits
+  PI adoption — it conflicts with EXPERIMENT_TODO P1.1 (cue-ladder v2 rebuild
+  vs demote) and overlaps P1.1b (verifier-operand audit).
+- **Remaining storage menu** (nothing further deleted without PI approval):
+  mini_a5 steps 20–80, keeping step 100 + terminal 120, ~500 G; c5
+  completed-run non-terminal steps ~248 G; `pilot/` 206 G; `smoke/` 31 G;
+  `m5_anchor_longhorizon_400/global_step_150` 51 G.
 - **PI-owned prose**: X6 related-work table; PAPER1 §3/§5 header-table wording.
 - **Richard's review** of the four delivered human packages.
 
@@ -2066,7 +2099,7 @@ would otherwise have to be excluded before anyone could take it seriously.
 
 ---
 
-## 2026-08-11 — Track-4 premise-v2 acceptance gates: E4 PASS, E1 FAIL (branch c), E2 FAIL on the final clause, E3 running
+## 2026-08-11 — Track-4 premise-v2 acceptance gates: E4 PASS, E1 FAIL (branch c), E2 FAIL on the final clause, E3 not caption-leaky — all four gates run
 
 **E4 — attacker check: PASS.** DINOv2, pixel-frequency and metadata attackers
 over the packaged 160-pair / 320-member release, 5-fold grouped CV by pair.
