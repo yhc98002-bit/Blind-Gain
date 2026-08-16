@@ -144,6 +144,76 @@ method evaluation stays gated on Mini-A5's registered readout and the ST3-7B
 launch gates (`registered_stage3_7b_v1.md`). It does not self-certify any
 human gate.
 
+## Amendment A1 (2026-08-16, pre-generation) — concrete grids and derivation
+parameters pinned before any HB item exists
+
+Registered here because §6's chart crossing-density knob and the per-cell
+role allocation were named abstractly; HB.0 requires the grids concrete
+before generation. Nothing below alters §1–§9; no item existed when this
+amendment merged.
+
+- **Pair-role allocation**: 150 mother-pairs per family per knob cell =
+  **50 target-switch + 50 target-stable + 50 invariance**, reported
+  separately per §4.
+- **Coordinate family (`hier_coord_v1`)**: canonical L3 relation rotates
+  deterministically over the four registered extremum kinds (largest y,
+  smallest y, leftmost, rightmost; recorded per item). Read axis: y-extrema
+  answer the target's x-coordinate; x-extrema answer the target's
+  y-coordinate. Extremum-uniqueness margin: extremum-axis gap between top-1
+  and top-2 ≥ 1 grid unit on BOTH sides of every pair (the premise-v2 margin
+  lineage). Question forms — L3: "Consider the point with the <extremum>.
+  What is its <read-axis>-coordinate?"; L2 and L1: "Point <T> has the
+  <extremum>. What is the <read-axis>-coordinate of point <T>?" (identical
+  L2/L1 text; L1 adds only the image cue).
+- **Chart family (`hier_chart_v1`)**: L3: "Consider the series with the
+  highest value at x = <xa>. What value does that series have at
+  x = <xr>?"; L2/L1 name the series. xa ≠ xr, both interior (2..6 of the
+  7-slot axis). Argmax-uniqueness margin at xa ≥ the cell's value-grid
+  granularity, both sides. **Crossing-density cells** (measured, per the
+  chart-v08 `adjacent_crossing_fraction` instrument, evaluated at the READ
+  point xr): low = fraction ≤ 0.25; high = fraction ≥ 0.50; scenes outside
+  the cell's band are resampled (a generation filter, not an item edit).
+  Nine-series cells use a 3-entry additive extension of the chart-v08
+  palette/linestyle/marker/label tuples (CVD-checked with the same CIE76
+  instrument); the 6-entry originals are untouched.
+- **L1 cue (both families)**: an offset pointer — line segment plus open
+  arrowhead approaching the target from one of 8 compass directions,
+  terminating outside the target's marker and label bounding boxes. The
+  registered ink rule, checked per render (verifier (a)): every pixel the L1
+  image changes relative to the L2 image must be background or plot-fill in
+  the L2 image — the cue may not touch ANY existing ink (points, labels,
+  lines, gridlines, axes, chrome). Direction search is deterministic;
+  a scene with no passing direction is resampled, never force-drawn.
+- **Discovery probe** (HB.6): one probe row per mother-pair at the L3 oracle
+  level — coordinate family: "Which labeled point has the <extremum>?"
+  (answers = target labels per side); chart family: "Which series has the
+  highest value at x = <xa>?" (answers = series names per side).
+
+## Amendment A2 (2026-08-16, pre-generation) — layer × role derivation matrix
+
+Implementation of §2 surfaced a contradiction the source plan did not
+address: a **target-switch** pair has different targets on its two sides, so
+no single L2/L1 question can state the target identity truthfully for both
+members — and re-targeting the question per side would change the side-B
+answer relative to L3, violating the answers-identical-across-layers
+obligation (§2(d)). Resolution, registered before any item exists:
+
+- **L3 rows derive for all three roles** (target-switch · target-stable ·
+  invariance). Target-switch remains the **primary L3 causal diagnostic**,
+  exactly as §4 designates.
+- **L2 and L1 rows derive for the side-stable roles only** (target-stable ·
+  invariance), where the identity-given question is truthful for both
+  members and answers are identical across the three layers. §2(c) is
+  unchanged: L2/L3 images byte-identical; L1 differs only in the cue region.
+- **Informativeness gates (§7)** are scored per layer on the **stable +
+  invariance member accuracies** — a composition held constant across the
+  three layers — so the monotone L1 > L2 > L3 comparison is like-for-like.
+  L3 target-switch results are reported separately (per §4, never averaged).
+- **Discovery probes** derive for all 150 mothers per cell (switch probes
+  carry differing per-side golds — the discovery signal itself).
+- Per-cell row counts: 150 L3 pairs + 100 L2 pairs + 100 L1 pairs +
+  150 probe rows.
+
 ## Deviations log
 
 - (none)
