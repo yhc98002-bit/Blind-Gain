@@ -1,0 +1,403 @@
+{
+  "batch_seed": 20260817,
+  "cells": {
+    "hier_chart_v1/s5_high": {
+      "attempts_by_role": {
+        "invariance": 521,
+        "target_stable": 392,
+        "target_switch": 594
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s5_high_l2.jsonl",
+          "rows": 50,
+          "sha256": "1605742d7065741c69cd85f8e414117d53f19b3e3e62bcc80ce0aa6165f042a2"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s5_high_l3.jsonl",
+          "rows": 100,
+          "sha256": "12351773ebbb2738eac8dee12ba79fe198cabaebec8648ef9d519f083d48eea0"
+        }
+      },
+      "cell_args": {
+        "density": "high",
+        "series_count": 5
+      },
+      "cue_rejections": 13,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_high_l1.jsonl",
+          "rows": 100,
+          "sha256": "645daacafcea4277b0b96ee03455cc4df9f79d8d04cb18fda2c07ec02c2cf365"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_high_l2.jsonl",
+          "rows": 100,
+          "sha256": "a9cbab93fef2bc14f4c709f942793c043add9606d554fca22f4693e4771a6ee6"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_high_l3.jsonl",
+          "rows": 150,
+          "sha256": "60265ccbfe196fb8626f11b4dd69998d801edde50ff50228861c53874e323b12"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_high_probe.jsonl",
+          "rows": 150,
+          "sha256": "d6901b6e07747539d90b4632fe2c7e32d86f5590c87843334ed0d04c35bc922a"
+        }
+      },
+      "split_rejections": 661
+    },
+    "hier_chart_v1/s5_low": {
+      "attempts_by_role": {
+        "invariance": 258,
+        "target_stable": 249,
+        "target_switch": 202
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s5_low_l2.jsonl",
+          "rows": 50,
+          "sha256": "bdaa3746c285d2b55355d74a21e89e2aad811dc1fe2dbf88dabd2a1c89ca9a97"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s5_low_l3.jsonl",
+          "rows": 100,
+          "sha256": "a5cb4892e1310b9730546022ddee5413d422b4040c3b3203de5ffc0b08184a84"
+        }
+      },
+      "cell_args": {
+        "density": "low",
+        "series_count": 5
+      },
+      "cue_rejections": 6,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_low_l1.jsonl",
+          "rows": 100,
+          "sha256": "db6e8d5b7da05d8fb9baa7eaa6c8d221e787026afa246d08212bfc33c9fb875f"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_low_l2.jsonl",
+          "rows": 100,
+          "sha256": "17e9eada09d1368a5909a0bd29cc4d35b0a045bb067671c156cbde503654d03f"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_low_l3.jsonl",
+          "rows": 150,
+          "sha256": "b5ef37049b1317a75a7ca2acf74d53a7079d9ca607d178955ac383ab91ee1528"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s5_low_probe.jsonl",
+          "rows": 150,
+          "sha256": "f24a4aefbccefa8df65bb7878c0509eecfecf00c54cb8f8045637d5c88208897"
+        }
+      },
+      "split_rejections": 553
+    },
+    "hier_chart_v1/s9_high": {
+      "attempts_by_role": {
+        "invariance": 573,
+        "target_stable": 876,
+        "target_switch": 850
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s9_high_l2.jsonl",
+          "rows": 50,
+          "sha256": "e567065dce3c2b07cf58e0c6728039f7f2ecdc50af9b2feb95d5225aba9e4379"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s9_high_l3.jsonl",
+          "rows": 100,
+          "sha256": "7fac581f9a317fb4d83c82fb85f36a97fce5b44328946a882125a47a4beb589c"
+        }
+      },
+      "cell_args": {
+        "density": "high",
+        "series_count": 9
+      },
+      "cue_rejections": 78,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_high_l1.jsonl",
+          "rows": 100,
+          "sha256": "0796c7af832baadf6861847f53db7e133b6a962c7db32b25c6180b08f1b21ae9"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_high_l2.jsonl",
+          "rows": 100,
+          "sha256": "bad71b3a04078708e317f7f911eb8e69dc8baa6cab3bab3249a0f9b259cdaa41"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_high_l3.jsonl",
+          "rows": 150,
+          "sha256": "d35353d3ac76d5f5fad9b18c37e3e80e61e5ecda1d0990498a2448b3061799aa"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_high_probe.jsonl",
+          "rows": 150,
+          "sha256": "a32888c28baca9f1957a662ddec1da0040e58e0fd6349054cf9e9f43d5dc3467"
+        }
+      },
+      "split_rejections": 841
+    },
+    "hier_chart_v1/s9_low": {
+      "attempts_by_role": {
+        "invariance": 252,
+        "target_stable": 321,
+        "target_switch": 315
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s9_low_l2.jsonl",
+          "rows": 50,
+          "sha256": "08a6678ae61e36b15db1f9b371bad37c13a860600f32b07bb8cca814c9c9a211"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_chart_v1_s9_low_l3.jsonl",
+          "rows": 100,
+          "sha256": "0c6181e1884761594839324b243ff7b66371ae4ee1b18ab6d63ed2673169c632"
+        }
+      },
+      "cell_args": {
+        "density": "low",
+        "series_count": 9
+      },
+      "cue_rejections": 15,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_low_l1.jsonl",
+          "rows": 100,
+          "sha256": "4702b2b5816235700965876b0d85a19057c60e15e79739ac9ad9ab7da72b2b6b"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_low_l2.jsonl",
+          "rows": 100,
+          "sha256": "fb6f0eef3a47ecfea684f4b230cc71269fe02f08c8465480786fdc373a05dc1c"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_low_l3.jsonl",
+          "rows": 150,
+          "sha256": "4cbf8bc899d3f023147343b02187c5063a4b0c78339962a80f767a7e00478766"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_chart_v1_s9_low_probe.jsonl",
+          "rows": 150,
+          "sha256": "8ef1ab952bd0dca404155a7832e944ef6e11ad9f7750f399837e8d7a5c67c87f"
+        }
+      },
+      "split_rejections": 658
+    },
+    "hier_coord_v1/n12": {
+      "attempts_by_role": {
+        "invariance": 349,
+        "target_stable": 392,
+        "target_switch": 650
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 20,
+        "max_share": 0.09,
+        "max_share_value": "1",
+        "n_causal_member_golds": 200,
+        "pass": true
+      },
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n12_l2.jsonl",
+          "rows": 50,
+          "sha256": "43f7f11cbb29837ebbe70b95e82238434a8c0638817178c1cb736f5ef04b350e"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n12_l3.jsonl",
+          "rows": 100,
+          "sha256": "f08b93fba319eada61713cc3b29a25549604adbfac0b61ec045fc099d9b07446"
+        }
+      },
+      "cell_args": {
+        "n_points": 12
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n12_l1.jsonl",
+          "rows": 100,
+          "sha256": "052ea311047d0eb2eb3e15e9f9c5adab4d339d5ffa27834e6631befdf830df6c"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n12_l2.jsonl",
+          "rows": 100,
+          "sha256": "50680f138e15a9e5551b0acdff4c81f3540324f163599f2255f7c5069ea96dff"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n12_l3.jsonl",
+          "rows": 150,
+          "sha256": "c354a573948e4d2932de6d61e7e00f0add9f8a4aadebb9e3f73cd841afa352f6"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n12_probe.jsonl",
+          "rows": 150,
+          "sha256": "ffefd710610b4e35c598f229ac692dfd640d1dca50741e6ab4fd6bb1f5363bb4"
+        }
+      },
+      "split_rejections": 579
+    },
+    "hier_coord_v1/n20": {
+      "attempts_by_role": {
+        "invariance": 730,
+        "target_stable": 616,
+        "target_switch": 1568
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 20,
+        "max_share": 0.1,
+        "max_share_value": "-1",
+        "n_causal_member_golds": 200,
+        "pass": true
+      },
+      "balance_rejections": 1,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n20_l2.jsonl",
+          "rows": 50,
+          "sha256": "6929fe8d95d4462d8a6d588c8a6bf2a2f8bfd14975396be413859b9ed1500fb7"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n20_l3.jsonl",
+          "rows": 100,
+          "sha256": "c73cbf9a33f1deb426cb301333e3a5225f2857b01bc362d7cea40de49e25de14"
+        }
+      },
+      "cell_args": {
+        "n_points": 20
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n20_l1.jsonl",
+          "rows": 100,
+          "sha256": "34f09062b1e04bc2eae128f3439413752ab2d66d8cd81845607abe34c6a89e8d"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n20_l2.jsonl",
+          "rows": 100,
+          "sha256": "0da05e330ddd13405d163b0aa554ca1e83567feab673aa15999bfc4e34187498"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n20_l3.jsonl",
+          "rows": 150,
+          "sha256": "acc71179c9ada25b734204699cf1c05cf532ee50c0fe65aa7b488780206dab82"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n20_probe.jsonl",
+          "rows": 150,
+          "sha256": "6440055fb4e52a288bc38387a03eaf9284c869790b5e6ff6e2cec8c20a2055fd"
+        }
+      },
+      "split_rejections": 598
+    },
+    "hier_coord_v1/n8": {
+      "attempts_by_role": {
+        "invariance": 362,
+        "target_stable": 343,
+        "target_switch": 612
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 20,
+        "max_share": 0.1,
+        "max_share_value": "6",
+        "n_causal_member_golds": 200,
+        "pass": true
+      },
+      "balance_rejections": 2,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n8_l2.jsonl",
+          "rows": 50,
+          "sha256": "2f9cfb86b7935cf1f48e031eb8aca451565fff9908b3c6332f5bfaa020da10b6"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/candidates_hier_coord_v1_n8_l3.jsonl",
+          "rows": 100,
+          "sha256": "6d7463471f1627e2240b5807c3cbd5e20081224c2cd91c1d7c77166d26c46edd"
+        }
+      },
+      "cell_args": {
+        "n_points": 8
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n8_l1.jsonl",
+          "rows": 100,
+          "sha256": "ab5c12bf1d7641ab4a426259557a892cce2ce990f0f83439f7cabc7f5663b834"
+        },
+        "l2": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n8_l2.jsonl",
+          "rows": 100,
+          "sha256": "51aa0c442375eb30ea9b46c31901cc17618bdba5d2bd61dad7ca40aba21fcefb"
+        },
+        "l3": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n8_l3.jsonl",
+          "rows": 150,
+          "sha256": "c6744c8e04df712eaef9784991bb22a23b299b9a3f8b062a02499b1bd2b51b9a"
+        },
+        "probe": {
+          "path": "data/hier_v1_dev/manifest_hier_coord_v1_n8_probe.jsonl",
+          "rows": 150,
+          "sha256": "5e6df700816090ee6f2e411c3ce6f73a7f1e46ba1c1e70b9763a0720da64ca48"
+        }
+      },
+      "split_rejections": 657
+    }
+  },
+  "command": "scripts/build_hier_dev_batch.py",
+  "crossing_bands": {
+    "high": [
+      0.5,
+      1.0
+    ],
+    "low": [
+      0.0,
+      0.25
+    ]
+  },
+  "deviations": [
+    "2026-08-16 attempt 1 failed pre-declaration at hier_chart_v1/s9_low/target_switch (200k attempts): the random-values proposal essentially never lands in the registered low-crossing band at 9 series. Partial artifacts (173M, no report, never declared or consumed) were removed; low-density cells now use a banded PROPOSAL while the registered band filter is unchanged and still decides acceptance."
+  ],
+  "file_sha256": {},
+  "git_hash": "74916a63ad56278e7fb9ad0877ef778c347af7cc",
+  "layer_role_matrix": "A2: l3 all roles; l2/l1 stable+invariance; probe all",
+  "node": "ln206",
+  "palette_report_9_series": {
+    "deuteranopia": 18.08533729640426,
+    "normal": 26.433860627508288,
+    "protanopia": 20.7071397905407,
+    "tritanopia": 16.1750189269149
+  },
+  "per_role": 50,
+  "registrations": [
+    "docs/registered_hier_benchmark_v1.md (\u00a76\u2013\u00a77, A1, A2)"
+  ],
+  "roles": [
+    "target_switch",
+    "target_stable",
+    "invariance"
+  ],
+  "schema_version": "blind-gains.hier-v1-dev-build.v1"
+}

@@ -369,6 +369,15 @@ def main() -> None:
         "layer_role_matrix": "A2: l3 all roles; l2/l1 stable+invariance; probe all",
         "palette_report_9_series": hier_palette_report(),
         "crossing_bands": CROSSING_BANDS,
+        "deviations": [
+            "2026-08-16 attempt 1 failed pre-declaration at hier_chart_v1/"
+            "s9_low/target_switch (200k attempts): the random-values proposal "
+            "essentially never lands in the registered low-crossing band at 9 "
+            "series. Partial artifacts (173M, no report, never declared or "
+            "consumed) were removed; low-density cells now use a banded "
+            "PROPOSAL while the registered band filter is unchanged and still "
+            "decides acceptance."
+        ],
         "cells": {},
         "file_sha256": {},
     }

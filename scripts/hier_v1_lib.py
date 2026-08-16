@@ -473,13 +473,30 @@ def build_chart_geometry(role: str, series_count: int, density: str,
     xr = rng.choice([x for x in range(1, X_COUNT - 1) if x != xa])
     center = rng.randrange(30, 71)
     values = []
-    for _ in range(series_count):
-        row = [rng.randrange(15, 91, CHART_GRANULARITY) for _ in range(X_COUNT)]
-        if density == "high":
+    if density == "low":
+        # Banded proposal: at 9 series a random-values proposal essentially
+        # never lands in the registered low-crossing band (72 slots), so low
+        # cells propose separated value bands with small jitter. The
+        # registered band filter below is UNCHANGED and still decides
+        # acceptance (A1: scenes outside the band are resampled).
+        grid = list(range(15, 91, CHART_GRANULARITY))
+        idxs = [round(i * (len(grid) - 1) / (series_count - 1))
+                for i in range(series_count)]
+        centers = [grid[i] for i in idxs]
+        rng.shuffle(centers)
+        for series in range(series_count):
+            row = []
+            for _ in range(X_COUNT):
+                jitter = rng.choice((0, 0, 0, -CHART_GRANULARITY, CHART_GRANULARITY))
+                row.append(min(90, max(15, centers[series] + jitter)))
+            values.append(row)
+    else:
+        for _ in range(series_count):
+            row = [rng.randrange(15, 91, CHART_GRANULARITY) for _ in range(X_COUNT)]
             for x in (xr - 1, xr, xr + 1):
                 pulled = center + rng.randrange(-10, 11, CHART_GRANULARITY)
                 row[x] = min(90, max(15, pulled))
-        values.append(row)
+            values.append(row)
     low, high = CROSSING_BANDS[density]
     if not (low <= crossing_fraction(values, series_count, xr) <= high):
         return None
