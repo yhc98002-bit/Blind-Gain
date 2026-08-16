@@ -72,6 +72,27 @@ groups = rows("groups_v2.jsonl")
 problems = []
 by_type = Counter(r["intervention_type"] for r in causal)
 
+# 0. I21 question-operand check (added 2026-08-16, 08-12 dispatch P0.1): the
+# entity named in the question must equal the recorded target_label. The
+# pre-fix verifier recomputed golds against verifier_results.target_label
+# alone, so a renamed question with a stale target_label — the cue-ladder
+# class — would have passed.
+import re  # noqa: E402
+
+_POINT_RE = re.compile(r"point ([A-Z][A-Za-z0-9]*)")
+for r in causal + inv + probe:
+    label = r["verifier_results"].get("target_label")
+    for field in ("question", "premise_question"):
+        text = r.get(field)
+        if not text or label is None or "point " not in text:
+            continue
+        match = _POINT_RE.search(text)
+        if match and match.group(1) != str(label):
+            problems.append(
+                f"{r['pair_id']} {field} names point {match.group(1)!r} but "
+                f"target_label is {label!r} (I21 question-operand mismatch)"
+            )
+
 # 1. every causal row: recompute final + premise golds from scene programs
 n_transition = n_chained = 0
 for r in causal:
