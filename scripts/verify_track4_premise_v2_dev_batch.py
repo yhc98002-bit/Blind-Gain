@@ -6,6 +6,7 @@ from the serialized scene programs, re-validates every group with the v2
 loader, proves the v1 loader refuses them, re-hashes every referenced image,
 and re-checks the constraint inversion on every transition row.
 """
+import argparse
 import hashlib
 import json
 import math
@@ -15,7 +16,29 @@ from pathlib import Path
 
 ROOT = Path("/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain")
 sys.path.insert(0, str(ROOT))
-DATA = ROOT / "data/track4_premise_v2_dev_v1"
+
+# 2026-08-16 (dispatch item 4): parameterized so the dev_v2 regeneration gets
+# its own from-disk verification. Defaults reproduce the original v1
+# invocation byte-for-byte; unknown arguments now REFUSE instead of being
+# silently ignored (the pre-fix script had no argparse, so a caller passing
+# --data-dir unknowingly verified v1 — caught by the 2026-08-16 round's
+# adversarial verification pass).
+_parser = argparse.ArgumentParser(description=__doc__)
+_parser.add_argument(
+    "--data-dir",
+    type=Path,
+    default=ROOT / "data/track4_premise_v2_dev_v1",
+    help="batch directory (default: the declared v1 batch)",
+)
+_parser.add_argument(
+    "--easy-n-points",
+    type=int,
+    default=8,
+    help="expected n_points for *_easy types (v1: 8; dev_v2 under branch (c): 5)",
+)
+_args = _parser.parse_args()
+DATA = _args.data_dir if _args.data_dir.is_absolute() else ROOT / _args.data_dir
+EASY_N_POINTS = _args.easy_n_points
 
 from src.train.intervention_group_schema import (  # noqa: E402
     InterventionGroupSchemaError,
@@ -124,7 +147,7 @@ for r in inv:
 
 # 3. n_points lever on disk
 for r in causal + inv:
-    want = 8 if r["intervention_type"].endswith("_easy") else 20
+    want = EASY_N_POINTS if r["intervention_type"].endswith("_easy") else 20
     for side in ("a", "b"):
         if len(r[f"scene_points_{side}"]) != want:
             problems.append(f"{r['pair_id']} n_points != {want}")
@@ -183,6 +206,7 @@ for g in groups:
                 problems.append(f"{g['group_uid']} donor sha mismatch")
 
 print(json.dumps({
+    "data_dir": str(DATA), "easy_n_points": EASY_N_POINTS,
     "causal_rows": len(causal), "invariance_rows": len(inv),
     "probe_rows": len(probe), "groups": len(groups),
     "by_type": dict(by_type),

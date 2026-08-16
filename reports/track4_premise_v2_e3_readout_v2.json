@@ -1,0 +1,154 @@
+{
+  "POOLED_ACROSS_TYPES_NOT_AN_ENDPOINT": {
+    "member_accuracy_lenient": 0.159375,
+    "note": "I13: mixes intervention types. Emitted for auditability only."
+  },
+  "criterion_text": "Pass, per type: caption member accuracy <= blind-floor threshold + 0.10 absolute. Fail => the track is caption-leaky: eval-only until revised.",
+  "discipline": "Per intervention type only (I13); both scoring contracts reported and never merged (I7); the cell's own pooled metrics.json is not the endpoint.",
+  "inputs_sha256": {
+    "manifest_causal_pairs.jsonl": "318f53011db428f6275eeb44deb34ebfe9d26482806571c7b7d60bd66884f9ca",
+    "predictions.jsonl": "8dfd66962543b2591547d43880a1297a5881a78ef5b58a13ad8e5ba04e99e2ab"
+  },
+  "margin": 0.1,
+  "open_in_the_registration": "'blind-floor threshold' is not disambiguated in section 7 E3. Both readings are reported; where they disagree the disagreement is the result and the choice is the PI's.",
+  "per_intervention_type": {
+    "chained_premise": {
+      "caption_member_accuracy_lenient": 0.175,
+      "caption_member_accuracy_strict": 0.175,
+      "caption_pair_accuracy_lenient": 0.05,
+      "caption_pair_accuracy_strict": 0.05,
+      "collapse_rate": 0.75,
+      "n_members": 40,
+      "n_pairs": 20,
+      "readings": {
+        "a_registered_ceiling": {
+          "basis": "E2's registered final-clause threshold, the literal 0.133 for all five types, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.133,
+          "e3_ceiling": 0.233,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        },
+        "b_measured_floor": {
+          "basis": "the type's own measured blind final member accuracy from the E2 cells, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.2,
+          "e3_ceiling": 0.30000000000000004,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        }
+      },
+      "readings_agree": true
+    },
+    "chained_premise_easy": {
+      "caption_member_accuracy_lenient": 0.2,
+      "caption_member_accuracy_strict": 0.2,
+      "caption_pair_accuracy_lenient": 0.05,
+      "caption_pair_accuracy_strict": 0.05,
+      "collapse_rate": 0.625,
+      "n_members": 80,
+      "n_pairs": 40,
+      "readings": {
+        "a_registered_ceiling": {
+          "basis": "E2's registered final-clause threshold, the literal 0.133 for all five types, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.133,
+          "e3_ceiling": 0.233,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        },
+        "b_measured_floor": {
+          "basis": "the type's own measured blind final member accuracy from the E2 cells, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.2,
+          "e3_ceiling": 0.30000000000000004,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        }
+      },
+      "readings_agree": true
+    },
+    "fact_read": {
+      "caption_member_accuracy_lenient": 0.1,
+      "caption_member_accuracy_strict": 0.1,
+      "caption_pair_accuracy_lenient": 0.0,
+      "caption_pair_accuracy_strict": 0.0,
+      "collapse_rate": 0.4,
+      "n_members": 40,
+      "n_pairs": 20,
+      "readings": {
+        "a_registered_ceiling": {
+          "basis": "E2's registered final-clause threshold, the literal 0.133 for all five types, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.133,
+          "e3_ceiling": 0.233,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        },
+        "b_measured_floor": {
+          "basis": "the type's own measured blind final member accuracy from the E2 cells, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.2,
+          "e3_ceiling": 0.30000000000000004,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        }
+      },
+      "readings_agree": true
+    },
+    "premise_transition": {
+      "caption_member_accuracy_lenient": 0.1375,
+      "caption_member_accuracy_strict": 0.1375,
+      "caption_pair_accuracy_lenient": 0.0,
+      "caption_pair_accuracy_strict": 0.0,
+      "collapse_rate": 0.475,
+      "n_members": 80,
+      "n_pairs": 40,
+      "readings": {
+        "a_registered_ceiling": {
+          "basis": "E2's registered final-clause threshold, the literal 0.133 for all five types, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.133,
+          "e3_ceiling": 0.233,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        },
+        "b_measured_floor": {
+          "basis": "the type's own measured blind final member accuracy from the E2 cells, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.15,
+          "e3_ceiling": 0.25,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        }
+      },
+      "readings_agree": true
+    },
+    "premise_transition_easy": {
+      "caption_member_accuracy_lenient": 0.1625,
+      "caption_member_accuracy_strict": 0.1625,
+      "caption_pair_accuracy_lenient": 0.025,
+      "caption_pair_accuracy_strict": 0.025,
+      "collapse_rate": 0.575,
+      "n_members": 80,
+      "n_pairs": 40,
+      "readings": {
+        "a_registered_ceiling": {
+          "basis": "E2's registered final-clause threshold, the literal 0.133 for all five types, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.133,
+          "e3_ceiling": 0.233,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        },
+        "b_measured_floor": {
+          "basis": "the type's own measured blind final member accuracy from the E2 cells, plus the registered 0.10 margin",
+          "blind_floor_threshold": 0.2,
+          "e3_ceiling": 0.30000000000000004,
+          "lenient_verdict": "PASS",
+          "strict_verdict": "PASS"
+        }
+      },
+      "readings_agree": true
+    }
+  },
+  "registration": "docs/registered_track4_premise_v2_design_v1.md#7-E3",
+  "schema_version": "blind-gains.track4-premise-v2-e3-readout.v1",
+  "summary": {
+    "contracts_agree_under_reading_a": true,
+    "failing_types_under_reading_a": [],
+    "n_types": 5,
+    "registered_consequence": "Fail => the track is caption-leaky: eval-only until revised."
+  }
+}

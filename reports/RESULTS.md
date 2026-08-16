@@ -7,7 +7,7 @@ Single results file for the programme. Organised by the paper's own argument
 endpoint appears, including those that went against the hypothesis. Numbers are
 copied from committed artifacts; each block names its artifact.
 
-Updated 2026-08-14. Model: Qwen2.5-VL-3B-Instruct unless stated.
+Updated 2026-08-16. Model: Qwen2.5-VL-3B-Instruct unless stated.
 
 ---
 
@@ -26,7 +26,7 @@ Updated 2026-08-14. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | M5c item-level turnover + noise floor | R2 / mechanism | **complete** — 137/601 flips against a **measured zero** noise floor; churn structured but orthogonal to visual necessity (§12c) |
 | SEED3γ third-seed corrosion | **F6 Tier 1** | **complete — replicates**; 3-way Jaccard 0.661 vs null 0.012 (§6a) |
 | E1b trained-arm external columns | F1 beyond geo3k | **complete, 48/48** — **P1, S1, S2 all miss**; no lenient comparison moves (§13c, §13d) |
-| M7 ViRL39K stratified | R3 | **complete (seed 1)** — matched recovery **0.72–0.88 vs 0.08–0.12 on geo3k** (registered secondary passes, +0.63–0.64, stable); ρ_gain direction **fails** all arms (gains track headroom); ρ_recovery point-positive for blind arms (§12d). Seed 2: a1_real + a2b trained and eval-banked; a2_gray/a3_caption stalled at the 08-12 storage deadlock, resumed 08-14 (§19) |
+| M7 ViRL39K stratified | R3 | **complete — two seeds, registered estimator (2026-08-16)**: matched recovery **0.71–0.88 vs 0.08–0.12 on geo3k** (A2 gray 0.7265 [0.6592, 0.7961], A2b 0.7132 [0.6483, 0.7844], A3 0.8840 [0.8091, 0.9632]); geo3k-anchor differences +0.6476/+0.5948, both registered directions hold; ρ_gain direction **fails** all blind arms (gains track headroom — the seed-1 pattern reproduces); ρ_recovery point-positive for gray/no-image, direction holds (§ "2026-08-16 — Consolidation round"; seed-1 readout §12d) |
 | C5 7B access pair (A1 vs A2-gray) | R4 | **complete** — crossed TrainShare **0.78–0.84 vs 0.49 at 3B**, intervals disjoint; matched gain replicates (+0.2479 vs +0.2435). **Ladder R1–R5 closed** (§12e) |
 | M11 cross-family | R5 | **complete** (recovered 2026-07-28) |
 | Mini-A5 CP vs matched GRPO | F8 | **complete** — gate PASS, endpoints read under the pre-filed addendum. **Branch 2 fires**: primary anchor flat on content; the +0.07 strict gap is formatting (residual 1e−17). CP moves the oracle-localized readout on both R19 and R20 — the same layer ordinary RLVR moves (§8) |
@@ -34,8 +34,8 @@ Updated 2026-08-14. Model: Qwen2.5-VL-3B-Instruct unless stated.
 | X1–X5, B1, Gate 0, Phase 0 | F4–F7, Paper 2 | **complete** |
 | Cue ladder | Paper 2 P1.1 | **closed — both validity gates failed** |
 | C6 mechanism at 7B (A1/A2-gray on R19+R20) | F4 at scale / Paper 2 §5 | **complete 2026-08-11** — the 3B dissociation **inverts at 7B, and only for the real-image arm**: A1-real moves the primary anchor (+0.0250/+0.0233, CIs exclude 0, both contracts, both instruments — branch (d)); readout flat; A2-gray moves neither (branch (c)). One seed, descriptive; re-decides neither Gate 1 nor R4 (§ "2026-08-11 — C6") |
-| Track-4 premise-v2 acceptance gates E1–E4 | Paper 2 P1.5 / I14 | **all four run 2026-08-11** — E4 PASS (attacker at chance); E1 FAIL branch (c) — difficulty is not candidate-set size; E2 premise clause PASS at blind 0.000, final clause FAIL all types (answer-balance defect, not visual leak); E3 not caption-leaky. PI decisions taken: n=5 step approved; E2-failing types excluded from training until rebalanced (§ "2026-08-11 — Track-4") |
-| LH2 stage 1 (anchor seed 2) | Paper 1 §7 | **registered, not yet trained** — seg-1 died in the 08-10 an12 OOM (no boundary banked); relaunch chain re-armed 2026-08-14 behind a2_gray (§19) |
+| Track-4 premise-v2 acceptance gates E1–E4 | Paper 2 P1.5 / I14 | **all four run 2026-08-11; E1/E2/E3 re-run on the regenerated dev_v2 batch 2026-08-16** — E1 **PASS** both contracts (0.5125 in [0.40, 0.60]; branch (a) band hit at the branch-(c) n=5 re-measure — n=5 frozen, no further lever moves); E2 **FAIL persists** all five types (0.15–0.20 vs 0.133) with the mechanism now fully diagnosed: blind constant `-1` + tier-1 lenient containment scores gold `1` correct against `-1`, so the effective constant-attacker share is two value-classes (0.20) while the registered per-value balance cap held at 0.10; blind pair accuracy 0.000; exclusions from training stand; E3 **PASS all five types under BOTH readings** on dev_v2 — `chained_premise_easy` 0.2000 ≤ 0.233 resolves under unmodified reading (a); E4 PASS unchanged, wording resolved via unfolded per-attacker CIs (§ "2026-08-16 — Consolidation round") |
+| LH2 stage 1 (anchor seed 2) | Paper 1 §7 | **training since 2026-08-16T17:22Z** — seg-1 (`lh2_seed2_seg1_an12_20260816T172233Z`, an12 0–3, steps 0 → 50 of the segmented 0 → 200 stage, hash-audited boundaries between segments) after the 08-15 logger livelock was cleared (§ "2026-08-16 — Consolidation round") |
 
 ---
 
@@ -1600,89 +1600,45 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-14T15:35Z.*
+*Current as of 2026-08-16T10:15Z. The 08-12→08-14 storage deadlock and its
+recovery are recorded in `reports/storage_cleanup_20260814.md` and the
+2026-08-14 commit history; the 08-15 chain outcomes and their diagnosis are in
+the "2026-08-16 — Consolidation round" section.*
 
-**Storage deadlock 2026-08-12 → 08-14, cleared this round** *(operational
-finding + partial training telemetry — not a result)*
-
-- **Cause and cost.** `checkpoints/` reached 2.4 T; from 08-12 the storage guard
-  saw 63.5 GB free against the 2.5 TiB soft quota and refused every 55 GB
-  checkpoint save (floor 21.5 GB), retrying every 300 s indefinitely. Both M7
-  seed-2 trainers wedged mid-save with unbanked steps in memory: **a2_gray at
-  the step-80 save** (banked through 60, best_val 0.6476,
-  `m7_virl_a2_gray_seed2_an12_20260810T143944Z`) and **a3_caption at the
-  step-60 save** (banked through 40, best_val 0.6690,
-  `m7_virl_a3_caption_seed2_an29_20260811T040410Z`). Both 60-h chain waiters
-  aborted 08-13; neither eval launched; the LH2 relaunch trigger never fired.
-- **Recovery (08-14, PI-approved policy).** 712,585,804,824 bytes of
-  clearly-redundant checkpoints deleted — archived failed-attempt dirs plus
-  non-terminal `global_step` dirs of complete, eval-banked, ledgered M7 runs;
-  every evaluated/best step kept (byte-exact record:
-  `reports/storage_cleanup_20260814.md`). The guard reads
-  `reports/storage_usage_snapshot.json`, so the snapshot was refreshed manually
-  rather than waiting out its 3-h loop. Both guards passed at 15:28/15:29Z;
-  saves and training resumed unaided; both chains re-armed 15:31:02Z under
-  fresh 60-h windows.
-- **Process lesson.** The 60-h waiter deadline converted a storage stall into
-  silent abandonment (a 149-byte log); waiters need a wedged-vs-dead
-  distinction, and the snapshot's `"status": "pass"` is not a health check.
-
-**Running now** *(one ramping ViRL trainer per node, placement rule of
-2026-08-10; deviation filed in the M7 amendment and the LH2 registrations)* —
-**M7 seed 2:** a1_real and a2b complete with held-out evals
-banked (`m7_step100_heldout_seed2_a1_real_seed2_real_an29_20260809T144439Z`,
-`m7_step100_heldout_seed2_a2b_noimage_seed2_none_an29_20260811T041120Z`);
-a2_gray training 80 → 100 solo on an12 4–7; a3_caption training 60 → 100 solo
-on an29 4–7. On each completion the re-armed chains fire the held-out eval
-(`scripts/seed2_an12_chain.sh` an12 gpu 7, `scripts/a3_eval_chain.sh` an29
-gpu 1); a2_gray's completion also relaunches the **LH2 stage-1** chain on an12
-0–3 (seg-1 restarts from step 0 — the 08-10 OOM banked no boundary; go/no-go
-criteria unchanged; backstop `scripts/host_ram_watchdog.sh`, which kills the
-youngest trainer if a node falls under 120 GiB available with >1 trainer). The
-**two-seed R3 readout** runs once both evals land.
-
-**Closed this round** *(2026-08-11)*
-
-- **C6 mechanism at scale** — six cells generated, registered readout run, all 16
-  acceptance checks pass. Branch (d) for A1-real, branch (c) for A2-gray, both
-  replicated on the R20 twin under both contracts.
-- **E4 attacker gate** — PASS on the instrument's registered folded criterion.
-- **E1/E2 per-type gate readout** — E1 FAIL (branch c), E2 FAIL on the final
-  clause / PASS on the premise clause for every type.
-- **E3 caption stress** — complete (closed 2026-08-11T16:26Z). Caption minus
-  blind is ≤ 0 for four of five
-  types and +0.0375 for the fifth: the batch is **not caption-leaky**. All five
-  types pass against each type's own measured blind floor + 0.10; one type
-  (`chained_premise_easy`) fails against the registered literal 0.133 + 0.10,
-  and that failure is inherited from E2's answer-balance defect rather than from
-  captions. **All four premise-v2 acceptance gates have now run.**
+**Running now** — **LH2 stage 1, seg-1 training** since 2026-08-16T17:22:36Z
+(`lh2_seed2_seg1_an12_20260816T172233Z`, an12 0–3; the chain runs from the
+immutable copy `tmp/immutable_lh2_segment_chain_20260816.sh`, banks and
+hash-audits each 50-step boundary, and stops at the registered step-200
+go/no-go). Both M7 seed-2 held-out evals landed 2026-08-16 (4,239 rows each)
+and the **two-seed R3 readout is complete** — numbers in the consolidation
+section below.
 
 **Open, not running**
 
-- **E3 reading (a) vs (b) — PI call.** Four of five types pass caption-stress
-  under both readings; `chained_premise_easy` measures 0.2625 — **fails** the
-  registered-literal ceiling (0.133 + 0.10 = 0.233), **passes** its own
-  measured-floor ceiling (0.325); the (a)-failure is inherited from E2's
-  answer-balance defect. The instrument refuses to choose
-  (`reports/track4_premise_v2_e3_readout_v1.*`).
-- **Track-4 premise-v2 revision — decided 2026-08-11, not yet executed** (per
-  EXPERIMENT_TODO 2B-status): the approved branch-(c) step to `n=5`, and
-  final-answer rebalancing for the E2-failing types (excluded from training use
-  until balanced; the premise construct itself passes at blind 0.000 and is not
-  regenerated).
-- **E4 registration wording**: reconcile the prose criterion ("CI includes 0.5")
-  to the folded statistic the instrument computes; no number changes.
-- **Paper-2 direction call** on Gate 1's pre-committed branches (PI reads them);
-  the Aug-13 **GPT benchmark revision plan** (Discover → Ground → Read
-  hierarchy, two families × three layers × three counterfactual roles) awaits
-  PI adoption — it conflicts with EXPERIMENT_TODO P1.1 (cue-ladder v2 rebuild
-  vs demote) and overlaps P1.1b (verifier-operand audit).
-- **Remaining storage menu** (nothing further deleted without PI approval):
-  mini_a5 steps 20–80, keeping step 100 + terminal 120, ~500 G; c5
-  completed-run non-terminal steps ~248 G; `pilot/` 206 G; `smoke/` 31 G;
-  `m5_anchor_longhorizon_400/global_step_150` 51 G.
+- **E2 lenient-class fork — PI call.** The registered balance cap (max
+  per-value gold share ≤ 0.10, `docs/registered_hier_benchmark_v1.md` §8) held
+  on dev_v2, but the tier-1 lenient matcher scores gold `1` correct against
+  the blind constant `-1` (30/30 + 30/30 golds in the gray final cell, all
+  other golds 0), so the effective constant-attacker share is
+  share(`1`) + share(`-1`) = 0.20 (0.15 for `premise_transition`) and E2 fails
+  all five regenerated types; blind pair accuracy 0.000 everywhere; exclusions
+  from training stand. Candidate revisions — cap lenient-equivalence-class
+  shares, make the answer support sign-unambiguous, or revise the matcher
+  tier — are the PI's to pick before any further regeneration (one-shot
+  discipline, no silent iteration).
+- **ST3-7B ratification**: `docs/registered_stage3_7b_v1.md` is an unsigned
+  DRAFT; launch gates = two-seed R3 landed + HB P2 informativeness gates + PI
+  merge with the launch-time amendment (training-batch pin, configs,
+  blind-control decision).
+- **HB dev-batch generation** (P1.2 of the 08-12 dispatch) under
+  `docs/registered_hier_benchmark_v1.md`; the chart-v08 no-zoom audit
+  (Richard) still blocks P2 of that build.
+- **§21 ledger gaps** surfaced by the M13 table
+  (`reports/paper1_numbers_table_v1.md`): F1b, F2, F4, F5, F6 Tier 1, F7 have
+  no §21 row; F0/F1/F10 rows carry artifacts but no numbers.
 - **PI-owned prose**: X6 related-work table; PAPER1 §3/§5 header-table wording.
-- **Richard's review** of the four delivered human packages.
+- **Richard's review** of the delivered human packages (+ chart-v08 no-zoom,
+  R20 sample).
 
 ## 20. E2 — recipe variation: the dissociation is not the pilot recipe's artifact (2026-08-04, assembly only)
 
@@ -2252,6 +2208,181 @@ drivers distinct script paths.
 
 ---
 
+## 2026-08-16 — Consolidation round: E1 PASSES at n=5, E3 clean under both readings, E2's blind leak re-diagnosed as a lenient-class collision; E4 wording resolved; storage rule applied; Stage-2 cancelled
+
+*Per the PI dispatch of 2026-08-16 and EXPERIMENT_TODO PART 5. Ledger rows in
+`reports/main_progress.md` §"Consolidation round"; task-level provenance in the
+artifacts below.*
+
+**Two-seed R3 readout — the R3 rung upgrades to the registered two-seed
+estimator.** All four M7 seed-2 arms complete with held-out evals banked
+(4,239 paired items each; a2_gray and a3_caption landed 2026-08-16 after the
+08-15 operational failures were fixed). Registered estimator
+(`docs/registered_m7_amendment_v1.md:52`: seed mean taken per item before any
+stratum mean, ratio, rank statistic, or bootstrap; schema
+`blind-gains.m7-r3-readout.v2`, status complete; A1 denominator stable;
+0/5,000 undefined draws in all nine bootstrap intervals that can carry them —
+the recovery and rank statistics; the gain and anchor-difference intervals are
+means and cannot be undefined):
+
+- **Corpus-aggregate gains** (two-seed mean, 95% CI): A1 real **+0.2044**
+  [0.1898, 0.2189] · A2 gray **+0.1485** [0.1359, 0.1615] · A2b no-image
+  **+0.1458** [0.1332, 0.1583] · A3 caption **+0.1807** [0.1673, 0.1939].
+- **Aggregate recovery vs A1**: A2 gray **0.7265** [0.6592, 0.7961] · A2b
+  **0.7132** [0.6483, 0.7844] · A3 caption **0.8840** [0.8091, 0.9632].
+- **Registered secondary** (informed comparison, disclosed in the
+  registration): ViRL recovery above the geo3k seed-1 anchors — A2 gray
+  0.7265 vs 0.0789, difference **+0.6476** [0.5803, 0.7172]; A2b 0.7132 vs
+  0.1184, **+0.5948** [0.5299, 0.6660]; both registered directions hold.
+- **Rank statistics** (22 eligible strata): ρ_gain fails its registered
+  direction (> 0) for all three blind arms — a2_gray −0.2253 [−0.3924,
+  −0.1078], a2b −0.3077 [−0.4579, −0.1666], a3 −0.7403 [−0.8125, −0.5709] —
+  the seed-1 pattern (gains track headroom) reproduces under the two-seed
+  estimator; ρ_recovery point-positive with direction holding for a2_gray
+  +0.4226 [−0.0030, 0.6079] and a2b +0.2917 [−0.0497, 0.6051]; a3 −0.0346
+  [−0.4361, 0.3086], direction fails.
+- **Seed dispersion** (descriptive; n_seeds = 2, no seed-level claim
+  registered or made): per-arm corpus-gain differences (seed1 − seed2)
+  ≤ 0.0156 in magnitude; aggregate-recovery differences ≤ 0.0639.
+
+Artifacts: `reports/m7_r3_readout_v2.{json,md}`,
+`reports/m7_r3_readout_v2_artifacts/`; command in §21 block M. The JSON is the
+artifact of record for the recovery CIs — the `.md` renderer prints them as
+`[NA]` (renderer defect in `scripts/build_m7_r3_readout.py`, queued, numbers
+unaffected). **LH2 stage-1 seg-1**: gates passed 2026-08-16T17:22:33Z, seg-1
+launched 17:22:36Z (`lh2_seed2_seg1_an12_20260816T172233Z`, an12 0–3, steps
+0 → 50 of the segmented 0 → 200 stage) once the gpu-7 eval cleared the
+chain's gate.
+
+**dev_v2 regeneration (one-shot) — the approved branch-(c) n=5 step and the
+registered answer-balance constraint, executed together.** Registration first:
+`docs/registered_hier_benchmark_v1.md` (full HB.0 content + §8 balance
+constraint, max per-value gold share ≤ 0.10) merged at `2248c7f` before any
+item existed. Builder `scripts/build_track4_premise_v2_dev_batch_v2.py`
+(reuses the frozen v1 geometry/renderer paths; overrides recorded): 160
+groups, counts unchanged (40/40/40/20/20), easy types at n_points 5
+(`t4v2_coordinate_register_n5_v1`), n=20 types unchanged, batch seed 20260816,
+zero scene-program collisions with v1, zero image collisions with frozen B1,
+from-disk verification 0 problems over 640 rehashed images
+(`reports/track4_premise_v2_dev_v2_verification.json`; the verifier was
+parameterized first — its pre-fix form had no argparse and silently ignored
+arguments, so it would have re-verified v1; caught by this round's adversarial
+verification pass). Balance held exactly: max
+per-value share ≤ 0.1000 every type (support k = 13–14); balance rejections
+4–25 per type inside the deterministic attempt stream. Batch:
+`data/track4_premise_v2_dev_v2`; build report
+`reports/track4_premise_v2_dev_v2_build_v1.json`. The v1 batch is untouched.
+
+**E1 — difficulty band: PASS, both contracts.** `chained_premise_easy` premise
+member accuracy **0.5125** (lenient = strict), inside the registered
+[0.40, 0.60] band → branch **(a) band hit** fires at the branch-(c)
+re-measure: **n=5 is frozen** as the curriculum entry difficulty, no further
+lever moves. Secondary `premise_transition_easy` 0.4750, also in band.
+`reports/track4_premise_v2_gate_readout_v2.{json,md}`, composition enforced as
+`registered-v2-branch-c`.
+
+**E2 — blind floor: FAIL persists on all five types, and the mechanism is now
+fully pinned.** Blind final member accuracy 0.150–0.200 vs the registered
+0.133 ceiling (gray = no_image, lenient = strict); blind **pair** accuracy
+0.000 and blind **premise** accuracy 0.000 everywhere. The blind model still
+collapses to the constant `-1` (every gray-cell prediction for four of five
+types — 80/80 or 40/40 per type; `fact_read` 32/40 in gray and fully constant
+under no_image); the
+registered per-value balance cap did its registered job — a constant can
+harvest at most 0.10 per gold value — but the **tier-1 lenient matcher scores
+gold `1` correct against extracted `-1`** (verified: 30/30 golds `1` and 30/30
+golds `-1` marked correct in the gray final cell, every other gold 0), so one
+constant harvests two value-classes: 0.10 + 0.10 = 0.20 (0.15 for
+`premise_transition`, whose class shares are 0.075 + 0.075). Registered
+consequence binds: the five types remain **excluded from training use**; the
+revision fork (lenient-class-aware cap / sign-unambiguous answer support /
+matcher-tier change) is the PI's (§19). One-shot discipline: no further
+regeneration this round.
+
+**E3 — caption stress on dev_v2: PASS, all five types, BOTH readings — the
+`chained_premise_easy` indeterminacy resolves.** Caption member accuracy vs
+ceilings: `chained_premise` 0.1750, `chained_premise_easy` **0.2000**,
+`fact_read` 0.1000, `premise_transition` 0.1375, `premise_transition_easy`
+0.1625 — every type under the registered-literal ceiling 0.233 (reading (a),
+unmodified) and under its measured floor + 0.10 (reading (b); floors from the
+v2 E2 cells: 0.20/0.20/0.20/0.15/0.20). Full pipeline re-run:
+`reports/track4_premise_v2_e3_caption_stress_run_provenance_v2.json`, readout
+`reports/track4_premise_v2_e3_readout_v2.{json,md}`.
+
+**E4 — wording resolved; criterion untouched, verdict unchanged.** The
+attacker instrument was extended to compute UNfolded directed-AUC CIs from the
+same bootstrap draws as the folded ones and to persist per-member OOF scores
+(previously discarded in memory). Deterministic re-run (seed 20260710)
+reproduced **every v1 folded number exactly, dinov2 included**. Literal
+"CI includes 0.5", per attacker: all six per-template scopes include 0.5
+(dinov2 n20 [0.4756, 0.5366], n8 [0.4706, 0.5433]; frequency_stat n20
+[0.4966, 0.5780], n8 [0.4828, 0.5467]; metadata n20 [0.4922, 0.5064], n8
+[0.4881, 0.5072]); the two pooled scopes that exclude it are dinov2
+[0.5080, 0.5527] and frequency_stat [0.5164, 0.5755]; metadata pooled includes
+it [0.4967, 0.5074]. The operative folded gate (≤ 0.55 point, ≤ 0.62 CI
+upper) is unmodified and still PASS.
+`reports/track4_premise_v2_e4_wording_resolution_v1.{json,md}`,
+`reports/track4_premise_v2_attacker_gate_v2_unfolded.json`, per-item scores
+`reports/track4_premise_v2_attacker_oof_scores_v1.jsonl` (1,920 rows).
+
+**Storage rule applied (PI decision; replaces the 08-14 menu).**
+**854,949,371,942 bytes** deleted across 65 `global_step` dirs in 20 runs
+under the mechanical rule (delete non-terminal steps not §21-referenced; keep
+terminal + best + every §21-referenced step; three-tier §21 resolution
+committed in `scripts/apply_storage_retention_rule_20260816.py`); 39 step dirs
+kept; one tracker-less pilot run skipped fail-closed; `m7/` and `lh2/`
+untouched. Byte-exact record appended to `reports/storage_cleanup_20260814.md`.
+After: used 1.217 TB / free 1.531 TB under the 2.5 TiB soft quota;
+`checkpoints/` 1,003 G.
+
+**Infra fixes (dispatch item 1; each ships an I10 fixture the pre-fix code
+fails).** (1a) `scripts/measure_storage_usage.py` now writes `status:"fail"`
+when used > quota — the live snapshot had carried `free_bytes:
+-461,684,596,736` with `status:"pass"` because the Jul-19 refresh-loop process
+predated the 2.5 TiB constant; loop restarted (new run
+`storage_snapshot_refresh_loop_login_20260816T084012Z`), snapshot now truthful
+(quota 2,748,779,069,440). The checkpoint guard raises
+`StorageQuotaExhaustedError` immediately on used ≥ capacity instead of
+retrying forever; transient headroom refusals keep the 300-s retry. (1b)
+`scripts/chain_wait_helper.py`: waiters now score an ACTIVE deadline —
+alive-but-storage-stalled reads WEDGED (visible, clock paused), dead chains
+stop loudly; both canonical waiters retrofitted. (1c) the E3 STAGE-B defect
+was the merge-launcher arity check, fixed at `da0751d` without its fixture;
+the fixture now exists (`tests/test_launch_caption_store_merge_arity.py`).
+Test files: `tests/test_measure_storage_usage.py`,
+`tests/test_easyr1_checkpoint_guard.py`, `tests/test_storage_guard.py`,
+`tests/test_chain_wait_helper.py` — storage suites 33 passed (those three
+plus the conservative-snapshot and refresh-loop suites), waiter + arity
+fixtures 9 passed (6 + 3).
+
+**Operational recovery of the 08-15 chain outcomes** *(operational finding,
+not a result)*. Both re-armed chains fired on time on 08-15 and both evals
+failed: a3_caption exited 127 because
+`${caption_env:+VIRL_CAPTION_SHARDS=...}` expands into a command name (bash
+fixes the assignment/command split at parse time — the caption arm had never
+launched through this script); a2_gray was refused because the guard
+fail-closed on a malformed claim file — the LH2 chain writes **plain-text**
+claims while the m7 guard requires JSON (cross-format incompatibility,
+flagged, unfixed this round). The LH2 seg-1 relaunch died at ~20 min in a
+deterministic livelock: the resume-safe logger guard refused three stale
+08-06 logger artifacts in a stage dir with zero banked boundaries. Fixes:
+launcher env-array form (+5-test fixture,
+`tests/test_launch_m7_seed2_eval_env.py`); both evals relaunched 08:25/08:26Z;
+LH2 artifacts archived aside, orphan manifest closed, chain re-armed. Both
+merged step-100 HF checkpoints verified (8131575808 bytes / 825 weights).
+
+**Stage-2 3B ablation matrix — CANCELLED** (PI decision, rationale PAPER2 §5).
+Repo sweep: no Stage-2 configs, launchers, or waiters exist (`configs/`,
+`scripts/`, no registration) — nothing to remove; record only. The "stage 2"
+inside `docs/registered_lh2_stage1_v1.md` is LH2's steps 200→400, untouched.
+
+**New registrations and drafting support.** `docs/registered_stage3_7b_v1.md`
+— ST3-7B two-arm decisive pilot, PAPER2 §5 quoted verbatim, **DRAFT,
+unsigned**, no launcher. `docs/registered_hier_benchmark_v1.md` — HB.0
+registration (above). `reports/paper1_numbers_table_v1.md` — M13 paper-facing
+numbers table, one row per PAPER1 §3 claim, frozen slots marked (two-seed R3,
+LH2 direction, C6 tier), §21 gaps listed.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:
@@ -2268,7 +2399,7 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | F1 two-regime access matrix: blind arms flat tested-blind, ordered tested-sighted | D3 estimand registration | `reports/d3_condition_matrix_v1.json`, `gate0_stratification_v1.json` | report provenance |
 | R2: anchor-recipe gains FALL by step 400 | M5 registration | `reports/m5_terminal_readout_v1.*` | report provenance |
 | M5c: benchmark-flat hides huge non-visual turnover (noise floor exactly zero) | M5c task docs | `reports/m5c_*` incl. evidence ledger + noise-floor replicates | report provenance |
-| R3: ViRL blind arms recover 0.72–0.88 of A1 matched (vs 0.08–0.12 geo3k) | `docs/registered_m7_seed_scope_v1.md` | `reports/m7_r3_readout_v1.{json,md}` | inline cmd block A |
+| R3 (two-seed, registered estimator): ViRL blind arms recover 0.71–0.88 of A1 matched (vs 0.08–0.12 geo3k); geo3k-anchor differences +0.6476 [0.5803, 0.7172] / +0.5948 [0.5299, 0.6660]; ρ_gain < 0 all blind arms, ρ_recovery point-positive gray/no-image | `docs/registered_m7_amendment_v1.md` (two-seed estimator, :52) + `docs/registered_m7_seed_scope_v1.md` | `reports/m7_r3_readout_v2.{json,md}` + `_artifacts/`; seed-1 readout retained: `reports/m7_r3_readout_v1.{json,md}` | inline cmd blocks A (seed 1) + M (two-seed) |
 | R4: 7B crossed TrainShare 0.7785/0.8402 vs 0.487 at 3B — grows with scale | `docs/registered_c5_7b_access_pair_v1.md` | `reports/c5_r4_readout_v1.{json,md}` + `_artifacts/` (6 cell run dirs + per-item sha256s) | inline cmd block B |
 | R5: cross-family generalization | M11 registration | `reports/m11_*` | report provenance |
 | F8: CP vs matched GRPO — content ceiling holds; strict gap = format (residual 1e−17) | Mini-A5 registrations + pre-filed addendum | `reports/f8_mini_a5_endpoint_readout_v1.*`, `f8_secondaries_v1.md` | report provenance |
@@ -2279,6 +2410,9 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | E4: premise-v2 release carries no transferable artifact signal (folded gate 0.546 max, CI upper 0.576 max) | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 | `reports/track4_premise_v2_attacker_gate_v1.json`, `logs/track4_gates/e4_attacker_gate.log` | inline cmd block G |
 | E1/E2: premise clause blind-unsolvable (0.000); final clause leaks a degenerate constant above the 0.133 ceiling; difficulty branch (c) fires at 0.2875 | `docs/registered_track4_premise_v2_design_v1.md` §7-E1/E2, §5 branches | `reports/track4_premise_v2_gate_readout_v1.{json,md}`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z` | inline cmd block H |
 | E3: the batch is not caption-leaky — caption minus blind ≤ 0 for four of five types, +0.0375 for the fifth; all five pass against their own measured floor + 0.10, one fails the registered literal ceiling for an E2-inherited reason | `docs/registered_track4_premise_v2_design_v1.md` §7-E3 | `reports/track4_premise_v2_e3_readout_v1.{json,md}`, caption store `experiments/runs/track4_premise_v2_caption_store_an29_20260811T155104Z`, merge `…caption_store_merge_track4_premise_v2_dev_v1_20260811T162332Z`, predictions under `…track4_premise_v2_e3_an29_20260811T155104Z/finish_20260811T162332Z/` | inline cmd block I |
+| E4 wording resolution: literal "CI includes 0.5" holds in every per-template scope for all three attackers; excluded only by pooled dinov2 [0.508, 0.553] and pooled frequency_stat [0.516, 0.576]; v1 folded numbers reproduced exactly; folded criterion and verdict untouched | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 + PI decision 2026-08-16 (EXPERIMENT_TODO PART 5) | `reports/track4_premise_v2_e4_wording_resolution_v1.{json,md}`, `track4_premise_v2_attacker_gate_v2_unfolded.json`, `track4_premise_v2_attacker_oof_scores_v1.jsonl` | inline cmd block J |
+| E1/E2 on dev_v2 (branch-(c) n=5 + registered balance cap, one-shot): E1 PASS both contracts (0.5125 in [0.40, 0.60], branch (a) — n=5 frozen); E2 FAIL all five (0.15–0.20 vs 0.133) via the tier-1 lenient class collision (constant `-1` harvests golds `1` and `-1`; per-value cap held at 0.10; blind pair acc 0.000) — exclusions stand | `docs/registered_track4_premise_v2_design_v1.md` §5/§7 + `docs/registered_hier_benchmark_v1.md` §8 | `reports/track4_premise_v2_gate_readout_v2.{json,md}`, `track4_premise_v2_dev_v2_build_v1.json`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260816T090907Z` | inline cmd block K |
+| E3 on dev_v2: PASS all five types under BOTH readings — `chained_premise_easy` 0.2000 ≤ 0.233 (reading (a), unmodified) and ≤ 0.300 (measured floor + 0.10); the v1 indeterminacy resolves | `docs/registered_track4_premise_v2_design_v1.md` §7-E3 + `docs/registered_hier_benchmark_v1.md` §8 | `reports/track4_premise_v2_e3_readout_v2.{json,md}`, provenance `track4_premise_v2_e3_caption_stress_run_provenance_v2.json`, run dirs `experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z` + caption store/merge siblings | inline cmd block L |
 
 **Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
 include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing
@@ -2410,6 +2544,75 @@ single-shard arity fix to `scripts/launch_caption_store_merge.sh`. The readout:
 reading (a) alone. Intervention type is taken from the causal manifest's own
 `intervention_type` field, never parsed from `pair_id` — the type names are
 prefixes of one another.)
+
+**J — E4 wording resolution** (fixtures green first:
+`tests/test_artifact_attackers_v02.py` → 10 passed; folded and unfolded CIs
+are quantiles of the same bootstrap draws, so v1 reproduction is structural):
+
+    bash scripts/launch_artifact_gate_v02.sh an29 2 \
+      data/track4_premise_v2_dev_v1/attacker_release \
+      data/track4_premise_v2_dev_v1/attacker_key.jsonl \
+      reports/track4_premise_v2_attacker_gate_v2_unfolded.json \
+      "--per-item-scores reports/track4_premise_v2_attacker_oof_scores_v1.jsonl"
+    .venv/bin/python scripts/build_e4_wording_resolution.py \
+      --v1 reports/track4_premise_v2_attacker_gate_v1.json \
+      --v2 reports/track4_premise_v2_attacker_gate_v2_unfolded.json \
+      --output-json reports/track4_premise_v2_e4_wording_resolution_v1.json \
+      --output-md reports/track4_premise_v2_e4_wording_resolution_v1.md
+
+(guard → claim → release around the launcher as in block G; reproduction check
+inside the builder: exact for the CPU attackers, 1e-9 for dinov2 — measured
+exact for all three.)
+
+**K — E1/E2 on dev_v2** (fixtures green first:
+`tests/test_track4_premise_v2_dev_v2.py` → 6 passed, including the fixture
+that the v1 batch FAILS the balance cap; batch verifier 0 problems):
+
+    .venv/bin/python scripts/build_track4_premise_v2_dev_batch_v2.py   # one-shot
+    GATES_DATA_DIR=data/track4_premise_v2_dev_v2 GATES_ONLY="E1 E2" \
+      bash scripts/track4_premise_v2_gates.sh
+    R=experiments/runs/track4_premise_v2_gates_an29_20260816T090907Z
+    D=data/track4_premise_v2_dev_v2
+    .venv/bin/python -m scripts.build_track4_premise_v2_gate_readout \
+      --probe-real $R/premise_probe --probe-gray $R/premise_probe_gray \
+      --probe-no-image $R/premise_probe_no_image \
+      --final-real $R/final --final-gray $R/final_gray \
+      --final-no-image $R/final_no_image \
+      --probe-manifest $D/manifest_premise_probe.jsonl \
+      --causal-manifest $D/manifest_causal_pairs.jsonl \
+      --expect registered-v2-branch-c \
+      --json-output reports/track4_premise_v2_gate_readout_v2.json \
+      --markdown-output reports/track4_premise_v2_gate_readout_v2.md
+
+**L — E3 on dev_v2** (same instrument as block I; measured floors from the v2
+E2 cells):
+
+    E3_DATA_DIR=data/track4_premise_v2_dev_v2 E3_PROV_TAG=v2 \
+    E3_RELEASE_MANIFEST_SHA256=77021b66e37afae23e0320ce6915ddb74af96963a0745d7cc150f24d3abc656f \
+    E3_RELEASE_KEY_SHA256=9e8fba20f226d8adf030ca72a3a06b5e6ab40cd4d110496684a3dbdfc588fbe4 \
+      bash scripts/run_e3_caption_stress.sh
+    E=experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z
+    .venv/bin/python scripts/build_track4_premise_v2_e3_readout.py \
+      --predictions $E/caption_qa/predictions.jsonl \
+      --causal-manifest data/track4_premise_v2_dev_v2/manifest_causal_pairs.jsonl \
+      --measured-blind-floors tmp/e3_v2_measured_blind_floors.json \
+      --json-output reports/track4_premise_v2_e3_readout_v2.json \
+      --markdown-output reports/track4_premise_v2_e3_readout_v2.md
+
+**M — two-seed R3 readout** (instrument + fixtures from the 08-12 extension
+round, `scripts/build_m7_r3_readout.py`; seed-1 run dirs verbatim from
+`reports/m7_r3_readout_v1.json` `provenance.runs`; the invocation is preserved
+verbatim as `tmp/run_m7_r3_readout_v2_20260816.sh`):
+
+    bash tmp/run_m7_r3_readout_v2_20260816.sh
+    # = build_m7_r3_readout.py with --step0/--step100 (seed-1 cells, 4 arms each)
+    #   + --step100-seed2 a1_real=…20260809T144439Z a2b_noimage=…20260811T041120Z
+    #     a2_gray=…20260816T082503Z a3_caption=…20260816T082631Z
+    #   --artifact-dir reports/m7_r3_readout_v2_artifacts
+    #   --json-output reports/m7_r3_readout_v2.json
+    #   --markdown-output reports/m7_r3_readout_v2.md
+    # registered defaults carried: 5000 draws, bootstrap seed 20260716,
+    # held-out sha/rows/strata pins
 
 *Eval-cell generation for the Gate-1 arms (merge → R19/R20/chartv08/catch) is
 scripted end-to-end in `scripts/gate1_std_evals_chain.sh` and

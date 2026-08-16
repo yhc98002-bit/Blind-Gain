@@ -1,0 +1,147 @@
+{
+  "attempts_by_type": {
+    "chained_premise": 1781,
+    "chained_premise_easy": 313,
+    "fact_read": 215,
+    "premise_transition": 4475,
+    "premise_transition_easy": 528
+  },
+  "b1_image_sha_collisions": [],
+  "balance_constraint": {
+    "cap": 0.1,
+    "scope": "pooled causal member golds per type"
+  },
+  "balance_rejections": {
+    "chained_premise": 24,
+    "chained_premise_easy": 8,
+    "fact_read": 25,
+    "premise_transition": 4,
+    "premise_transition_easy": 4
+  },
+  "balance_report": {
+    "all_pass": true,
+    "chained_premise": {
+      "answer_support_k": 13,
+      "cap": 0.1,
+      "max_share": 0.1,
+      "max_share_value": "6",
+      "n_member_golds": 40,
+      "pass": true
+    },
+    "chained_premise_easy": {
+      "answer_support_k": 14,
+      "cap": 0.1,
+      "max_share": 0.1,
+      "max_share_value": "1",
+      "n_member_golds": 80,
+      "pass": true
+    },
+    "fact_read": {
+      "answer_support_k": 14,
+      "cap": 0.1,
+      "max_share": 0.1,
+      "max_share_value": "7",
+      "n_member_golds": 40,
+      "pass": true
+    },
+    "premise_transition": {
+      "answer_support_k": 14,
+      "cap": 0.1,
+      "max_share": 0.1,
+      "max_share_value": "-6",
+      "n_member_golds": 80,
+      "pass": true
+    },
+    "premise_transition_easy": {
+      "answer_support_k": 14,
+      "cap": 0.1,
+      "max_share": 0.1,
+      "max_share_value": "-1",
+      "n_member_golds": 80,
+      "pass": true
+    }
+  },
+  "batch_seed": 20260816,
+  "command": "scripts/build_track4_premise_v2_dev_batch_v2.py",
+  "declared_groups": 160,
+  "file_sha256": {
+    "attacker_key.jsonl": "ffe83bfcc0dbee22e86169af5dbfa45e29c047215a35918c537db25969c7c60b",
+    "attacker_release/manifest.jsonl": "e1ae328443c2d7df5c26a69d5deb332ad384cc45356d2f4d2dffa1e335bc26a2",
+    "groups_v2.jsonl": "aae21a2f1e8b3b000994e4a7b55239d0588d1ccf3276aa55f2aaf8852fa0f674",
+    "manifest_causal_pairs.jsonl": "318f53011db428f6275eeb44deb34ebfe9d26482806571c7b7d60bd66884f9ca",
+    "manifest_invariance_pairs.jsonl": "a60f0f196d33864f58e31e9b69cda1ee984fc5b97f7213427baa7ee215d90e72",
+    "manifest_premise_probe.jsonl": "a67344acb3e8bac38cd548bdfd3812c05035ca2921adc7b48a29fc82087013ae"
+  },
+  "git_hash": "2248c7f4eda6c800237924cabce8f43f5ac03e82",
+  "gray_control_sha256": "2aebae80610fa3826f125326be0445ed659fb69e555e058d805b135f1123904b",
+  "node": "ln207",
+  "one_shot": "declared regeneration batch; no acceptance iteration",
+  "out_dir": "data/track4_premise_v2_dev_v2",
+  "per_intervention": {
+    "chained_premise": {
+      "groups": 20,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "chained_premise_easy": {
+      "groups": 40,
+      "n_points": 5,
+      "template_id": "t4v2_coordinate_register_n5_v1"
+    },
+    "fact_read": {
+      "groups": 20,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "premise_transition": {
+      "groups": 40,
+      "n_points": 20,
+      "template_id": "t4v2_coordinate_register_n20_v1"
+    },
+    "premise_transition_easy": {
+      "groups": 40,
+      "n_points": 5,
+      "template_id": "t4v2_coordinate_register_n5_v1"
+    }
+  },
+  "premise_probe_rows": 140,
+  "registrations": [
+    "docs/registered_hier_benchmark_v1.md (\u00a78 balance constraint)",
+    "docs/registered_track4_premise_v2_design_v1.md (\u00a75 branch (c) n=5)"
+  ],
+  "schema_version": "blind-gains.track4-premise-v2-dev-build.v2",
+  "split_rule": "unchanged from v1 (development bucket only, enforced)",
+  "v1_knob_overrides": {
+    "BATCH_SEED": {
+      "v1": 20260806,
+      "v2": 20260816
+    },
+    "N_POINTS": {
+      "v1": {
+        "chained_premise": 20,
+        "chained_premise_easy": 8,
+        "fact_read": 20,
+        "premise_transition": 20,
+        "premise_transition_easy": 8
+      },
+      "v2": {
+        "chained_premise": 20,
+        "chained_premise_easy": 5,
+        "fact_read": 20,
+        "premise_transition": 20,
+        "premise_transition_easy": 5
+      }
+    },
+    "TEMPLATES": {
+      "v1": {
+        "8": "t4v2_coordinate_register_n8_v1",
+        "20": "t4v2_coordinate_register_n20_v1"
+      },
+      "v2": {
+        "5": "t4v2_coordinate_register_n5_v1",
+        "20": "t4v2_coordinate_register_n20_v1"
+      }
+    }
+  },
+  "v1_scene_program_collisions": []
+}

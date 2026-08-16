@@ -1,0 +1,22 @@
+{
+  "by_type": {
+    "chained_premise": 20,
+    "chained_premise_easy": 40,
+    "fact_read": 20,
+    "premise_transition": 40,
+    "premise_transition_easy": 40
+  },
+  "causal_rows": 160,
+  "chained_rows": 60,
+  "data_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/track4_premise_v2_dev_v2",
+  "easy_n_points": 5,
+  "groups": 160,
+  "images_rehashed": 640,
+  "invariance_rows": 160,
+  "n_problems": 0,
+  "probe_rows": 140,
+  "probe_transition_rows": 80,
+  "problems": [],
+  "transition_rows": 80,
+  "v1_refused_all": true
+}

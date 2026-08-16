@@ -127,7 +127,13 @@ SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=25)
 
 BASE=artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct
 CAPTIONER=artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct
-DATA=data/track4_premise_v2_dev_v1
+# GATES_DATA_DIR override (2026-08-16, item 4): the branch-(c)+balance
+# regeneration re-runs E1/E2 on data/track4_premise_v2_dev_v2 with this same
+# instrument. Default is the registered v1 batch; behavior unchanged unless
+# the env var is set. The derived tag keeps per-batch run ids and merge tags
+# distinct so no v1 artifact can be overwritten.
+DATA="${GATES_DATA_DIR:-data/track4_premise_v2_dev_v1}"
+DATA_TAG="$(basename "$DATA")"
 REGISTRATION=docs/registered_track4_premise_v2_design_v1.md
 
 # E3 inputs: the derived caption-QA release+key (NOT the attacker files).
@@ -929,7 +935,7 @@ gate_e3() {
 
   run_login_step "e3_caption_merge" "E3" "$REGISTRATION#7-E3" \
     "$(jq -nc --arg s "$CAP_RUN_DIR/shards/store_shard_0.jsonl" --arg r "$E3_RELEASE_MANIFEST" '{input_shard:$s, release_manifest:$r}')" \
-    "bash scripts/launch_caption_store_merge.sh track4_premise_v2_dev_v1 $E3_RELEASE_MANIFEST $CAP_RUN_DIR/shards/store_shard_0.jsonl" \
+    "bash scripts/launch_caption_store_merge.sh $DATA_TAG $E3_RELEASE_MANIFEST $CAP_RUN_DIR/shards/store_shard_0.jsonl" \
     || { gate_fail E3 "$LAST_STEP_NAME" "rc=$LAST_STEP_RC"; return 1; }
 
   # launch_caption_store_merge.sh prints its RUN_DIR as the last stdout line;
@@ -1040,7 +1046,7 @@ else
   record_step "registered_rescore" "post" "$REGISTRATION#7-E2-rescore" \
     "none — section 7 names no rescore script and none exists on disk" \
     "$(utc)" "$(utc)" 'null' "not_run_registration_defers" "$LOG" \
-    "$(jq -nc '{groups_file:"data/track4_premise_v2_dev_v1/groups_v2.jsonl", modified:false}')"
+    "$(jq -nc --arg g "$DATA/groups_v2.jsonl" '{groups_file:$g, modified:false}')"
   log "no registered rescore script on disk; q_real/q_blind and measurement_state left untouched"
 fi
 

@@ -73,7 +73,7 @@ the VAG attribution readout requires the matched same-data blind control —
 whether Stage 3 carries its own blind control arm or inherits A2b-lineage
 controls is a **PI decision recorded at ratification**, flagged open here.
 
-## 6. Pre-committed branches (bound verbatim from PAPER2 §5)
+## 6. Pre-committed branches (bound from PAPER2 §5 — quoted verbatim in §1, restated here as the two branch readings)
 
 - **IGPO content gain > standard's on the primary anchor AND hierarchy
   L2/L3** → the method paper proceeds.

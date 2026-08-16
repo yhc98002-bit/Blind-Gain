@@ -1,0 +1,229 @@
+{
+  "all_attackers_literal_pass": false,
+  "criterion_note": "The operative registered gate remains the folded one the instrument implements (point <= 0.55, folded CI upper <= 0.62); it is not modified here and its verdict is unchanged from v1.",
+  "literal_criterion_rows": [
+    {
+      "attacker": "dinov2",
+      "ci_includes_0_5_literal": false,
+      "directed_oof_auc": 0.529140625,
+      "folded_ci_95_descriptive": [
+        0.5079619140625,
+        0.55269921875
+      ],
+      "folded_gate_statistic_descriptive": 0.529140625,
+      "scope": "pooled",
+      "unfolded_ci_95": [
+        0.5079619140625,
+        0.55269921875
+      ]
+    },
+    {
+      "attacker": "dinov2",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.50671875,
+      "folded_ci_95_descriptive": [
+        0.500625,
+        0.53734765625
+      ],
+      "folded_gate_statistic_descriptive": 0.50671875,
+      "scope": "t4v2_coordinate_register_n20_v1",
+      "unfolded_ci_95": [
+        0.47561328125,
+        0.5365625
+      ]
+    },
+    {
+      "attacker": "dinov2",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.50875,
+      "folded_ci_95_descriptive": [
+        0.50078125,
+        0.5440625
+      ],
+      "folded_gate_statistic_descriptive": 0.50875,
+      "scope": "t4v2_coordinate_register_n8_v1",
+      "unfolded_ci_95": [
+        0.470625,
+        0.5432851562500001
+      ]
+    },
+    {
+      "attacker": "frequency_stat",
+      "ci_includes_0_5_literal": false,
+      "directed_oof_auc": 0.5459765625,
+      "folded_ci_95_descriptive": [
+        0.516365234375,
+        0.5755107421875001
+      ],
+      "folded_gate_statistic_descriptive": 0.5459765625,
+      "scope": "pooled",
+      "unfolded_ci_95": [
+        0.516365234375,
+        0.5755107421875001
+      ]
+    },
+    {
+      "attacker": "frequency_stat",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.53375,
+      "folded_ci_95_descriptive": [
+        0.50203125,
+        0.57797265625
+      ],
+      "folded_gate_statistic_descriptive": 0.53375,
+      "scope": "t4v2_coordinate_register_n20_v1",
+      "unfolded_ci_95": [
+        0.49655859375,
+        0.57797265625
+      ]
+    },
+    {
+      "attacker": "frequency_stat",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.51421875,
+      "folded_ci_95_descriptive": [
+        0.50078125,
+        0.54672265625
+      ],
+      "folded_gate_statistic_descriptive": 0.51421875,
+      "scope": "t4v2_coordinate_register_n8_v1",
+      "unfolded_ci_95": [
+        0.4828046875,
+        0.54672265625
+      ]
+    },
+    {
+      "attacker": "metadata",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.5018359375,
+      "folded_ci_95_descriptive": [
+        0.5001171875,
+        0.5073847656249999
+      ],
+      "folded_gate_statistic_descriptive": 0.5018359375,
+      "scope": "pooled",
+      "unfolded_ci_95": [
+        0.4967177734375,
+        0.5073847656249999
+      ]
+    },
+    {
+      "attacker": "metadata",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.499375,
+      "folded_ci_95_descriptive": [
+        0.50015625,
+        0.50828515625
+      ],
+      "folded_gate_statistic_descriptive": 0.500625,
+      "scope": "t4v2_coordinate_register_n20_v1",
+      "unfolded_ci_95": [
+        0.49218359375,
+        0.50640625
+      ]
+    },
+    {
+      "attacker": "metadata",
+      "ci_includes_0_5_literal": true,
+      "directed_oof_auc": 0.49734375,
+      "folded_ci_95_descriptive": [
+        0.5001562500000001,
+        0.5118750000000001
+      ],
+      "folded_gate_statistic_descriptive": 0.50265625,
+      "scope": "t4v2_coordinate_register_n8_v1",
+      "unfolded_ci_95": [
+        0.488125,
+        0.5071875
+      ]
+    }
+  ],
+  "per_attacker_literal_verdict": {
+    "dinov2": false,
+    "frequency_stat": false,
+    "metadata": true
+  },
+  "reproduction_check": {
+    "ok": true,
+    "rows": [
+      {
+        "attacker": "dinov2",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "pooled",
+        "tolerance": 1e-09
+      },
+      {
+        "attacker": "dinov2",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n20_v1",
+        "tolerance": 1e-09
+      },
+      {
+        "attacker": "dinov2",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n8_v1",
+        "tolerance": 1e-09
+      },
+      {
+        "attacker": "frequency_stat",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "pooled",
+        "tolerance": 0.0
+      },
+      {
+        "attacker": "frequency_stat",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n20_v1",
+        "tolerance": 0.0
+      },
+      {
+        "attacker": "frequency_stat",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n8_v1",
+        "tolerance": 0.0
+      },
+      {
+        "attacker": "metadata",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "pooled",
+        "tolerance": 0.0
+      },
+      {
+        "attacker": "metadata",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n20_v1",
+        "tolerance": 0.0
+      },
+      {
+        "attacker": "metadata",
+        "max_abs_delta_folded_fields": 0.0,
+        "ok": true,
+        "scope": "t4v2_coordinate_register_n8_v1",
+        "tolerance": 0.0
+      }
+    ]
+  },
+  "schema_version": "blind-gains.e4-wording-resolution.v1",
+  "title": "E4 attacker gate \u2014 literal 'CI includes 0.5' evaluation on unfolded CIs",
+  "v1_gate_verdict_unchanged": {
+    "checks": {
+      "all_attackers_available": true,
+      "all_point_estimates_at_most_0_55": true,
+      "no_ci_upper_above_0_62": true
+    },
+    "expansion_required": [],
+    "missing_attackers": [],
+    "point_failures": [],
+    "status": true
+  },
+  "v1_report": "reports/track4_premise_v2_attacker_gate_v1.json",
+  "v2_report": "reports/track4_premise_v2_attacker_gate_v2_unfolded.json"
+}

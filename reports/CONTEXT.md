@@ -1,6 +1,8 @@
 # Blind Gains — context brief
 
-*Snapshot 2026-08-14. This file is a one-sitting orientation brief; `BlindGain_RESULTS.md` remains the file of record (its §21 ledger is the reproduction backbone). Nothing here is new evidence.*
+*Snapshot 2026-08-14, **partially superseded by the 2026-08-16 consolidation round** — see `BlindGain_RESULTS.md` § "2026-08-16 — Consolidation round" and `reports/main_progress.md`. What changed since this brief: the two-seed R3 readout is **complete** (recovery 0.71–0.88, geo3k differences +0.59/+0.65, ρ_gain < 0 reproduces); the premise-v2 dev_v2 regeneration ran (E1 PASS at n=5, E3 PASS ×5 both readings, E2 FAIL persists via a lenient-class collision — new PI fork); E4 wording resolved (criterion untouched); the §4 decision list below is stale — resolved: E3 reading, E4 wording, storage menu (rule applied, 855.0 GB freed), GPT-plan adoption; still open: E2 lenient-class fork, ST3-7B ratification, Gate-1 §6 branch reading recorded as resolvability; LH2 seg-1 training since 2026-08-16T17:22Z; Stage-2 3B matrix cancelled.*
+
+*Original brief (2026-08-14) follows; `BlindGain_RESULTS.md` remains the file of record (its §21 ledger is the reproduction backbone). Nothing here is new evidence.*
 
 ---
 

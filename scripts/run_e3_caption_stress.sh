@@ -88,18 +88,24 @@ CLAIM_HELD=0
 
 BASE=artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct
 CAPTIONER=artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct
-DATA=data/track4_premise_v2_dev_v1
+# E3_DATA_DIR / E3_PROV_TAG overrides (2026-08-16, item 4): the branch-(c)+
+# balance regeneration re-runs E3 on data/track4_premise_v2_dev_v2 with this
+# same instrument. Defaults reproduce the registered v1 invocation exactly;
+# the v1 provenance stays protected by its own overwrite refusal.
+DATA="${E3_DATA_DIR:-data/track4_premise_v2_dev_v1}"
 IMAGES="$DATA/images"
 RELEASE_MANIFEST="$DATA/caption_qa_inputs/manifest.jsonl"
 RELEASE_KEY="$DATA/caption_qa_inputs/key.jsonl"
 # Fixture-backed sha256 of the caption-QA release+key that define the 320 causal
 # member images. A mismatch means the release changed under this run and the PI's
 # premise no longer holds, so the chain refuses before spending any GPU.
-RELEASE_MANIFEST_SHA256_EXPECTED=82842b6cf2a9e4734e393e2825d790277439e8c3f196d98f32cc3a95f1707ccd
-RELEASE_KEY_SHA256_EXPECTED=56be7961fb6c8139c2e479f24849185b820f999615a47673590bb34a9af8c68f
+# Overridable ONLY together with E3_DATA_DIR (a different batch has different
+# releases); the v1 defaults stay pinned.
+RELEASE_MANIFEST_SHA256_EXPECTED="${E3_RELEASE_MANIFEST_SHA256:-82842b6cf2a9e4734e393e2825d790277439e8c3f196d98f32cc3a95f1707ccd}"
+RELEASE_KEY_SHA256_EXPECTED="${E3_RELEASE_KEY_SHA256:-56be7961fb6c8139c2e479f24849185b820f999615a47673590bb34a9af8c68f}"
 
 REGISTRATION=docs/registered_track4_premise_v2_design_v1.md
-MERGE_RUN_TAG=track4_premise_v2_dev_v1
+MERGE_RUN_TAG="$(basename "$DATA")"
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN="track4_premise_v2_e3_an29_${STAMP}"
@@ -120,8 +126,9 @@ EVAL_PID_FILE="${RUN_DIR}/caption_qa/eval_gpu_job.pid"
 STAGES="${RUN_DIR}/e3_stage_records.jsonl"
 
 LOG="${ROOT}/logs/track4_gates/e3_caption_stress.log"
-PROV=reports/track4_premise_v2_e3_caption_stress_run_provenance_v1.json
-PROV_FAILED="reports/track4_premise_v2_e3_caption_stress_run_provenance_v1.failed_${STAMP}.json"
+PROV_TAG="${E3_PROV_TAG:-v1}"
+PROV="reports/track4_premise_v2_e3_caption_stress_run_provenance_${PROV_TAG}.json"
+PROV_FAILED="reports/track4_premise_v2_e3_caption_stress_run_provenance_${PROV_TAG}.failed_${STAMP}.json"
 
 CAPTION_TIMEOUT_SECONDS=43200   # 12 h; prior 7B/384 anchor is ~39 min for 600 images on one A800
 EVAL_TIMEOUT_SECONDS=21600      # 6 h; 320 caption-only generations at 32 new tokens on the 3B

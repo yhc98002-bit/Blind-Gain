@@ -178,6 +178,29 @@ REGISTERED_COMPOSITION: dict[str, dict[str, Any]] = {
     },
 }
 
+# §5 branch (c), executed 2026-08-16 (dispatch item 4): the easy variant steps
+# to n_points = 5; counts and every n=20 type unchanged. The regeneration also
+# carries the registered answer-balance constraint
+# (docs/registered_hier_benchmark_v1.md §8), which check_composition does not
+# score — the balance report lives in the dev_v2 build report and verifier.
+REGISTERED_COMPOSITION_V2_BRANCH_C: dict[str, dict[str, Any]] = {
+    itype: {**spec}
+    for itype, spec in REGISTERED_COMPOSITION.items()
+}
+for _itype in ("chained_premise_easy", "premise_transition_easy"):
+    REGISTERED_COMPOSITION_V2_BRANCH_C[_itype] = {
+        **REGISTERED_COMPOSITION_V2_BRANCH_C[_itype],
+        "n_points": 5,
+        "template_id": "t4v2_coordinate_register_n5_v1",
+        "role": REGISTERED_COMPOSITION_V2_BRANCH_C[_itype]["role"]
+        + " (branch (c) n=5, 2026-08-16)",
+    }
+
+COMPOSITION_BY_EXPECT = {
+    "registered": REGISTERED_COMPOSITION,
+    "registered-v2-branch-c": REGISTERED_COMPOSITION_V2_BRANCH_C,
+}
+
 # Verbatim registration text. Every quote below is verified to still be present
 # in the registration document (whitespace-normalized) before anything is
 # reported; a drifted registration refuses the readout.
@@ -895,14 +918,15 @@ def check_composition(
         )
     if expect == "any":
         return
-    expected_types = sorted(REGISTERED_COMPOSITION)
+    table = COMPOSITION_BY_EXPECT[expect]
+    expected_types = sorted(table)
     if sorted(causal_by_type) != expected_types:
         raise GateReadoutRefusal(
             f"section-8 composition violated: causal manifest intervention types"
             f" {sorted(causal_by_type)}, registered {expected_types}"
             f" (--expect any is for fixtures only)"
         )
-    expected_probe = sorted(k for k, v in REGISTERED_COMPOSITION.items() if v["has_premise"])
+    expected_probe = sorted(k for k, v in table.items() if v["has_premise"])
     if sorted(probe_by_type) != expected_probe:
         raise GateReadoutRefusal(
             f"section-8 composition violated: premise-probe manifest intervention"
@@ -910,7 +934,7 @@ def check_composition(
             f" (--expect any is for fixtures only)"
         )
     for itype in expected_types:
-        spec = REGISTERED_COMPOSITION[itype]
+        spec = table[itype]
         n_groups = len(causal_by_type[itype])
         if n_groups != spec["groups"]:
             raise GateReadoutRefusal(
@@ -1747,9 +1771,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--markdown-output", required=True)
     parser.add_argument(
         "--expect",
-        choices=("registered", "any"),
+        choices=("registered", "registered-v2-branch-c", "any"),
         default="registered",
-        help="'registered' enforces the section-8 batch composition; 'any' is for fixtures only",
+        help=(
+            "'registered' enforces the v1 section-8 batch composition;"
+            " 'registered-v2-branch-c' enforces the 2026-08-16 branch-(c)"
+            " regeneration composition (easy types at n=5); 'any' is for"
+            " fixtures only"
+        ),
     )
     args = parser.parse_args(argv)
 

@@ -1,0 +1,190 @@
+{
+  "schema_version": "blind-gains.track4-premise-v2-e3-caption-stress-provenance.v1",
+  "gate": "E3",
+  "registration": "docs/registered_track4_premise_v2_design_v1.md#7-E3",
+  "judged": false,
+  "judgement_note": "This runner runs and records only. The registered E3 criterion (per type: caption member accuracy <= blind-floor threshold + 0.10 absolute) is NOT evaluated here. metrics.json is aggregate-only; the per-type readout needs a post-hoc join of predictions.jsonl to data/track4_premise_v2_dev_v2/manifest_causal_pairs.jsonl on pair_id, which is not part of the registered chain.",
+  "status": "complete",
+  "failed_stage": null,
+  "failure_message": null,
+  "node": "an29",
+  "gpu": 3,
+  "gpu_budget": "exactly one GPU (an29 gpu3), taken via guard -> claim -> re-check and released at the end",
+  "git_hash": "2248c7f4eda6c800237924cabce8f43f5ac03e82",
+  "git_branch": "agent/gate2-recovery",
+  "git_dirty_path_count": 361,
+  "runner": "scripts/run_e3_caption_stress.sh",
+  "stamp": "20260816T091115Z",
+  "start_time_utc": "2026-08-16T09:11:16Z",
+  "end_time_utc": "2026-08-16T09:44:01Z",
+  "models": {
+    "base_model_under_test": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "captioner": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct"
+  },
+  "inputs": {
+    "data_batch": "data/track4_premise_v2_dev_v2",
+    "image_dir": "data/track4_premise_v2_dev_v2/images",
+    "release_manifest": "data/track4_premise_v2_dev_v2/caption_qa_inputs/manifest.jsonl",
+    "release_key": "data/track4_premise_v2_dev_v2/caption_qa_inputs/key.jsonl",
+    "release_manifest_sha256": "77021b66e37afae23e0320ce6915ddb74af96963a0745d7cc150f24d3abc656f",
+    "release_key_sha256": "9e8fba20f226d8adf030ca72a3a06b5e6ab40cd4d110496684a3dbdfc588fbe4",
+    "release_fixture_sha256_verified": true
+  },
+  "run_dirs": {
+    "e3": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z",
+    "caption_store": "experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z",
+    "caption_merge": "experiments/runs/caption_store_merge_track4_premise_v2_dev_v2_20260816T094055Z"
+  },
+  "artifacts": {
+    "caption_qa_input": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa.jsonl",
+    "predictions": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/predictions.jsonl",
+    "metrics": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/metrics.json",
+    "coverage_manifest": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl"
+  },
+  "stages": [
+    {
+      "name": "preflight_coverage_manifest",
+      "command": "derive experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl from data/track4_premise_v2_dev_v2/manifest_causal_pairs.jsonl + data/track4_premise_v2_dev_v2/manifest_invariance_pairs.jsonl and assert it equals discover_images(data/track4_premise_v2_dev_v2/images)",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:11:16Z",
+      "end_utc": "2026-08-16T09:11:17Z",
+      "artifacts": [
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl",
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_manifest_summary.json"
+      ]
+    },
+    {
+      "name": "gpu_guard_claim",
+      "command": "m7_gpu_occupancy_guard.py --node an29 --gpus 3  ->  write /dev/shm/blind-gains/gpu_claims/an29_gpu3.claim  ->  m7_gpu_occupancy_guard.py --node an29 --gpus 3 --ignore-claim-run-id t4v2_e3_caption_stress",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:11:17Z",
+      "end_utc": "2026-08-16T09:11:41Z",
+      "artifacts": [
+        "/dev/shm/blind-gains/gpu_claims/an29_gpu3.claim"
+      ]
+    },
+    {
+      "name": "caption_store",
+      "command": "bash scripts/launch_caption_store_shards.sh an29 0 1 artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct data/track4_premise_v2_dev_v2/images experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z \"3\"",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:11:41Z",
+      "end_utc": "2026-08-16T09:40:53Z",
+      "artifacts": [
+        "experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z",
+        "experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z/shards/store_shard_0.jsonl"
+      ]
+    },
+    {
+      "name": "caption_merge",
+      "command": "bash scripts/launch_caption_store_merge.sh track4_premise_v2_dev_v2 experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z/shards/store_shard_0.jsonl",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:40:55Z",
+      "end_utc": "2026-08-16T09:40:56Z",
+      "artifacts": [
+        "experiments/runs/caption_store_merge_track4_premise_v2_dev_v2_20260816T094055Z/captions.jsonl",
+        "experiments/runs/caption_store_merge_track4_premise_v2_dev_v2_20260816T094055Z/summary.json"
+      ]
+    },
+    {
+      "name": "caption_qa_build",
+      "command": ".venv/bin/python scripts/build_caption_qa_pairs.py --release-manifest data/track4_premise_v2_dev_v2/caption_qa_inputs/manifest.jsonl --key-file data/track4_premise_v2_dev_v2/caption_qa_inputs/key.jsonl --caption-store experiments/runs/caption_store_merge_track4_premise_v2_dev_v2_20260816T094055Z/captions.jsonl --output experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa.jsonl --summary experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa_input_summary.json --allow-extra-captions",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:40:56Z",
+      "end_utc": "2026-08-16T09:40:56Z",
+      "artifacts": [
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa.jsonl",
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa_input_summary.json"
+      ]
+    },
+    {
+      "name": "caption_qa_eval",
+      "command": ".venv/bin/python scripts/eval_caption_qa_fliptrack.py --model-path artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct --input experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/qa.jsonl --output experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/predictions.jsonl --metrics-output experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/metrics.json --max-new-tokens 32",
+      "rc": 0,
+      "start_utc": "2026-08-16T09:40:57Z",
+      "end_utc": "2026-08-16T09:43:59Z",
+      "artifacts": [
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/predictions.jsonl",
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/metrics.json",
+        "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/caption_qa/eval_gpu_job.log"
+      ]
+    }
+  ],
+  "caption_coverage": {
+    "caption_qa_release_manifest": "data/track4_premise_v2_dev_v2/caption_qa_inputs/manifest.jsonl",
+    "causal_equals_caption_qa_release": true,
+    "coverage_equals_image_dir": true,
+    "coverage_manifest": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl",
+    "coverage_manifest_rows": 320,
+    "coverage_manifest_sha256": "fb6732de0cb4ed1d99c2b5593e2748083260e2b0d484862b7aa598f19a7add15",
+    "image_dir": "data/track4_premise_v2_dev_v2/images",
+    "n_caption_qa_release_hashes": 320,
+    "n_causal_hashes": 320,
+    "n_coverage_hashes": 480,
+    "n_distinct_image_sha256": 480,
+    "n_extra_captions_carried_unused": 160,
+    "n_image_files": 640,
+    "n_invariance_hashes": 320,
+    "n_shared_original_hashes": 160,
+    "purpose": "expected-hash set for scripts/merge_caption_stores.py, derived from the dev batch's own pair manifests so it describes exactly what the registered E3 caption command captions",
+    "schema_version": "blind-gains.track4-premise-v2-caption-coverage-summary.v1",
+    "source_manifests": [
+      "data/track4_premise_v2_dev_v2/manifest_causal_pairs.jsonl",
+      "data/track4_premise_v2_dev_v2/manifest_invariance_pairs.jsonl"
+    ]
+  },
+  "merge_summary": {
+    "caption_model_path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct",
+    "caption_prompt_sha256": "9e8a66fb1fd5b8edc40647c670b0c8d75a99c1552a8edf307131d7648bd00ae0",
+    "coverage_complete": true,
+    "decoding": {
+      "n": 1,
+      "temperature": 0.0,
+      "top_p": 1.0
+    },
+    "expected_hashes": 480,
+    "input_shards": [
+      "experiments/runs/track4_premise_v2_caption_store_an29_20260816T091115Z/shards/store_shard_0.jsonl"
+    ],
+    "max_new_tokens": 384,
+    "n_images": 480,
+    "release_manifest": "experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl",
+    "schema_version": "blind-gains.caption-store-merge.v1"
+  },
+  "caption_qa_input_summary": {
+    "allow_extra_captions": true,
+    "caption_store": "experiments/runs/caption_store_merge_track4_premise_v2_dev_v2_20260816T094055Z/captions.jsonl",
+    "key_file": "data/track4_premise_v2_dev_v2/caption_qa_inputs/key.jsonl",
+    "n_images": 320,
+    "n_pairs": 160,
+    "n_shards": 1,
+    "release_manifest": "data/track4_premise_v2_dev_v2/caption_qa_inputs/manifest.jsonl",
+    "schema_version": "blind-gains.fliptrack-caption-qa-input-summary.v1",
+    "shard_pair_counts": [
+      160
+    ],
+    "template_counts": {
+      "t4v2_coordinate_register_n20_v1": 80,
+      "t4v2_coordinate_register_n5_v1": 80
+    }
+  },
+  "caption_qa_metrics_aggregate_only": {
+    "ambiguous_rate": 0.0,
+    "collapse_rate": 0.5625,
+    "contract_valid_rate": 1.0,
+    "extraction_fallback_rate": 0.0,
+    "extractor_valid_rate": 1.0,
+    "format_valid_rate": 1.0,
+    "full_text_mentions_both_rate": 0.0,
+    "member_accuracy": 0.159375,
+    "n_pairs": 160.0,
+    "pair_accuracy": 0.025,
+    "parser_version": "canonical-v2",
+    "prompt_contract_id": "answer-tags-v1",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+    "strict_member_accuracy": 0.159375,
+    "strict_pair_accuracy": 0.025
+  },
+  "deviations": [
+    "E3 merge: scripts/merge_caption_stores.py accepts exactly one --release-manifest and src/captioning/store.py::merge_caption_rows (lines 148-152) treats EXTRA caption hashes as fatal, with no override flag. The registered E3 command captions all of $DATA/images (640 files / 480 distinct sha256) while the caption-QA release covers 320, so merging against caption_qa_inputs/manifest.jsonl fails with missing=0 extra=160 after the GPU pass. No documented option covers this. Resolution: --release-manifest points at a NEW derived coverage manifest, experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z/merge_inputs/coverage_release_480.jsonl, written inside this run dir (the dev batch is not written to at all), whose members[].image_sha256 union is exactly the 480 distinct sha256 of $DATA/images (= hashes(manifest_causal_pairs.jsonl) union hashes(manifest_invariance_pairs.jsonl), asserted equal to the image dir's own distinct-hash set as computed by src.captioning.store.discover_images, with 0 outside, before any GPU is spent; the causal half is additionally asserted identical to the 320 hashes of caption_qa_inputs/manifest.jsonl). Derived by a minimal emitter over the two flat pair manifests' image_a_sha256/image_b_sha256 fields, not by scripts/build_track4_premise_v2_caption_qa_inputs.py. No hash is invented; the dev batch is not mutated; no coverage check is disabled -- the merge's own enforcement still runs and must report coverage_complete=true over 480. The restriction to the 160 causal pairs / 320 member images is applied one step later, at scripts/build_caption_qa_pairs.py, via its documented --allow-extra-captions (src/captioning/qa_pairs.py:87-89), which carries the 160 non-causal captions unused. The 320-hash caption-QA release+key (manifest sha256 82842b6c..., key 56be7961...) are passed to the QA build unchanged."
+  ]
+}
