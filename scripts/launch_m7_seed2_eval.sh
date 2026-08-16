@@ -51,16 +51,22 @@ printf '%s\n' "$payload" | ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
   || { ssh -o ConnectTimeout=25 "$NODE" "rm -f '$CLAIMS_DIR/${NODE}_gpu${GPU}.claim'"; log "[$ARM] post-claim re-check denied; abort"; exit 1; }
 
 # 3) launch the registered eval recipe
+# The caption store must reach the child through `env`, never through an
+# expanded assignment-prefix: bash fixes the assignment/command split at parse
+# time, so a ":+"-expanded VAR=value word becomes the COMMAND name and the
+# caption arm dies rc=127 (2026-08-15 a3_caption failure).
 caption_env=""
 [[ "$COND" == caption ]] && caption_env="data/virl39k_caption_store_3b_main_v2.jsonl"
-out=$(VIRL_MANIFEST=data/virl39k_m7_heldout_v3_eval.jsonl \
+caption_args=()
+[[ -n "$caption_env" ]] && caption_args=("VIRL_CAPTION_SHARDS=$caption_env")
+out=$(env VIRL_MANIFEST=data/virl39k_m7_heldout_v3_eval.jsonl \
       VIRL_SAMPLE_SPEC=reports/virl39k_m7_heldout_v3_sample.json \
       VIRL_SPLITS=train \
       VIRL_MODEL_PATH="checkpoints/m7/m7_virl_${ARM}_seed2/global_step_100/actor/huggingface" \
       VIRL_MODEL_REVISION="m7_virl_${ARM}_seed2@global_step_100" \
       VIRL_RUN_PREFIX=m7_step100_heldout_seed2 \
       VIRL_JOB_TYPE=r3_m7_step100_heldout_arm_eval \
-      ${caption_env:+VIRL_CAPTION_SHARDS="$caption_env"} \
+      ${caption_args[@]+"${caption_args[@]}"} \
       bash scripts/launch_virl39k_blind_v1_condition.sh "$NODE" "$GPU" "$COND" "${ARM}_seed2" 2>>"$LOG")
 rc=$?
 run_dir=$(printf '%s\n' "$out" | tail -1)

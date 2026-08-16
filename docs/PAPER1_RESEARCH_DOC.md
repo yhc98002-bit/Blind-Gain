@@ -22,7 +22,7 @@ Multimodal RLVR needs images at inference, not at training. **Under blind evalua
 
 **On multimodality.** Multimodality is both the empirical setting and the **causal instrument** that makes a more general RLVR phenomenon identifiable. The visual channel can be removed, replaced, mismatched, captioned, or counterfactually altered while the textual task stays intact; that intervention structure is what separates access during optimization, acquisition of new distinctions, and utilization of pretrained evidence at inference. The caption result establishes evidence-generality, and the paper remains fundamentally multimodal because this decomposition has no equivalent in text-only RLVR.
 
-**Ladder — CLOSED:** R1 three seeds on geo3k (in hand) → R2 long-horizon step-400 (complete, FALLING) → R3 second corpus, ViRL39K stratified (complete, seed 1) → R4 scale, 7B access pair (complete — phenomenon grows with scale) → R5 cross-family (complete).
+**Ladder: CLOSED (2026-08-11), scope tags dropped on schedule.** R1 three seeds ✓ · R2 long-horizon FALLING ✓ (M5c: 137/601 item turnover vs a measured zero noise floor; scissors met, title upgrade awaits LH2's directional read) · R3 ViRL39K ✓ — the registered dose-response landed: matched blind recovery **0.72–0.88** vs 0.08–0.12 on geo3k (two-seed readout ~08-16) · R4 7B ✓ — the image-free share **grows with scale**: crossed TrainShare 0.487 [0.383, 0.588] at 3B → **0.779 [0.642, 0.921]** at 7B, disjoint intervals; A1 matched +0.2479 · R5 cross-family ✓.
 
 ## 3. Narrative arc (section = claim = figure)
 
@@ -59,7 +59,7 @@ Tested blind, every arm lands between +0.016 and +0.046 with no ordering: A1, tr
 
 **F6 — Visual grounding corrosion (principal finding; formal term).** *Definition:* the progressive replacement of grounded visual behaviour by cheaper reward-compatible decision rules. The evidence is reported as an explicit three-tier ladder, and no tier claims more than it holds.
 
-**Tier 1 — Established.** Evidence-poor optimization produces replicated, structured, item-specific corrosion. Gray's −0.0450 reproduces exactly across the **two analyzed seeds** (SEED3γ pending for the third), resolving to 42 shared pairs — Jaccard 0.724 against a permutation null of 0.098, p=1e-4 — with the identical extracted wrong answer on 41/42 and a dominant nearest-gridline off-by-one taxon (19/20). Errors move toward structured attractors, not random noise.
+**Tier 1 — Established (3/3 seeds as of SEED3γ).** Evidence-poor optimization produces replicated, structured, item-specific corrosion. Two-seed overlap: 42 shared pairs, Jaccard 0.724 vs null 0.098, p=1e-4, identical wrong answer 41/42, nearest-gridline taxon 19/20. **Three-way replication: Jaccard 0.661 vs null 0.012.** Errors move toward structured attractors, not random noise. The "across seeds" wording is now unconditionally licensed.
 
 **Tier 2 — Observed in the long-horizon anchor.** With images available and the vision encoder trainable, grounding declines progressively along one prolonged trajectory and falls below the frozen base: primary anchor 0.4800 → 0.4133 against base 0.4717, monotone from step 100 (overall R19 0.5633 → 0.5600 → 0.5433 → 0.5383 → 0.5167), strict ≡ lenient so not a scoring artifact, blind floor still 0.0 with collapse 1.0.
 
@@ -69,7 +69,11 @@ Tested blind, every arm lands between +0.016 and +0.046 with no ordering: A1, tr
 
 **F7 — Confidence tracks image presence, not correctness.** Underconfident when right (≈0.19 vs 0.75 accuracy, ECE 0.57); identical confidence under twin images where accuracy is 0.012 (+0.17–0.19 overconfidence gap).
 
-**F8 — Trainability (Mini-A5).** CP-GRPO vs matched same-data standard GRPO on held-out templates.
+**F8 — Trainability (Mini-A5, Gate 1 complete).** Four arms at 3B: no recipe moves held-out content on the primary anchor; every registered difference is strict/format (pairing = a strict-contract tax, −0.32 canary; necessity refunds +0.043 [0.018, 0.070]); all four move the oracle-localized readout +0.15–0.23. The lever at 3B is reward *resolvability*, not reward shape.
+
+**F9 — Scale begins to buy grounding, and only with real images (C6; one seed, tiered).** At 7B, A1-real moves the **primary anchor**: +0.0250 [0.0033, 0.0467] on R19 and +0.0233 [0.0017, 0.0433] on R20, both contracts, both instruments — the first content movement in the program. A2-gray at 7B moves neither anchor nor readout. Readout stays flat, so this is not more sharpening. *Tier: observed at one seed, internally replicated across two instruments; upgrade condition = a second 7B seed reproducing direction.* Read with F8: at 3B nothing moves L2; at 7B real-image training begins to. The dissociation is scale-qualified — which tells the field where the door is, and hands Paper 2 its decisive experiment.
+
+**F10 — The blind gain is corpus-local.** E1b: 48/48 trained-arm external cells miss (P1, S1, S2). E1c: blind columns across seven benchmarks, MMVP at exactly 0.000. The readout policy is in-distribution; nothing leaks out as free external improvement.
 
 **Prescription.** Ablate at inference, not only at training; report the exchange rate; audit the corpus before spending compute.
 
@@ -108,6 +112,8 @@ If RLVR learns a readout policy over a frozen encoder, the ceiling on RL-driven 
 
 **Status for Paper 1: finalize, do not extend.** Three tasks with distinct, honest roles are a coherent instrument, and Paper 1's claims rest on the access matrix, the ladder, and the competence layers rather than on benchmark breadth. Remaining work is scoring and documentation only — roles fixed in every report, no cross-role aggregates, the equal-gold invariance scorer repaired, premise accuracy measured. New capability tracks belong to Paper 2 and are gated on Mini-A5.
 
+**The hierarchy mapping (recorded 2026-08-12).** Paper 2's instrument formalizes a structure the frozen benchmark already had: the header-cued table and the chart are **L1 tasks** (location/identity supplied — oracle-localized readout), the coordinate register is an **L2 task** (ground a named entity, then read), and premise-v2 is **L3** (discover the target, then ground and read). Under this mapping, F3's template decomposition is the statement: **standard RLVR moves L1 and leaves L2 flat.** Paper 1 reports the mapping in one sentence; the derivation machinery belongs to Paper 2.
+
 ## 6. Evidence in hand
 
 Three-seed task gains: A1 +0.2435, A3 +0.1048, A2b +0.0460, A2 +0.0161 under matched evaluation; strict-format gain larger (+0.3583), so the reported lenient figure is conservative. D2 access verdict image-mediated-at-inference, 3/3 seeds. D3 complete, 36 cells, registered branch (a). X1/X5 sharpening. X2 hard negatives (bottom branch). X3 corrosion forensics. X4 calibration (exploratory). B1 declared batch. Instrument dossier per §5.
@@ -141,9 +147,9 @@ Inference-time ablation is the axis this literature does not report; we supply i
 
 ## 11. Relation to Paper 2
 
-Paper 1 diagnoses; Paper 2 repairs. The access matrix, the mechanism, the instrument, and the audit belong here; Paper 2 cites them and contributes method. The representational-ceiling argument (§3) is what gives Paper 2 its thesis: improving multimodal RL requires reward variance resolvable only through distinctions the encoder can make but the policy does not yet use. Charter in `PAPER2_RESEARCH_DOC.md`, gated on Mini-A5.
+Paper 1 diagnoses; Paper 2 repairs. The access matrix, the mechanism, the instrument, and the audit belong here; Paper 2 cites them and contributes method. The representational-ceiling argument (§3) is what gives Paper 2 its thesis: improving multimodal RL requires reward variance resolvable only through distinctions the encoder can make but the policy does not yet use. Charter in `PAPER2_RESEARCH_DOC.md`, gated on Mini-A5; its Discover→Ground→Read hierarchy retroactively organizes R19 (L1/L1/L2) and premise-v2 (L3), giving both papers one capability vocabulary.
 
-## 12. Writing plan
+## 12. Writing plan — DRAFTING BEGINS NOW (evidence complete)
 
 Writable now: introduction (problem → the unreported axis → the two-regime matrix → the ladder), instrument, mechanism, corrosion, calibration, methods. Frozen slots: caption column, F8, R3, R4. Every figure has a named argumentative role; results without one go to the appendix.
 

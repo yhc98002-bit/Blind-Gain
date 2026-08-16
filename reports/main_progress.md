@@ -9,7 +9,8 @@ Supersedes `reports/x_diagnostics_progress.md` (retained, not deleted).
 Source of truth for the three guide documents is the PI's local machine; the
 `docs/` copies are reference.
 
-Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare landed).
+Updated 2026-08-16 (consolidation round opened per the 2026-08-16 dispatch; rows in the
+"Consolidation round" section below).
 
 ## Paper 1
 
@@ -69,6 +70,23 @@ Updated 2026-07-27 (Gate 0 and Phase 0 P0.1/P0.2 complete; F2d and TrainShare la
 | R20 human audit sample | blocked — package ready (`reports/human_packages/blind_gains_r20_human_audit_20260804_v1.zip`, 60 pairs mirroring the R19 audit design, manifest `reports/r20_human_audit_bundle_v1.json`) |
 | Cue-ladder legibility spot-check | blocked — awaits Phase-1 rungs |
 | Sign-off merges (D3 estimand, P1.2 split, Gate-1) | blocked |
+
+## Consolidation round (2026-08-16 dispatch)
+
+| ID | Task | Status | Note |
+|---|---|---|---|
+| DOC | Three PI docs committed verbatim (`docs/` + root `EXPERIMENT_TODO.md`) | running | Local 2026-08-16T00:29 versions; sha256 verified both sides on install. |
+| 1a | Storage snapshot: over-quota → `status:"fail"`; guard fails on quota exhaustion instead of retry-forever | running | Live defect on record: snapshot showed `free_bytes: -461684596736` with `status:"pass"` because the Jul-19 refresh-loop process still carries the superseded 1500-GiB quota constant. I10 fixtures. |
+| 1b | Waiter wedged-vs-dead: alive-but-stalled trainer pauses the deadline clock; deadlines abort only dead chains | running | New `scripts/chain_wait_helper.py`; waiter template retrofit. I10 fixture. |
+| 1c | E3 STAGE-B argument-order fix | running | Tracing found the STAGE-B defect was the merge-launcher arity check (`-lt 4`→`-lt 3`), fixed and committed at `da0751d` **without** its I10 fixture; fixture shipped this round. Runner call order matches the launcher contract. |
+| 2 | Storage rule: delete non-terminal steps not §21-referenced; keep terminal + best + §21-referenced | running | mini-A5 ranking-cell reference check complete: every ranking/endpoint/catch report references `global_step_120` only. m7/ and lh2/ excluded (in-flight work). Byte-exact record appends to `reports/storage_cleanup_20260814.md`. |
+| 3 | E4 wording: recompute UNfolded per-attacker AUC CIs; criterion untouched | running | Per-item OOF scores were never persisted (aggregates only) — deterministic 1-GPU attacker re-run required; hard check = exact v1 folded reproduction. |
+| 4 | E2 answer-balance: registered constraint + one-shot regeneration of the five failing types (+ approved branch-(c) n=5); E1/E2/E3 re-run on v2 | running | Constraint registered in `docs/registered_hier_benchmark_v1.md`; reading (a) unmodified; `chained_premise_easy` indeterminate until this lands. |
+| 5 | Two-seed R3 readout | running | Both 08-15 evals failed operationally (a2_gray: guard aborted on a malformed stale claim file; a3_caption: rc=127 launcher env-assignment bug at `launch_m7_seed2_eval.sh:64`). Trainers themselves completed (both arms step 100). Launcher fixed + fixture; evals relaunched this round. |
+| 6 | ST3-7B registration draft (no launch) | running | `docs/registered_stage3_7b_v1.md`, branches quoted from PAPER2 §5; launch gates: two-seed R3 + HB P2 gates + PI merge. DRAFT, unsigned. |
+| 7 | M13 paper-facing numbers table from §21 | running | `reports/paper1_numbers_table_v1.md`; frozen slots (two-seed R3, LH2 direction, C6 tier) marked. |
+| ST2 | Stage-2 3B ablation matrix cancellation | pass | Cancelled per PART 5 / PAPER2 §5. Repo sweep: **no** Stage-2 configs, launchers, or waiters exist (`configs/`, `scripts/`, no registration) — nothing to remove; record only. The "stage 2" in `docs/registered_lh2_stage1_v1.md` is LH2's steps 200→400, untouched. |
+| LH2r | LH2 seg1 recovery (deviation) | running | 08-15 relaunch died at ~20 min: resume-safe logger guard refused three stale 2026-08-06 logger artifacts in a stage dir with zero banked boundaries; orphaned `running` manifest. Recovery: archive-aside (never delete), close orphan manifest, relaunch chain. |
 
 ## Known defects and integrity notes
 

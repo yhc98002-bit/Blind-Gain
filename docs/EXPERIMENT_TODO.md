@@ -30,6 +30,8 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | I18 | Every blind/retention figure is reported against the null appropriate to its answer format (MC → 1/k; free-form → ≈0; mixed → split), with bootstrap CIs. Conclusions about a benchmark's blind opportunity are written after its split is computed, never before. | Raw retention on multiple-choice benchmarks reports the guessing floor as if it were prior exploitation — and asserting a comparison before computing it is how that error arose. |
 | I19 | The long-horizon run extends the **anchor** (unfrozen tower, native reward, unfiltered corpus), never pilot A1. Every mention states the configuration and names the unfiltered corpus as a confound. | Misattributing it to A1 claims a controlled result we did not run — and discards the stronger fact that corrosion occurs with gradients reaching the vision encoder. |
 | I17 | Baselines are implemented as published. No component of our method is transplanted into a baseline; fairness is secured by matched backbone/data/compute, baseline-specific tuning, and reproducing the baseline's own claimed benefit before reporting. | A baseline carrying our contribution is neither the published method nor a clean ablation, and it hands our novelty to prior work. |
+| I20 | Template roles are stated from measured base accuracies, never from an assumed ceiling; no template is described as saturated or zero-contributing without the number that justifies it. | The header table was asserted saturated at 1.000; it is 0.8667 and supplies 18.7% of A1's movement. |
+| I21 | Any generator that rewrites question text must recompute gold from scene ground truth and verify gold against the **question-named entity**; any variant family built by replaying existing renders must ship a rendered-diff proof that the annotation layer actually differs across variants. | The cue-ladder builder renamed questions without recomputing golds or re-rendering; its verifier passed by checking the wrong operand. |
 
 ---
 
@@ -51,7 +53,7 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | M11 | Cross-family generalization | R5 | ✅ recovered 2026-07-28 |
 | G0 | Gate-0 stratification | title claim + Paper-2 C1 | ✅ **G0.2: image-free training recovers 84% of A1's gain on blind-answerable items and 42% on items requiring pixels** |
 | E1a | Base external-benchmark blind columns | **motivation / opening** | ✅ **naive figures WITHDRAWN — superseded by CHANCE.** Corrected (I18): MMStar **−0.029 [−0.108, +0.049]** (3B) and **+0.053 [−0.010, +0.117]** (7B) — indistinguishable from the 0.2688 guessing floor, so MMStar is image-necessary, not blind-solvable. MathVista **split**: MC +0.458/+0.464, free-form +0.228/+0.210; its old whole-benchmark 53%/51% was a forbidden cross-format average. Cross-family: **only free-form is reportable** — Gemma-3 0.727 [0.690, 0.765], InternVL3-9B 0.485 [0.439, 0.533]; **both MC ratios withheld** (Gemma-3's with-image MC accuracy 0.1349 is *below* its 0.2679 null → negative denominator, 100% of replicates degenerate). FlipTrack 0.0000 collapse 1.0 for every model — unchanged. |
-| CL | Cue ladder | Paper 2 P1.1 | ✅ **closed — both monotonicity gates failed**; marker is cue (+0.317) *and* occluder (−0.277); arm cells deliberately unscored, F3d untested not refuted. Micro-result retained: at 3B a correct cue adds nothing and a misleading one costs nothing once text names the series |
+| CL | Cue ladder v1 | Paper 2 P1.1 | ❌ **INVALID BUILD — 2026-08-11 PI review.** All six rungs reference the byte-identical v07 image (pixel diff = 0; `replayed_from: starred_series_value_nine_v07`); the annotation layer never varied; golds were copied from the starred series while named/none/decoy questions name other series (question–gold mismatch on 4/6 rungs); the verifier's `gold_follows_question` checked gold against the *target*, not the question. The July readout numbers (+0.317 / −0.277) are wrong-gold artifacts. **The "marker is cue and occluder" story and the text-priority micro-result are RETRACTED.** The validity gates correctly detected invalidity; the attached mechanism was unsupported. Arm cells were never scored — nothing propagated to results. |
 | — | Instrument dossier: R19, one-shot R20, 72B caption stress, attackers, human audit, cross-family | C3 | ✅ |
 
 ### 1B. In flight
@@ -101,10 +103,27 @@ Companion to `PAPER1_RESEARCH_DOC.md` and `PAPER2_RESEARCH_DOC.md`. Those define
 | P0.3 | Freeze and version the **intervention-group schema**; add loader validation fixture | I15. |
 | P0.4 | Fix task **roles** in all reports and text | Primary visual anchor / saturated positive control + retention canary / oracle-localized readout control. No aggregate across roles (I13). |
 
+### 2B-status (2026-08-11). premise-v2: all four acceptance gates run; blind floor 0.000; PI decisions taken — branch (c) step to n=5 **approved**; E2-failing intervention types **excluded from training use** until final-answer distributions are balanced. Chart-v08 calibration + necessity ablations verified clean at PI review (minimal-diff ablations, correct verifier invariants).
+
 ### 2C. Phase 1 — minimum capability extension (development scale only)
 | ID | Task | Requirement |
 |---|---|---|
-| P1.1 | Cue ladder track | Shared scene program across rungs; decoy gold follows the question (I12). **Paper 2 only** — reversed from the earlier plan: D3 already establishes readout-not-discrimination at the level Paper 1 needs, so building this for Paper 1 would be accumulation rather than argument. |
+| P1.1 | ~~Cue ladder v2 rebuild~~ **SUPERSEDED 2026-08-12** by the L1/L2/L3 hierarchy (HB below) | The L1 location-oracle derivation is the exact rung done properly; L2 is the named rung. Region/decoy survive only as optional calibration diagnostics, not built now. The v2 spec's hard requirements (non-occluding cue, gold-follows-question, rendered-diff proofs) transfer into HB's verifier set. |
+| P1.1b | **Verifier-operand audit, all generators** — P0 of the hierarchy build | Every named verifier predicate traced to its exact operand; gold recomputed from the question-referenced entity; rendered-diff limited to permitted pixels; oracle variants preserve all non-oracle scene content; one adversarial fixture per generator that fails under the old buggy behavior. Census review packages mandatory before any freeze. |
+
+### 2C-HB. Hierarchical benchmark (Paper-2 core instrument) — Discover → Ground → Read
+| ID | Task | Requirement |
+|---|---|---|
+| HB.0 | **Registration before generation** | `docs/registered_hier_benchmark_v1.md` merges before any item exists: two families (`hier_coord_v1` on the premise-v2 generator; `hier_chart_v1` on the v08 renderer), three layers per mother-item, three pair roles, difficulty-knob grids, informativeness gates, split policy. One-shot dev batches per knob cell. |
+| HB.1 | **Mother-item derivation** | Every L3 scene auto-derives L2 (target oracle: correct target identity given) and L1 (location oracle: non-occluding cue at the target). Identical across derivations: scene data, renderer, visual facts, final answer, distractors, scene-program ID. Only oracle information varies. `mother_item_id` links the three. |
+| HB.2 | **L3 relations** | Coordinate family: canonical = **extremum discovery** (highest/lowest y, leftmost/rightmost); **nearest-neighbor = labeled hard tier** (premise-v2 full-run gates already forced n=5, so nearest sits near floor at 3B and cannot be canonical). Chart family: argmax-at-x → read same series at another x. |
+| HB.3 | **Non-occlusion, operationalized** | L1 cue ink pixel-disjoint from all data ink (mask intersection = ∅, verified per render); cue rendered as offset callout or out-of-data-region pointer, never on-point occlusion (the v07 lesson). |
+| HB.4 | **Pair roles** | target-switch (intervention changes which entity is the target) · target-stable (target fixed, downstream value flips) · invariance (irrelevant change; answer must not change). Reported separately, never averaged (I13). Prior-conflict and binding-swap remain in the generator as exploratory cells outside the core taxonomy. |
+| HB.5 | **Ranking layer ships with the items** | Registered candidate sets + structured hard negatives per L2/L3 item at generation time, so candidate-evidence ranking and hard-negative discrimination read out on the hierarchy (Paper-2 co-primary A). |
+| HB.6 | **Probes, no CoT** | Discovery probe (predicted target identity) + per-layer accuracies + pair successes. Failure patterns per the registered table (L1✓L2✓L3✗ = discovery bottleneck; L1✓L2✗ = grounding bottleneck; L1✗ = readout weak). |
+| HB.7 | **P2 development validation — no training** | 150 mother-items per family per knob cell; run base 3B/7B + existing standard-GRPO and CP Gate-1 checkpoints. **Informativeness gates on base 3B:** monotone L1 > L2 > L3; L1 ∈ [0.60, 0.95]; L2 ∈ [0.20, 0.80]; L3 ≥ 0.05 in at least one pre-registered knob cell per family. Chart confirmatory cells keep 9-series density for caption resistance. |
+| HB.8 | **P3 freeze** | Only after: human audit (Richard), blind floor, caption stress, attacker checks, difficulty calibration, verifier-operand audit, mother-item matching checks, program-level train/dev/confirmatory split. |
+| HB.9 | **R19 mapping recorded** | Header table and chart = L1; coordinate register = L2; premise-v2 = L3. Paper 1's template decomposition becomes a hierarchy statement: standard RLVR moves L1, not L2. Written into both research docs. |
 | P1.2 | Binding and distractor track | **Scales B1's existing `binding_swap` / `distractor_only` types — not a new build.** Add similar-label interference, same-abscissa/ordinate distractors, position exchange, question-cue conflict. |
 | P1.3 | Causal / invariance groups | Both present in every group; reported separately (I13). Scales B1's `style_twin` and `fact_read` types. |
 | P1.4 | Generate **100–300 development groups only** | Check difficulty band, blind-solvability, scorer behaviour, and whether IGPO produces non-zero training signal. **Do not generate tens of thousands of items before Mini-A5 prints a positive signal.** |
@@ -181,8 +200,24 @@ Supporting: external benchmarks with blind variants at matched compute; corrosio
 - [ ] Chart-v08 no-zoom audit (~1–2 h; package ready) — blocks chart-v08 freeze and P2 of the benchmark build.
 - [ ] 24-candidate support-expansion review (~30 min; viewer ready) — A2b's five are the qualitative window into what image-free training installed.
 - [ ] R20 human audit sample (~30 min).
-- [ ] Cue-ladder legibility spot-check when Phase-1 rungs render (~20 min) — confirm the region-cue rung is genuinely ambiguous about the exact point and the no-cue rung is answerable by a careful human.
+- [ ] Cue-ladder **v2** legibility spot-check when its rungs render (~20 min) — confirm region-cue is genuinely ambiguous about the exact point, the none rung carries no mark/star/caption, and the no-cue image is answerable by a careful human.
 - [ ] Merges as sign-offs: D3 estimand registration, P1.2 split registration, Gate-1 registration.
 
 ## PART 4 — Conventions
 Ledger `reports/main_progress.md`, one line per task, `pass | fail | blocked` with a note; honest `blocked` always beats a thin pass. Registration merges before first optimizer step (I9). Reports carry numbers, checks, and provenance — never interpretation. Language locks per `PAPER1_RESEARCH_DOC.md` §9 apply to every report and ledger note.
+
+## PART 5 — State revision 2026-08-16 (post-ladder-closure; supersedes conflicting rows above)
+
+**Closed with numbers:** R1–R5 ladder (R3 ViRL matched recovery 0.72–0.88 vs 0.08–0.12 geo3k; R4 TrainShare 0.487→0.779 disjoint; R5 ✓) · SEED3γ (3-way Jaccard 0.661 vs null 0.012 — Tier-1 corrosion wording unlocked) · Gate 1 four arms (resolvability, not shape) · C6 (7B real moves primary anchor +0.025/+0.023 both instruments, one seed, tier language, **no replication run ordered**) · E1b/E1c (blind gain corpus-local; MMVP blind 0.000) · E4 PASS · E1 branch (c) executed · M5c turnover 137/601 vs zero noise floor.
+
+**Cancelled:** Paper-2 Stage-2 3B ablation matrix (Gate-1 null at four arms; rationale in PAPER2 §5).
+
+**New decisive experiment (registration before launch):** ST3-7B — two arms on the HB training split, standard GRPO vs necessity-sampled intervention-group reward; pre-committed method-paper / limits-paper branches per PAPER2 §5. Launch order: after the two-seed R3 readout lands and HB P2 gates pass.
+
+**In flight:** M7 seed-2 a2_gray + a3_caption → evals → **two-seed R3 readout (~08-16)** · LH2 stage 1 re-armed (directional read gates the title upgrade) · HB P0–P2 per the 08-12 dispatch.
+
+**Decisions recorded (PI, 2026-08-16):** E3 = both readings reported, type indeterminate pending E2 fix, reading (a) unmodified · E4 = recompute unfolded per-attacker CIs, criterion untouched · storage = rule-based (delete non-terminal steps not referenced in §21; keep terminal + best + §21-referenced; byte-exact record) · Gate-1 §6 branch = resolvability; Stage-3 pilot is the method's make-or-break · GPT hierarchy plan = adopted 08-12 as amended (cue-ladder v2 superseded by L1 derivation).
+
+**Infra fixes ordered (each ships an adversarial fixture, I10):** storage snapshot "pass"-while-over-quota bug · waiter wedged-vs-dead distinction (a stalled-but-alive trainer must not exhaust a deadline silently) · E3 STAGE-B argument-order bug · premise-v2 answer-balance constraint added to the registered design, failing types regenerated one-shot under it.
+
+**Writing phase opens:** Paper-1 drafting begins (intro, F0–F2, instrument, mechanism, corrosion sections writable now; frozen slots: two-seed R3, LH2 direction, C6 tier). X6 related-work table remains PI-owned. Human gates queue unchanged (four delivered packages + chart-v08 no-zoom + R20 sample).
