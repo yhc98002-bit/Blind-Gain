@@ -103,8 +103,15 @@ def allocated_bytes_from_snapshot(
     now: dt.datetime | None = None,
 ) -> int:
     payload = json.loads(snapshot_path.read_text(encoding="utf-8"))
-    if payload.get("status") != "pass":
-        raise RuntimeError(f"storage usage snapshot is not pass: {snapshot_path}")
+    # "pass" and "fail" are both honest measurements ("fail" = the measured
+    # usage exceeds the soft quota, dispatch 2026-08-16 infra 1a). A failing
+    # snapshot must flow through so the shared-guard arithmetic sees
+    # used >= capacity and classifies the refusal as terminal quota
+    # exhaustion instead of retrying forever. Anything else fails closed.
+    if payload.get("status") not in ("pass", "fail"):
+        raise RuntimeError(
+            f"storage usage snapshot status is not interpretable: {snapshot_path}"
+        )
     recorded_root = Path(str(payload.get("quota_root", ""))).resolve()
     if recorded_root != quota_root.resolve():
         raise RuntimeError(

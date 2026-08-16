@@ -105,3 +105,84 @@ def test_chart_v08_launcher_records_placement_and_has_occupied_gpu_preflight() -
     assert 'tensor_parallel_width: 1' in source
     assert 'replica_count: 1' in source
     assert "os.kill" not in source
+
+
+# --- 2026-08-16 dispatch item 3: unfolded per-attacker CIs (I10 fixtures) ---
+
+import math
+import random
+
+from src.fliptrack.artifact_attackers import _pair_bootstrap_ci, evaluate_features
+
+
+def _noise_problem(seed: int = 20260816, n_pairs: int = 40):
+    rng = np.random.default_rng(seed)
+    pair_ids = [f"p{index}" for index in range(n_pairs) for _ in (0, 1)]
+    labels = np.asarray([0, 1] * n_pairs, dtype=np.int64)
+    features = rng.normal(size=(2 * n_pairs, 6))
+    return features, labels, pair_ids
+
+
+def test_unfolded_ci_can_include_half_where_folded_cannot() -> None:
+    """The registered prose criterion is "CI includes 0.5"; the folded
+    interval lives on [0.5, 1] BY CONSTRUCTION and can never include it.
+    The unfolded directed interval can — for pure noise it must. The pre-fix
+    code has no unfolded field and fails here with KeyError."""
+    features, labels, pair_ids = _noise_problem()
+    result = evaluate_features(features, labels, pair_ids, n_splits=5, seed=3, n_bootstrap=200)
+
+    folded = result["pair_bootstrap_ci_95"]
+    unfolded = result["directed_oof_auc_unfolded_ci_95"]
+    assert folded[0] >= 0.5, "folded interval left of 0.5 is structurally impossible"
+    assert unfolded[0] < 0.5 < unfolded[1], (
+        f"noise attacker's unfolded CI should span 0.5, got {unfolded}"
+    )
+
+
+def _reference_folded_ci(labels, scores, pair_ids, *, n_bootstrap, seed):
+    """The pre-fix bootstrap, verbatim: folded-only, same rng consumption."""
+    indices_by_pair = {}
+    pair_array = np.asarray(pair_ids)
+    for pair_id in sorted(set(pair_ids)):
+        indices_by_pair[pair_id] = np.flatnonzero(pair_array == pair_id)
+    pairs = sorted(indices_by_pair)
+    rng = random.Random(seed)
+    values = []
+    for _ in range(n_bootstrap):
+        sampled = [rng.choice(pairs) for _ in pairs]
+        indices = np.concatenate([indices_by_pair[pair_id] for pair_id in sampled])
+        value = auc(labels[indices], scores[indices])
+        if not math.isnan(value):
+            values.append(max(value, 1.0 - value))
+    from src.fliptrack.artifact_attackers import np as _np
+    return float(_np.quantile(values, 0.025)), float(_np.quantile(values, 0.975))
+
+
+def test_folded_ci_reproduces_the_prefix_bootstrap_exactly() -> None:
+    """Adding the unfolded interval must not move a single folded digit: both
+    intervals are quantiles of the SAME draws (v1-reproduction guarantee)."""
+    rng = np.random.default_rng(7)
+    n_pairs = 25
+    pair_ids = [f"p{index}" for index in range(n_pairs) for _ in (0, 1)]
+    labels = np.asarray([0, 1] * n_pairs, dtype=np.int64)
+    scores = rng.normal(size=2 * n_pairs)
+
+    folded_lo, folded_hi, _, _ = _pair_bootstrap_ci(
+        labels, scores, pair_ids, n_bootstrap=300, seed=1234
+    )
+    ref_lo, ref_hi = _reference_folded_ci(
+        labels, scores, pair_ids, n_bootstrap=300, seed=1234
+    )
+    assert (folded_lo, folded_hi) == (ref_lo, ref_hi)
+
+
+def test_per_item_scores_are_off_by_default() -> None:
+    features, labels, pair_ids = _noise_problem(seed=5, n_pairs=20)
+    result = evaluate_features(features, labels, pair_ids, n_splits=5, seed=3, n_bootstrap=50)
+    assert "oof_scores" not in result
+
+    with_scores = evaluate_features(
+        features, labels, pair_ids, n_splits=5, seed=3, n_bootstrap=50, include_scores=True
+    )
+    assert len(with_scores["oof_scores"]) == len(labels)
+    assert with_scores["directed_oof_auc"] == result["directed_oof_auc"]

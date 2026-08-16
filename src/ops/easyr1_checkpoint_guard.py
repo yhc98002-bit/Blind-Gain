@@ -28,6 +28,31 @@ DEFAULT_SHARED_USAGE_SNAPSHOT = (
 )
 
 
+class StorageQuotaExhaustedError(StorageGuardRefusal):
+    """Tier-S refusal in which the project ledger itself is at or over the
+    shared quota. No retry can succeed until space is freed, so the retry
+    loop must fail the run instead of holding it wedged (2026-08-12 lesson:
+    an over-quota project retried every 300 s for ~2.5 days with the GPUs
+    idle and the run manifest still "running"; dispatch 2026-08-16 infra 1a).
+    """
+
+
+def refusal_is_quota_exhaustion(result: GuardResult) -> bool:
+    """True iff the refusal shows used >= capacity on the shared tier.
+
+    A transient refusal — under quota, but this save would breach the
+    headroom floor — stays retryable, because a neighbouring deletion or a
+    finished eval can clear it without operator action. Quota exhaustion
+    cannot clear itself and is a failure.
+    """
+    return (
+        result.tier == "S"
+        and result.used_bytes is not None
+        and result.capacity_bytes is not None
+        and result.used_bytes >= result.capacity_bytes
+    )
+
+
 def _utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -161,6 +186,8 @@ def guard_easyr1_checkpoint_save(
         )
     append_guard_log(log_path, result)
     if not result.allowed:
+        if refusal_is_quota_exhaustion(result):
+            raise StorageQuotaExhaustedError(result)
         raise StorageGuardRefusal(result)
     return result
 
@@ -175,7 +202,15 @@ def wait_for_easyr1_checkpoint_storage(
     filesystem_probe: Callable[[Path], str] = filesystem_type,
     sleep: Callable[[float], None] = time.sleep,
 ) -> GuardResult | None:
-    """Wait for quota headroom instead of terminating a pilot at a save boundary."""
+    """Wait for quota headroom instead of terminating a pilot at a save boundary.
+
+    Transient refusals (headroom floor) retry every
+    BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS, forever when
+    BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS=0. Quota exhaustion
+    (used >= capacity on the shared tier) raises StorageQuotaExhaustedError
+    IMMEDIATELY regardless of the retry budget — an over-quota project cannot
+    recover by waiting, and pretending otherwise wedges the trainer silently.
+    """
     env = os.environ if environment is None else environment
     retry_text = env.get("BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS", "300")
     attempts_text = env.get("BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS", "0")
@@ -199,6 +234,8 @@ def wait_for_easyr1_checkpoint_storage(
                 free_probe=free_probe,
                 filesystem_probe=filesystem_probe,
             )
+        except StorageQuotaExhaustedError:
+            raise
         except StorageGuardRefusal:
             if max_attempts and attempt >= max_attempts:
                 raise

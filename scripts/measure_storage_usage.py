@@ -106,9 +106,15 @@ def measure(root: Path, *, workers: int, timeout_seconds: int) -> dict[str, obje
             "project_file_count": lustre["project_file_count"],
         }
     quota_bytes = DEFAULT_SHARED_QUOTA_BYTES
+    # An over-soft-quota measurement is a FAILING state, never "pass": on
+    # 2026-08-12..16 a snapshot carrying negative free_bytes with
+    # status:"pass" let the project sit 1.07 TB over quota without any
+    # instrument saying so (dispatch 2026-08-16, infra 1a). "fail" is still a
+    # valid measurement — consumers treat it as quota exhaustion, not as a
+    # broken snapshot.
     return {
         "schema_version": 1,
-        "status": "pass",
+        "status": "pass" if used_bytes <= quota_bytes else "fail",
         "measurement": measurement,
         "quota_root": str(root),
         "quota_bytes": quota_bytes,

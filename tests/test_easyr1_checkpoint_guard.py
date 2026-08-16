@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from src.ops.easyr1_checkpoint_guard import (
+    StorageQuotaExhaustedError,
     guard_easyr1_checkpoint_save,
     wait_for_easyr1_checkpoint_storage,
 )
@@ -181,3 +182,97 @@ def test_stale_snapshot_refuses_then_retries_after_refresh(tmp_path: Path) -> No
     rows = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
     assert [row["status"] for row in rows] == ["refused", "pass"]
     assert "snapshot is stale" in rows[0]["reason"]
+
+
+def _shared_env(tmp_path: Path, *, max_attempts: str = "0") -> dict[str, str]:
+    return {
+        "BLIND_GAINS_STORAGE_GUARD_ENABLED": "1",
+        "BLIND_GAINS_CHECKPOINT_TIER": "S",
+        "BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES": str(5 * GIB),
+        "BLIND_GAINS_SHARED_QUOTA_ROOT": str(tmp_path),
+        "BLIND_GAINS_SHARED_QUOTA_BYTES": str(500 * GIB),
+        "BLIND_GAINS_STORAGE_GUARD_LOG": str(tmp_path / "guard.jsonl"),
+        "BLIND_GAINS_STORAGE_GUARD_RETRY_SECONDS": "7",
+        "BLIND_GAINS_STORAGE_GUARD_MAX_ATTEMPTS": max_attempts,
+    }
+
+
+def test_quota_exhaustion_is_terminal_never_retried(tmp_path: Path) -> None:
+    """I10 fixture for the 2026-08-12 wedge: used >= quota retried every 300 s
+    forever under MAX_ATTEMPTS=0 while the manifest stayed "running". Quota
+    exhaustion must raise immediately — the pre-fix loop calls sleep() and
+    fails this test."""
+
+    def sleep_means_wedged(_: float) -> None:
+        raise AssertionError(
+            "retry loop slept on quota exhaustion — the 2026-08-12 wedge behavior"
+        )
+
+    with pytest.raises(StorageQuotaExhaustedError):
+        wait_for_easyr1_checkpoint_storage(
+            tmp_path / "pilot",
+            20,
+            environment=_shared_env(tmp_path, max_attempts="0"),
+            usage_probe=lambda _: 510 * GIB,
+            sleep=sleep_means_wedged,
+        )
+
+
+def test_transient_floor_refusal_still_retries_forever_under_max_attempts_zero(
+    tmp_path: Path,
+) -> None:
+    """Under quota but over the headroom floor stays retryable: a neighbour
+    freeing space clears it without operator action."""
+    used_values = iter((490 * GIB, 400 * GIB))
+    sleeps: list[float] = []
+
+    result = wait_for_easyr1_checkpoint_storage(
+        tmp_path / "pilot",
+        20,
+        environment=_shared_env(tmp_path, max_attempts="0"),
+        usage_probe=lambda _: next(used_values),
+        sleep=sleeps.append,
+    )
+
+    assert result is not None and result.allowed
+    assert sleeps == [7.0]
+
+
+def test_failing_snapshot_flows_to_terminal_quota_exhaustion(tmp_path: Path) -> None:
+    """End-to-end: a snapshot self-reporting status:"fail" (over soft quota)
+    must surface as StorageQuotaExhaustedError with used/capacity recorded,
+    not as a retryable probe error."""
+    snapshot = tmp_path / "usage.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "status": "fail",
+                "quota_root": str(tmp_path.resolve()),
+                "used_bytes": 510 * GIB,
+                "measured_at_utc": dt.datetime.now(dt.timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                ),
+            }
+        ),
+        encoding="utf-8",
+    )
+    environment = _shared_env(tmp_path, max_attempts="0")
+    environment["BLIND_GAINS_SHARED_USAGE_SNAPSHOT"] = str(snapshot)
+
+    with pytest.raises(StorageQuotaExhaustedError):
+        wait_for_easyr1_checkpoint_storage(
+            tmp_path / "pilot",
+            20,
+            environment=environment,
+            sleep=lambda _: (_ for _ in ()).throw(
+                AssertionError("slept on a failing snapshot")
+            ),
+        )
+
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "guard.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert rows[-1]["status"] == "refused"
+    assert rows[-1]["used_bytes"] == 510 * GIB
+    assert rows[-1]["capacity_bytes"] == 500 * GIB

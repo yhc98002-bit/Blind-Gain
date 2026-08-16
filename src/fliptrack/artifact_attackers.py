@@ -220,15 +220,27 @@ def _pair_bootstrap_ci(
     pairs = sorted(indices_by_pair)
     rng = random.Random(seed)
     values = []
+    raw_values = []
     for _ in range(n_bootstrap):
         sampled = [rng.choice(pairs) for _ in pairs]
         indices = np.concatenate([indices_by_pair[pair_id] for pair_id in sampled])
         value = auc(labels[indices], scores[indices])
         if not math.isnan(value):
+            # Folded and UNfolded intervals come from the SAME draws: the rng
+            # consumption is unchanged, so the folded quantiles reproduce the
+            # v1 numbers exactly while the raw (directed, unfolded) quantiles
+            # answer the registration's literal "CI includes 0.5" wording
+            # (dispatch 2026-08-16 item 3; criterion untouched).
             values.append(max(value, 1.0 - value))
+            raw_values.append(value)
     if not values:
-        return float("nan"), float("nan")
-    return float(np.quantile(values, 0.025)), float(np.quantile(values, 0.975))
+        return float("nan"), float("nan"), float("nan"), float("nan")
+    return (
+        float(np.quantile(values, 0.025)),
+        float(np.quantile(values, 0.975)),
+        float(np.quantile(raw_values, 0.025)),
+        float(np.quantile(raw_values, 0.975)),
+    )
 
 
 def evaluate_features(
@@ -239,6 +251,7 @@ def evaluate_features(
     n_splits: int = 5,
     seed: int = 0,
     n_bootstrap: int = 1000,
+    include_scores: bool = False,
 ) -> dict[str, Any]:
     scores = np.full(len(labels), np.nan, dtype=np.float64)
     directions = []
@@ -252,23 +265,27 @@ def evaluate_features(
         raise AssertionError("OOF scores are incomplete")
     directed_auc = auc(labels, scores)
     gate_statistic = max(directed_auc, 1.0 - directed_auc)
-    ci_low, ci_high = _pair_bootstrap_ci(
+    ci_low, ci_high, raw_ci_low, raw_ci_high = _pair_bootstrap_ci(
         labels,
         scores,
         pair_ids,
         n_bootstrap=n_bootstrap,
         seed=seed + 997,
     )
-    return {
+    result = {
         "directed_oof_auc": directed_auc,
         "gate_statistic": gate_statistic,
         "pair_bootstrap_ci_95": [ci_low, ci_high],
+        "directed_oof_auc_unfolded_ci_95": [raw_ci_low, raw_ci_high],
         "fold_train_auc": train_aucs,
         "fold_direction": directions,
         "n_members": len(labels),
         "n_pairs": len(set(pair_ids)),
         "n_splits": n_splits,
     }
+    if include_scores:
+        result["oof_scores"] = scores.tolist()
+    return result
 
 
 def build_packaged_member_table(
@@ -304,6 +321,7 @@ def _evaluate_all_scopes(
     n_splits: int,
     seed: int,
     n_bootstrap: int,
+    include_scores: bool = False,
 ) -> dict[str, Any]:
     output = {
         "pooled": evaluate_features(
@@ -313,6 +331,7 @@ def _evaluate_all_scopes(
             n_splits=n_splits,
             seed=seed,
             n_bootstrap=n_bootstrap,
+            include_scores=include_scores,
         ),
         "per_template": {},
     }
@@ -326,6 +345,7 @@ def _evaluate_all_scopes(
             n_splits=n_splits,
             seed=seed,
             n_bootstrap=n_bootstrap,
+            include_scores=include_scores,
         )
     return output
 
@@ -400,16 +420,20 @@ def run(
     n_splits: int = 5,
     n_bootstrap: int = 1000,
     seed: int = 20260710,
+    per_item_scores: str | Path | None = None,
 ) -> dict[str, Any]:
     paths, labels, pair_ids, templates = build_packaged_member_table(release_dir, key_file)
+    include_scores = per_item_scores is not None
     attacks: dict[str, Any] = {}
     stat_features = np.stack([_image_stats(path) for path in paths])
     metadata_features = np.stack([_metadata_features(path) for path in paths])
     attacks["frequency_stat"] = _evaluate_all_scopes(
-        stat_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap
+        stat_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap,
+        include_scores=include_scores,
     )
     attacks["metadata"] = _evaluate_all_scopes(
-        metadata_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap
+        metadata_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap,
+        include_scores=include_scores,
     )
 
     dino_status = "skipped"
@@ -419,11 +443,51 @@ def run(
         dino_features, dino_status = _try_dinov2_features(paths, dinov2_model, batch_size)
         attacks["dinov2"] = (
             _evaluate_all_scopes(
-                dino_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap
+                dino_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap,
+                include_scores=include_scores,
             )
             if dino_features is not None
             else None
         )
+
+    if include_scores:
+        # Persist the per-member OOF score vectors (2026-08-16 item 3: they
+        # were previously computed in memory and discarded, which made any
+        # post-hoc CI recomputation impossible without a GPU re-run). The
+        # sidecar rows mirror the exact member order each scope was scored in.
+        template_array = np.asarray(templates)
+        sidecar = Path(per_item_scores)
+        sidecar.parent.mkdir(parents=True, exist_ok=True)
+        with sidecar.open("w", encoding="utf-8") as handle:
+            for attacker, scopes in attacks.items():
+                if scopes is None:
+                    continue
+                scope_rows = [("pooled", np.ones(len(paths), dtype=bool))]
+                scope_rows += [
+                    (template, template_array == template)
+                    for template in sorted(set(templates))
+                ]
+                for scope_name, mask in scope_rows:
+                    result = scopes["pooled"] if scope_name == "pooled" else scopes["per_template"][scope_name]
+                    oof = result.pop("oof_scores", None)
+                    if oof is None:
+                        continue
+                    indices = np.flatnonzero(mask)
+                    for position, index in enumerate(indices):
+                        handle.write(
+                            json.dumps(
+                                {
+                                    "attacker": attacker,
+                                    "scope": scope_name,
+                                    "pair_id": pair_ids[index],
+                                    "image_path": paths[index],
+                                    "label": int(labels[index]),
+                                    "oof_score": oof[position],
+                                },
+                                sort_keys=True,
+                            )
+                            + "\n"
+                        )
 
     metrics: dict[str, Any] = {
         "release_dir": str(release_dir),
@@ -457,6 +521,8 @@ def main() -> None:
     parser.add_argument("--n-splits", type=int, default=5)
     parser.add_argument("--n-bootstrap", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=20260710)
+    parser.add_argument("--per-item-scores", default=None,
+                        help="optional JSONL path persisting per-member OOF scores")
     args = parser.parse_args()
     result = run(
         args.release_dir,
@@ -469,6 +535,7 @@ def main() -> None:
         n_splits=args.n_splits,
         n_bootstrap=args.n_bootstrap,
         seed=args.seed,
+        per_item_scores=args.per_item_scores,
     )
     print(json.dumps({"gate": result["gate"], "dinov2_status": result["dinov2_status"]}, sort_keys=True))
 

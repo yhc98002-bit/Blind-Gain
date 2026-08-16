@@ -19,7 +19,45 @@ from scripts.watch_anchor_checkpoints import refresh_usage_snapshot_if_needed
 
 
 def test_default_shared_quota_matches_pi_allocation_update() -> None:
-    assert DEFAULT_SHARED_QUOTA_BYTES == 1500 * GIB
+    # 2026-07-30 PI allocation update: 1 TiB top-up, 2.5 TiB soft quota.
+    assert DEFAULT_SHARED_QUOTA_BYTES == 2560 * GIB
+
+
+def _write_snapshot(path: Path, root: Path, *, status: str, used_bytes: int) -> None:
+    path.write_text(
+        json.dumps(
+            {
+                "status": status,
+                "quota_root": str(root.resolve()),
+                "used_bytes": used_bytes,
+                "measured_at_utc": dt.datetime.now(dt.timezone.utc).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"
+                ),
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_quota_snapshot_accepts_fail_status_as_valid_measurement(tmp_path: Path) -> None:
+    """status:"fail" = honest over-quota measurement (2026-08-16 infra 1a).
+
+    It must flow through to the guard arithmetic — raising here would route
+    over-quota into the probe-unavailable path, whose refusal carries no
+    used/capacity numbers and therefore retries forever.
+    """
+    snapshot = tmp_path / "usage.json"
+    _write_snapshot(snapshot, tmp_path, status="fail", used_bytes=1500)
+
+    assert allocated_bytes_from_snapshot(snapshot, tmp_path, max_age_seconds=3600) == 1500
+
+
+def test_quota_snapshot_rejects_uninterpretable_status(tmp_path: Path) -> None:
+    snapshot = tmp_path / "usage.json"
+    _write_snapshot(snapshot, tmp_path, status="borked", used_bytes=1500)
+
+    with pytest.raises(RuntimeError, match="not interpretable"):
+        allocated_bytes_from_snapshot(snapshot, tmp_path, max_age_seconds=3600)
 
 
 def test_shared_guard_refuses_write_that_crosses_twenty_gib_floor(tmp_path: Path) -> None:
