@@ -1,0 +1,68 @@
+{
+  "candidate_registry": {
+    "max_candidates": 16,
+    "pair_count": 50,
+    "path": "data/hier_v1_dev/candidates_hier_coord_v1_n12_l2.jsonl",
+    "selection_uses_model_outputs": false,
+    "sha256": "43f7f11cbb29837ebbe70b95e82238434a8c0638817178c1cb736f5ef04b350e",
+    "source_manifest_sha256": "50680f138e15a9e5551b0acdff4c81f3540324f163599f2255f7c5069ea96dff"
+  },
+  "conditions": [
+    "real"
+  ],
+  "models": {
+    "base3b": {
+      "global_step": 0,
+      "model_index_sha256": "c7dd78a4c6bea60b51332f1baf37b8f8124ecab2c35395a29a29825bf2619768",
+      "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
+    },
+    "base7b": {
+      "global_step": 0,
+      "model_index_sha256": "73b333b0b16e5286ddba615d2caebcd495cf7e616f52eb217a81781393d79de9",
+      "path": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct"
+    },
+    "mini_a5_cp_step120": {
+      "global_step": 120,
+      "model_index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "path": "checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface"
+    },
+    "mini_a5_std_step120": {
+      "global_step": 120,
+      "model_index_sha256": "0ff06e6e165add12d5bd2e6e3654afb8fe6f46b73fb58a43f0964ceec6f2fa08",
+      "path": "checkpoints/mini_a5/mini_a5_std_seed1/global_step_120/actor/huggingface"
+    }
+  },
+  "processor": {
+    "artifact_files": [
+      "merges.txt",
+      "preprocessor_config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "vocab.json"
+    ],
+    "artifact_sha256": "bb6a1bfd88cb88a749ff1f86affa84907a70bfdf98c10e303368db5685c81544",
+    "checkpoint_specific_tokenizer_allowed": false,
+    "padding_side": "right",
+    "path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
+  },
+  "prompt_contract": {
+    "id": "answer-tags-v1",
+    "sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f"
+  },
+  "schema_version": "blind-gains.hier-p2-ranking.v1",
+  "scope": "HB P2.1 candidate-ranking readout for hier_coord_v1/n12 l2 (registered_hier_benchmark_v1.md \u00a77 + A2; causal rows only \u2014 invariance ranking is the catch-stability instrument's job). Processor/prompt-contract/scoring blocks byte-identical to configs/eval/mini_a5_visual_evidence_ranking_v1.json; the 3B processor serves all four models \u2014 every processor artifact is byte-identical between the 3B and 7B checkpoints (verified at emission).",
+  "scoring": {
+    "candidate_batch_size": 4,
+    "candidate_verbalization": "<answer>{verbatim_frozen_answer}</answer>",
+    "completion_eos_scored": false,
+    "leading_or_trailing_text": "none",
+    "logit_reduction_dtype": "float32",
+    "mathematical_equivalence": "canonical-v2 symmetric equivalence; tolerance 1e-4; unit-changing answers remain distinct",
+    "pair_success": "margin_a > 0 AND margin_b > 0",
+    "primary_score": "mean conditional log probability over every exact completion token",
+    "raw_sum_score": "robustness only",
+    "sum_storage_dtype": "float64",
+    "tie_policy": "ties lose for top-1 and take the conservative worst rank",
+    "version": "visual-evidence-ranking-v1"
+  }
+}

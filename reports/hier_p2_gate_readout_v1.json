@@ -1,0 +1,680 @@
+{
+  "cells": {
+    "hier_chart_v1/s5_high": {
+      "gates_base3b": {
+        "l1": 0.495,
+        "l1_in_band_060_095": false,
+        "l2": 0.535,
+        "l2_in_band_020_080": true,
+        "l3": 0.095,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": false
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.495,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.535,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.095,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.04,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.49,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.47,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.205,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.11,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7366666666666667,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.545,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.57,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.13,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.08,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6933333333333334,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.64,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.655,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.21,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.16,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7266666666666667,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_chart_v1/s5_low": {
+      "gates_base3b": {
+        "l1": 0.905,
+        "l1_in_band_060_095": true,
+        "l2": 0.88,
+        "l2_in_band_020_080": false,
+        "l3": 0.425,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.905,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.88,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.425,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.3,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8266666666666667,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.97,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.99,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.895,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.48,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.83,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.99,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.98,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.58,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.42,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8333333333333334,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.98,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.945,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.58,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.4,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8266666666666667,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_chart_v1/s9_high": {
+      "gates_base3b": {
+        "l1": 0.45,
+        "l1_in_band_060_095": false,
+        "l2": 0.445,
+        "l2_in_band_020_080": true,
+        "l3": 0.075,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.45,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.445,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.075,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.07,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.5666666666666667,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.385,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.395,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.19,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.09,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7166666666666667,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.51,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.495,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.085,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.08,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6833333333333333,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.62,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.585,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.13,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.09,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6833333333333333,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_chart_v1/s9_low": {
+      "gates_base3b": {
+        "l1": 0.795,
+        "l1_in_band_060_095": true,
+        "l2": 0.745,
+        "l2_in_band_020_080": true,
+        "l3": 0.2,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.795,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.745,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.2,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.26,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8066666666666666,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.955,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.97,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.745,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.54,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8066666666666666,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.945,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.935,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.32,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.22,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8033333333333333,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.915,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.895,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.3,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.26,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7966666666666666,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_coord_v1/n12": {
+      "gates_base3b": {
+        "l1": 0.675,
+        "l1_in_band_060_095": true,
+        "l2": 0.595,
+        "l2_in_band_020_080": true,
+        "l3": 0.325,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.675,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.595,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.325,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.37,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6833333333333333,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.765,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.835,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.555,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.56,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8566666666666667,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.715,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.675,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.31,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.4,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7266666666666667,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.71,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.66,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.315,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.4,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7466666666666667,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_coord_v1/n20": {
+      "gates_base3b": {
+        "l1": 0.575,
+        "l1_in_band_060_095": false,
+        "l2": 0.51,
+        "l2_in_band_020_080": true,
+        "l3": 0.315,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.575,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.51,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.315,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.21,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.63,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.715,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.755,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.5,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.44,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.8633333333333333,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.525,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.495,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.335,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.32,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6766666666666666,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.535,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.54,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.35,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.33,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6833333333333333,
+            "n_members": 300
+          }
+        }
+      }
+    },
+    "hier_coord_v1/n8": {
+      "gates_base3b": {
+        "l1": 0.725,
+        "l1_in_band_060_095": true,
+        "l2": 0.64,
+        "l2_in_band_020_080": true,
+        "l3": 0.425,
+        "l3_at_least_005": true,
+        "monotone_l1_gt_l2_gt_l3": true
+      },
+      "per_model": {
+        "base3b": {
+          "l1": {
+            "gate_member_accuracy": 0.725,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.64,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.425,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.33,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.6633333333333333,
+            "n_members": 300
+          }
+        },
+        "base7b": {
+          "l1": {
+            "gate_member_accuracy": 0.825,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.84,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.7,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.67,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.9266666666666666,
+            "n_members": 300
+          }
+        },
+        "mini_a5_cp_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.785,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.705,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.415,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.37,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7366666666666667,
+            "n_members": 300
+          }
+        },
+        "mini_a5_std_step120": {
+          "l1": {
+            "gate_member_accuracy": 0.795,
+            "gate_n_members": 200
+          },
+          "l2": {
+            "gate_member_accuracy": 0.695,
+            "gate_n_members": 200
+          },
+          "l3": {
+            "gate_member_accuracy": 0.425,
+            "gate_n_members": 200,
+            "switch_member_accuracy": 0.37,
+            "switch_n_members": 100
+          },
+          "probe": {
+            "member_accuracy": 0.7266666666666667,
+            "n_members": 300
+          }
+        }
+      }
+    }
+  },
+  "family_gates": {
+    "hier_chart_v1": {
+      "cells_passing_all_cell_gates": [
+        "s9_low"
+      ],
+      "l3_floor_in_at_least_one_cell": true
+    },
+    "hier_coord_v1": {
+      "cells_passing_all_cell_gates": [
+        "n8",
+        "n12"
+      ],
+      "l3_floor_in_at_least_one_cell": true
+    }
+  },
+  "gate_composition": "member accuracy over target_stable+invariance rows",
+  "gate_model": "base3b",
+  "registration": "docs/registered_hier_benchmark_v1.md \u00a77 + A2",
+  "run_dirs": {
+    "base3b": "experiments/runs/hier_p2_openform_base3b_an29_gpu0_20260816T210949Z",
+    "base7b": "experiments/runs/hier_p2_openform_base7b_an29_gpu1_20260816T210951Z",
+    "mini_a5_cp_step120": "experiments/runs/hier_p2_openform_mini_a5_cp_step120_an29_gpu3_20260816T210955Z",
+    "mini_a5_std_step120": "experiments/runs/hier_p2_openform_mini_a5_std_step120_an29_gpu2_20260816T210953Z"
+  },
+  "schema_version": "blind-gains.hier-p2-gate-readout.v1"
+}
