@@ -1957,6 +1957,13 @@ def _fmt_ci(summary: dict[str, Any] | None) -> str:
         return "NA"
     interval = summary.get("ci95")
     if interval is None:
+        # Recovery-style summaries nest the interval under bootstrap.ci95;
+        # rendering them as "[NA]" while the JSON carried the CI was the
+        # 2026-08-16 md defect (caught by the round's delta verification).
+        bootstrap = summary.get("bootstrap")
+        if isinstance(bootstrap, dict):
+            interval = bootstrap.get("ci95")
+    if interval is None:
         return f"{summary['estimate']:.4f} [NA]"
     return f"{summary['estimate']:.4f} [{interval[0]:.4f}, {interval[1]:.4f}]"
 

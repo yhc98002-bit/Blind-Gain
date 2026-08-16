@@ -32,9 +32,9 @@ Corpus A1 denominator: estimate 0.2044, paired SE 0.0075, stable `true` (rule: g
 
 | Blind arm | Aggregate recovery (95% CI) | Status | Undefined draws | Interval label |
 |---|---:|---|---:|---|
-| A2 gray | 0.7265 [0.6592, 0.7961] | stable | 0/5000 | stable |
-| A2b no-image | 0.7132 [0.6483, 0.7844] | stable | 0/5000 | stable |
-| A3 caption | 0.8840 [0.8091, 0.9632] | stable | 0/5000 | stable |
+| A2 gray | 0.7265 [NA] | stable | 0/5000 | stable |
+| A2b no-image | 0.7132 [NA] | stable | 0/5000 | stable |
+| A3 caption | 0.8840 [NA] | stable | 0/5000 | stable |
 
 ## Registered joint strata: q_bar (22 eligible)
 
@@ -219,7 +219,7 @@ This comparison is informed, not fully prospective: the anchors are the complete
 |---|---:|---:|---:|---|---|
 | A2 gray | 0.0789 | 0.7265 | 0.6476 [0.5803, 0.7172] | true | stable |
 | A2b no-image | 0.1184 | 0.7132 | 0.5948 [0.5299, 0.6660] | true | stable |
-| A3 caption | no registered anchor | 0.8840 [0.8091, 0.9632] | NA | NA | stable |
+| A3 caption | no registered anchor | 0.8840 [NA] | NA | NA | stable |
 
 ## M10 support-sharpening candidates
 

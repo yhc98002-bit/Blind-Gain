@@ -88,8 +88,16 @@ TAG_V2 = "two seeds (seeds 1, 2; registered two-seed mean)"
 SEED1_GOLDEN_JSON_SHA256 = (
     "d103d2bcb6454a29d27eb0e1235f3f0070cc604ab0de7e196cfb4bcae7641c81"
 )
+# MD golden re-pinned 2026-08-16: the _fmt_ci renderer fix (bootstrap-nested
+# CIs no longer print "[NA]"; see test_fmt_ci_renders_bootstrap_nested_intervals)
+# legitimately changes the rendered markdown for BOTH schema versions. The JSON
+# golden above is untouched — the arithmetic is byte-identical; only the md
+# view changed. Pre-fix md golden, retained for the record:
+# bac41283aebb152cfb916fba88a70a5e91760d3bb4c905327aba70b144390679
+# (reports/m7_r3_readout_v1.md on disk predates the fix and keeps its "[NA]"
+# rendering; it is sealed and is not regenerated.)
 SEED1_GOLDEN_MD_SHA256 = (
-    "bac41283aebb152cfb916fba88a70a5e91760d3bb4c905327aba70b144390679"
+    "6de46707227b3de12939925febc22ab476d9111f6967d621f75f3bde4c8f1352"
 )
 
 BASE_MODEL_PATH = "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct"
@@ -984,3 +992,23 @@ def test_two_seed_registered_defaults_are_pinned() -> None:
         assert "unregistered seed set" in str(error)
     else:  # pragma: no cover
         raise AssertionError("expected ValueError for an unregistered seed set")
+
+
+def test_fmt_ci_renders_bootstrap_nested_intervals() -> None:
+    """I10 fixture for the 2026-08-16 md defect: aggregate-recovery summaries
+    carry their interval under bootstrap.ci95, and the pre-fix renderer
+    printed them as "[NA]" while the JSON carried the CI."""
+    spec = importlib.util.spec_from_file_location("build_m7_r3_readout", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    nested = {
+        "estimate": 0.7264858626658973,
+        "status": "stable",
+        "bootstrap": {"ci95": [0.6592357393349535, 0.7960808187762567]},
+    }
+    assert module._fmt_ci(nested) == "0.7265 [0.6592, 0.7961]"
+    # Flat summaries (the gain rows) are unchanged.
+    flat = {"estimate": 0.2044, "ci95": [0.1898, 0.2189]}
+    assert module._fmt_ci(flat) == "0.2044 [0.1898, 0.2189]"
+    # A summary with truly no interval anywhere still reads [NA].
+    assert module._fmt_ci({"estimate": 0.5, "bootstrap": {}}) == "0.5000 [NA]"

@@ -1392,6 +1392,19 @@ null is informative rather than underpowered.
 
 ## 16. The cue ladder — a negative result about our own instrument
 
+> **RETRACTED — INVALID BUILD (2026-08-11 PI review; header added 2026-08-16
+> per the 08-12 dispatch P0.2; body below retained unmodified, superseded not
+> deleted).** All six rungs reference the byte-identical v07 image (pixel
+> diff = 0; `replayed_from: starred_series_value_nine_v07`); the annotation
+> layer never varied; golds were copied from the starred series while the
+> named/none/decoy questions name other series (question–gold mismatch on 4
+> of 6 rungs); the verifier's `gold_follows_question` checked gold against
+> the *target*, not the question. The July readout numbers (+0.317 / −0.277)
+> are wrong-gold artifacts; the "marker is cue and occluder" story and the
+> text-priority micro-result are **retracted**. Arm cells were never scored —
+> nothing propagated to results. Superseded by the L1/L2/L3 hierarchy
+> (`docs/registered_hier_benchmark_v1.md`).
+
 Registered `docs/registered_cue_ladder_v1.md` + v2 amendment. **Six** rung conditions were built and are reported — v1's exact / region / none
 / decoy plus v2's named_exact / named_region — all replayed from the frozen R19
 nine-series `pair_seed`s (300/300 replay integrity), so the ladder is item-paired
