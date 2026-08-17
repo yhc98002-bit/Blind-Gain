@@ -2658,6 +2658,36 @@ RLVR's L3 gain is real but **not visual** — it survives removing the image
 during training. It also sets ST3's bar: an IGPO advantage must beat the
 ~+0.04–0.05 generic-RLVR L3 bump that blind training already produces.
 
+
+**chart-v2 acceptance: FAILED, and the failure is informative**
+(`reports/hier_chart_v2_acceptance_v1.md`). The transposition construction did
+what A4 claimed — every column's value multiset is identical across sides,
+verifier-enforced — but the inference from that was wrong: **pixels follow line
+paths, not column multisets.** In a banded low-crossing scene each series holds
+its own lane ~19–24 units wide, so any level-changing edit forces two large
+excursions out of the lanes: +1.9–2.2 KB on the edited side, edited-larger
+**50/50 · 50/50**, and the attackers read it perfectly (s5_low frequency
+**1.0000**, dinov2 0.9999). v2 is *worse* than v1 here because it moves two
+values ~19–24 units where v1 moved one 5–15.
+
+But the failures are confined to the low-crossing cells, and **`s5_high` and
+`s9_high` pass every attacker per template** — the first chart cells ever to,
+with the size channel a coin flip (25–28/50, ±80 B). The informativeness gates
+then invert exactly: s9_low passes every gate, s5_low fails L2 (0.910, too
+easy), and both high cells fail monotone and the L1 band (0.4300 / 0.2850 —
+the readout layer itself). **Informativeness and attacker-resistance are
+anti-correlated along the crossing-density knob**, and for a single mechanism:
+visual crowding hides the edit from the attacker and the data from the model in
+equal measure.
+
+Across the whole benchmark no cell yet passes all three criteria — coord
+n8/n12 are informative and attacker-clean but caption-leaky; chart-v2 s9_low is
+informative and caption-resistant but attacker-leaky; the chart high cells are
+clean on both adversarial axes and unreadable. `s9_low` is one criterion short,
+and the only edit channel left that does not move ink is permuting series
+*identity* (legend colour/style/label) rather than values — a v3 proposal, and
+the PI's call, since this is the first of the two pre-committed chart failures.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:

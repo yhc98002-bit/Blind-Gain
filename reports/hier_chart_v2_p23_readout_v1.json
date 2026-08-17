@@ -1,0 +1,434 @@
+{
+  "attacker_gates": {
+    "hier_chart_v2": {
+      "gate": {
+        "checks": {
+          "all_attackers_available": true,
+          "all_point_estimates_at_most_0_55": false,
+          "no_ci_upper_above_0_62": false
+        },
+        "expansion_required": [
+          "file_size:hier_chart_v2_s5_low",
+          "file_size:hier_chart_v2_s9_low",
+          "frequency_stat:pooled",
+          "frequency_stat:hier_chart_v2_s5_low",
+          "frequency_stat:hier_chart_v2_s9_low",
+          "metadata:hier_chart_v2_s5_low",
+          "metadata:hier_chart_v2_s9_low",
+          "dinov2:pooled",
+          "dinov2:hier_chart_v2_s5_low",
+          "dinov2:hier_chart_v2_s9_low"
+        ],
+        "missing_attackers": [],
+        "point_failures": [
+          "file_size:pooled",
+          "file_size:hier_chart_v2_s5_low",
+          "file_size:hier_chart_v2_s9_low",
+          "frequency_stat:pooled",
+          "frequency_stat:hier_chart_v2_s5_low",
+          "frequency_stat:hier_chart_v2_s9_low",
+          "metadata:pooled",
+          "metadata:hier_chart_v2_s5_low",
+          "metadata:hier_chart_v2_s9_low",
+          "dinov2:pooled",
+          "dinov2:hier_chart_v2_s5_low",
+          "dinov2:hier_chart_v2_s9_low"
+        ],
+        "status": false
+      },
+      "n_pairs": 400,
+      "rows": [
+        {
+          "attacker": "dinov2",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.5084,
+          "folded_ci_95": [
+            0.5005,
+            0.5410025
+          ],
+          "folded_gate_statistic": 0.5084,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s5_high",
+          "unfolded_ci_95": [
+            0.47809250000000003,
+            0.5409025000000001
+          ]
+        },
+        {
+          "attacker": "dinov2",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.9999,
+          "folded_ci_95": [
+            0.9994,
+            1.0
+          ],
+          "folded_gate_statistic": 0.9999,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s5_low",
+          "unfolded_ci_95": [
+            0.9994,
+            1.0
+          ]
+        },
+        {
+          "attacker": "dinov2",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.5056,
+          "folded_ci_95": [
+            0.5007,
+            0.5416050000000001
+          ],
+          "folded_gate_statistic": 0.5056,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s9_high",
+          "unfolded_ci_95": [
+            0.472685,
+            0.5404125
+          ]
+        },
+        {
+          "attacker": "dinov2",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.7596,
+          "folded_ci_95": [
+            0.7222975,
+            0.8038075
+          ],
+          "folded_gate_statistic": 0.7596,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s9_low",
+          "unfolded_ci_95": [
+            0.7222975,
+            0.8038075
+          ]
+        },
+        {
+          "attacker": "dinov2",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.6757875,
+          "folded_ci_95": [
+            0.65098671875,
+            0.7030509374999999
+          ],
+          "folded_gate_statistic": 0.6757875,
+          "n_pairs": 400,
+          "point_over_0_55": true,
+          "scope": "pooled",
+          "unfolded_ci_95": [
+            0.65098671875,
+            0.7030509374999999
+          ]
+        },
+        {
+          "attacker": "file_size",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.477,
+          "folded_ci_95": [
+            0.5064924999999999,
+            0.5399025000000001
+          ],
+          "folded_gate_statistic": 0.523,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s5_high",
+          "unfolded_ci_95": [
+            0.4600975,
+            0.4935075
+          ]
+        },
+        {
+          "attacker": "file_size",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.9813,
+          "folded_ci_95": [
+            0.9692825,
+            0.9914025
+          ],
+          "folded_gate_statistic": 0.9813,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s5_low",
+          "unfolded_ci_95": [
+            0.9692825,
+            0.9914025
+          ]
+        },
+        {
+          "attacker": "file_size",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.5032,
+          "folded_ci_95": [
+            0.5003,
+            0.5232525
+          ],
+          "folded_gate_statistic": 0.5032,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s9_high",
+          "unfolded_ci_95": [
+            0.481945,
+            0.5223512499999999
+          ]
+        },
+        {
+          "attacker": "file_size",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.8637,
+          "folded_ci_95": [
+            0.8276975,
+            0.9049075
+          ],
+          "folded_gate_statistic": 0.8637,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s9_low",
+          "unfolded_ci_95": [
+            0.8276975,
+            0.9049075
+          ]
+        },
+        {
+          "attacker": "file_size",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.560296875,
+          "folded_ci_95": [
+            0.550208671875,
+            0.573513515625
+          ],
+          "folded_gate_statistic": 0.560296875,
+          "n_pairs": 400,
+          "point_over_0_55": true,
+          "scope": "pooled",
+          "unfolded_ci_95": [
+            0.550208671875,
+            0.573513515625
+          ]
+        },
+        {
+          "attacker": "frequency_stat",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.4731,
+          "folded_ci_95": [
+            0.5013000000000001,
+            0.5708074999999999
+          ],
+          "folded_gate_statistic": 0.5268999999999999,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s5_high",
+          "unfolded_ci_95": [
+            0.42919250000000003,
+            0.5154075
+          ]
+        },
+        {
+          "attacker": "frequency_stat",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 1.0,
+          "folded_ci_95": [
+            1.0,
+            1.0
+          ],
+          "folded_gate_statistic": 1.0,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s5_low",
+          "unfolded_ci_95": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "attacker": "frequency_stat",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.4639,
+          "folded_ci_95": [
+            0.5032,
+            0.5748025
+          ],
+          "folded_gate_statistic": 0.5361,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s9_high",
+          "unfolded_ci_95": [
+            0.4251975,
+            0.501205
+          ]
+        },
+        {
+          "attacker": "frequency_stat",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.8181,
+          "folded_ci_95": [
+            0.773695,
+            0.86141
+          ],
+          "folded_gate_statistic": 0.8181,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s9_low",
+          "unfolded_ci_95": [
+            0.773695,
+            0.86141
+          ]
+        },
+        {
+          "attacker": "frequency_stat",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.72615625,
+          "folded_ci_95": [
+            0.6987692187500001,
+            0.7560890625000001
+          ],
+          "folded_gate_statistic": 0.72615625,
+          "n_pairs": 400,
+          "point_over_0_55": true,
+          "scope": "pooled",
+          "unfolded_ci_95": [
+            0.6987692187500001,
+            0.7560890625000001
+          ]
+        },
+        {
+          "attacker": "metadata",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.4722,
+          "folded_ci_95": [
+            0.5107999999999999,
+            0.5477050000000001
+          ],
+          "folded_gate_statistic": 0.5278,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s5_high",
+          "unfolded_ci_95": [
+            0.452295,
+            0.4892
+          ]
+        },
+        {
+          "attacker": "metadata",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.9771,
+          "folded_ci_95": [
+            0.962785,
+            0.9887050000000001
+          ],
+          "folded_gate_statistic": 0.9771,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s5_low",
+          "unfolded_ci_95": [
+            0.962785,
+            0.9887050000000001
+          ]
+        },
+        {
+          "attacker": "metadata",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.4983,
+          "folded_ci_95": [
+            0.5003,
+            0.5197
+          ],
+          "folded_gate_statistic": 0.5017,
+          "n_pairs": 100,
+          "point_over_0_55": false,
+          "scope": "hier_chart_v2_s9_high",
+          "unfolded_ci_95": [
+            0.4803975,
+            0.514305
+          ]
+        },
+        {
+          "attacker": "metadata",
+          "ci_upper_over_0_62": true,
+          "directed_oof_auc": 0.8823,
+          "folded_ci_95": [
+            0.8482975,
+            0.9161075
+          ],
+          "folded_gate_statistic": 0.8823,
+          "n_pairs": 100,
+          "point_over_0_55": true,
+          "scope": "hier_chart_v2_s9_low",
+          "unfolded_ci_95": [
+            0.8482975,
+            0.9161075
+          ]
+        },
+        {
+          "attacker": "metadata",
+          "ci_upper_over_0_62": false,
+          "directed_oof_auc": 0.600325,
+          "folded_ci_95": [
+            0.5877403125,
+            0.6156509375
+          ],
+          "folded_gate_statistic": 0.600325,
+          "n_pairs": 400,
+          "point_over_0_55": true,
+          "scope": "pooled",
+          "unfolded_ci_95": [
+            0.5877403125,
+            0.6156509375
+          ]
+        }
+      ],
+      "source": {
+        "path": "reports/hier_chart_v2_attacker_gate.json",
+        "sha256": "b98c32405f5e1f1351d4dc9b8e98d78488f6a1ae109ddcd326ba35983886aafc"
+      },
+      "split": "5-fold grouped CV by pair"
+    }
+  },
+  "blind_floors": {
+    "gray_run": "experiments/runs/hier_cv2_base3b_gray_an29_gpu4_20260817T130631Z",
+    "member_accuracy": {
+      "gray": {
+        "hier_chart_v2_s5_high_l1": 0.0,
+        "hier_chart_v2_s5_high_l2": 0.0,
+        "hier_chart_v2_s5_high_l3": 0.0,
+        "hier_chart_v2_s5_high_probe": 0.0,
+        "hier_chart_v2_s5_low_l1": 0.0,
+        "hier_chart_v2_s5_low_l2": 0.0,
+        "hier_chart_v2_s5_low_l3": 0.0,
+        "hier_chart_v2_s5_low_probe": 0.0,
+        "hier_chart_v2_s9_high_l1": 0.0,
+        "hier_chart_v2_s9_high_l2": 0.0,
+        "hier_chart_v2_s9_high_l3": 0.0,
+        "hier_chart_v2_s9_high_probe": 0.0,
+        "hier_chart_v2_s9_low_l1": 0.0,
+        "hier_chart_v2_s9_low_l2": 0.0,
+        "hier_chart_v2_s9_low_l3": 0.0,
+        "hier_chart_v2_s9_low_probe": 0.0
+      },
+      "no_image": {
+        "hier_chart_v2_s5_high_l1": 0.0,
+        "hier_chart_v2_s5_high_l2": 0.0,
+        "hier_chart_v2_s5_high_l3": 0.0,
+        "hier_chart_v2_s5_high_probe": 0.0,
+        "hier_chart_v2_s5_low_l1": 0.0,
+        "hier_chart_v2_s5_low_l2": 0.0,
+        "hier_chart_v2_s5_low_l3": 0.0,
+        "hier_chart_v2_s5_low_probe": 0.0,
+        "hier_chart_v2_s9_high_l1": 0.0,
+        "hier_chart_v2_s9_high_l2": 0.0,
+        "hier_chart_v2_s9_high_l3": 0.0,
+        "hier_chart_v2_s9_high_probe": 0.0,
+        "hier_chart_v2_s9_low_l1": 0.0,
+        "hier_chart_v2_s9_low_l2": 0.0,
+        "hier_chart_v2_s9_low_l3": 0.0,
+        "hier_chart_v2_s9_low_probe": 0.0
+      }
+    },
+    "no_image_run": "experiments/runs/hier_cv2_base3b_no_image_an29_gpu5_20260817T130641Z"
+  },
+  "criterion": "folded gate statistic <= 0.55 point AND folded CI upper <= 0.62, per attacker, pooled and per template",
+  "leak_verification": null,
+  "schema_version": "blind-gains.hier-p23-readout.v1"
+}
