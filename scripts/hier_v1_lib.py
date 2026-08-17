@@ -334,6 +334,7 @@ REGISTERED_TEXT = {
     "hier_chart_v1": {"title": CHART_TITLE, "footer": CHART_FOOTER},
     # v2 renders with the same renderer and therefore the same registered text
     "hier_chart_v2": {"title": CHART_TITLE, "footer": CHART_FOOTER},
+    "hier_chart_v3": {"title": CHART_TITLE, "footer": CHART_FOOTER},
 }
 # Any of these substrings in drawn text marks a task-procedure instruction.
 PROCEDURE_TOKENS = ("locate", "requested", "then read", "first find")
@@ -885,4 +886,203 @@ def build_chart_v2_geometry(role: str, series_count: int, density: str,
         "crossing_fraction_a": crossing_fraction(values, series_count, xr),
         "crossing_fraction_b": crossing_b,
         "edit_kind": "column_transposition",
+    }
+
+
+# ---------------------------------------------------------------------------
+# chart family v3 (hier_chart_v3) — Amendment A6, 2026-08-17, attempt 2 of 2
+#
+# v1 and v2 both failed because ONE side was the edited side: whatever the edit
+# rule, the member carrying it gained ink, and in banded low-crossing scenes
+# that gain is enormous (v2 measured +1.9-2.2 KB, edited-larger 50/50, attacker
+# AUC up to 1.0000). v2's column-multiset invariant did not help because pixels
+# follow line PATHS, not column multisets.
+#
+# An ink-invariant edit does not exist for this question form: to change "the
+# value at xr of the series highest at xa" you must change which path is
+# highest at xa or that path's value at xr, and both move ink. So v3 stops
+# trying. Instead BOTH members are derived from a common ancestor, each
+# carrying exactly ONE single-value excursion of the SAME magnitude — one
+# causal (it moves the answer), one answer-irrelevant. Neither member is "the
+# edited one"; the attacker's side label is arbitrary by construction, so the
+# only way to win is to read the task.
+# ---------------------------------------------------------------------------
+
+
+def _drop_candidates(values, series_count, x, magnitude, forbidden):
+    return [s for s in range(series_count)
+            if s not in forbidden and values[s][x] - magnitude >= 15]
+
+
+def build_chart_v3_geometry(role: str, series_count: int, density: str,
+                            rng) -> dict[str, Any] | None:
+    """hier_chart_v3: matched-excursion pairs from a common ancestor."""
+    xa = rng.randrange(1, X_COUNT - 1)
+    xr = rng.choice([x for x in range(1, X_COUNT - 1) if x != xa])
+    center = rng.randrange(30, 71)
+    ancestor: list[list[int]] = []
+    if density == "low":
+        grid = list(range(15, 91, CHART_GRANULARITY))
+        idxs = [round(i * (len(grid) - 1) / (series_count - 1))
+                for i in range(series_count)]
+        centers = [grid[i] for i in idxs]
+        rng.shuffle(centers)
+        for series in range(series_count):
+            row = []
+            for _ in range(X_COUNT):
+                jitter = rng.choice((0, 0, 0, -CHART_GRANULARITY, CHART_GRANULARITY))
+                row.append(min(90, max(15, centers[series] + jitter)))
+            ancestor.append(row)
+    else:
+        for _ in range(series_count):
+            row = [rng.randrange(15, 91, CHART_GRANULARITY) for _ in range(X_COUNT)]
+            for x in (xr - 1, xr, xr + 1):
+                pulled = center + rng.randrange(-10, 11, CHART_GRANULARITY)
+                row[x] = min(90, max(15, pulled))
+            ancestor.append(row)
+
+    low, high = CROSSING_BANDS[density]
+    if not (low <= crossing_fraction(ancestor, series_count, xr) <= high):
+        return None
+    target, gap = chart_argmax(ancestor, series_count, xa)
+    if gap < CHART_GRANULARITY:
+        return None
+
+    values_a = [row[:] for row in ancestor]
+    values_b = [row[:] for row in ancestor]
+
+    if role == "target_switch":
+        ordered = sorted(((ancestor[s][xa], s) for s in range(series_count)),
+                         reverse=True)
+        runner_up = ordered[1][1]
+        step = CHART_GRANULARITY * rng.randrange(1, 4)
+        causal_value = ordered[1][0] - step
+        if causal_value < 15:
+            return None
+        magnitude = ancestor[target][xa] - causal_value      # the causal excursion
+        # side B: the causal edit — the winner drops below the runner-up
+        values_b[target][xa] = causal_value
+        new_target, new_gap = chart_argmax(values_b, series_count, xa)
+        if new_target != runner_up or new_gap < CHART_GRANULARITY:
+            return None
+        # side A: an answer-irrelevant drop of the SAME magnitude on a series
+        # that is neither the winner nor the runner-up, so the argmax and the
+        # margin are untouched and the answer does not move.
+        partners = _drop_candidates(ancestor, series_count, xa, magnitude,
+                                    {target, runner_up})
+        if not partners:
+            return None
+        partner = partners[rng.randrange(len(partners))]
+        values_a[partner][xa] = ancestor[partner][xa] - magnitude
+        check_target, check_gap = chart_argmax(values_a, series_count, xa)
+        if check_target != target or check_gap < CHART_GRANULARITY:
+            return None
+        target_a, target_b = target, runner_up
+        edits = {"a": ["value", partner, xa, -magnitude],
+                 "b": ["value", target, xa, -magnitude]}
+    elif role == "target_stable":
+        options = [v for v in range(15, 91, CHART_GRANULARITY)
+                   if v != ancestor[target][xr]
+                   and _answers_distinguishable(str(ancestor[target][xr]), str(v))]
+        if not options:
+            return None
+        causal_value = options[rng.randrange(len(options))]
+        magnitude = abs(causal_value - ancestor[target][xr])
+        values_b[target][xr] = causal_value
+        # side A: same-magnitude move on a non-target at the read x; the target's
+        # own value — and therefore the answer — is untouched.
+        partners = []
+        for s in range(series_count):
+            if s == target:
+                continue
+            for signed in (magnitude, -magnitude):
+                if 15 <= ancestor[s][xr] + signed <= 90:
+                    partners.append((s, signed))
+        if not partners:
+            return None
+        partner, signed = partners[rng.randrange(len(partners))]
+        values_a[partner][xr] = ancestor[partner][xr] + signed
+        if chart_argmax(values_a, series_count, xa)[0] != target:
+            return None
+        target_a = target_b = target
+        edits = {"a": ["value", partner, xr, signed],
+                 "b": ["value", target, xr, causal_value - ancestor[target][xr]]}
+    elif role == "invariance":
+        magnitude = CHART_GRANULARITY * rng.randrange(2, 5)
+        placements = []
+        for x in range(X_COUNT):
+            for s in range(series_count):
+                if s == target:
+                    continue
+                for signed in (magnitude, -magnitude):
+                    if 15 <= ancestor[s][x] + signed <= 90:
+                        placements.append((s, x, signed))
+        if len(placements) < 2:
+            return None
+        rng.shuffle(placements)
+        chosen = []
+        for s, x, signed in placements:
+            if any(s == cs and x == cx for cs, cx, _ in chosen):
+                continue
+            chosen.append((s, x, signed))
+            if len(chosen) == 2:
+                break
+        if len(chosen) < 2:
+            return None
+        (sa, xa_e, sga), (sb, xb_e, sgb) = chosen
+        values_a[sa][xa_e] = ancestor[sa][xa_e] + sga
+        values_b[sb][xb_e] = ancestor[sb][xb_e] + sgb
+        for side_values in (values_a, values_b):
+            t, g = chart_argmax(side_values, series_count, xa)
+            if t != target or g < CHART_GRANULARITY:
+                return None
+        target_a = target_b = target
+        edits = {"a": ["value", sa, xa_e, sga], "b": ["value", sb, xb_e, sgb]}
+    else:
+        raise AssertionError(f"unknown role {role}")
+
+    answer_a = str(values_a[target_a][xr])
+    answer_b = str(values_b[target_b][xr])
+    if role == "invariance":
+        if answer_a != answer_b:
+            return None
+    elif not _answers_distinguishable(answer_a, answer_b):
+        return None
+
+    # both sides in band, and both carry exactly one excursion of equal size
+    crossing_a = crossing_fraction(values_a, series_count, xr)
+    crossing_b = crossing_fraction(values_b, series_count, xr)
+    if not (low <= crossing_a <= high and low <= crossing_b <= high):
+        return None
+    if abs(edits["a"][3]) != abs(edits["b"][3]):
+        return None
+    for side_values, side in ((values_a, "a"), (values_b, "b")):
+        diffs = [(s, x) for s in range(series_count) for x in range(X_COUNT)
+                 if side_values[s][x] != ancestor[s][x]]
+        if len(diffs) != 1:
+            return None
+
+    return {
+        "family": "hier_chart_v3",
+        "role": role,
+        "series_count": series_count,
+        "density": density,
+        "xa": xa + 1,
+        "xr": xr + 1,
+        "values_a": values_a,
+        "values_b": values_b,
+        "target_a": target_a,
+        "target_b": target_b,
+        "target_a_name": HIER_LABELS[target_a],
+        "target_b_name": HIER_LABELS[target_b],
+        "answer_a": answer_a,
+        "answer_b": answer_b,
+        "changed": list(edits["b"]),
+        "questions": chart_questions(HIER_LABELS[target_a], xa + 1, xr + 1),
+        "questions_b_target": chart_questions(HIER_LABELS[target_b], xa + 1, xr + 1),
+        "crossing_fraction_a": crossing_a,
+        "crossing_fraction_b": crossing_b,
+        "edit_kind": "matched_excursion_from_common_ancestor",
+        "edits": edits,
+        "excursion_magnitude": abs(edits["a"][3]),
     }

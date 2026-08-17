@@ -42,6 +42,7 @@ FAMILIES = {
     "hier_coord_v1": ("n8", "n12", "n20"),
     "hier_chart_v1": ("s5_low", "s5_high", "s9_low", "s9_high"),
     "hier_chart_v2": ("s5_low", "s5_high", "s9_low", "s9_high"),
+    "hier_chart_v3": ("s9_low", "s9_high"),
 }
 LAYERS = ("l3", "l2", "l1", "probe")
 
@@ -128,6 +129,38 @@ def verify_cell(data_dir: Path, family: str, cell: str,
                     problems.append(
                         f"{row['pair_id']}: side {side} crossing fraction {frac} "
                         f"outside the registered band [{low}, {high}]")
+
+    # Amendment A6 (hier_chart_v3): both members descend from one ancestor and
+    # each carries exactly ONE excursion, of equal magnitude. If either side
+    # carried more edits, or the magnitudes differed, "which side was edited"
+    # would become answerable again — the v1/v2 failure mode.
+    if family == "hier_chart_v3":
+        for row in rows["l3"]:
+            vr = row["verifier_results"]
+            if vr.get("edit_kind") != "matched_excursion_from_common_ancestor":
+                problems.append(f"{row['pair_id']}: edit_kind is not the A6 construction")
+                continue
+            edits = vr.get("edits") or {}
+            mags = {side: abs(edits[side][3]) for side in ("a", "b") if side in edits}
+            if len(mags) != 2 or len(set(mags.values())) != 1:
+                problems.append(
+                    f"{row['pair_id']}: excursion magnitudes differ across sides {mags}")
+            positions = {(edits[s][1], edits[s][2]) for s in ("a", "b") if s in edits}
+            if len(positions) != 2:
+                problems.append(f"{row['pair_id']}: both edits at the same position")
+            series_count = vr["series_count"]
+            diffs = [(s, x) for s in range(series_count)
+                     for x in range(len(row["scene_a"][0]))
+                     if row["scene_a"][s][x] != row["scene_b"][s][x]]
+            if len(diffs) != 2:
+                problems.append(
+                    f"{row['pair_id']}: sides differ at {len(diffs)} positions, "
+                    "expected exactly 2 (one excursion each)")
+            low, high = CROSSING_BANDS[vr["density"]]
+            for key in ("crossing_fraction_a", "crossing_fraction_b"):
+                frac = vr.get(key)
+                if frac is None or not (low <= frac <= high):
+                    problems.append(f"{row['pair_id']}: {key} {frac} outside band")
 
     for mid, layer_rows in by_mother.items():
         l3 = layer_rows["l3"]

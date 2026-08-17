@@ -341,6 +341,55 @@ a cell that fails an informativeness band is **exploratory-hard tier**
 (reported, never pooled into a confirmatory claim). Tiers are recorded per
 cell in the freeze record with their numbers.
 
+## Amendment A6 — hier_chart_v3, attempt 2 of 2 (2026-08-17, before generation)
+
+chart-v2 failed its one-shot acceptance (`reports/hier_chart_v2_acceptance_v1.md`).
+This is the **second and final attempt** permitted by the PI's pre-commitment;
+a failure here fires the registered coord-only ST3 split.
+
+**Why v1 and v2 both failed, in one sentence:** one member was the edited
+member, so whatever the edit rule, that member gained ink — catastrophically so
+in banded low-crossing scenes (+1.9–2.2 KB, edited-larger 50/50, attacker AUC
+to 1.0000). v2's column-multiset invariant did not save it because pixels
+follow line *paths*, not column multisets.
+
+**Why no ink-invariant edit exists for this question form:** to change "the
+value at x_r of the series highest at x_a" one must change which path is
+highest at x_a, or that path's value at x_r. Both move ink. Permuting series
+identity (colour/style/label) leaves the winning geometry intact and therefore
+does not move the answer at all.
+
+**The v3 construction — matched excursions from a common ancestor.** A single
+ancestor scene is proposed and filtered as before. **Both** members are then
+derived from it, each carrying exactly **one** single-value excursion of the
+**same magnitude**: side B's is causal (it moves the answer), side A's is
+answer-irrelevant (a non-target series, argmax and margin preserved).
+"Which member was edited" is therefore not a well-posed question, and the
+attacker's side label is arbitrary by construction — the only way to beat the
+gate is to read the task.
+
+- **target_switch** — B: the winner at x_a drops below the runner-up by M.
+  A: a series that is neither winner nor runner-up drops by the same M.
+- **target_stable** — B: the target's value at x_r moves by M.
+  A: a non-target's value at x_r moves by the same M.
+- **invariance** — both members take a non-target excursion of the same M at
+  distinct positions; answers equal on both sides.
+
+**Verifier-enforced invariants**: `edit_kind ==
+"matched_excursion_from_common_ancestor"`; exactly one excursion per side;
+equal magnitudes; the two excursions at distinct positions; the two members
+differ at exactly two positions; the registered crossing band satisfied on
+both sides.
+
+**Scope, fixed before generation**: the **9-series cells only** (`s9_low`,
+`s9_high`) — §6 designates 9-series as the confirmatory density for caption
+resistance, and `s9_low` is the only chart cell that has ever passed every
+informativeness gate. This is a registered scope decision, not a post-hoc
+filter of failing cells.
+
+**Acceptance**: the same one-shot battery as A4 (HB.7 gates on base 3B, blind
+floors, ranking, caption stress, the 4-attacker gate). No knob iteration.
+
 ## Deviations log
 
 - (none)
