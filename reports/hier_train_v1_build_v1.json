@@ -1,0 +1,208 @@
+{
+  "batch_seed": 20260817,
+  "cells": {
+    "hier_coord_v1/n12": {
+      "attempts_by_role": {
+        "invariance": 306,
+        "target_stable": 309,
+        "target_switch": 464
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 48,
+        "max_share": 0.09791666666666667,
+        "max_share_value": "1",
+        "n_causal_member_golds": 480,
+        "pass": true
+      },
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n12_l2.jsonl",
+          "rows": 120,
+          "sha256": "90132d9521b963e25611fa48f39b0860cfe2cbd98fded834c8e3c1e65206ea91"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n12_l3.jsonl",
+          "rows": 240,
+          "sha256": "58170b75e023cd3c184e4250023bb25cb5da6709818654318dbf6a6908c60d19"
+        }
+      },
+      "cell_args": {
+        "n_points": 12
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n12_l1.jsonl",
+          "rows": 240,
+          "sha256": "11e0c45728c35266c0a2cec4371f5d78d662a11caa0715b9be92da9b784043e1"
+        },
+        "l2": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n12_l2.jsonl",
+          "rows": 240,
+          "sha256": "895049a061d49d94441af43eb742997961c03ea0c601b012584da579b1968197"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n12_l3.jsonl",
+          "rows": 360,
+          "sha256": "8c3d64d11e98c2d1513807910bcba49ecc51908bb46827f470d66092c5311c37"
+        },
+        "probe": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n12_probe.jsonl",
+          "rows": 360,
+          "sha256": "cd5ba227401fe38107951f6e0d41bbe582b602ca1a80cec469c04f6c0280113b"
+        }
+      },
+      "split_rejections": 235
+    },
+    "hier_coord_v1/n20": {
+      "attempts_by_role": {
+        "invariance": 414,
+        "target_stable": 500,
+        "target_switch": 1370
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 48,
+        "max_share": 0.0875,
+        "max_share_value": "1",
+        "n_causal_member_golds": 480,
+        "pass": true
+      },
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n20_l2.jsonl",
+          "rows": 120,
+          "sha256": "175240fbfec4634c515af1bcb59a484d1f474ad6785a7204f0453a9cb08bedf3"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n20_l3.jsonl",
+          "rows": 240,
+          "sha256": "655981e2bad11ecdb1731465a4b25cf59f9626eea79875bd89fc7ec2b1128d38"
+        }
+      },
+      "cell_args": {
+        "n_points": 20
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n20_l1.jsonl",
+          "rows": 240,
+          "sha256": "a9a44b7680acc36fe3a10f7505a12ad21ee5872d6e755f3d74335a1c92f773b9"
+        },
+        "l2": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n20_l2.jsonl",
+          "rows": 240,
+          "sha256": "ce957fc76b4a84b8bddfbb266ccfbabfe7abb3fc385d4f54baa660f558529839"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n20_l3.jsonl",
+          "rows": 360,
+          "sha256": "11d81d936764520de9f27f5a71c5dbb870212f562bb51a98b201cea6ce0ca4cd"
+        },
+        "probe": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n20_probe.jsonl",
+          "rows": 360,
+          "sha256": "1c011f400d3219fd657732793895aeb8a2be2dc33df139128f52862ec8af485d"
+        }
+      },
+      "split_rejections": 242
+    },
+    "hier_coord_v1/n8": {
+      "attempts_by_role": {
+        "invariance": 261,
+        "target_stable": 306,
+        "target_switch": 349
+      },
+      "balance": {
+        "answer_support_k": 14,
+        "cap": 0.1,
+        "enforced_budget_per_value": 48,
+        "max_share": 0.1,
+        "max_share_value": "-1",
+        "n_causal_member_golds": 480,
+        "pass": true
+      },
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n8_l2.jsonl",
+          "rows": 120,
+          "sha256": "20a8da1972a25df7b21631de47de6f96b7deab9f414b2519a548d372e70b9bc6"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/candidates_hier_coord_v1_n8_l3.jsonl",
+          "rows": 240,
+          "sha256": "66e3a361fbfd9e556df3b6c06b5359d726a48a0b6a188fb9f12a5c94bfafb573"
+        }
+      },
+      "cell_args": {
+        "n_points": 8
+      },
+      "cue_rejections": 0,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n8_l1.jsonl",
+          "rows": 240,
+          "sha256": "d4767a500656c8d86f81dd157d8e363d4318ace529ce699a67c77bdbb41f7940"
+        },
+        "l2": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n8_l2.jsonl",
+          "rows": 240,
+          "sha256": "ea9530289ff6e9fa9d95418238c3d931d4ee4ad1a39ce0e9bf969a3334fe56ee"
+        },
+        "l3": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n8_l3.jsonl",
+          "rows": 360,
+          "sha256": "3c960c3c0dc6b00c22bf3f2aaaf489d6d7432a0f91eb3b00888c8c0c5d85e34e"
+        },
+        "probe": {
+          "path": "data/hier_train_v1/manifest_hier_coord_v1_n8_probe.jsonl",
+          "rows": 360,
+          "sha256": "cdfc13b2653315dd850cc9f9958a9ddc9f023103c93361de561f87ee32cbd35f"
+        }
+      },
+      "split_rejections": 248
+    }
+  },
+  "command": "scripts/build_hier_dev_batch.py --family hier_coord_v1 --split training --per-role 120 --out-dir /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_train_v1 --report /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/hier_train_v1_build_v1.json",
+  "crossing_bands": {
+    "high": [
+      0.5,
+      1.0
+    ],
+    "low": [
+      0.0,
+      0.25
+    ]
+  },
+  "deviations": [
+    "2026-08-16 attempt 1 failed pre-declaration at hier_chart_v1/s9_low/target_switch (200k attempts): the random-values proposal essentially never lands in the registered low-crossing band at 9 series. Partial artifacts (173M, no report, never declared or consumed) were removed; low-density cells now use a banded PROPOSAL while the registered band filter is unchanged and still decides acceptance."
+  ],
+  "file_sha256": {},
+  "git_hash": "e98efeffff9992c7dc4f1cbe588866fef78c4dc5",
+  "layer_role_matrix": "A2: l3 all roles; l2/l1 stable+invariance; probe all",
+  "node": "an12",
+  "palette_report_9_series": {
+    "deuteranopia": 18.08533729640426,
+    "normal": 26.433860627508288,
+    "protanopia": 20.7071397905407,
+    "tritanopia": 16.1750189269149
+  },
+  "per_role": 120,
+  "registrations": [
+    "docs/registered_hier_benchmark_v1.md (\u00a76\u2013\u00a77, A1, A2)"
+  ],
+  "roles": [
+    "target_switch",
+    "target_stable",
+    "invariance"
+  ],
+  "schema_version": "blind-gains.hier-v1-dev-build.v1",
+  "split": "training"
+}

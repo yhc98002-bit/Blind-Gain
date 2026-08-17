@@ -1,0 +1,800 @@
+{
+  "attacks": {
+    "dinov2": {
+      "per_template": {
+        "hier_chart_v2_s5_high": {
+          "directed_oof_auc": 0.5084,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.47809250000000003,
+            0.5409025000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.5084,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5005,
+            0.5410025
+          ]
+        },
+        "hier_chart_v2_s5_low": {
+          "directed_oof_auc": 0.9999,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.9994,
+            1.0
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.9999,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.9994,
+            1.0
+          ]
+        },
+        "hier_chart_v2_s9_high": {
+          "directed_oof_auc": 0.5056,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.472685,
+            0.5404125
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.5056,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5007,
+            0.5416050000000001
+          ]
+        },
+        "hier_chart_v2_s9_low": {
+          "directed_oof_auc": 0.7596,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.7222975,
+            0.8038075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.7596,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.7222975,
+            0.8038075
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.6757875,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.65098671875,
+          0.7030509374999999
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.989658203125,
+          0.98640625,
+          0.97984375,
+          0.980029296875,
+          0.98537109375
+        ],
+        "gate_statistic": 0.6757875,
+        "n_members": 800,
+        "n_pairs": 400,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.65098671875,
+          0.7030509374999999
+        ]
+      }
+    },
+    "file_size": {
+      "per_template": {
+        "hier_chart_v2_s5_high": {
+          "directed_oof_auc": 0.477,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4600975,
+            0.4935075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            -1,
+            1,
+            -1
+          ],
+          "fold_train_auc": [
+            0.5025,
+            0.512890625,
+            0.491171875,
+            0.515,
+            0.499453125
+          ],
+          "gate_statistic": 0.523,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5064924999999999,
+            0.5399025000000001
+          ]
+        },
+        "hier_chart_v2_s5_low": {
+          "directed_oof_auc": 0.9813,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.9692825,
+            0.9914025
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.97828125,
+            0.97828125,
+            0.99015625,
+            0.9834375,
+            0.98140625
+          ],
+          "gate_statistic": 0.9813,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.9692825,
+            0.9914025
+          ]
+        },
+        "hier_chart_v2_s9_high": {
+          "directed_oof_auc": 0.5032,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.481945,
+            0.5223512499999999
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.5053125,
+            0.51046875,
+            0.51125,
+            0.503828125,
+            0.507734375
+          ],
+          "gate_statistic": 0.5032,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5003,
+            0.5232525
+          ]
+        },
+        "hier_chart_v2_s9_low": {
+          "directed_oof_auc": 0.8637,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.8276975,
+            0.9049075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.87203125,
+            0.8553125,
+            0.86265625,
+            0.86609375,
+            0.86796875
+          ],
+          "gate_statistic": 0.8637,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.8276975,
+            0.9049075
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.560296875,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.550208671875,
+          0.573513515625
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.563037109375,
+          0.5640087890625,
+          0.561708984375,
+          0.55396484375,
+          0.561005859375
+        ],
+        "gate_statistic": 0.560296875,
+        "n_members": 800,
+        "n_pairs": 400,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.550208671875,
+          0.573513515625
+        ]
+      }
+    },
+    "frequency_stat": {
+      "per_template": {
+        "hier_chart_v2_s5_high": {
+          "directed_oof_auc": 0.4731,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.42919250000000003,
+            0.5154075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.5903125,
+            0.57703125,
+            0.58765625,
+            0.57859375,
+            0.60578125
+          ],
+          "gate_statistic": 0.5268999999999999,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5013000000000001,
+            0.5708074999999999
+          ]
+        },
+        "hier_chart_v2_s5_low": {
+          "directed_oof_auc": 1.0,
+          "directed_oof_auc_unfolded_ci_95": [
+            1.0,
+            1.0
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 1.0,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            1.0,
+            1.0
+          ]
+        },
+        "hier_chart_v2_s9_high": {
+          "directed_oof_auc": 0.4639,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4251975,
+            0.501205
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.57453125,
+            0.54015625,
+            0.520625,
+            0.54859375,
+            0.56703125
+          ],
+          "gate_statistic": 0.5361,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5032,
+            0.5748025
+          ]
+        },
+        "hier_chart_v2_s9_low": {
+          "directed_oof_auc": 0.8181,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.773695,
+            0.86141
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.87890625,
+            0.87375,
+            0.85,
+            0.8628125,
+            0.86
+          ],
+          "gate_statistic": 0.8181,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.773695,
+            0.86141
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.72615625,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.6987692187500001,
+          0.7560890625000001
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.737900390625,
+          0.74337890625,
+          0.732421875,
+          0.72814453125,
+          0.734921875
+        ],
+        "gate_statistic": 0.72615625,
+        "n_members": 800,
+        "n_pairs": 400,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.6987692187500001,
+          0.7560890625000001
+        ]
+      }
+    },
+    "metadata": {
+      "per_template": {
+        "hier_chart_v2_s5_high": {
+          "directed_oof_auc": 0.4722,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.452295,
+            0.4892
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            -1
+          ],
+          "fold_train_auc": [
+            0.5009375,
+            0.51625,
+            0.50109375,
+            0.51625,
+            0.499375
+          ],
+          "gate_statistic": 0.5278,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5107999999999999,
+            0.5477050000000001
+          ]
+        },
+        "hier_chart_v2_s5_low": {
+          "directed_oof_auc": 0.9771,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.962785,
+            0.9887050000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.98125,
+            0.97984375,
+            0.990625,
+            0.98671875,
+            0.98328125
+          ],
+          "gate_statistic": 0.9771,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.962785,
+            0.9887050000000001
+          ]
+        },
+        "hier_chart_v2_s9_high": {
+          "directed_oof_auc": 0.4983,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4803975,
+            0.514305
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.5078125,
+            0.51125,
+            0.5078125,
+            0.5025,
+            0.505625
+          ],
+          "gate_statistic": 0.5017,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5003,
+            0.5197
+          ]
+        },
+        "hier_chart_v2_s9_low": {
+          "directed_oof_auc": 0.8823,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.8482975,
+            0.9161075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.899375,
+            0.87953125,
+            0.884375,
+            0.893125,
+            0.88796875
+          ],
+          "gate_statistic": 0.8823,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.8482975,
+            0.9161075
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.600325,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.5877403125,
+          0.6156509375
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.6031640625,
+          0.605712890625,
+          0.601689453125,
+          0.596904296875,
+          0.600966796875
+        ],
+        "gate_statistic": 0.600325,
+        "n_members": 800,
+        "n_pairs": 400,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.5877403125,
+          0.6156509375
+        ]
+      }
+    }
+  },
+  "bootstrap": "1000 resamples over pairs",
+  "dinov2_status": "pass",
+  "direction": "selected from each train fold only",
+  "gate": {
+    "checks": {
+      "all_attackers_available": true,
+      "all_point_estimates_at_most_0_55": false,
+      "no_ci_upper_above_0_62": false
+    },
+    "expansion_required": [
+      "file_size:hier_chart_v2_s5_low",
+      "file_size:hier_chart_v2_s9_low",
+      "frequency_stat:pooled",
+      "frequency_stat:hier_chart_v2_s5_low",
+      "frequency_stat:hier_chart_v2_s9_low",
+      "metadata:hier_chart_v2_s5_low",
+      "metadata:hier_chart_v2_s9_low",
+      "dinov2:pooled",
+      "dinov2:hier_chart_v2_s5_low",
+      "dinov2:hier_chart_v2_s9_low"
+    ],
+    "missing_attackers": [],
+    "point_failures": [
+      "file_size:pooled",
+      "file_size:hier_chart_v2_s5_low",
+      "file_size:hier_chart_v2_s9_low",
+      "frequency_stat:pooled",
+      "frequency_stat:hier_chart_v2_s5_low",
+      "frequency_stat:hier_chart_v2_s9_low",
+      "metadata:pooled",
+      "metadata:hier_chart_v2_s5_low",
+      "metadata:hier_chart_v2_s9_low",
+      "dinov2:pooled",
+      "dinov2:hier_chart_v2_s5_low",
+      "dinov2:hier_chart_v2_s9_low"
+    ],
+    "status": false
+  },
+  "gate_statistic": "max(AUC, 1-AUC)",
+  "historical_split_diagnosis": {
+    "n_pairs": 300,
+    "single_shared_split_is_not_sufficient": true,
+    "splits": [
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4884,
+          "gate_statistic": 0.5116,
+          "train_auc": 0.5475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.525,
+          "gate_statistic": 0.525,
+          "train_auc": 0.530975,
+          "train_selected_direction": 1
+        },
+        "seed": 0
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4993,
+          "gate_statistic": 0.5006999999999999,
+          "train_auc": 0.554825,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5302,
+          "gate_statistic": 0.5302,
+          "train_auc": 0.5295,
+          "train_selected_direction": 1
+        },
+        "seed": 1
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5105,
+          "gate_statistic": 0.5105,
+          "train_auc": 0.57565,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5301,
+          "gate_statistic": 0.5301,
+          "train_auc": 0.52885,
+          "train_selected_direction": 1
+        },
+        "seed": 2
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4941,
+          "gate_statistic": 0.5059,
+          "train_auc": 0.554025,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5345,
+          "gate_statistic": 0.5345,
+          "train_auc": 0.52855,
+          "train_selected_direction": 1
+        },
+        "seed": 3
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4839,
+          "gate_statistic": 0.5161,
+          "train_auc": 0.55175,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5331,
+          "gate_statistic": 0.5331,
+          "train_auc": 0.528775,
+          "train_selected_direction": 1
+        },
+        "seed": 4
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4721,
+          "gate_statistic": 0.5279,
+          "train_auc": 0.581225,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5317,
+          "gate_statistic": 0.5317,
+          "train_auc": 0.530625,
+          "train_selected_direction": 1
+        },
+        "seed": 5
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4633,
+          "gate_statistic": 0.5367,
+          "train_auc": 0.57475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5189,
+          "gate_statistic": 0.5189,
+          "train_auc": 0.534875,
+          "train_selected_direction": 1
+        },
+        "seed": 6
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5027,
+          "gate_statistic": 0.5027,
+          "train_auc": 0.533625,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5185,
+          "gate_statistic": 0.5185,
+          "train_auc": 0.5337,
+          "train_selected_direction": 1
+        },
+        "seed": 7
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5149,
+          "gate_statistic": 0.5149,
+          "train_auc": 0.55175,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5313,
+          "gate_statistic": 0.5313,
+          "train_auc": 0.530825,
+          "train_selected_direction": 1
+        },
+        "seed": 8
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5143,
+          "gate_statistic": 0.5143,
+          "train_auc": 0.535475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5307,
+          "gate_statistic": 0.5307,
+          "train_auc": 0.529775,
+          "train_selected_direction": 1
+        },
+        "seed": 9
+      }
+    ]
+  },
+  "key_file": "data/hier_chart_v2_dev/attacker_key_hier_chart_v2.jsonl",
+  "n_members": 800,
+  "n_pairs": 400,
+  "release_dir": "data/hier_chart_v2_dev/attacker_release_hier_chart_v2",
+  "split": "5-fold grouped CV by pair"
+}

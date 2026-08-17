@@ -2582,6 +2582,82 @@ conventions; direction symmetrization alone will not fix the low-cell size
 leak (any band-breaking edit adds ink), so the revision pairs small-magnitude
 switch edits (top-2 adjacency at the anchor x) with in-band stable edits.
 
+## 2026-08-17b — The scorer fix, the coordinate freeze, chart-v2 by construction, and the instrument's first verdict: blind RLVR moves hierarchy discovery exactly as much as sighted RLVR
+
+*PI dispatch 2026-08-17 (human review passed; move aggressively, fill the
+GPUs). Registrations: HB Amendments A4/A5, `registered_hier_instrument_sweep_v1.md`.
+Ledger rows in `reports/hier_benchmark_progress.md`; freeze record
+`reports/hier_freeze_v1.md`.*
+
+**The scorer fix changed what we were about to freeze on.** Applying the
+ratified sign-aware matcher (dispatch 16b ruling 2) exposed that **721 of 785
+lenient credits in the hierarchy runs were sign collisions** — gold `1` scored
+correct against `-1`, because the old word-boundary guard treats `-` as a
+non-word character. Re-scoring isolates the matcher properly (every row scored
+twice with today's code, since banked booleans predate the earlier P0.2
+equal-gold fix; `reports/matcher_v3_rescore_v1.*`):
+
+- HB gate **outcomes hold** — coord n8 **0.685/0.605/0.330** and n12
+  **0.655/0.605/0.260** still pass every HB.7 gate; n20 **0.520/0.480/0.245**
+  still fails only its L1 band.
+- **Blind floors halve**: 0.120/0.113/0.137 → **0.067/0.040/0.067**. The
+  benchmark is stronger than it was reported to be.
+- **E2 flips to PASS**: premise-v2 blind finals 0.1875 → **0.0938** against
+  the registered 0.133 ceiling. The "blind leak" that has sat open since
+  2026-08-11 was a scorer artifact, not a generator defect.
+- Paper-1 exposure is bounded: across every FlipTrack coordinate-register cell
+  the isolated matcher effect is **max |Δ| = 0.031** (b1 base −0.030, m11 real
+  −0.008 to −0.015, m11 blind "none" +0.007 to +0.031); arm *differences* move
+  less. M7/R3 uses the geo3k answer-reward path and is untouched.
+
+**Coordinate family FROZEN** (`reports/hier_freeze_v1.md`) as the
+**training/development instrument**: n8/n12 pass every gate, n20 is the
+exploratory hard tier, the human audit is recorded as passed by the PI, and
+the one attacker marginal was resolved by seed replication — the flagged
+template **moves** (dinov2 n12 0.5569 → none → n20 0.5646) while pooled stays
+at 0.514–0.516, so it is CV-fold noise and the family is attacker-clean.
+**chart-v08 calibration is frozen** on the passed no-zoom audit.
+
+Coord is deliberately *not* the confirmatory instrument. Caption leakage falls
+monotonically with density — **0.265 / 0.150 / 0.075** for n8/n12/n20 against
+A5 ceilings 0.167/0.140/0.167, i.e. caption recovery fractions **0.75 / 0.50 /
+0.05** — while the L1 band fails in exactly the densest cell. No coord cell is
+both informative and caption-resistant; the 9-series chart cells (caption
+0.0413 vs a 0.0000 floor) carry that role, as §6 of the registration
+anticipated.
+
+**chart-v2 fixes the attacker leak by construction, not by tuning.** v1 failed
+structurally: every causal edit added ink to one side (switch unidirectional
+200/200; low-cell PNG larger 198/200), so symmetrising direction could not
+help. In v2 (Amendment A4) **every causal edit is a transposition within a
+column** — switch swaps the top-2 values at the anchor x, stable swaps the
+target's value at the read x with a non-target's, invariance swaps two
+non-targets — so both sides carry the **identical per-column value multiset**
+and neither side is structurally "the edited one". The crossing band is now
+checked on both sides (v1 checked side A only). Generated one-shot, 4 cells;
+**from-disk verification 0 problems**; acceptance battery running.
+
+**The instrument's first verdict (HB diagnostic D1,
+`reports/hier_instrument_sweep_v1.*`)** — 10 already-trained checkpoints
+against the frozen coordinate instrument, two-seed arms summarised by the
+registered per-item seed mean:
+
+- At 3B, **every** M7 ViRL arm lifts L3 above the frozen base by a similar
+  margin — n8 base **0.3300** → real 0.3825 / gray 0.3725 / no-image 0.3675 /
+  caption 0.3700; n12 0.2600 → 0.2975–0.3375; n20 0.2450 → 0.3150–0.3400.
+  **Blind-trained arms move discovery as much as the sighted arm.** The
+  discovery probe behaves the same way (0.705 → 0.71–0.73).
+- At 7B the movement is confined to the easiest cell: n8 L3 base **0.6600** →
+  real **0.7650**, gray **0.7200**; at n12 and n20 neither 7B arm moves at all
+  (0.575/0.470 base vs 0.570–0.575 / 0.460).
+- Scale, not recipe, is what buys discovery: base 7B doubles base 3B at L3
+  (0.660 vs 0.330 at n8).
+
+This is Paper 1's thesis reproduced on an instrument built after the claim:
+RLVR's L3 gain is real but **not visual** — it survives removing the image
+during training. It also sets ST3's bar: an IGPO advantage must beat the
+~+0.04–0.05 generic-RLVR L3 bump that blind training already produces.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:

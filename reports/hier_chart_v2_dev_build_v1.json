@@ -1,0 +1,236 @@
+{
+  "batch_seed": 20260817,
+  "cells": {
+    "hier_chart_v2/s5_high": {
+      "attempts_by_role": {
+        "invariance": 535,
+        "target_stable": 468,
+        "target_switch": 428
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s5_high_l2.jsonl",
+          "rows": 50,
+          "sha256": "ffc321c8857d0dd6f171bd01f8ac9f732ed11d5ac575d91b077f939ce28f6bcc"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s5_high_l3.jsonl",
+          "rows": 100,
+          "sha256": "28ae046169dcc04ef14fe6ba0b9d5292e80d47e5e0c7168dfe6f122beabe2b21"
+        }
+      },
+      "cell_args": {
+        "density": "high",
+        "series_count": 5
+      },
+      "cue_rejections": 20,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_high_l1.jsonl",
+          "rows": 100,
+          "sha256": "cf9e35381667ac9957d9a8f27545674644508ad38a4961fc3f0504d5e49e214d"
+        },
+        "l2": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_high_l2.jsonl",
+          "rows": 100,
+          "sha256": "2653bbf47462876de4273bcfa8e56ee69d6f7240a02d8d0ac7a8fdee4cd21add"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_high_l3.jsonl",
+          "rows": 150,
+          "sha256": "38097db9c3bb638138f8866a1421d7341f145f551aed8db651b6d333e32f3746"
+        },
+        "probe": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_high_probe.jsonl",
+          "rows": 150,
+          "sha256": "b19aca5a7268493076ee1a40e324fb1547903aa212bae5651de0f7f34fb1e673"
+        }
+      },
+      "split_rejections": 677
+    },
+    "hier_chart_v2/s5_low": {
+      "attempts_by_role": {
+        "invariance": 278,
+        "target_stable": 867,
+        "target_switch": 280
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s5_low_l2.jsonl",
+          "rows": 50,
+          "sha256": "95ac457bd905f47fa073b332ddc4ce0b074892bb26eb562f0d0152dbe8fa3099"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s5_low_l3.jsonl",
+          "rows": 100,
+          "sha256": "729078036b7ffb11f04aa6a3bfa4365b62364887a785c11d0c94ab7a18f471ce"
+        }
+      },
+      "cell_args": {
+        "density": "low",
+        "series_count": 5
+      },
+      "cue_rejections": 1,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_low_l1.jsonl",
+          "rows": 100,
+          "sha256": "b7473fa410fb653e5e6e1cb52a2e8321e022f128c1c878c24070602ca469bdb8"
+        },
+        "l2": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_low_l2.jsonl",
+          "rows": 100,
+          "sha256": "bb4136476641a48d31b8be88c3b1415c95de52d340020b3c43dc45ce57c5c6fc"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_low_l3.jsonl",
+          "rows": 150,
+          "sha256": "25893101742bc1bba1fe9ce4a8a788c65ce3ef07f9f0ded728d6a9e0d22b50d2"
+        },
+        "probe": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s5_low_probe.jsonl",
+          "rows": 150,
+          "sha256": "b38094fb007fd38a4aea3996b33c49f0b0b5b3141ccb03ea3b6ec767bff15659"
+        }
+      },
+      "split_rejections": 602
+    },
+    "hier_chart_v2/s9_high": {
+      "attempts_by_role": {
+        "invariance": 690,
+        "target_stable": 1260,
+        "target_switch": 608
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s9_high_l2.jsonl",
+          "rows": 50,
+          "sha256": "924f22abaaf848c5bcd4f9aa1291fe0f34772a1f866c153a06e50ddc846326b4"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s9_high_l3.jsonl",
+          "rows": 100,
+          "sha256": "018628495c19e4fdfbf912cef16b69f40a449f39f718f8e44d6bb44f4b348d48"
+        }
+      },
+      "cell_args": {
+        "density": "high",
+        "series_count": 9
+      },
+      "cue_rejections": 121,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_high_l1.jsonl",
+          "rows": 100,
+          "sha256": "3f6b15761049020978edf7cc981d9da0ad97a01c46266f836e5f5917c3a8d5d6"
+        },
+        "l2": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_high_l2.jsonl",
+          "rows": 100,
+          "sha256": "db963591bb6721d7b355d104c101be4a9fbd4fdbb9a1c956300ce73956e28624"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_high_l3.jsonl",
+          "rows": 150,
+          "sha256": "f4a4805e56a743f6994788078c67760d1532a810b900bfd98fb7eb19504b770b"
+        },
+        "probe": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_high_probe.jsonl",
+          "rows": 150,
+          "sha256": "95f66589b8bb89b33232c8bb91324cba167671101c0d468e393b5170a83f6122"
+        }
+      },
+      "split_rejections": 1055
+    },
+    "hier_chart_v2/s9_low": {
+      "attempts_by_role": {
+        "invariance": 310,
+        "target_stable": 445,
+        "target_switch": 283
+      },
+      "balance": null,
+      "balance_rejections": 0,
+      "candidate_registries": {
+        "l2": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s9_low_l2.jsonl",
+          "rows": 50,
+          "sha256": "7ea7ae7135db3d6dadf25def25ebbfa8d5e741ebabbd1f4387f5b989f0c5c8b1"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/candidates_hier_chart_v2_s9_low_l3.jsonl",
+          "rows": 100,
+          "sha256": "6f8b239ccf49a7f6f78955285a1ebe6d033ce560c1e26f1e590ce744b5876690"
+        }
+      },
+      "cell_args": {
+        "density": "low",
+        "series_count": 9
+      },
+      "cue_rejections": 6,
+      "manifests": {
+        "l1": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_low_l1.jsonl",
+          "rows": 100,
+          "sha256": "2c2ad959c6e0c2acb571a5e16e88f5bf81717046180789a9524406c531394e25"
+        },
+        "l2": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_low_l2.jsonl",
+          "rows": 100,
+          "sha256": "76069e0c200041328e8f4110c393c00b1793c41b66d5df25baae2a104770ee61"
+        },
+        "l3": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_low_l3.jsonl",
+          "rows": 150,
+          "sha256": "6208188e545c3d3452941cdb18f7f8f1eca867273542804ad6f9eaadd1915782"
+        },
+        "probe": {
+          "path": "data/hier_chart_v2_dev/manifest_hier_chart_v2_s9_low_probe.jsonl",
+          "rows": 150,
+          "sha256": "c0e28a04d0894543cb09728b83461a490467c6b8d6c726473276dae9505f6d2e"
+        }
+      },
+      "split_rejections": 612
+    }
+  },
+  "command": "scripts/build_hier_dev_batch.py --family hier_chart_v2 --out-dir /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_chart_v2_dev --report /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/hier_chart_v2_dev_build_v1.json",
+  "crossing_bands": {
+    "high": [
+      0.5,
+      1.0
+    ],
+    "low": [
+      0.0,
+      0.25
+    ]
+  },
+  "deviations": [
+    "2026-08-16 attempt 1 failed pre-declaration at hier_chart_v1/s9_low/target_switch (200k attempts): the random-values proposal essentially never lands in the registered low-crossing band at 9 series. Partial artifacts (173M, no report, never declared or consumed) were removed; low-density cells now use a banded PROPOSAL while the registered band filter is unchanged and still decides acceptance."
+  ],
+  "file_sha256": {},
+  "git_hash": "e98efeffff9992c7dc4f1cbe588866fef78c4dc5",
+  "layer_role_matrix": "A2: l3 all roles; l2/l1 stable+invariance; probe all",
+  "node": "an29",
+  "palette_report_9_series": {
+    "deuteranopia": 18.08533729640426,
+    "normal": 26.433860627508288,
+    "protanopia": 20.7071397905407,
+    "tritanopia": 16.1750189269149
+  },
+  "per_role": 50,
+  "registrations": [
+    "docs/registered_hier_benchmark_v1.md (\u00a76\u2013\u00a77, A1, A2)"
+  ],
+  "roles": [
+    "target_switch",
+    "target_stable",
+    "invariance"
+  ],
+  "schema_version": "blind-gains.hier-v1-dev-build.v1",
+  "split": "development"
+}

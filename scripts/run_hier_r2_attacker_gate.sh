@@ -7,8 +7,11 @@ ROOT=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain
 cd "$ROOT" || exit 1
 export PATH="$HOME/.local/bin:$PATH"
 PY=.venv/bin/python
-[[ $# -eq 2 || $# -eq 3 ]] || { echo "Usage: $0 NODE GPU [SEED]" >&2; exit 2; }
+[[ $# -ge 2 && $# -le 5 ]] || { echo "Usage: $0 NODE GPU [SEED] [RELEASE_DIR] [OUTPUT]" >&2; exit 2; }
 NODE="$1"; GPU="$2"; SEED="${3:-20260710}"
+RELEASE="${4:-data/hier_v1_dev_r2/attacker_release_hier_coord_v1}"
+KEY="$(dirname "$RELEASE")/attacker_key_$(basename "$RELEASE" | sed s/attacker_release_//).jsonl"
+OUTPUT="${5:-reports/hier_r2_attacker_gate_hier_coord_v1_seed${SEED}.json}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="$ROOT/logs/hier_r2_attacker_gate_seed${SEED}_${NODE}_gpu${GPU}_${STAMP}.log"
 CLAIMS=/dev/shm/blind-gains/gpu_claims
@@ -28,9 +31,9 @@ ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
    env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME=$ROOT/artifacts/hf_home \
    CUDA_VISIBLE_DEVICES=$GPU PYTHONPATH=. \
    python -m src.fliptrack.artifact_attackers \
-     --release-dir data/hier_v1_dev_r2/attacker_release_hier_coord_v1 \
-     --key-file data/hier_v1_dev_r2/attacker_key_hier_coord_v1.jsonl \
-     --output reports/hier_r2_attacker_gate_hier_coord_v1_seed${SEED}.json \
+     --release-dir $RELEASE \
+     --key-file $KEY \
+     --output $OUTPUT \
      --dinov2-model facebook/dinov2-small --batch-size 32 \
      --old-input-jsonl data/fliptrack_v01_manifest.jsonl \
      --n-splits 5 --n-bootstrap 1000 --seed ${SEED}" >> "$LOG" 2>&1
