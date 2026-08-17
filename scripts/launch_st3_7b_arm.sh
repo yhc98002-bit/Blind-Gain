@@ -102,7 +102,11 @@ for gpu in "${GPU_IDS[@]}"; do
   CLAIM_PATHS="${CLAIM_PATHS} ${CLAIMS}/${NODE}_gpu${gpu}.claim"
 done
 RAY_TMP="/dev/shm/bg-ray-$(printf '%s' "$RUN_ID" | sha256sum | cut -c1-12)"
+# pilot_reward refuses to score without a shadow-log destination (it records
+# mathruler-vs-canonical disagreements); the c5 launcher supplies it via env.
+SHADOW="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
 COMMAND="env CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa \
+BLIND_GAINS_REWARD_SHADOW_LOG='${SHADOW}' \
 BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S \
 BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=330000000000 \
 PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' \
