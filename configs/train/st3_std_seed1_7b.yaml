@@ -16,6 +16,13 @@
 #                       run sequentially on an29 at 8 GPUs rather than 4+4)
 #   save_model_only  false + save_limit 3 -> resumable; a 7B run is ~1.5-3 days
 #                       and save_model_only checkpoints cannot resume
+#   max_prompt_length 4096 (was 2048): a 1400x1240 coordinate render is 2,236
+#                       prompt tokens at this max_pixels (measured), so 2048
+#                       filtered EVERY training row and left an empty loader.
+#                       Raised rather than shrinking max_pixels: the frozen eval
+#                       harness sees these images undownscaled, and the L1 cue is
+#                       a small arrow — downscaling would break the correspondence
+#                       between what the model trains on and what it is scored on.
 data:
   train_files: data/st3_train_v1/train.parquet
   val_files: data/st3_train_v1/plumbing_val.jsonl
@@ -25,7 +32,7 @@ data:
   video_key: videos
   image_dir: null
   video_fps: 2.0
-  max_prompt_length: 2048
+  max_prompt_length: 4096
   max_response_length: 2048
   rollout_batch_size: 240
   mini_rollout_batch_size: null
