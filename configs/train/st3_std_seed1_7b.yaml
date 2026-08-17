@@ -4,7 +4,9 @@
 #
 # Deltas vs the c5 7B precedent, each deliberate:
 #   train_files      -> the ST3 corpus (720 groups x 4 members = 2,880 rows)
-#   val_files/val_*  -> disabled; ST3's endpoints are checkpoint evals (Mini-A5 precedent)
+#   val_files/val_*  -> validation disabled (val_freq 0); val_files points at an
+#                       inert development-bucket plumbing file because EasyR1
+#                       rejects a null. ST3's endpoints are checkpoint evals.
 #   shuffle          -> false; the corpus is pre-shuffled at group granularity and
 #                       must stay group-adjacent for the arm-2 grouping mode
 #   rollout_batch_size 240 (divisible by the group size 4; 12 steps/epoch over
@@ -16,7 +18,7 @@
 #                       and save_model_only checkpoints cannot resume
 data:
   train_files: data/st3_train_v1/train.parquet
-  val_files: null
+  val_files: data/st3_train_v1/plumbing_val.jsonl
   prompt_key: problem
   answer_key: answer
   image_key: images

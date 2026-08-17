@@ -94,6 +94,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data/hier_train_v1")
     parser.add_argument("--out-dir", type=Path, default=ROOT / "data/st3_train_v1")
+    parser.add_argument("--dev-dir", type=Path, default=ROOT / "data/hier_v1_dev_r2",
+                        help="development bucket, used only for the inert "
+                             "plumbing val file EasyR1 requires")
     parser.add_argument("--report", type=Path,
                         default=ROOT / "reports/st3_train_corpus_v1.json")
     args = parser.parse_args()
@@ -121,6 +124,35 @@ def main() -> int:
             raise FileNotFoundError(row["images"][0])
         if row["problem"].count("<image>") != len(row["images"]):
             raise AssertionError(f"image marker/count mismatch: {row['pair_group_uid']}")
+
+    # EasyR1 requires data.val_files to be a string even when validation is
+    # disabled (val_freq 0). Emit a tiny plumbing file drawn from the
+    # DEVELOPMENT bucket so a stray validation pass can never read training or
+    # confirmatory items. Mini-A5 used the same device.
+    val_rows = []
+    dev = args.dev_dir.resolve()
+    for cell in TRAIN_CELLS:
+        path = dev / f"manifest_{FAMILY}_{cell}_l3.jsonl"
+        if not path.exists():
+            continue
+        for line in path.read_text().splitlines()[:2]:
+            row = json.loads(line)
+            if row["split"] != "development":
+                continue
+            for side in ("a", "b"):
+                val_rows.append({
+                    "problem": f"<image>{row['question']}",
+                    "answer": str(row[f"answer_{side}"]),
+                    "images": [rel(row[f"image_{side}_path"])],
+                    "pair_group_uid": row["mother_item_id"],
+                    "pair_member": f"l3_{side}",
+                    "template_id": row["template_id"],
+                    "category": "hier_v1_st3_plumbing_val",
+                })
+    if not val_rows:
+        raise SystemExit("no plumbing val rows built")
+    val_blob = "".join(json.dumps(r, sort_keys=True) + "\n" for r in val_rows)
+    (args.out_dir / "plumbing_val.jsonl").write_text(val_blob, encoding="utf-8")
 
     jsonl = args.out_dir / "train.jsonl"
     blob = "".join(json.dumps(r, sort_keys=True) + "\n" for r in rows)
@@ -153,6 +185,11 @@ def main() -> int:
         "n_rows": stats["n_rows"],
         "mothers_per_cell": stats["cells"],
         "train_jsonl_sha256": hashlib.sha256(blob.encode()).hexdigest(),
+        "plumbing_val_rows": len(val_rows),
+        "plumbing_val_sha256": hashlib.sha256(val_blob.encode()).hexdigest(),
+        "plumbing_val_note": "development-bucket rows; validation is disabled "
+                             "(val_freq 0) and this file exists only to satisfy "
+                             "EasyR1's non-null val_files requirement",
         "parquet": parquet,
         "out_dir": str(args.out_dir),
     }
