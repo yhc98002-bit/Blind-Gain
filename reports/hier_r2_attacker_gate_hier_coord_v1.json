@@ -1,0 +1,662 @@
+{
+  "attacks": {
+    "dinov2": {
+      "per_template": {
+        "hier_coord_v1_n12": {
+          "directed_oof_auc": 0.5569,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.525195,
+            0.5954050000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.5569,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.525195,
+            0.5954050000000001
+          ]
+        },
+        "hier_coord_v1_n20": {
+          "directed_oof_auc": 0.5474,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.5206925,
+            0.5762025000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.5474,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5206925,
+            0.5762025000000001
+          ]
+        },
+        "hier_coord_v1_n8": {
+          "directed_oof_auc": 0.4742,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4337,
+            0.5127075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "gate_statistic": 0.5258,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5012,
+            0.5663
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.5159222222222222,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.4969908333333333,
+          0.5348205555555555
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.9693576388888889,
+          0.9709201388888888,
+          0.9671527777777778,
+          0.9719444444444445,
+          0.9847916666666666
+        ],
+        "gate_statistic": 0.5159222222222222,
+        "n_members": 600,
+        "n_pairs": 300,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.5011994444444444,
+          0.5348205555555555
+        ]
+      }
+    },
+    "file_size": {
+      "per_template": {
+        "hier_coord_v1_n12": {
+          "directed_oof_auc": 0.5329,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.51354625,
+            0.5561050000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.540859375,
+            0.536875,
+            0.534765625,
+            0.53796875,
+            0.529140625
+          ],
+          "gate_statistic": 0.5329,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.51354625,
+            0.5561050000000001
+          ]
+        },
+        "hier_coord_v1_n20": {
+          "directed_oof_auc": 0.5362,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.5118987500000001,
+            0.5613125
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.52484375,
+            0.53375,
+            0.539296875,
+            0.536171875,
+            0.54140625
+          ],
+          "gate_statistic": 0.5362,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5118987500000001,
+            0.5613125
+          ]
+        },
+        "hier_coord_v1_n8": {
+          "directed_oof_auc": 0.50965,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4890925,
+            0.53420125
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.506953125,
+            0.509609375,
+            0.516875,
+            0.505859375,
+            0.5146875
+          ],
+          "gate_statistic": 0.50965,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5004,
+            0.53420125
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.5092111111111111,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.5054054166666667,
+          0.5146284722222222
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.5071875,
+          0.5104600694444444,
+          0.5077256944444445,
+          0.5105902777777778,
+          0.5090798611111111
+        ],
+        "gate_statistic": 0.5092111111111111,
+        "n_members": 600,
+        "n_pairs": 300,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.5054054166666667,
+          0.5146284722222222
+        ]
+      }
+    },
+    "frequency_stat": {
+      "per_template": {
+        "hier_coord_v1_n12": {
+          "directed_oof_auc": 0.5325,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.5022975,
+            0.5665074999999999
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.55796875,
+            0.5571875,
+            0.56453125,
+            0.5834375,
+            0.563125
+          ],
+          "gate_statistic": 0.5325,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5044924999999999,
+            0.5665074999999999
+          ]
+        },
+        "hier_coord_v1_n20": {
+          "directed_oof_auc": 0.5091,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.4802975,
+            0.541505
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.56453125,
+            0.58234375,
+            0.60328125,
+            0.59375,
+            0.59234375
+          ],
+          "gate_statistic": 0.5091,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5005999999999999,
+            0.541505
+          ]
+        },
+        "hier_coord_v1_n8": {
+          "directed_oof_auc": 0.5039,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.48059250000000003,
+            0.5273025
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.5671875,
+            0.5659375,
+            0.565625,
+            0.57046875,
+            0.56859375
+          ],
+          "gate_statistic": 0.5039,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5003974999999999,
+            0.5274025
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.5103444444444445,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.49436111111111114,
+          0.5250236111111111
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.5387847222222222,
+          0.54421875,
+          0.5563194444444445,
+          0.5447569444444444,
+          0.5422743055555556
+        ],
+        "gate_statistic": 0.5103444444444445,
+        "n_members": 600,
+        "n_pairs": 300,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.5007886111111111,
+          0.5250236111111111
+        ]
+      }
+    },
+    "metadata": {
+      "per_template": {
+        "hier_coord_v1_n12": {
+          "directed_oof_auc": 0.531,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.5108975,
+            0.5552075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.5471875,
+            0.54015625,
+            0.5359375,
+            0.54140625,
+            0.53109375
+          ],
+          "gate_statistic": 0.531,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5108975,
+            0.5552075
+          ]
+        },
+        "hier_coord_v1_n20": {
+          "directed_oof_auc": 0.5362,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.5148975,
+            0.5614075
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.52875,
+            0.5390625,
+            0.5434375,
+            0.53953125,
+            0.543125
+          ],
+          "gate_statistic": 0.5362,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5148975,
+            0.5614075
+          ]
+        },
+        "hier_coord_v1_n8": {
+          "directed_oof_auc": 0.5063,
+          "directed_oof_auc_unfolded_ci_95": [
+            0.485985,
+            0.5298025000000001
+          ],
+          "fold_direction": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "fold_train_auc": [
+            0.508125,
+            0.51296875,
+            0.51828125,
+            0.51109375,
+            0.51703125
+          ],
+          "gate_statistic": 0.5063,
+          "n_members": 200,
+          "n_pairs": 100,
+          "n_splits": 5,
+          "pair_bootstrap_ci_95": [
+            0.5005,
+            0.5299075
+          ]
+        }
+      },
+      "pooled": {
+        "directed_oof_auc": 0.5135888888888889,
+        "directed_oof_auc_unfolded_ci_95": [
+          0.5071547222222222,
+          0.5210341666666667
+        ],
+        "fold_direction": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "fold_train_auc": [
+          0.5142013888888889,
+          0.5161284722222222,
+          0.5141666666666667,
+          0.5171875,
+          0.5163541666666667
+        ],
+        "gate_statistic": 0.5135888888888889,
+        "n_members": 600,
+        "n_pairs": 300,
+        "n_splits": 5,
+        "pair_bootstrap_ci_95": [
+          0.5071547222222222,
+          0.5210341666666667
+        ]
+      }
+    }
+  },
+  "bootstrap": "1000 resamples over pairs",
+  "dinov2_status": "pass",
+  "direction": "selected from each train fold only",
+  "gate": {
+    "checks": {
+      "all_attackers_available": true,
+      "all_point_estimates_at_most_0_55": false,
+      "no_ci_upper_above_0_62": true
+    },
+    "expansion_required": [],
+    "missing_attackers": [],
+    "point_failures": [
+      "dinov2:hier_coord_v1_n12"
+    ],
+    "status": false
+  },
+  "gate_statistic": "max(AUC, 1-AUC)",
+  "historical_split_diagnosis": {
+    "n_pairs": 300,
+    "single_shared_split_is_not_sufficient": true,
+    "splits": [
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4884,
+          "gate_statistic": 0.5116,
+          "train_auc": 0.5475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.525,
+          "gate_statistic": 0.525,
+          "train_auc": 0.530975,
+          "train_selected_direction": 1
+        },
+        "seed": 0
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4993,
+          "gate_statistic": 0.5006999999999999,
+          "train_auc": 0.554825,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5302,
+          "gate_statistic": 0.5302,
+          "train_auc": 0.5295,
+          "train_selected_direction": 1
+        },
+        "seed": 1
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5105,
+          "gate_statistic": 0.5105,
+          "train_auc": 0.57565,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5301,
+          "gate_statistic": 0.5301,
+          "train_auc": 0.52885,
+          "train_selected_direction": 1
+        },
+        "seed": 2
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4941,
+          "gate_statistic": 0.5059,
+          "train_auc": 0.554025,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5345,
+          "gate_statistic": 0.5345,
+          "train_auc": 0.52855,
+          "train_selected_direction": 1
+        },
+        "seed": 3
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4839,
+          "gate_statistic": 0.5161,
+          "train_auc": 0.55175,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5331,
+          "gate_statistic": 0.5331,
+          "train_auc": 0.528775,
+          "train_selected_direction": 1
+        },
+        "seed": 4
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4721,
+          "gate_statistic": 0.5279,
+          "train_auc": 0.581225,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5317,
+          "gate_statistic": 0.5317,
+          "train_auc": 0.530625,
+          "train_selected_direction": 1
+        },
+        "seed": 5
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.4633,
+          "gate_statistic": 0.5367,
+          "train_auc": 0.57475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5189,
+          "gate_statistic": 0.5189,
+          "train_auc": 0.534875,
+          "train_selected_direction": 1
+        },
+        "seed": 6
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5027,
+          "gate_statistic": 0.5027,
+          "train_auc": 0.533625,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5185,
+          "gate_statistic": 0.5185,
+          "train_auc": 0.5337,
+          "train_selected_direction": 1
+        },
+        "seed": 7
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5149,
+          "gate_statistic": 0.5149,
+          "train_auc": 0.55175,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5313,
+          "gate_statistic": 0.5313,
+          "train_auc": 0.530825,
+          "train_selected_direction": 1
+        },
+        "seed": 8
+      },
+      {
+        "frequency_stat": {
+          "directed_test_auc": 0.5143,
+          "gate_statistic": 0.5143,
+          "train_auc": 0.535475,
+          "train_selected_direction": 1
+        },
+        "metadata": {
+          "directed_test_auc": 0.5307,
+          "gate_statistic": 0.5307,
+          "train_auc": 0.529775,
+          "train_selected_direction": 1
+        },
+        "seed": 9
+      }
+    ]
+  },
+  "key_file": "data/hier_v1_dev_r2/attacker_key_hier_coord_v1.jsonl",
+  "n_members": 600,
+  "n_pairs": 300,
+  "release_dir": "data/hier_v1_dev_r2/attacker_release_hier_coord_v1",
+  "split": "5-fold grouped CV by pair"
+}

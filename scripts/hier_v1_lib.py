@@ -48,7 +48,9 @@ from scripts.build_b1_geometry_track_prototype import (
     spacing_ok,
 )
 from src.fliptrack.build_v02 import (
+    COLORS as _V02_COLORS,
     _answers_distinguishable,
+    _font as _v02_font,
     _render_high_entropy_coordinate_register,
 )
 from src.fliptrack.render_chart_v08 import (
@@ -314,6 +316,89 @@ def build_coord_geometry(role: str, kind: str, n_points: int,
     }
 
 
+# ---------------------------------------------------------------------------
+# Registered in-image text (pre-freeze cleanup amendment, 2026-08-17): exactly
+# one title + one LAYER-NEUTRAL encoding footer per family. In-image text must
+# never state task procedure or name targets — the v1 coordinate footer stated
+# the L2 two-step ("Locate the requested label, then read its coordinate...")
+# inside every layer's image, contradicting the L3/probe capability contract.
+# ---------------------------------------------------------------------------
+
+COORD_TITLE = "Coordinate Survey Register"
+COORD_FOOTER = "Each point is identified by its printed label."
+CHART_TITLE = "Multi-Series Measurement Trace"
+CHART_FOOTER = ("Each series is identified by its legend entry "
+                "(color, line style, marker).")
+REGISTERED_TEXT = {
+    "hier_coord_v1": {"title": COORD_TITLE, "footer": COORD_FOOTER},
+    "hier_chart_v1": {"title": CHART_TITLE, "footer": CHART_FOOTER},
+}
+# Any of these substrings in drawn text marks a task-procedure instruction.
+PROCEDURE_TOKENS = ("locate", "requested", "then read", "first find")
+# The frozen renderer's footer strip; the hier-owned renderer may differ from
+# the frozen one ONLY inside this box (pinned by fixture).
+COORD_FOOTER_BOX = (0, 1160, 1400, 1240)
+
+
+def _render_hier_coordinate_register(points: dict[str, tuple[int, int]]) -> Image.Image:
+    """Hier-owned copy of the FROZEN
+    src.fliptrack.build_v02._render_high_entropy_coordinate_register,
+    differing ONLY in the footer string (COORD_FOOTER, layer-neutral). The
+    frozen module stays untouched for R19/premise lineage reproducibility;
+    tests/test_hier_footer_text_policy.py pins that renders differ only
+    inside COORD_FOOTER_BOX."""
+    width, height = 1400, 1240
+    image = Image.new("RGB", (width, height), (250, 250, 248))
+    draw = ImageDraw.Draw(image)
+    draw.text((width // 2, 38), COORD_TITLE, anchor="mm",
+              font=_v02_font(26, True), fill=(25, 25, 25))
+    origin = (700, 650)
+    scale = 68
+    plot_left = origin[0] - 7 * scale
+    plot_right = origin[0] + 7 * scale
+    plot_top = origin[1] - 7 * scale
+    plot_bottom = origin[1] + 7 * scale
+    draw.rectangle((plot_left, plot_top, plot_right, plot_bottom),
+                   fill="white", outline=(75, 75, 75), width=2)
+    for value in range(-7, 8):
+        x = origin[0] + value * scale
+        y = origin[1] - value * scale
+        draw.line((x, plot_top, x, plot_bottom), fill=(224, 228, 232), width=1)
+        draw.line((plot_left, y, plot_right, y), fill=(224, 228, 232), width=1)
+        if value:
+            draw.text((x, origin[1] + 19), str(value), anchor="mm",
+                      font=_v02_font(13), fill=(65, 65, 65))
+            draw.text((origin[0] - 20, y), str(value), anchor="mm",
+                      font=_v02_font(13), fill=(65, 65, 65))
+    draw.line((plot_left, origin[1], plot_right, origin[1]), fill=(40, 40, 40), width=3)
+    draw.line((origin[0], plot_top, origin[0], plot_bottom), fill=(40, 40, 40), width=3)
+
+    for index, (label, point) in enumerate(points.items()):
+        x = origin[0] + point[0] * scale
+        y = origin[1] - point[1] * scale
+        color = _V02_COLORS[index % len(_V02_COLORS)]
+        draw.ellipse((x - 10, y - 10, x + 10, y + 10), fill=color,
+                     outline="white", width=2)
+        label_x = x + (17 if point[0] <= 0 else -17)
+        label_y = y - 16
+        draw.text(
+            (label_x, label_y),
+            label,
+            anchor="lm" if point[0] <= 0 else "rm",
+            font=_v02_font(19, True),
+            fill=(18, 18, 18),
+            stroke_width=2,
+            stroke_fill="white",
+        )
+    draw.text(
+        (plot_left, 1186),
+        COORD_FOOTER,
+        font=_v02_font(15),
+        fill=(70, 70, 70),
+    )
+    return image
+
+
 def coord_target_px(points: dict[str, tuple[int, int]], label: str) -> tuple[int, int]:
     x, y = points[label]
     return (COORD_ORIGIN[0] + x * COORD_SCALE, COORD_ORIGIN[1] - y * COORD_SCALE)
@@ -322,7 +407,7 @@ def coord_target_px(points: dict[str, tuple[int, int]], label: str) -> tuple[int
 def render_coord_layers(points: dict[str, tuple[int, int]],
                         target: str) -> tuple[Image.Image, Image.Image, dict] | None:
     """(l2==l3 image, l1 image, cue record) or None if no legal cue placement."""
-    base = _render_high_entropy_coordinate_register(points)
+    base = _render_hier_coordinate_register(points)
     cued = add_offset_cue(base, coord_target_px(points, target), COORD_ALLOWED)
     if cued is None:
         return None

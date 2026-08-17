@@ -1,0 +1,170 @@
+{
+  "estimands": "mean candidate_pair_mrr + candidate_pair_top1 rate per registered ranking config",
+  "models": {
+    "base3b": {
+      "cells": {
+        "hier_coord_v1_n12_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7234,
+          "n_pairs": 50,
+          "top1_rate": 0.46
+        },
+        "hier_coord_v1_n12_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.5009,
+          "n_pairs": 100,
+          "top1_rate": 0.14
+        },
+        "hier_coord_v1_n20_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.6403,
+          "n_pairs": 50,
+          "top1_rate": 0.3
+        },
+        "hier_coord_v1_n20_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.4363,
+          "n_pairs": 100,
+          "top1_rate": 0.13
+        },
+        "hier_coord_v1_n8_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7103,
+          "n_pairs": 50,
+          "top1_rate": 0.42
+        },
+        "hier_coord_v1_n8_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.4936,
+          "n_pairs": 100,
+          "top1_rate": 0.13
+        }
+      },
+      "run_dir": "experiments/runs/hier_r2_ranking_base3b_real_an12_gpu6_20260817T062435Z"
+    },
+    "base7b": {
+      "cells": {
+        "hier_coord_v1_n12_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.901,
+          "n_pairs": 50,
+          "top1_rate": 0.74
+        },
+        "hier_coord_v1_n12_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.717,
+          "n_pairs": 100,
+          "top1_rate": 0.42
+        },
+        "hier_coord_v1_n20_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.8082,
+          "n_pairs": 50,
+          "top1_rate": 0.62
+        },
+        "hier_coord_v1_n20_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.5686,
+          "n_pairs": 100,
+          "top1_rate": 0.23
+        },
+        "hier_coord_v1_n8_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.9008,
+          "n_pairs": 50,
+          "top1_rate": 0.76
+        },
+        "hier_coord_v1_n8_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7975,
+          "n_pairs": 100,
+          "top1_rate": 0.51
+        }
+      },
+      "run_dir": "experiments/runs/hier_r2_ranking_base7b_real_an12_gpu7_20260817T062137Z"
+    },
+    "mini_a5_cp_step120": {
+      "cells": {
+        "hier_coord_v1_n12_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7485,
+          "n_pairs": 50,
+          "top1_rate": 0.5
+        },
+        "hier_coord_v1_n12_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.5216,
+          "n_pairs": 100,
+          "top1_rate": 0.11
+        },
+        "hier_coord_v1_n20_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.6982,
+          "n_pairs": 50,
+          "top1_rate": 0.38
+        },
+        "hier_coord_v1_n20_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.4439,
+          "n_pairs": 100,
+          "top1_rate": 0.14
+        },
+        "hier_coord_v1_n8_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7651,
+          "n_pairs": 50,
+          "top1_rate": 0.42
+        },
+        "hier_coord_v1_n8_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.5154,
+          "n_pairs": 100,
+          "top1_rate": 0.16
+        }
+      },
+      "run_dir": "experiments/runs/hier_r2_ranking_mini_a5_cp_step120_real_an29_gpu2_20260817T081155Z"
+    },
+    "mini_a5_std_step120": {
+      "cells": {
+        "hier_coord_v1_n12_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7371,
+          "n_pairs": 50,
+          "top1_rate": 0.48
+        },
+        "hier_coord_v1_n12_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.5249,
+          "n_pairs": 100,
+          "top1_rate": 0.14
+        },
+        "hier_coord_v1_n20_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.6869,
+          "n_pairs": 50,
+          "top1_rate": 0.36
+        },
+        "hier_coord_v1_n20_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.4529,
+          "n_pairs": 100,
+          "top1_rate": 0.14
+        },
+        "hier_coord_v1_n8_l2": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.7667,
+          "n_pairs": 50,
+          "top1_rate": 0.44
+        },
+        "hier_coord_v1_n8_l3": {
+          "candidate_count": 14,
+          "mean_pair_mrr": 0.519,
+          "n_pairs": 100,
+          "top1_rate": 0.17
+        }
+      },
+      "run_dir": "experiments/runs/hier_r2_ranking_mini_a5_std_step120_real_an29_gpu1_20260817T081148Z"
+    }
+  },
+  "schema_version": "blind-gains.hier-p2-ranking-readout.v1"
+}

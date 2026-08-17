@@ -1,0 +1,19 @@
+{
+  "allow_extra_captions": true,
+  "caption_store": "experiments/runs/strong_caption_store_hier_v1_l3_an29_20260817T021703Z/captions.jsonl",
+  "key_file": "data/hier_v1_dev/caption_stress_key_hier_chart_v1.jsonl",
+  "n_images": 800,
+  "n_pairs": 400,
+  "n_shards": 1,
+  "release_manifest": "data/hier_v1_dev/caption_stress_hier_chart_v1/manifest.jsonl",
+  "schema_version": "blind-gains.fliptrack-caption-qa-input-summary.v1",
+  "shard_pair_counts": [
+    400
+  ],
+  "template_counts": {
+    "hier_chart_v1_s5_high": 100,
+    "hier_chart_v1_s5_low": 100,
+    "hier_chart_v1_s9_high": 100,
+    "hier_chart_v1_s9_low": 100
+  }
+}

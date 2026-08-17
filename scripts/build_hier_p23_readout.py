@@ -67,13 +67,12 @@ def attacker_tables(gate: dict) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--attacker-gate", nargs=2, type=Path, default=[
+    parser.add_argument("--attacker-gate", nargs="+", type=Path, default=[
         ROOT / "reports/hier_p2_attacker_gate_hier_coord_v1.json",
         ROOT / "reports/hier_p2_attacker_gate_hier_chart_v1.json"])
     parser.add_argument("--blind-gray-run", type=Path, required=True)
     parser.add_argument("--blind-no-image-run", type=Path, required=True)
-    parser.add_argument("--leak-verification", type=Path,
-                        default=ROOT / "reports/hier_p2_leak_verification_v1.json")
+    parser.add_argument("--leak-verification", type=Path, default=None)
     parser.add_argument("--output-json", type=Path,
                         default=ROOT / "reports/hier_p23_readout_v1.json")
     parser.add_argument("--output-md", type=Path,
@@ -92,7 +91,8 @@ def main() -> int:
                                       "sha256": sha256_file(path)}
     blind = {"gray": blind_accuracies(args.blind_gray_run),
              "no_image": blind_accuracies(args.blind_no_image_run)}
-    leak = json.loads(args.leak_verification.read_text())
+    leak = (json.loads(args.leak_verification.read_text())
+            if args.leak_verification else None)
 
     payload = {
         "schema_version": "blind-gains.hier-p23-readout.v1",
@@ -112,7 +112,7 @@ def main() -> int:
     lines = ["# HB P2.3 readout — attacker gates, blind floors, leak verification",
              "",
              f"Criterion: {payload['criterion']}.", ""]
-    for family in FAMILIES:
+    for family in (f for f in FAMILIES if f in attacker):
         entry = attacker[family]
         lines += [f"## Attacker gate — `{family}`", "",
                   f"Gate status: **{entry['gate']['status']}** — checks "
@@ -138,12 +138,12 @@ def main() -> int:
     for cell in sorted(blind["gray"]):
         lines.append(f"| {cell} | {blind['gray'][cell]:.4f} | "
                      f"{blind['no_image'].get(cell, float('nan')):.4f} |")
-    lines += ["", "## Leak verification (edit direction + PNG size, causal pairs)",
+    lines += [] if leak is None else ["", "## Leak verification (edit direction + PNG size, causal pairs)",
               "",
               "| family | cell | role | n | value-delta neg | pos | multi-field "
               "| png edited>base | edited<base | mean delta (B) |",
               "|---|---|---|---|---|---|---|---|---|---|"]
-    for family, cells in sorted(leak["cells"].items()):
+    for family, cells in (sorted(leak["cells"].items()) if leak else []):
         for cell, roles in sorted(cells.items()):
             for role, s in sorted(roles.items()):
                 lines.append(

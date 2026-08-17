@@ -73,6 +73,13 @@ def _png_chunk_lengths(path: Path) -> list[tuple[str, int]]:
     return chunks
 
 
+def _file_size_features(path: str | Path) -> np.ndarray:
+    """Single-column PNG byte size. Permanent acceptance-suite attacker
+    (dispatch 2026-08-16b): the hier-chart v1 leak made the edited side's PNG
+    larger in 198/200 low-crossing causal pairs."""
+    return np.asarray([float(Path(path).stat().st_size)], dtype=np.float64)
+
+
 def _metadata_features(path: str | Path) -> np.ndarray:
     path = Path(path)
     chunks = _png_chunk_lengths(path)
@@ -427,6 +434,16 @@ def run(
     attacks: dict[str, Any] = {}
     stat_features = np.stack([_image_stats(path) for path in paths])
     metadata_features = np.stack([_metadata_features(path) for path in paths])
+    # PERMANENT since dispatch 2026-08-16b (the 198/200 hier-chart PNG-size
+    # leak class): file size as its own named gate. It duplicates metadata
+    # column 0 on purpose — a univariate probe cannot be diluted by the other
+    # metadata columns, so a pure size signature fails loudly under its own
+    # name at the same folded 0.55 / 0.62 criterion.
+    size_features = np.stack([_file_size_features(path) for path in paths])
+    attacks["file_size"] = _evaluate_all_scopes(
+        size_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap,
+        include_scores=include_scores,
+    )
     attacks["frequency_stat"] = _evaluate_all_scopes(
         stat_features, labels, pair_ids, templates, n_splits=n_splits, seed=seed, n_bootstrap=n_bootstrap,
         include_scores=include_scores,

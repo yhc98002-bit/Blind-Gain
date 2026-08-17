@@ -41,6 +41,8 @@ def main() -> int:
                         help="dir holding {family}_predictions.jsonl + "
                              "{family}_metrics.json")
     parser.add_argument("--caption-run", type=Path, required=True)
+    parser.add_argument("--families", nargs="+", choices=sorted(CELLS),
+                        default=sorted(CELLS))
     parser.add_argument("--p23-readout", type=Path,
                         default=ROOT / "reports/hier_p23_readout_v1.json")
     parser.add_argument("--output-json", type=Path,
@@ -54,7 +56,7 @@ def main() -> int:
 
     blind = json.loads(args.p23_readout.read_text())["blind_floors"]["member_accuracy"]
     families = {}
-    for family in CELLS:
+    for family in args.families:
         pred_path = args.qa_run / f"{family}_predictions.jsonl"
         rows = [json.loads(l) for l in pred_path.read_text().splitlines()
                 if l.strip()]
@@ -93,7 +95,7 @@ def main() -> int:
         "blind_floors_l3": {
             fam: {cell: {"gray": blind["gray"].get(f"{fam}_{cell}_l3"),
                          "no_image": blind["no_image"].get(f"{fam}_{cell}_l3")}
-                  for cell in CELLS[fam]} for fam in CELLS},
+                  for cell in CELLS[fam]} for fam in args.families},
     }
     args.output_json.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")

@@ -214,6 +214,58 @@ obligation (§2(d)). Resolution, registered before any item exists:
 - Per-cell row counts: 150 L3 pairs + 100 L2 pairs + 100 L1 pairs +
   150 probe rows.
 
+## Amendment A3 — pre-freeze cleanup (2026-08-17, PI review; before any re-render)
+
+**Normative layer semantics** (PI wording, verbatim; classification is by the
+capability actually required, never by filename or historical role):
+
+- **L1 — Readout:** target location is given.
+- **L2 — Grounding:** target identity is given, but the model must find it.
+- **L3 — Target Discovery:** the model must first determine which target is
+  relevant.
+
+The discovery **probe** isolates the L3 selection step (gold = the target
+identity). Pair roles against these definitions: **target-switch** is the L3
+counterfactual discovery diagnostic and is deliberately NOT paired at L1/L2
+(no truthful identity-given question exists for a switch pair — Amendment A2;
+forcing such pairs would damage the counterfactual design). **target-stable**
+exercises all three layers with one truthful identity; **invariance** is the
+equal-answer control.
+
+**Registered in-image text policy.** Each family draws exactly one title and
+one layer-neutral encoding footer, pinned as registered strings
+(`scripts/hier_v1_lib.py` `REGISTERED_TEXT`):
+
+- `hier_coord_v1`: title "Coordinate Survey Register"; footer **"Each point
+  is identified by its printed label."**
+- `hier_chart_v1`: title "Multi-Series Measurement Trace"; footer "Each
+  series is identified by its legend entry (color, line style, marker)."
+
+In-image text must never state task procedure or name targets: the v1 coord
+footer ("Locate the requested label, then read its coordinate from the
+numbered axes.") stated the L3→L2 decomposition inside every layer's image
+and is retired. Enforcement: the verifier's static policy check
+(procedure-token / label / series-name screen) + exact `rendered_text`
+provenance matching + a fixture pinning that the hier-owned coord renderer
+differs from the frozen `build_v02` renderer only inside the footer strip.
+
+**Render revision r2 (`r2-footer-neutral`).** The coord dev batch is
+re-rendered from the RECORDED scenes into `data/hier_v1_dev_r2/` — no RNG,
+no geometry/question/answer/swap/cue-parameter change; manifests differ from
+v1 only in image/mask paths + hashes and provenance
+(`render_rev`, `rendered_text`, v1 image hashes retained). The v1 tree is
+kept untouched as the superseded render. Coord acceptance numbers for the
+freeze are those measured on r2. Chart images are unchanged (footer already
+layer-neutral); the ratified chart-v2 revision regenerates under this policy.
+
+**Census staging rule.** The generator census assigns `capability_stage`
+from the manifest rows' `layer` field where present (per-layer stages);
+derived artifacts (attacker keys, candidate registries, caption-stress
+releases) are staged `derived-artifact`; the doc-substring map is a last
+resort with longest-needle-first matching (the v3 census's "chart" needle
+shadowed "hier_chart" and mislabeled every hier chart variant L1 — corrected
+in census v4; v3 retained with a correction note).
+
 ## Deviations log
 
 - (none)

@@ -36,9 +36,12 @@ def link_or_copy(src: Path, dst: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data/hier_v1_dev")
+    parser.add_argument("--families", nargs="+", choices=sorted(FAMILIES),
+                        default=sorted(FAMILIES))
     args = parser.parse_args()
+    args.data_dir = args.data_dir.resolve()
     summary = {}
-    for family, cells in FAMILIES.items():
+    for family, cells in ((f, FAMILIES[f]) for f in args.families):
         release_dir = args.data_dir / f"attacker_release_{family}"
         if release_dir.exists():
             raise FileExistsError(release_dir)

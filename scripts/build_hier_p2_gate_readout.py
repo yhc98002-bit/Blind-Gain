@@ -56,6 +56,8 @@ def main() -> int:
     parser.add_argument("--run-dir", action="append", required=True,
                         metavar="MODEL_KEY=RUN_DIR",
                         help="open-form sweep run dir per model (repeat)")
+    parser.add_argument("--families", nargs="+", choices=sorted(FAMILIES),
+                        default=sorted(FAMILIES))
     parser.add_argument("--json-output", type=Path, required=True)
     parser.add_argument("--markdown-output", type=Path, required=True)
     args = parser.parse_args()
@@ -70,7 +72,7 @@ def main() -> int:
         raise SystemExit(f"--run-dir must include {GATE_MODEL}=...")
 
     cells: dict[str, dict] = {}
-    for family, family_cells in FAMILIES.items():
+    for family, family_cells in ((f, FAMILIES[f]) for f in args.families):
         for cell in family_cells:
             entry: dict = {"per_model": {}}
             for model_key, run_dir in sorted(run_dirs.items()):
@@ -109,7 +111,7 @@ def main() -> int:
             cells[f"{family}/{cell}"] = entry
 
     family_gates = {}
-    for family, family_cells in FAMILIES.items():
+    for family, family_cells in ((f, FAMILIES[f]) for f in args.families):
         family_gates[family] = {
             "l3_floor_in_at_least_one_cell": any(
                 cells[f"{family}/{cell}"]["gates_base3b"]["l3_at_least_005"]

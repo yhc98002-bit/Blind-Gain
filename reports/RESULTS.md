@@ -1613,7 +1613,7 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-17T01:00Z. The 08-12→08-14 storage deadlock and its
+*Current as of 2026-08-17T09:40Z. The 08-12→08-14 storage deadlock and its
 recovery are recorded in `reports/storage_cleanup_20260814.md` and the
 2026-08-14 commit history; the 08-15 chain outcomes and their diagnosis are in
 the "2026-08-16 — Consolidation round" section.*
@@ -1625,12 +1625,11 @@ the "2026-08-16 — Consolidation round" section.*
   immutable copy `tmp/immutable_lh2_segment_chain_20260816.sh`, banks and
   hash-audits each 50-step boundary, and stops at the registered step-200
   go/no-go).
-- **HB P2.3 caption-stress chain** (an29): 72B ephemeral ModelScope download →
-  question-blind TP4 caption store over the hier L3 causal images → base-3B
-  text QA → readout; detached chain
-  `logs/chains/hier_caption_stress_chain_20260817.sh`, log
-  `logs/hier_caption_stress_chain_20260817T003947Z.log`. Every other HB P2
-  cell is complete — numbers in the 2026-08-17 section below.
+- Nothing else: HB P2 is fully complete (caption-stress chain landed
+  2026-08-17T03:11Z) and the pre-freeze cleanup round is closed — the r2
+  re-measure battery, census v4, and the PI report
+  (`reports/hier_v1_prefreeze_cleanup_v1.md`) are all banked; next GPU
+  campaign is the ratified chart-v2 cycle.
 
 **Open, not running**
 
@@ -1649,7 +1648,10 @@ the "2026-08-16 — Consolidation round" section.*
   DRAFT; launch gates = two-seed R3 landed + HB P2 informativeness gates + PI
   merge with the launch-time amendment (training-batch pin, configs,
   blind-control decision).
-- **HB chart revision fork — PI call.** `hier_chart_v1` fails the P2.3
+- **Coordinate freeze — three PI items**: human audit of the r2 render;
+  disposition of the template-unstable dinov2 marginal (n12 0.5569 on r2 vs
+  n20 0.5577 on v1); a registered caption ceiling for HB.
+- **HB chart revision (ratified, next up).** `hier_chart_v1` fails the P2.3
   artifact-attacker gate decisively (numbers in the 2026-08-17 section); the
   leak is numerically pinned to the unidirectional switch edit + the
   filter-induced direction bias of low-crossing stable edits. Any fix is a
@@ -2508,6 +2510,78 @@ appended to this section when it lands. Post-P2 branch selection (band
 recalibration, chart symmetrization, coord n20 disposition) is PI work; per
 the dispatch this round reports gate outcomes as numbers only.
 
+## 2026-08-17 — Pre-freeze cleanup: the coordinate footer was the L2 procedure printed inside every layer's image; fixed, re-rendered, re-measured — n8/n12 gates land within 0.02 of v1 (n20 shifts −0.035/−0.045) and coord n8/n12 are freeze-ready on the corrected render
+
+*PI review directive (supersedes the immediate execution of dispatch
+2026-08-16b, which stays ratified and queued). Ledger: hier ledger
+"Pre-freeze cleanup" section; full report
+`reports/hier_v1_prefreeze_cleanup_v1.md`.*
+
+**What was wrong (three defects, all now guard-covered).** (1) Every
+`hier_coord_v1` image carried the frozen-renderer footer *"Locate the
+requested label, then read its coordinate from the numbered axes."* — the
+L3→L2 decomposition handed over in-image, contradicting the L3/probe
+capability contract ("the requested label" presupposes an identity-given
+question). (2) The census staged variants by template-id substring and the
+generic `"chart"` needle shadowed `"hier_chart"` (dead map entry): every
+hier chart variant was labeled L1 with a chart-v08 doc attribution. (3) No
+check anywhere inspected in-image text, and the operand audit's gates keyed
+on field names hier rows don't carry — the audit silently asserted nothing
+for the hier families.
+
+**What was NOT wrong.** The layer questions themselves classify correctly
+against the intended hierarchy (L1 readout / L2 grounding / L3 discovery;
+probe = the selection step isolated), the switch-role L3-only design stands
+(A2), and the coord mother-item construction + non-occluding cue are
+untouched.
+
+**The fix and its null result.** Hier-owned renderer with the layer-neutral
+footer "Each point is identified by its printed label." (frozen module
+untouched; renders pinned by fixture to differ only in the footer strip);
+all 450 coord mothers re-rendered from RECORDED scenes (no RNG, cue pixel
+counts reproduced exactly) into `data/hier_v1_dev_r2/`; from-disk verify
+**0 problems**; 1,500/1,500 manifest rows byte-identical outside
+image/provenance fields; registries rebuilt semantically identical. The full
+acceptance battery re-ran on r2: **n8/n12 gates land within 0.02 of v1**
+(n8 0.7050/0.6300/0.4250, n12 0.6550/0.6150/0.3300, all cell gates pass) —
+for the freeze-candidate cells the instruction footer was doing no
+measurable work. **n20 is footer-sensitive**: L1 −0.0450 (0.5300 vs 0.5750)
+and L3 −0.0350 (0.2800 vs 0.3150); greedy decoding makes these real
+image-sensitivity of the crowded 20-point scenes, not noise — additional
+empirical support for its exploratory hard tier (its L1 band fails under
+both renders).
+
+**Attacker profile on r2 — the marginal moved.** Pooled clean for all four
+attackers (dinov2 0.5159, frequency 0.5103, metadata 0.5136, and the new
+permanent **file_size** attacker 0.5092; CI-uppers ≤ 0.5954). The gate's
+sole point violation is dinov2 n12 0.5569 — on v1 it was dinov2 **n20**
+0.5577. A threshold-grazing violation that jumps templates under a pure
+footer re-render is fold-noise around the 0.55 line, not a stable
+construction signature; disposition is the PI's.
+
+**Caption stress re-run on r2** (72B question-blind → base-3B QA): family
+member accuracy 0.2200 (v1 0.2367) — n8 0.30–0.39, n12 0.18–0.22, n20
+0.08–0.15 vs blind floors 0.11–0.14. The footer removal did not collapse the
+caption channel: coord caption leakage rides label/position transcription,
+strongest in sparse n8 scenes. Chart (v1 batch) remains caption-resistant at
+0.0413 ≈ its 0.0000 floor. Ranking on r2 reproduces the v1 structure (L3
+base3b 0.4363–0.5009; base7b leads all cells 0.5686–0.7975; Gate-1
+checkpoints within +0.08 — still no trained discovery).
+
+**Census v4** (162 manifests / 52 families / 249 variants): stages now
+derive from the manifest `layer` field — hier variants read L1/L2/L3/
+L3-probe per manifest; attacker keys and registries are `derived-artifact`;
+the shadowing bug is dead and test-pinned. v3's hier rows are superseded.
+
+**Freeze verdict (coordinate):** ready on the r2 render for **n8 and n12**,
+pending three PI-side items — the human audit (never self-certified), the
+dinov2-marginal disposition, and a registered caption ceiling. n20 enters
+only as the exploratory hard tier (PART 6). Chart-side: unchanged —
+the ratified chart-v2 revision executes next under the corrected
+conventions; direction symmetrization alone will not fix the low-cell size
+leak (any band-breaking edit adds ink), so the revision pairs small-magnitude
+switch edits (top-2 adjacency at the anchor x) with in-band stable edits.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:
@@ -2543,6 +2617,9 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | HB P2.3 attacker gates: coord pooled clean (≤ 0.5137), gate false only via dinov2 n20 0.5577; chart fails decisively (pooled freq 0.6957; s5_low freq 0.9819) — leak pinned: switch edit unidirectional 200/200, low-cell stable 99/100, PNG size 198/200 | premise-v2 attacker criterion (folded ≤ 0.55 / CI-up ≤ 0.62) carried by `docs/registered_hier_benchmark_v1.md` §7 | `reports/hier_p2_attacker_gate_hier_{coord,chart}_v1.json`, `reports/hier_p2_leak_verification_v1.json`, `reports/hier_p23_readout_v1.{json,md}`; releases `data/hier_v1_dev/attacker_release_*` | `scripts/verify_hier_leak_direction.py` + report provenance |
 | HB P2.4 census review package v3: census 138 manifests / 51 families / 217 variants / 84 stage-unmapped; deterministic 42-pair sample; 4-gate human queue | R19/R20 audit-package discipline; `docs/registered_hier_benchmark_v1.md` §7 (HB.8) | `reports/generator_census_v3.{json,md}`, `reports/review_packages/hier_v1_census_v3{,.zip}` (zip sha `4b55781197ea…1530`), `reports/hier_census_review_package_v3.json` | `scripts/build_hier_census_review_package.py` |
 | HB P2.1 candidate-ranking: L2 largely solvable (chart 0.8332–1.0000 MRR), L3 drops sharply every cell (base 3B 0.4033–0.6395); base 7B leads all L3 cells; Gate-1 step-120 checkpoints within ±0.08 of base 3B everywhere; low-crossing L3 elevation coincides with attacker-flagged cells | `docs/registered_hier_benchmark_v1.md` §7 | `reports/hier_p2_ranking_readout_v1.{json,md}`; run dirs `hier_p2_ranking_*_20260816T212*` | report provenance |
+| HB caption stress (v1 batch): coord 0.2367 vs floors 0.11–0.14 (modest label/position leakage, strongest n8); chart 0.0413 ≈ 0.0000 floor — caption-resistant | `docs/registered_hier_benchmark_v1.md` §7 (HB.8 prerequisite; ceiling unregistered) | `reports/hier_caption_stress_readout_v1.{json,md}`; store `strong_caption_store_hier_v1_l3_an29_20260817T021703Z` | report provenance |
+| Pre-freeze cleanup: coord footer (in-image L2 procedure) neutralized + r2 re-render (scenes untouched, verify 0 problems, 1500/1500 rows identical outside image fields); every gate within 0.02 of v1; attacker marginal moved templates (dinov2 n12 0.5569 vs v1 n20 0.5577 — fold noise); file_size attacker permanent (coord pooled 0.5092); census v4 stages by layer field; coord n8/n12 freeze-ready on r2 pending human audit + marginal disposition + caption ceiling | Amendment A3 in `docs/registered_hier_benchmark_v1.md` + PI review directive 2026-08-17 | `reports/hier_v1_prefreeze_cleanup_v1.md`, `hier_coord_r2_rerender_v1.json`, `hier_r2_{gate,p23,ranking,caption_stress}_readout_v1.*`, `hier_r2_attacker_gate_hier_coord_v1.json`, `generator_census_v4.{json,md}`, `data/hier_v1_dev_r2/` | `scripts/rerender_hier_coord_r2.py` + report provenance |
+| Blind diagnostics (descriptive): chart blind 0.0000 for all 4 models × gray/no_image; coord floors ≤ 0.09 (base-7B lowest); ranking no_image floors quantify the image-free candidate prior | PI utilization directive 2026-08-17 | `reports/hier_blind_diagnostics_v1.{json,md}`; run dirs `hier_p2_*_20260817T014*` | `scripts/build_hier_blind_diagnostics_v1.py` |
 
 **Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
 include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing

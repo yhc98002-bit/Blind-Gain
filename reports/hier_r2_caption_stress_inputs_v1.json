@@ -1,0 +1,19 @@
+{
+  "families": {
+    "hier_coord_v1": {
+      "key": "data/hier_v1_dev_r2/caption_stress_key_hier_coord_v1.jsonl",
+      "key_sha256": "7ca5043a9fdc04012497c6806694dc76763966d03b008b4b51955140dd4a819f",
+      "pairs": 300,
+      "per_cell": {
+        "n12": 100,
+        "n20": 100,
+        "n8": 100
+      },
+      "release_dir": "data/hier_v1_dev_r2/caption_stress_hier_coord_v1",
+      "release_manifest_sha256": "f6df1873a0e04da3731d286522ddb234a9b35b9c92025af43cfb7aa4134544cb"
+    }
+  },
+  "population": "L3 causal pairs (role != invariance)",
+  "schema_version": "blind-gains.hier-caption-stress-inputs.v1",
+  "side_binding": "file-suffix (answers travel with their own image; semantic swap NOT applied)"
+}

@@ -1,0 +1,146 @@
+{
+  "blind_floors_l3": {
+    "hier_chart_v1": {
+      "s5_high": {
+        "gray": 0.0,
+        "no_image": 0.0
+      },
+      "s5_low": {
+        "gray": 0.0,
+        "no_image": 0.0
+      },
+      "s9_high": {
+        "gray": 0.0,
+        "no_image": 0.0
+      },
+      "s9_low": {
+        "gray": 0.0,
+        "no_image": 0.0
+      }
+    },
+    "hier_coord_v1": {
+      "n12": {
+        "gray": 0.1133,
+        "no_image": 0.1133
+      },
+      "n20": {
+        "gray": 0.1367,
+        "no_image": 0.1367
+      },
+      "n8": {
+        "gray": 0.12,
+        "no_image": 0.12
+      }
+    }
+  },
+  "caption_run": "experiments/runs/strong_caption_store_hier_v1_l3_an29_20260817T021703Z",
+  "captioner": "Qwen2.5-VL-72B-Instruct (question-blind, TP4)",
+  "families": {
+    "hier_chart_v1": {
+      "instrument_metrics": {
+        "ambiguous_rate": 0.0,
+        "collapse_rate": 0.465,
+        "contract_valid_rate": 1.0,
+        "extraction_fallback_rate": 0.0,
+        "extractor_valid_rate": 1.0,
+        "format_valid_rate": 1.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.04125,
+        "n_pairs": 400.0,
+        "pair_accuracy": 0.0,
+        "parser_version": "canonical-v2",
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "strict_member_accuracy": 0.04125,
+        "strict_pair_accuracy": 0.0
+      },
+      "member_accuracy": 0.0413,
+      "n_pairs": 400,
+      "per_cell_role": {
+        "s5_high/target_stable": {
+          "member_accuracy": 0.04,
+          "n_members": 100
+        },
+        "s5_high/target_switch": {
+          "member_accuracy": 0.0,
+          "n_members": 100
+        },
+        "s5_low/target_stable": {
+          "member_accuracy": 0.04,
+          "n_members": 100
+        },
+        "s5_low/target_switch": {
+          "member_accuracy": 0.05,
+          "n_members": 100
+        },
+        "s9_high/target_stable": {
+          "member_accuracy": 0.04,
+          "n_members": 100
+        },
+        "s9_high/target_switch": {
+          "member_accuracy": 0.03,
+          "n_members": 100
+        },
+        "s9_low/target_stable": {
+          "member_accuracy": 0.07,
+          "n_members": 100
+        },
+        "s9_low/target_switch": {
+          "member_accuracy": 0.06,
+          "n_members": 100
+        }
+      }
+    },
+    "hier_coord_v1": {
+      "instrument_metrics": {
+        "ambiguous_rate": 0.0,
+        "collapse_rate": 0.52,
+        "contract_valid_rate": 1.0,
+        "extraction_fallback_rate": 0.0,
+        "extractor_valid_rate": 1.0,
+        "format_valid_rate": 1.0,
+        "full_text_mentions_both_rate": 0.0,
+        "member_accuracy": 0.23666666666666666,
+        "n_pairs": 300.0,
+        "pair_accuracy": 0.05,
+        "parser_version": "canonical-v2",
+        "prompt_contract_id": "answer-tags-v1",
+        "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+        "strict_member_accuracy": 0.23666666666666666,
+        "strict_pair_accuracy": 0.05
+      },
+      "member_accuracy": 0.2367,
+      "n_pairs": 300,
+      "per_cell_role": {
+        "n12/target_stable": {
+          "member_accuracy": 0.24,
+          "n_members": 100
+        },
+        "n12/target_switch": {
+          "member_accuracy": 0.25,
+          "n_members": 100
+        },
+        "n20/target_stable": {
+          "member_accuracy": 0.17,
+          "n_members": 100
+        },
+        "n20/target_switch": {
+          "member_accuracy": 0.11,
+          "n_members": 100
+        },
+        "n8/target_stable": {
+          "member_accuracy": 0.37,
+          "n_members": 100
+        },
+        "n8/target_switch": {
+          "member_accuracy": 0.28,
+          "n_members": 100
+        }
+      }
+    }
+  },
+  "qa_model": "base 3B (text-only over caption pairs)",
+  "qa_run": "experiments/runs/hier_caption_qa_base3b_an29_gpu0_20260817T003723Z",
+  "registered_ceiling": null,
+  "schema_version": "blind-gains.hier-caption-stress-readout.v1"
+}

@@ -1,0 +1,362 @@
+{
+  "openform_blind_matrix": {
+    "base7b": {
+      "gray": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.02,
+          "hier_coord_v1_n12_l2": 0.02,
+          "hier_coord_v1_n12_l3": 0.0,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.0,
+          "hier_coord_v1_n20_l2": 0.0,
+          "hier_coord_v1_n20_l3": 0.0,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.025,
+          "hier_coord_v1_n8_l2": 0.025,
+          "hier_coord_v1_n8_l3": 0.0,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_base7b_gray_an29_gpu4_20260817T014312Z"
+      },
+      "no_image": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.0,
+          "hier_coord_v1_n12_l2": 0.0,
+          "hier_coord_v1_n12_l3": 0.0,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.0,
+          "hier_coord_v1_n20_l2": 0.0,
+          "hier_coord_v1_n20_l3": 0.0,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.0,
+          "hier_coord_v1_n8_l2": 0.0,
+          "hier_coord_v1_n8_l3": 0.0,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_base7b_no_image_an29_gpu5_20260817T014319Z"
+      }
+    },
+    "mini_a5_cp_step120": {
+      "gray": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.085,
+          "hier_coord_v1_n12_l2": 0.085,
+          "hier_coord_v1_n12_l3": 0.09,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.055,
+          "hier_coord_v1_n20_l2": 0.055,
+          "hier_coord_v1_n20_l3": 0.1233,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.075,
+          "hier_coord_v1_n8_l2": 0.075,
+          "hier_coord_v1_n8_l3": 0.0567,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_mini_a5_cp_step120_gray_an12_gpu4_20260817T014342Z"
+      },
+      "no_image": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.07,
+          "hier_coord_v1_n12_l2": 0.07,
+          "hier_coord_v1_n12_l3": 0.0767,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.05,
+          "hier_coord_v1_n20_l2": 0.05,
+          "hier_coord_v1_n20_l3": 0.0667,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.055,
+          "hier_coord_v1_n8_l2": 0.055,
+          "hier_coord_v1_n8_l3": 0.0467,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_mini_a5_cp_step120_no_image_an12_gpu5_20260817T014347Z"
+      }
+    },
+    "mini_a5_std_step120": {
+      "gray": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.07,
+          "hier_coord_v1_n12_l2": 0.07,
+          "hier_coord_v1_n12_l3": 0.0867,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.065,
+          "hier_coord_v1_n20_l2": 0.065,
+          "hier_coord_v1_n20_l3": 0.11,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.065,
+          "hier_coord_v1_n8_l2": 0.065,
+          "hier_coord_v1_n8_l3": 0.0867,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_mini_a5_std_step120_gray_an29_gpu6_20260817T014328Z"
+      },
+      "no_image": {
+        "member_accuracy": {
+          "hier_chart_v1_s5_high_l1": 0.0,
+          "hier_chart_v1_s5_high_l2": 0.0,
+          "hier_chart_v1_s5_high_l3": 0.0,
+          "hier_chart_v1_s5_high_probe": 0.0,
+          "hier_chart_v1_s5_low_l1": 0.0,
+          "hier_chart_v1_s5_low_l2": 0.0,
+          "hier_chart_v1_s5_low_l3": 0.0,
+          "hier_chart_v1_s5_low_probe": 0.0,
+          "hier_chart_v1_s9_high_l1": 0.0,
+          "hier_chart_v1_s9_high_l2": 0.0,
+          "hier_chart_v1_s9_high_l3": 0.0,
+          "hier_chart_v1_s9_high_probe": 0.0,
+          "hier_chart_v1_s9_low_l1": 0.0,
+          "hier_chart_v1_s9_low_l2": 0.0,
+          "hier_chart_v1_s9_low_l3": 0.0,
+          "hier_chart_v1_s9_low_probe": 0.0,
+          "hier_coord_v1_n12_l1": 0.065,
+          "hier_coord_v1_n12_l2": 0.065,
+          "hier_coord_v1_n12_l3": 0.0767,
+          "hier_coord_v1_n12_probe": 0.0,
+          "hier_coord_v1_n20_l1": 0.065,
+          "hier_coord_v1_n20_l2": 0.065,
+          "hier_coord_v1_n20_l3": 0.0667,
+          "hier_coord_v1_n20_probe": 0.0,
+          "hier_coord_v1_n8_l1": 0.045,
+          "hier_coord_v1_n8_l2": 0.045,
+          "hier_coord_v1_n8_l3": 0.0467,
+          "hier_coord_v1_n8_probe": 0.0
+        },
+        "run_dir": "experiments/runs/hier_p2_openform_mini_a5_std_step120_no_image_an29_gpu7_20260817T014337Z"
+      }
+    }
+  },
+  "ranking_no_image_floors": {
+    "base3b": {
+      "cells": {
+        "hier_chart_v1_s5_high_l2": {
+          "mean_pair_mrr": 0.2329,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_high_l3": {
+          "mean_pair_mrr": 0.2166,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_low_l2": {
+          "mean_pair_mrr": 0.1686,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_low_l3": {
+          "mean_pair_mrr": 0.1415,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_high_l2": {
+          "mean_pair_mrr": 0.2521,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_high_l3": {
+          "mean_pair_mrr": 0.2436,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_low_l2": {
+          "mean_pair_mrr": 0.1452,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_low_l3": {
+          "mean_pair_mrr": 0.1234,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n12_l2": {
+          "mean_pair_mrr": 0.2244,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n12_l3": {
+          "mean_pair_mrr": 0.2334,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n20_l2": {
+          "mean_pair_mrr": 0.238,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n20_l3": {
+          "mean_pair_mrr": 0.2475,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n8_l2": {
+          "mean_pair_mrr": 0.2313,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n8_l3": {
+          "mean_pair_mrr": 0.236,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        }
+      },
+      "run_dir": "experiments/runs/hier_p2_ranking_base3b_no_image_an12_gpu6_20260817T014352Z"
+    },
+    "base7b": {
+      "cells": {
+        "hier_chart_v1_s5_high_l2": {
+          "mean_pair_mrr": 0.2067,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_high_l3": {
+          "mean_pair_mrr": 0.2253,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_low_l2": {
+          "mean_pair_mrr": 0.1704,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s5_low_l3": {
+          "mean_pair_mrr": 0.1356,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_high_l2": {
+          "mean_pair_mrr": 0.2397,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_high_l3": {
+          "mean_pair_mrr": 0.2402,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_low_l2": {
+          "mean_pair_mrr": 0.1368,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_chart_v1_s9_low_l3": {
+          "mean_pair_mrr": 0.1233,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n12_l2": {
+          "mean_pair_mrr": 0.2173,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n12_l3": {
+          "mean_pair_mrr": 0.239,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n20_l2": {
+          "mean_pair_mrr": 0.2289,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n20_l3": {
+          "mean_pair_mrr": 0.2335,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n8_l2": {
+          "mean_pair_mrr": 0.2221,
+          "n_pairs": 50,
+          "top1_rate": 0.0
+        },
+        "hier_coord_v1_n8_l3": {
+          "mean_pair_mrr": 0.2132,
+          "n_pairs": 100,
+          "top1_rate": 0.0
+        }
+      },
+      "run_dir": "experiments/runs/hier_p2_ranking_base7b_no_image_an12_gpu7_20260817T014357Z"
+    }
+  },
+  "schema_version": "blind-gains.hier-blind-diagnostics.v1",
+  "status": "diagnostic (descriptive; no registered gate)"
+}

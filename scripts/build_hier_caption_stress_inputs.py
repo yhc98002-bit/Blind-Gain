@@ -112,6 +112,8 @@ def build_family(data_dir: Path, family: str, cells: tuple[str, ...]) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data/hier_v1_dev")
+    parser.add_argument("--families", nargs="+", choices=sorted(FAMILIES),
+                        default=sorted(FAMILIES))
     parser.add_argument("--report", type=Path,
                         default=ROOT / "reports/hier_caption_stress_inputs_v1.json")
     args = parser.parse_args()
@@ -122,7 +124,7 @@ def main() -> int:
                                "semantic swap NOT applied)",
                "population": "L3 causal pairs (role != invariance)",
                "families": {}}
-    for family, cells in FAMILIES.items():
+    for family, cells in ((f, FAMILIES[f]) for f in args.families):
         summary["families"][family] = build_family(args.data_dir, family, cells)
     args.report.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n",
                            encoding="utf-8")

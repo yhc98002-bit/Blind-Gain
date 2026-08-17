@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -27,6 +28,9 @@ from scripts.hier_v1_lib import (
     CHART_ALLOWED,
     COORD_ALLOWED,
     EXTREMUM_KINDS,
+    HIER_LABELS,
+    PROCEDURE_TOKENS,
+    REGISTERED_TEXT,
     chart_argmax,
     coord_extremum,
     cue_ink_disjoint,
@@ -84,6 +88,17 @@ def verify_cell(data_dir: Path, family: str, cell: str,
         for row in rows[layer]:
             by_mother.setdefault(row["mother_item_id"], {})[layer] = row
     probes = {row["mother_item_id"]: row for row in rows["probe"]}
+
+    # registered in-image text policy (pre-freeze cleanup amendment): rows
+    # built or re-rendered after the amendment carry provenance.rendered_text,
+    # which must equal the registered per-family strings exactly.
+    for layer in LAYERS:
+        for row in rows[layer]:
+            rendered = row["provenance"].get("rendered_text")
+            if rendered is not None and rendered != REGISTERED_TEXT[family]:
+                problems.append(
+                    f"{row['pair_id']}: rendered_text is not the registered "
+                    f"in-image text for {family}")
 
     for mid, layer_rows in by_mother.items():
         l3 = layer_rows["l3"]
@@ -191,14 +206,39 @@ def verify_cell(data_dir: Path, family: str, cell: str,
     }
 
 
+def registered_text_policy_problems() -> list[str]:
+    """Static policy: registered in-image strings must be layer-neutral —
+    no task-procedure tokens, no series names, no point-label patterns."""
+    problems: list[str] = []
+    for family, texts in REGISTERED_TEXT.items():
+        for kind, text in texts.items():
+            low = text.lower()
+            for token in PROCEDURE_TOKENS:
+                if token in low:
+                    problems.append(
+                        f"{family} {kind}: procedure token {token!r} in "
+                        f"registered in-image text")
+            for name in HIER_LABELS:
+                if name in text:
+                    problems.append(
+                        f"{family} {kind}: series name {name!r} in "
+                        f"registered in-image text")
+            if re.search(r"\bpoint [A-Z][A-Za-z0-9]*\b", text):
+                problems.append(
+                    f"{family} {kind}: point label in registered in-image text")
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data/hier_v1_dev")
+    parser.add_argument("--families", nargs="+", choices=sorted(FAMILIES),
+                        default=sorted(FAMILIES))
     args = parser.parse_args()
-    problems: list[str] = []
+    problems: list[str] = registered_text_policy_problems()
     summary: dict = {}
-    for family, cells in FAMILIES.items():
-        for cell in cells:
+    for family in args.families:
+        for cell in FAMILIES[family]:
             summary[f"{family}/{cell}"] = verify_cell(
                 args.data_dir, family, cell, problems)
     print(json.dumps({"cells": summary, "n_problems": len(problems),

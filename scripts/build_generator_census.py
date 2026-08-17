@@ -34,7 +34,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 # Doc-sourced capability staging (HB.9; PAPER1 §5 "The hierarchy mapping
-# (recorded 2026-08-12)"). Keys are template_id substrings, first match wins.
+# (recorded 2026-08-12)"). Keys are template_id substrings. Pre-freeze
+# cleanup (2026-08-17): matching is LONGEST-NEEDLE-FIRST — the v3 census
+# labeled every hier_chart variant "L1" because the shorter generic "chart"
+# needle shadowed "hier_chart" under first-match ordering (the PI's
+# "misclassified by filename, not capability" finding). The doc map is now
+# only the LAST resort: rows that carry a `layer` field are staged from that
+# field (the capability actually required), and derived artifacts (attacker
+# keys, candidate registries, caption-stress releases) are not capability
+# items at all.
 CAPABILITY_STAGE_MAP: list[tuple[str, str, str]] = [
     ("coordinate_register", "L2", "PAPER1 §5 hierarchy mapping: coordinate register = L2"),
     ("t4v2_", "L3", "PAPER1 §5 hierarchy mapping: premise-v2 = L3"),
@@ -47,14 +55,38 @@ CAPABILITY_STAGE_MAP: list[tuple[str, str, str]] = [
 UNMAPPED_STAGE = "unmapped"
 UNMAPPED_SOURCE = "no doc attribution — needs PI/doc mapping before review use"
 
+LAYER_STAGES = {"l1": "L1", "l2": "L2", "l3": "L3", "probe": "L3-probe"}
+LAYER_STAGE_ORDER = ("L1", "L2", "L3", "L3-probe")
+LAYER_FIELD_SOURCE = ("manifest rows' `layer` field (capability actually "
+                      "required; pre-freeze cleanup 2026-08-17)")
+DERIVED_PREFIXES = ("attacker_key_", "candidates_", "caption_stress_key_",
+                    "caption_qa_pairs_")
+DERIVED_STAGE = "derived-artifact"
+DERIVED_SOURCE = ("derived artifact (attacker key / candidate registry / "
+                  "caption-stress release) — not a capability item")
+
 DISCRIMINATORS = ("intervention_type", "rung", "probe")
 
 
 def stage_of(template_id: str) -> tuple[str, str]:
+    best: tuple[str, str] | None = None
+    best_len = -1
     for needle, stage, source in CAPABILITY_STAGE_MAP:
-        if needle in template_id:
-            return stage, source
-    return UNMAPPED_STAGE, UNMAPPED_SOURCE
+        if needle in template_id and len(needle) > best_len:
+            best = (stage, source)
+            best_len = len(needle)
+    return best if best is not None else (UNMAPPED_STAGE, UNMAPPED_SOURCE)
+
+
+def stage_of_variant(template_id: str, layers: set, manifest: Path) -> tuple[str, str]:
+    known = sorted({LAYER_STAGES[layer] for layer in layers
+                    if layer in LAYER_STAGES},
+                   key=LAYER_STAGE_ORDER.index)
+    if known:
+        return "/".join(known), LAYER_FIELD_SOURCE
+    if manifest.name.startswith(DERIVED_PREFIXES):
+        return DERIVED_STAGE, DERIVED_SOURCE
+    return stage_of(template_id)
 
 
 def family_of(manifest: Path, data_root: Path) -> str:
@@ -99,9 +131,12 @@ def scan_manifest(path: Path, examples_per_variant: int) -> dict | None:
             key = variant_key(row)
             entry = variants.setdefault(
                 key,
-                {"count": 0, "category": row.get("category"), "examples": []},
+                {"count": 0, "category": row.get("category"), "examples": [],
+                 "layers": set()},
             )
             entry["count"] += 1
+            if isinstance(row.get("layer"), str):
+                entry["layers"].add(row["layer"])
             if len(entry["examples"]) < examples_per_variant:
                 entry["examples"].append(
                     {
@@ -128,7 +163,7 @@ def build_census(data_root: Path, examples_per_variant: int) -> dict:
         family = family_of(manifest, data_root)
         for key, entry in variants.items():
             template_id = key[0]
-            stage, source = stage_of(template_id)
+            stage, source = stage_of_variant(template_id, entry["layers"], manifest)
             inventory.append(
                 {
                     "family": family,
@@ -150,7 +185,7 @@ def build_census(data_root: Path, examples_per_variant: int) -> dict:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True
     ).stdout.strip()
     return {
-        "schema_version": "blind-gains.generator-census.v2",
+        "schema_version": "blind-gains.generator-census.v3",
         "generated_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "git_hash": git_hash,
         "data_root": str(data_root),

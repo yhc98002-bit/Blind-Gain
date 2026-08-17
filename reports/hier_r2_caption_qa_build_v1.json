@@ -1,0 +1,18 @@
+{
+  "allow_extra_captions": false,
+  "caption_store": "experiments/runs/strong_caption_store_hier_r2_coord_l3_an29_20260817T062020Z/captions.jsonl",
+  "key_file": "data/hier_v1_dev_r2/caption_stress_key_hier_coord_v1.jsonl",
+  "n_images": 600,
+  "n_pairs": 300,
+  "n_shards": 1,
+  "release_manifest": "data/hier_v1_dev_r2/caption_stress_hier_coord_v1/manifest.jsonl",
+  "schema_version": "blind-gains.fliptrack-caption-qa-input-summary.v1",
+  "shard_pair_counts": [
+    300
+  ],
+  "template_counts": {
+    "hier_coord_v1_n12": 100,
+    "hier_coord_v1_n20": 100,
+    "hier_coord_v1_n8": 100
+  }
+}

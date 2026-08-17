@@ -1,0 +1,41 @@
+{
+  "cells": {
+    "n12": {
+      "images_written": 700,
+      "mothers": 150,
+      "rows": {
+        "l1": 100,
+        "l2": 100,
+        "l3": 150,
+        "probe": 150
+      }
+    },
+    "n20": {
+      "images_written": 700,
+      "mothers": 150,
+      "rows": {
+        "l1": 100,
+        "l2": 100,
+        "l3": 150,
+        "probe": 150
+      }
+    },
+    "n8": {
+      "images_written": 700,
+      "mothers": 150,
+      "rows": {
+        "l1": 100,
+        "l2": 100,
+        "l3": 150,
+        "probe": 150
+      }
+    }
+  },
+  "footer": {
+    "r2": "Each point is identified by its printed label.",
+    "v1": "Locate the requested label, then read its coordinate from the numbered axes."
+  },
+  "render_rev": "r2-footer-neutral",
+  "schema_version": "blind-gains.hier-coord-r2-rerender.v1",
+  "title": "Coordinate Survey Register"
+}

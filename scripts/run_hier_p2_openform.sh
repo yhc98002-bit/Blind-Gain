@@ -9,10 +9,11 @@ cd "$ROOT" || exit 1
 export PATH="$HOME/.local/bin:$PATH"
 PY=.venv/bin/python
 
-[[ $# -eq 4 || $# -eq 5 ]] || { echo "Usage: $0 MODEL_KEY MODEL_PATH NODE GPU [IMAGE_MODE]" >&2; exit 2; }
+[[ $# -ge 4 && $# -le 7 ]] || { echo "Usage: $0 MODEL_KEY MODEL_PATH NODE GPU [IMAGE_MODE] [DATA_DIR] [RUN_TAG]" >&2; exit 2; }
 MODEL_KEY="$1"; MODEL_PATH="$2"; NODE="$3"; GPU="$4"; IMAGE_MODE="${5:-real}"
+DATA_DIR="${6:-data/hier_v1_dev}"; RUN_TAG="${7:-hier_p2_openform}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN="hier_p2_openform_${MODEL_KEY}_${IMAGE_MODE}_${NODE}_gpu${GPU}_${STAMP}"
+RUN="${RUN_TAG}_${MODEL_KEY}_${IMAGE_MODE}_${NODE}_gpu${GPU}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN}"
 LOG="$ROOT/logs/${RUN}.log"
 CLAIMS=/dev/shm/blind-gains/gpu_claims
@@ -42,7 +43,7 @@ jq -n --arg run_id "$RUN" --arg model_key "$MODEL_KEY" --arg model_path "$MODEL_
     deviations:[]}' > "$RUN_DIR/run_manifest.json"
 
 overall_rc=0
-for manifest in data/hier_v1_dev/manifest_*.jsonl; do
+for manifest in "$DATA_DIR"/manifest_*.jsonl; do
   name=$(basename "$manifest" .jsonl); name=${name#manifest_}
   out_dir="$RUN_DIR/$name"
   mkdir -p "$out_dir"

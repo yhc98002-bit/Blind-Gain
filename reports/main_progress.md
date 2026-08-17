@@ -160,3 +160,9 @@ Updated 2026-08-16 (consolidation round opened per the 2026-08-16 dispatch; rows
   workbook — MathVista only worked because it happened to have no pickle. Both
   fixed in `scripts/e1b_image_readout.py`; the second is the more dangerous kind,
   since a wrong-but-readable input would have produced plausible numbers.
+
+## Pre-freeze cleanup round (2026-08-17, PI review directive)
+
+| ID | Task | Status | Note |
+|---|---|---|---|
+| PF | Hierarchy consistency cleanup before freeze | pass | Coord footer (in-image L2 procedure) neutralized; r2 re-render verify 0 problems; census v4 (stage-by-layer; shadowing bug dead); guards + fixtures (in-image text policy, hier operand gates, file_size attacker); full r2 re-measure — coord n8/n12 freeze-ready pending human audit + dinov2-marginal disposition + caption ceiling; n20 exploratory (footer-sensitive: L1 −0.045). Report: reports/hier_v1_prefreeze_cleanup_v1.md; hier ledger §Pre-freeze cleanup. Verification: 4-agent adversarial pass, 111 checks, 1 prose error caught and corrected (n20 delta claim). |

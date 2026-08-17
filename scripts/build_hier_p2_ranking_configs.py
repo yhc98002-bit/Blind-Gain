@@ -34,9 +34,38 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def from_disk_cells(data_dir: Path, families: list[str]) -> list[tuple]:
+    """(family, cell, layer, registry_dict, manifest_sha) tuples computed
+    from an on-disk tree (r2 re-renders carry no build report)."""
+    cells = []
+    for registry_path in sorted(data_dir.glob("candidates_*.jsonl")):
+        stem = registry_path.stem[len("candidates_"):]
+        body, layer = stem.rsplit("_", 1)
+        family = next((f for f in families if body.startswith(f)), None)
+        if family is None:
+            continue
+        cell_name = body[len(family) + 1:]
+        manifest = data_dir / f"manifest_{family}_{cell_name}_{layer}.jsonl"
+        rows = sum(1 for l in registry_path.read_text().splitlines() if l.strip())
+        registry = {"path": str(registry_path.relative_to(ROOT)),
+                    "rows": rows, "sha256": sha256_file(registry_path)}
+        cells.append((family, cell_name, layer, registry,
+                      sha256_file(manifest)))
+    if not cells:
+        raise FileNotFoundError(f"no matching registries under {data_dir}")
+    return cells
+
+
 def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--data-dir", type=Path, default=None,
+                        help="from-disk mode (r2 trees without a build report)")
+    parser.add_argument("--families", nargs="+", default=["hier_coord_v1"],
+                        help="from-disk mode only")
+    parser.add_argument("--prefix", default="hier_p2_ranking_v1")
+    args = parser.parse_args()
     template = json.loads(TEMPLATE.read_text(encoding="utf-8"))
-    build = json.loads(BUILD_REPORT.read_text(encoding="utf-8"))
     models = {
         key: {
             "path": path,
@@ -46,12 +75,28 @@ def main() -> int:
         }
         for key, (path, step) in MODELS.items()
     }
+    if args.data_dir is not None:
+        work = from_disk_cells(args.data_dir.resolve(), args.families)
+    else:
+        build = json.loads(BUILD_REPORT.read_text(encoding="utf-8"))
+        work = []
+        for cell_key, cell in sorted(build["cells"].items()):
+            family, cell_name = cell_key.split("/")
+            for layer in ("l3", "l2"):
+                registry = cell["candidate_registries"][layer]
+                registry = {**registry,
+                            "sha256_expected": registry["sha256"],
+                            "sha256": sha256_file(ROOT / registry["path"])}
+                if registry["sha256"] != registry["sha256_expected"]:
+                    raise AssertionError(
+                        f"{registry['path']}: on-disk sha != build-report sha")
+                work.append((family, cell_name, layer,
+                             {k: registry[k] for k in ("path", "rows", "sha256")},
+                             cell["manifests"][layer]["sha256"]))
     emitted = []
-    for cell_key, cell in sorted(build["cells"].items()):
-        family, cell_name = cell_key.split("/")
-        for layer in ("l3", "l2"):
-            registry = cell["candidate_registries"][layer]
-            manifest = cell["manifests"][layer]
+    for family, cell_name, layer, registry, manifest_sha in work:
+        if True:
+            cell_key = f"{family}/{cell_name}"
             config = {
                 "schema_version": "blind-gains.hier-p2-ranking.v1",
                 "scope": (
@@ -67,9 +112,9 @@ def main() -> int:
                 ),
                 "candidate_registry": {
                     "path": registry["path"],
-                    "sha256": sha256_file(ROOT / registry["path"]),
+                    "sha256": registry["sha256"],
                     "pair_count": registry["rows"],
-                    "source_manifest_sha256": manifest["sha256"],
+                    "source_manifest_sha256": manifest_sha,
                     "max_candidates": 16,
                     "selection_uses_model_outputs": False,
                 },
@@ -79,10 +124,7 @@ def main() -> int:
                 "conditions": ["real"],
                 "scoring": template["scoring"],
             }
-            if config["candidate_registry"]["sha256"] != registry["sha256"]:
-                raise AssertionError(
-                    f"{registry['path']}: on-disk sha != build-report sha")
-            out = ROOT / f"configs/eval/hier_p2_ranking_v1_{family}_{cell_name}_{layer}.json"
+            out = ROOT / f"configs/eval/{args.prefix}_{family}_{cell_name}_{layer}.json"
             if out.exists():
                 raise FileExistsError(out)
             out.write_text(json.dumps(config, indent=2, sort_keys=True) + "\n",

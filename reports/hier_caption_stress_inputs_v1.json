@@ -1,0 +1,32 @@
+{
+  "families": {
+    "hier_chart_v1": {
+      "key": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_v1_dev/caption_stress_key_hier_chart_v1.jsonl",
+      "key_sha256": "7c642165992746ce79dbffdf47eb00fd736d18debf7ee77d18ac0dc057b34b1c",
+      "pairs": 400,
+      "per_cell": {
+        "s5_high": 100,
+        "s5_low": 100,
+        "s9_high": 100,
+        "s9_low": 100
+      },
+      "release_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_v1_dev/caption_stress_hier_chart_v1",
+      "release_manifest_sha256": "7959fd0ba065cece699ddde83c019b170890ee98a73e2afd6da66a0b9068fda8"
+    },
+    "hier_coord_v1": {
+      "key": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_v1_dev/caption_stress_key_hier_coord_v1.jsonl",
+      "key_sha256": "7ca5043a9fdc04012497c6806694dc76763966d03b008b4b51955140dd4a819f",
+      "pairs": 300,
+      "per_cell": {
+        "n12": 100,
+        "n20": 100,
+        "n8": 100
+      },
+      "release_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_v1_dev/caption_stress_hier_coord_v1",
+      "release_manifest_sha256": "a1b1d93c3ebb806c0fd74d6f197626f7261937fead4f2ebe2ccc390ddb4fb12d"
+    }
+  },
+  "population": "L3 causal pairs (role != invariance)",
+  "schema_version": "blind-gains.hier-caption-stress-inputs.v1",
+  "side_binding": "file-suffix (answers travel with their own image; semantic swap NOT applied)"
+}

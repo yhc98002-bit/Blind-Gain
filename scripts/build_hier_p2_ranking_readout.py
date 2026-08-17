@@ -30,6 +30,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", action="append", nargs=2,
                         metavar=("MODEL_KEY", "RUN_DIR"), required=True)
+    parser.add_argument("--families", nargs="+", choices=sorted(CELLS),
+                        default=sorted(CELLS))
     parser.add_argument("--output-json", type=Path,
                         default=ROOT / "reports/hier_p2_ranking_readout_v1.json")
     parser.add_argument("--output-md", type=Path,
@@ -46,7 +48,7 @@ def main() -> int:
         if manifest["status"] != "complete":
             raise ValueError(f"{run} status is {manifest['status']}, not complete")
         cells = {}
-        for family, family_cells in CELLS.items():
+        for family, family_cells in ((f, CELLS[f]) for f in args.families):
             for cell in family_cells:
                 for layer in LAYERS:
                     name = f"{family}_{cell}_{layer}"
@@ -68,7 +70,7 @@ def main() -> int:
         lines += [f"## Layer {layer.upper()}", "",
                   "| cell | " + " | ".join(model_keys) + " |",
                   "|---|" + "---|" * len(model_keys)]
-        for family, family_cells in CELLS.items():
+        for family, family_cells in ((f, CELLS[f]) for f in args.families):
             for cell in family_cells:
                 name = f"{family}_{cell}_{layer}"
                 parts = []

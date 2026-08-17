@@ -35,6 +35,8 @@ from scripts.hier_v1_lib import (
     COORD_MARGIN,
     CROSSING_BANDS,
     EXTREMUM_ROTATION,
+    REGISTERED_TEXT,
+    _render_hier_coordinate_register,
     build_chart_geometry,
     build_coord_geometry,
     chart_hard_negatives,
@@ -48,7 +50,6 @@ from scripts.hier_v1_lib import (
     sha256_image,
 )
 from src.eval.visual_evidence_ranking import build_candidate_registry_rows
-from src.fliptrack.build_v02 import _render_high_entropy_coordinate_register
 
 ROOT = Path(__file__).resolve().parents[1]
 BATCH_SEED = 20260817
@@ -155,8 +156,8 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                     base_a, l1_a, cue_a = layers_a
                     base_b, l1_b, cue_b = layers_b
                 else:
-                    base_a = _render_high_entropy_coordinate_register(geometry["points_a"])
-                    base_b = _render_high_entropy_coordinate_register(geometry["points_b"])
+                    base_a = _render_hier_coordinate_register(geometry["points_a"])
+                    base_b = _render_hier_coordinate_register(geometry["points_b"])
                     l1_a = l1_b = cue_a = cue_b = None
                 scene_a = [[l, p[0], p[1]] for l, p in sorted(geometry["points_a"].items())]
                 scene_b = [[l, p[0], p[1]] for l, p in sorted(geometry["points_b"].items())]
@@ -223,6 +224,7 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                     "batch_seed": BATCH_SEED,
                     "semantic_side_assignment_swapped": swap,
                     "registration": "docs/registered_hier_benchmark_v1.md",
+                    "rendered_text": REGISTERED_TEXT[family],
                 },
             }
             vr_common = {

@@ -8,10 +8,11 @@ cd "$ROOT" || exit 1
 export PATH="$HOME/.local/bin:$PATH"
 PY=.venv/bin/python
 
-[[ $# -eq 3 || $# -eq 4 ]] || { echo "Usage: $0 MODEL_KEY NODE GPU [CONDITION]" >&2; exit 2; }
+[[ $# -ge 3 && $# -le 5 ]] || { echo "Usage: $0 MODEL_KEY NODE GPU [CONDITION] [CONFIG_PREFIX]" >&2; exit 2; }
 MODEL_KEY="$1"; NODE="$2"; GPU="$3"; CONDITION="${4:-real}"
+CONFIG_PREFIX="${5:-hier_p2_ranking_v1}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN="hier_p2_ranking_${MODEL_KEY}_${CONDITION}_${NODE}_gpu${GPU}_${STAMP}"
+RUN="${CONFIG_PREFIX%_v1}_${MODEL_KEY}_${CONDITION}_${NODE}_gpu${GPU}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN}"
 LOG="$ROOT/logs/${RUN}.log"
 CLAIMS=/dev/shm/blind-gains/gpu_claims
@@ -40,8 +41,8 @@ jq -n --arg run_id "$RUN" --arg model_key "$MODEL_KEY" --arg node "$NODE" \
     deviations:[]}' > "$RUN_DIR/run_manifest.json"
 
 overall_rc=0
-for config in configs/eval/hier_p2_ranking_v1_*.json; do
-  name=$(basename "$config" .json); name=${name#hier_p2_ranking_v1_}
+for config in configs/eval/${CONFIG_PREFIX}_*.json; do
+  name=$(basename "$config" .json); name=${name#${CONFIG_PREFIX}_}
   out="$RUN_DIR/${name}.jsonl"
   log "cell $name START"
   ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \

@@ -14,7 +14,14 @@ truth to check:
   `semantic_side_assignment_swapped` convention (answer = target's
   x-coordinate; pinned empirically 600/600 before this audit shipped);
 - chart-v08 families: the x named in the question ("x = N") must equal
-  `verifier_results.target_x` (pinned empirically 100/100).
+  `verifier_results.target_x` (pinned empirically 100/100);
+- hier_v1 families (pre-freeze cleanup, 2026-08-17 — previously these rows
+  fell into the unchecked bucket because their operands live under
+  `target_label_a/b`): L3 and probe questions must name NEITHER side's
+  target (discovery withholds identity); L2/L1 questions must name exactly
+  the shared target identity, which must agree between sides (A2: layers
+  with an identity-given question exist only where one truthful identity
+  holds for both sides).
 
 Rows that carry none of the checkable operands are counted as such, never
 silently passed. Exit 1 on any problem.
@@ -31,10 +38,16 @@ from pathlib import Path
 # prose like "the point is" from matching as a label.
 POINT_RE = re.compile(r"point ([A-Z][A-Za-z0-9]*)")
 X_RE = re.compile(r"x = (-?\d+)")
+SERIES_RE = re.compile(r"series ([A-Z][A-Za-z]*)")
 
 
 def question_named_point(question: str) -> str | None:
     match = POINT_RE.search(question or "")
+    return match.group(1) if match else None
+
+
+def question_named_series(question: str) -> str | None:
+    match = SERIES_RE.search(question or "")
     return match.group(1) if match else None
 
 
@@ -77,6 +90,30 @@ def audit_row(row: dict) -> tuple[list[str], list[str]]:
                 f"recorded ({row.get('answer_a')}, {row.get('answer_b')}) "
                 f"[swapped={swapped}]"
             )
+
+    if row.get("category") == "hier_v1":
+        layer = row.get("layer")
+        label_a = str(vr.get("target_label_a"))
+        label_b = str(vr.get("target_label_b"))
+        if layer in ("l3", "probe"):
+            checks.append("hier_l3_probe_names_no_target")
+            leaked = sorted(lbl for lbl in {label_a, label_b}
+                            if lbl and lbl != "None" and lbl in question)
+            if leaked:
+                problems.append(
+                    f"{pair_id}: {layer} question names target(s) {leaked} "
+                    f"(discovery must withhold identity)")
+        elif layer in ("l2", "l1"):
+            checks.append("hier_l2_l1_names_target")
+            named = question_named_point(question) or question_named_series(question)
+            if label_a != label_b:
+                problems.append(
+                    f"{pair_id}: {layer} row exists but target identity "
+                    f"differs between sides ({label_a!r} vs {label_b!r}; A2)")
+            elif named != label_a:
+                problems.append(
+                    f"{pair_id}: {layer} question names {named!r} but the "
+                    f"target identity is {label_a!r}")
 
     target_x = vr.get("target_x")
     if target_x is not None:
