@@ -73,7 +73,7 @@ FREE_BYTES=$(df -B1 --output=avail "$ROOT" | tail -1 | tr -d '[:space:]')
 [[ "$FREE_BYTES" -ge 400000000000 ]] || {
   echo "storage floor: ${FREE_BYTES}B < 400GB (resumable 7B checkpoints)" >&2; exit 76; }
 
-"$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "${GPU_IDS[@]}" || exit 75
+"$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "$GPU_LIST" || exit 75
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 RUN_ID="${LABEL}_${NODE}_${STAMP}"
@@ -91,7 +91,7 @@ for gpu in "${GPU_IDS[@]}"; do
     ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
       "mkdir -p '$CLAIMS' && cat > '$CLAIMS/${NODE}_gpu${gpu}.claim'" || exit 3
 done
-"$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "${GPU_IDS[@]}" \
+"$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "$GPU_LIST" \
   --ignore-claim-run-id "$RUN_ID" || exit 75
 
 RAY_TMP="/dev/shm/bg-ray-$(printf '%s' "$RUN_ID" | sha256sum | cut -c1-12)"
