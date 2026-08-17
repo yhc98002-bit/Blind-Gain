@@ -1,0 +1,11 @@
+{
+  "byte_correspondence": "problem/answer/image path checked per index; image sha256 recomputed from bytes on disk",
+  "corpus": "data/st3_train_v1/train.jsonl",
+  "corpus_rows": 2880,
+  "manifest": "data/st3_train_blind_solvability_manifest_v1.jsonl",
+  "manifest_rows": 2880,
+  "manifest_sha256": "3d36bc17c37cdb517424534225a97201fb0134055007e393ab0b715a1bee399d",
+  "purpose": "C1 necessity sampling: q_real and q_blind per training item (16 samples, T=1) measured on the 7B base",
+  "schema_version": "blind-gains.st3-blind-solvability-manifest-build.v1",
+  "unique_qids": 2880
+}
