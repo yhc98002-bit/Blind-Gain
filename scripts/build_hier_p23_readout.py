@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FAMILIES = ("hier_coord_v1", "hier_chart_v1", "hier_chart_v2")
+FAMILIES = ("hier_coord_v1", "hier_chart_v1", "hier_chart_v2", "hier_chart_v3")
 LAYERS = ("l1", "l2", "l3", "probe")
 
 

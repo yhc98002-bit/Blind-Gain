@@ -1,0 +1,22 @@
+{
+  "cells": [
+    "n8",
+    "n12"
+  ],
+  "corpus_seed": 20260817,
+  "family": "hier_coord_v1",
+  "group_definition": "one mother-item = one intervention group of 4 members (L3 a/b + discovery probe a/b), adjacent, fixed order",
+  "group_size": 4,
+  "mothers_per_cell": {
+    "n12": 360,
+    "n8": 360
+  },
+  "n_groups": 720,
+  "n_rows": 2880,
+  "out_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_train_v1",
+  "parquet": true,
+  "registration": "docs/registered_stage3_7b_v1.md \u00a73 + Launch amendment 1",
+  "schema_version": "blind-gains.st3-train-corpus.v1",
+  "split": "training",
+  "train_jsonl_sha256": "dc76d9a82b18e13be119c271940bfcbf8384526e30326f8b056669109b6c9f85"
+}

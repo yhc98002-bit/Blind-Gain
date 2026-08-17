@@ -28,6 +28,7 @@ FAMILIES = {
     "hier_coord_v1": ("n8", "n12", "n20"),
     "hier_chart_v1": ("s5_low", "s5_high", "s9_low", "s9_high"),
     "hier_chart_v2": ("s5_low", "s5_high", "s9_low", "s9_high"),
+    "hier_chart_v3": ("s9_low", "s9_high"),
 }
 LAYERS = ("l1", "l2", "l3")
 GATE_MODEL = "base3b"

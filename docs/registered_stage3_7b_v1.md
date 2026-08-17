@@ -105,6 +105,28 @@ training on R19/R20 or any Layer-A/confirmatory item. No baseline hybrids
 
 - PI sign-off: ____________________ (date: __________)  — **UNSIGNED DRAFT**
 
+## Launch amendment 1 — coord-only split (2026-08-17, pre-commitment fired)
+
+The registered fallback in the PI's dispatch 2026-08-16b — *"coord-only split
+if chart-v2 fails its re-run gates twice"* — **has fired**. chart-v2 failed its
+one-shot acceptance (`reports/hier_chart_v2_acceptance_v1.md`) and chart-v3,
+the second and final attempt, failed on the dinov2 channel
+(`reports/hier_chart_v3_acceptance_v1.md`). No third attempt was made.
+
+**Training split, pinned here per §3:** the training bucket of
+`hier_coord_v1` at the frozen r2 render, cells **n8 and n12** only (n20
+excluded per EXPERIMENT_TODO PART 6), scene-program bucket `training`
+([0,60)), generated at `data/hier_train_v1` (120 mother-items per role per
+cell). No chart item is trained on. R19/R20 and the confirmatory bucket remain
+excluded (I6, I11).
+
+**Endpoints** are unchanged (§5): R19 held-out content on the primary anchor,
+and hierarchy L2/L3 per-layer readouts — now on the coordinate confirmatory
+bucket, with chart-v3 s9_low available as a development-tier secondary.
+
+**Blind control**: inherited A2b-lineage controls, per the PI's ratification
+answer; no third arm.
+
 ## Deviations log
 
 - (none)
