@@ -1,0 +1,974 @@
+[
+  {
+    "answer_a": "-5",
+    "answer_b": "2",
+    "candidate_count": 14,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "5e3329565a100dd591fb4773212292558d90be3e8bf5dde26760f3b64a2ea2b7",
+    "candidates": [
+      {
+        "answer": "-4",
+        "answer_signature": "numeric",
+        "candidate_id": "e5e0093f285a4fb9",
+        "verbalization": "<answer>-4</answer>"
+      },
+      {
+        "answer": "-5",
+        "answer_signature": "numeric",
+        "candidate_id": "37aa1ccf80e48183",
+        "verbalization": "<answer>-5</answer>"
+      },
+      {
+        "answer": "-6",
+        "answer_signature": "numeric",
+        "candidate_id": "03b26944890929ff",
+        "verbalization": "<answer>-6</answer>"
+      },
+      {
+        "answer": "-7",
+        "answer_signature": "numeric",
+        "candidate_id": "a770d3270c9dcded",
+        "verbalization": "<answer>-7</answer>"
+      },
+      {
+        "answer": "-2",
+        "answer_signature": "numeric",
+        "candidate_id": "cf3bae39dd692048",
+        "verbalization": "<answer>-2</answer>"
+      },
+      {
+        "answer": "2",
+        "answer_signature": "numeric",
+        "candidate_id": "d4735e3a265e16ee",
+        "verbalization": "<answer>2</answer>"
+      },
+      {
+        "answer": "-1",
+        "answer_signature": "numeric",
+        "candidate_id": "1bad6b8cf97131fc",
+        "verbalization": "<answer>-1</answer>"
+      },
+      {
+        "answer": "6",
+        "answer_signature": "numeric",
+        "candidate_id": "e7f6c011776e8db7",
+        "verbalization": "<answer>6</answer>"
+      },
+      {
+        "answer": "1",
+        "answer_signature": "numeric",
+        "candidate_id": "6b86b273ff34fce1",
+        "verbalization": "<answer>1</answer>"
+      },
+      {
+        "answer": "4",
+        "answer_signature": "numeric",
+        "candidate_id": "4b227777d4dd1fc6",
+        "verbalization": "<answer>4</answer>"
+      },
+      {
+        "answer": "7",
+        "answer_signature": "numeric",
+        "candidate_id": "7902699be42c8a8e",
+        "verbalization": "<answer>7</answer>"
+      },
+      {
+        "answer": "3",
+        "answer_signature": "numeric",
+        "candidate_id": "4e07408562bedb8b",
+        "verbalization": "<answer>3</answer>"
+      },
+      {
+        "answer": "-3",
+        "answer_signature": "numeric",
+        "candidate_id": "615bdd17c2556f82",
+        "verbalization": "<answer>-3</answer>"
+      },
+      {
+        "answer": "5",
+        "answer_signature": "numeric",
+        "candidate_id": "ef2d127de37b942b",
+        "verbalization": "<answer>5</answer>"
+      }
+    ],
+    "category": "geometry_coordinate_indexing",
+    "gold_candidate_id_a": "37aa1ccf80e48183",
+    "gold_candidate_id_b": "d4735e3a265e16ee",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/ecbd0409bc693f7b.png",
+    "image_a_sha256": "14ac00380746314cb5ebd16f65f08a66048c719a98714576729c52ae9695b583",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/7a9fe5f1a68865fd.png",
+    "image_b_sha256": "6af1050ede333909c156f63fc34194263a18f067aeafe4dc1f9ebb0fe188804a",
+    "pair_id": "c69b5acf57268204",
+    "question": "What is the x-coordinate of point P4?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_register20x_d5f220d58b1982d7",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "template_label": "coordinate_register_twenty_point_x_v02",
+    "caption_a": "The image is a Coordinate Survey Register with various labeled points marked on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are labeled with letters such as P4, X7, Y6, etc., and their coordinates are indicated by numbers along the axes. For example, point P4 is located at (-5, 3). The register includes different colored markers for each point, making it easy to distinguish between them.",
+    "caption_b": "The image is a Coordinate Survey Register with various labeled points marked on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are labeled with letters such as C5, Y7, F5, S2, X7, P6, T8, L4, N7, R3, L8, J8, and others. Each point has a distinct color: red, green, blue, purple, orange, and gray. The register includes a title \"Coordinate Survey Register\" at the top center."
+  },
+  {
+    "answer_a": "-2",
+    "answer_b": "6",
+    "candidate_count": 14,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "26aaa66aaa1057bab27625047c510e98b3e19356e1c7ba365191ff795443d214",
+    "candidates": [
+      {
+        "answer": "-2",
+        "answer_signature": "numeric",
+        "candidate_id": "cf3bae39dd692048",
+        "verbalization": "<answer>-2</answer>"
+      },
+      {
+        "answer": "5",
+        "answer_signature": "numeric",
+        "candidate_id": "ef2d127de37b942b",
+        "verbalization": "<answer>5</answer>"
+      },
+      {
+        "answer": "7",
+        "answer_signature": "numeric",
+        "candidate_id": "7902699be42c8a8e",
+        "verbalization": "<answer>7</answer>"
+      },
+      {
+        "answer": "-6",
+        "answer_signature": "numeric",
+        "candidate_id": "03b26944890929ff",
+        "verbalization": "<answer>-6</answer>"
+      },
+      {
+        "answer": "-1",
+        "answer_signature": "numeric",
+        "candidate_id": "1bad6b8cf97131fc",
+        "verbalization": "<answer>-1</answer>"
+      },
+      {
+        "answer": "-5",
+        "answer_signature": "numeric",
+        "candidate_id": "37aa1ccf80e48183",
+        "verbalization": "<answer>-5</answer>"
+      },
+      {
+        "answer": "2",
+        "answer_signature": "numeric",
+        "candidate_id": "d4735e3a265e16ee",
+        "verbalization": "<answer>2</answer>"
+      },
+      {
+        "answer": "4",
+        "answer_signature": "numeric",
+        "candidate_id": "4b227777d4dd1fc6",
+        "verbalization": "<answer>4</answer>"
+      },
+      {
+        "answer": "3",
+        "answer_signature": "numeric",
+        "candidate_id": "4e07408562bedb8b",
+        "verbalization": "<answer>3</answer>"
+      },
+      {
+        "answer": "-7",
+        "answer_signature": "numeric",
+        "candidate_id": "a770d3270c9dcded",
+        "verbalization": "<answer>-7</answer>"
+      },
+      {
+        "answer": "6",
+        "answer_signature": "numeric",
+        "candidate_id": "e7f6c011776e8db7",
+        "verbalization": "<answer>6</answer>"
+      },
+      {
+        "answer": "1",
+        "answer_signature": "numeric",
+        "candidate_id": "6b86b273ff34fce1",
+        "verbalization": "<answer>1</answer>"
+      },
+      {
+        "answer": "-4",
+        "answer_signature": "numeric",
+        "candidate_id": "e5e0093f285a4fb9",
+        "verbalization": "<answer>-4</answer>"
+      },
+      {
+        "answer": "-3",
+        "answer_signature": "numeric",
+        "candidate_id": "615bdd17c2556f82",
+        "verbalization": "<answer>-3</answer>"
+      }
+    ],
+    "category": "geometry_coordinate_indexing",
+    "gold_candidate_id_a": "cf3bae39dd692048",
+    "gold_candidate_id_b": "e7f6c011776e8db7",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/a84be71c43f362e5.png",
+    "image_a_sha256": "7708384ef63bc9423962cb2c0a66021f4c5fda81974d0d2cd1d63ce5b4cb49a5",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/794a27259a022f15.png",
+    "image_b_sha256": "0b42a67f635b41e3f4da302b76e36eb022da7fe161ad6f3b82a1ccf3dadeb56f",
+    "pair_id": "c41a404a64bbed9c",
+    "question": "What is the x-coordinate of point J2?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_register20x_47de70ece6af1b0c",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "template_label": "coordinate_register_twenty_point_x_v02",
+    "caption_a": "The image is a Coordinate Survey Register with various labeled points plotted on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are color-coded: green (F4), purple (B6, F6, K8), red (D4, P7), blue (G6, G9, R2, R6), orange (W6, W9), and brown (R5). The register includes coordinates such as B4 at (1, 7), D4 at (2, 4), and Z7 at (6, 6). The labels are positioned near their respective points, making it easy to identify each point's location.",
+    "caption_b": "The image is a Coordinate Survey Register with various labeled points plotted on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are color-coded: green (F4), purple (B6, F6, K8, R2, R6), red (D4, P7, W9), blue (G6, G9, J2, Y4), orange (W6, Z7), and gray (C5). Each point has coordinates indicated by its label and position on the grid."
+  },
+  {
+    "answer_a": "4",
+    "answer_b": "-6",
+    "candidate_count": 14,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "26fb6db5c4c2019e15ff73ecfb4039c4bb42fbdd10aa3416dfb08e74c4f8ef3c",
+    "candidates": [
+      {
+        "answer": "-3",
+        "answer_signature": "numeric",
+        "candidate_id": "615bdd17c2556f82",
+        "verbalization": "<answer>-3</answer>"
+      },
+      {
+        "answer": "6",
+        "answer_signature": "numeric",
+        "candidate_id": "e7f6c011776e8db7",
+        "verbalization": "<answer>6</answer>"
+      },
+      {
+        "answer": "3",
+        "answer_signature": "numeric",
+        "candidate_id": "4e07408562bedb8b",
+        "verbalization": "<answer>3</answer>"
+      },
+      {
+        "answer": "2",
+        "answer_signature": "numeric",
+        "candidate_id": "d4735e3a265e16ee",
+        "verbalization": "<answer>2</answer>"
+      },
+      {
+        "answer": "-1",
+        "answer_signature": "numeric",
+        "candidate_id": "1bad6b8cf97131fc",
+        "verbalization": "<answer>-1</answer>"
+      },
+      {
+        "answer": "-2",
+        "answer_signature": "numeric",
+        "candidate_id": "cf3bae39dd692048",
+        "verbalization": "<answer>-2</answer>"
+      },
+      {
+        "answer": "7",
+        "answer_signature": "numeric",
+        "candidate_id": "7902699be42c8a8e",
+        "verbalization": "<answer>7</answer>"
+      },
+      {
+        "answer": "4",
+        "answer_signature": "numeric",
+        "candidate_id": "4b227777d4dd1fc6",
+        "verbalization": "<answer>4</answer>"
+      },
+      {
+        "answer": "5",
+        "answer_signature": "numeric",
+        "candidate_id": "ef2d127de37b942b",
+        "verbalization": "<answer>5</answer>"
+      },
+      {
+        "answer": "-6",
+        "answer_signature": "numeric",
+        "candidate_id": "03b26944890929ff",
+        "verbalization": "<answer>-6</answer>"
+      },
+      {
+        "answer": "1",
+        "answer_signature": "numeric",
+        "candidate_id": "6b86b273ff34fce1",
+        "verbalization": "<answer>1</answer>"
+      },
+      {
+        "answer": "-7",
+        "answer_signature": "numeric",
+        "candidate_id": "a770d3270c9dcded",
+        "verbalization": "<answer>-7</answer>"
+      },
+      {
+        "answer": "-4",
+        "answer_signature": "numeric",
+        "candidate_id": "e5e0093f285a4fb9",
+        "verbalization": "<answer>-4</answer>"
+      },
+      {
+        "answer": "-5",
+        "answer_signature": "numeric",
+        "candidate_id": "37aa1ccf80e48183",
+        "verbalization": "<answer>-5</answer>"
+      }
+    ],
+    "category": "geometry_coordinate_indexing",
+    "gold_candidate_id_a": "4b227777d4dd1fc6",
+    "gold_candidate_id_b": "03b26944890929ff",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/4c85d80eb6e7934a.png",
+    "image_a_sha256": "98c53e72c283438ff2ebe730b087be6c9c0b09a3ba027ab7b0f486da1d37cec2",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/472ce8c38f319476.png",
+    "image_b_sha256": "afe643b10393047d43739b604ac1d07f7010d87387546bedf1f81b6752a3e162",
+    "pair_id": "0fcf7c419477baf5",
+    "question": "What is the x-coordinate of point V6?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_register20x_a50f9548bf622dc2",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "template_label": "coordinate_register_twenty_point_x_v02",
+    "caption_a": "The image is a Coordinate Survey Register with various labeled points marked on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are labeled with letters such as B2, C6, N8, K4, etc., and some points have additional labels like V3, Z5, P3, etc. The register includes both positive and negative coordinates, and the points are distributed across the grid. The title of the register is \"Coordinate Survey Register.\"",
+    "caption_b": "The image is a Coordinate Survey Register with various labeled points marked on a grid. The x-axis ranges from -7 to 7, and the y-axis ranges from -7 to 7. Points are labeled with letters such as B2, C6, N8, K4, etc., and their coordinates are indicated by numbers along the axes. For example, point B2 is located at (1, 5), point C6 is at (3, 7), and so on. The register includes both positive and negative coordinates, and some points are colored differently, such as blue, red, green, and purple. The spatial arrangement of these points suggests they might represent specific locations or data points in a surveying context."
+  },
+  {
+    "answer_a": "MX",
+    "answer_b": "TX",
+    "candidate_count": 16,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "c0f3e6d50015cc98eb097b399eb44c1c9415ad7c4288b7e96d02cc5986b6b692",
+    "candidates": [
+      {
+        "answer": "D5",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "12a750139ca2e4c1",
+        "verbalization": "<answer>D5</answer>"
+      },
+      {
+        "answer": "FQ",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "ae10db2c666f710e",
+        "verbalization": "<answer>FQ</answer>"
+      },
+      {
+        "answer": "ZL",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "004374e9564b253d",
+        "verbalization": "<answer>ZL</answer>"
+      },
+      {
+        "answer": "C4",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "08d1623c441b55a6",
+        "verbalization": "<answer>C4</answer>"
+      },
+      {
+        "answer": "WZ",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "aa7cd9cf0698a853",
+        "verbalization": "<answer>WZ</answer>"
+      },
+      {
+        "answer": "EF",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "3a4db4ee1e59ce1a",
+        "verbalization": "<answer>EF</answer>"
+      },
+      {
+        "answer": "WK",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "0ebb250482836d86",
+        "verbalization": "<answer>WK</answer>"
+      },
+      {
+        "answer": "QU",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "ce8afb935641d512",
+        "verbalization": "<answer>QU</answer>"
+      },
+      {
+        "answer": "7K",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "173c0c6794a68853",
+        "verbalization": "<answer>7K</answer>"
+      },
+      {
+        "answer": "GF",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "6ede6cac45f64ed0",
+        "verbalization": "<answer>GF</answer>"
+      },
+      {
+        "answer": "7J",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "3b4098d61757ac16",
+        "verbalization": "<answer>7J</answer>"
+      },
+      {
+        "answer": "VZ",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "583e6a37d138f6bc",
+        "verbalization": "<answer>VZ</answer>"
+      },
+      {
+        "answer": "F2",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "8e2de3335023201f",
+        "verbalization": "<answer>F2</answer>"
+      },
+      {
+        "answer": "EY",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "236c08655891895a",
+        "verbalization": "<answer>EY</answer>"
+      },
+      {
+        "answer": "MX",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "910e94a9ef93f719",
+        "verbalization": "<answer>MX</answer>"
+      },
+      {
+        "answer": "TX",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "536939ed0e78c5b5",
+        "verbalization": "<answer>TX</answer>"
+      }
+    ],
+    "category": "document_header_indexing",
+    "gold_candidate_id_a": "910e94a9ef93f719",
+    "gold_candidate_id_b": "536939ed0e78c5b5",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/decfc2c6141d8a21.png",
+    "image_a_sha256": "65dc429b4e657338ef18732ca9c97a48ad77c79ba241da3cc66b2c12c28e6a1d",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/e5b5ba829c001c61.png",
+    "image_b_sha256": "0758cdbcdaa10d1ffcef6e37a810774f6f2194c21f6504397142cab2b9d1c21d",
+    "pair_id": "bdc973625bec3d4f",
+    "question": "What is the 2-character code at row Case-591 and column G4?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_headertable_ada6f02fbbfb3166",
+    "template_id": "header_cued_table_code_v02",
+    "template_label": "header_cued_table_code_v02",
+    "caption_a": "The image is a \"Repeated Field Verification Form\" table with headers \"F2,\" \"G4,\" \"H7,\" \"J9,\" \"K3,\" and \"L8.\" The rows are labeled as Case-106, Case-332, Case-261, Case-826, Case-591, Case-616, Case-961, and Case-464. Each cell contains a letter or combination of letters, and some cells have blue outlines indicating specific rows and columns. The form appears to be used for data verification or comparison across different cases.",
+    "caption_b": "The image is a \"Repeated Field Verification Form\" table with headers \"F2,\" \"G4,\" \"H7,\" \"J9,\" \"K3,\" and \"L8.\" The rows represent different cases labeled as Case-106, Case-332, Case-261, Case-826, Case-591, Case-616, Case-961, and Case-464. Each case has corresponding values in each field, such as F2: F9, G4: RM, H7: CY, J9: D5, K3: GE, L8: CH for Case-106. The cells containing these values are highlighted with blue outlines, indicating they are the requested row header and column header."
+  },
+  {
+    "answer_a": "UN",
+    "answer_b": "UP",
+    "candidate_count": 16,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "94141d87f94ffaffd6b4be2a869158a4fdbc92478f4b2b2b1ca85e0ed8e8dccd",
+    "candidates": [
+      {
+        "answer": "AW",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "1f65c7e62e189ccf",
+        "verbalization": "<answer>AW</answer>"
+      },
+      {
+        "answer": "2Y",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "58ac8b3b9b4d50ba",
+        "verbalization": "<answer>2Y</answer>"
+      },
+      {
+        "answer": "H3",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "b14c45d35f5032a4",
+        "verbalization": "<answer>H3</answer>"
+      },
+      {
+        "answer": "QG",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "df61f15e8281f8c6",
+        "verbalization": "<answer>QG</answer>"
+      },
+      {
+        "answer": "KE",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "b5e22fb36ea0760d",
+        "verbalization": "<answer>KE</answer>"
+      },
+      {
+        "answer": "5P",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "edbba9799755806a",
+        "verbalization": "<answer>5P</answer>"
+      },
+      {
+        "answer": "4Q",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "aa2e654952d1b9a1",
+        "verbalization": "<answer>4Q</answer>"
+      },
+      {
+        "answer": "AS",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "de148153b07d4292",
+        "verbalization": "<answer>AS</answer>"
+      },
+      {
+        "answer": "VM",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "8e5abdd396d53501",
+        "verbalization": "<answer>VM</answer>"
+      },
+      {
+        "answer": "CT",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "15cbe5f066da7961",
+        "verbalization": "<answer>CT</answer>"
+      },
+      {
+        "answer": "JP",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "569ec6135d377e8a",
+        "verbalization": "<answer>JP</answer>"
+      },
+      {
+        "answer": "G9",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "38e531c0436a4750",
+        "verbalization": "<answer>G9</answer>"
+      },
+      {
+        "answer": "WP",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "db0a626efa9c1bf7",
+        "verbalization": "<answer>WP</answer>"
+      },
+      {
+        "answer": "TD",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "b6a51c2aa0fba8cf",
+        "verbalization": "<answer>TD</answer>"
+      },
+      {
+        "answer": "UP",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "42cb4e6f84970e97",
+        "verbalization": "<answer>UP</answer>"
+      },
+      {
+        "answer": "UN",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "4482340af284d720",
+        "verbalization": "<answer>UN</answer>"
+      }
+    ],
+    "category": "document_header_indexing",
+    "gold_candidate_id_a": "4482340af284d720",
+    "gold_candidate_id_b": "42cb4e6f84970e97",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/16c2165f53549d86.png",
+    "image_a_sha256": "a6b60768b7bdae5aa2be792beb69378e524f4b2f096185c60f1381c19d95e7fe",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/2471f5626a3a9a02.png",
+    "image_b_sha256": "0cd2509d7bdf4f132590841e69e95661b686791942c487eb6fa0aae869ecdb72",
+    "pair_id": "aef856ea78daa259",
+    "question": "What is the 2-character code at row Case-389 and column G4?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_headertable_5305455a3daaca3f",
+    "template_id": "header_cued_table_code_v02",
+    "template_label": "header_cued_table_code_v02",
+    "caption_a": "The image is a \"Repeated Field Verification Form\" table with headers \"F2,\" \"G4,\" \"H7,\" \"J9,\" \"K3,\" and \"L8.\" The rows represent different cases labeled as Case-389, Case-393, Case-865, Case-142, Case-419, Case-367, Case-404, and Case-110. Each case has corresponding values in each field, such as 38, UN, JA, 4M, 4K, NG for Case-389. The table includes a note at the bottom stating that blue outlines only indicate the requested row header and column header, not the cell itself.",
+    "caption_b": "The image is a \"Repeated Field Verification Form\" with columns labeled F2, G4, H7, J9, K3, and L8, and rows labeled Case-389, Case-393, Case-865, Case-142, Case-419, Case-367, Case-404, and Case-110. Each cell contains a letter or combination of letters, such as \"UP,\" \"JA,\" \"4M,\" etc. The form appears to be used for data verification or comparison across different cases."
+  },
+  {
+    "answer_a": "3T",
+    "answer_b": "NC",
+    "candidate_count": 16,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "5d9a99ac8db23d473fd14de0aff82a3f394457ca0499004e470f66aca702b670",
+    "candidates": [
+      {
+        "answer": "8G",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "55112ca377cb9d32",
+        "verbalization": "<answer>8G</answer>"
+      },
+      {
+        "answer": "7K",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "173c0c6794a68853",
+        "verbalization": "<answer>7K</answer>"
+      },
+      {
+        "answer": "PT",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "169b032adf2ab80f",
+        "verbalization": "<answer>PT</answer>"
+      },
+      {
+        "answer": "K7",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "da07580314824bbe",
+        "verbalization": "<answer>K7</answer>"
+      },
+      {
+        "answer": "DS",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "0b88c9d59ad1251d",
+        "verbalization": "<answer>DS</answer>"
+      },
+      {
+        "answer": "C7",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "f167717fb2ed36e7",
+        "verbalization": "<answer>C7</answer>"
+      },
+      {
+        "answer": "KS",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "f647ceea9954f0f4",
+        "verbalization": "<answer>KS</answer>"
+      },
+      {
+        "answer": "WZ",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "aa7cd9cf0698a853",
+        "verbalization": "<answer>WZ</answer>"
+      },
+      {
+        "answer": "S7",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "d53d113e9c01f438",
+        "verbalization": "<answer>S7</answer>"
+      },
+      {
+        "answer": "9C",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "9c954cd515d166bb",
+        "verbalization": "<answer>9C</answer>"
+      },
+      {
+        "answer": "9M",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "6feef63f8952711d",
+        "verbalization": "<answer>9M</answer>"
+      },
+      {
+        "answer": "8L",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "c62c023f9a91a975",
+        "verbalization": "<answer>8L</answer>"
+      },
+      {
+        "answer": "GU",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "86856a090297ec6f",
+        "verbalization": "<answer>GU</answer>"
+      },
+      {
+        "answer": "K4",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "4ab811cbefec4e95",
+        "verbalization": "<answer>K4</answer>"
+      },
+      {
+        "answer": "3T",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "cd8c7161e853a05e",
+        "verbalization": "<answer>3T</answer>"
+      },
+      {
+        "answer": "NC",
+        "answer_signature": "alnum-length-2",
+        "candidate_id": "b629074b98f63057",
+        "verbalization": "<answer>NC</answer>"
+      }
+    ],
+    "category": "document_header_indexing",
+    "gold_candidate_id_a": "cd8c7161e853a05e",
+    "gold_candidate_id_b": "b629074b98f63057",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/9e6c64fb94808f1a.png",
+    "image_a_sha256": "faaeb395e017af4f811974c6f88cfe7a598da89eaeb8f33847492da07a7f0af9",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/20a6ae9a0f89e190.png",
+    "image_b_sha256": "1fe0cea465a4ef7ff2041bb2809516f714a9fafd5b00344107fb4a4106dfdb26",
+    "pair_id": "930f84ff83767264",
+    "question": "What is the 2-character code at row Case-605 and column L8?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_headertable_27bc4cdb6b69184d",
+    "template_id": "header_cued_table_code_v02",
+    "template_label": "header_cued_table_code_v02",
+    "caption_a": "The image is a \"Repeated Field Verification Form\" with various rows and columns containing alphanumeric characters. The form includes headers such as \"Case-677,\" \"Case-253,\" \"Case-605,\" \"Case-366,\" \"Case-452,\" \"Case-561,\" \"Case-865,\" and \"Case-513.\" Each row represents a different case, and each column contains a unique identifier or code. The cells are filled with letters and numbers, and some cells are highlighted in blue to indicate specific rows and columns. The form appears to be used for data verification or tracking purposes.",
+    "caption_b": "The image is a \"Repeated Field Verification Form\" with various rows and columns containing alphanumeric characters. The form includes headers such as \"Case-677,\" \"Case-253,\" \"Case-605,\" \"Case-366,\" \"Case-452,\" \"Case-561,\" \"Case-865,\" and \"Case-513.\" Each row represents a different case, and each column contains a unique identifier or code. The cells are filled with letters and numbers, and some cells are highlighted in blue to indicate specific rows and columns. The form appears to be used for data verification or tracking purposes."
+  },
+  {
+    "answer_a": "70",
+    "answer_b": "40",
+    "candidate_count": 9,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "628acecf4600a9a12f48bae1f4e424c26ae5a742bbff29e0c99fa367763ed40a",
+    "candidates": [
+      {
+        "answer": "50",
+        "answer_signature": "numeric",
+        "candidate_id": "1a6562590ef19d10",
+        "verbalization": "<answer>50</answer>"
+      },
+      {
+        "answer": "40",
+        "answer_signature": "numeric",
+        "candidate_id": "d59eced1ded07f84",
+        "verbalization": "<answer>40</answer>"
+      },
+      {
+        "answer": "30",
+        "answer_signature": "numeric",
+        "candidate_id": "624b60c58c9d8bfb",
+        "verbalization": "<answer>30</answer>"
+      },
+      {
+        "answer": "70",
+        "answer_signature": "numeric",
+        "candidate_id": "ff5a1ae012afa5d4",
+        "verbalization": "<answer>70</answer>"
+      },
+      {
+        "answer": "60",
+        "answer_signature": "numeric",
+        "candidate_id": "39fa9ec190eee7b6",
+        "verbalization": "<answer>60</answer>"
+      },
+      {
+        "answer": "20",
+        "answer_signature": "numeric",
+        "candidate_id": "f5ca38f748a1d6ea",
+        "verbalization": "<answer>20</answer>"
+      },
+      {
+        "answer": "10",
+        "answer_signature": "numeric",
+        "candidate_id": "4a44dc15364204a8",
+        "verbalization": "<answer>10</answer>"
+      },
+      {
+        "answer": "80",
+        "answer_signature": "numeric",
+        "candidate_id": "48449a14a4ff7d79",
+        "verbalization": "<answer>80</answer>"
+      },
+      {
+        "answer": "90",
+        "answer_signature": "numeric",
+        "candidate_id": "69f59c273b6e669a",
+        "verbalization": "<answer>90</answer>"
+      }
+    ],
+    "category": "chart_two_hop_read",
+    "gold_candidate_id_a": "ff5a1ae012afa5d4",
+    "gold_candidate_id_b": "d59eced1ded07f84",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/72b1212e1c952ce1.png",
+    "image_a_sha256": "7018f76e233d403109b3a44388fe74ae0fe47f01249ab24237d864d6b639a917",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/bef2e50eaa557f54.png",
+    "image_b_sha256": "fba9dcd8501723039edf091e21904d6d67bd5be322904faf175f18a4c47d215d",
+    "pair_id": "79f0cd01c84646e8",
+    "question": "What is the value of the starred series at x = 2?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_chart9x6_starred_1e4b18ea2cb3a147",
+    "template_id": "starred_series_value_nine_v07",
+    "template_label": "cued chart point-value reading",
+    "caption_a": "The image is a multi-series calibration trace chart with multiple lines representing different series. The x-axis is labeled \"x\" and ranges from 1 to 6. The y-axis is labeled \"100\" and ranges from 0 to 100. The title of the chart is \"Multi-Series Calibration Trace.\" Each line corresponds to a specific series, as indicated by the legend on the right side of the chart. The legend includes the following series: BEK-43U (blue), ZIF-23J (red), ZEF-23U (green), FET-75K (purple), RIG-33K (orange), BUP-92O (teal), ROW-71R (pink), POS-79A (gray), and MIR-80Z (brown). A black star marks the queried point at x = 2.",
+    "caption_b": "The image is a multi-series calibration trace chart with multiple lines representing different series. The x-axis is labeled \"x\" and ranges from 1 to 6. The y-axis is labeled \"100\" and ranges from 0 to 100. The title of the chart is \"Multi-Series Calibration Trace.\" Each line corresponds to a specific series, as indicated by the legend on the right side of the chart. The legend includes the following series: BEK-43U (blue), ZIF-23J (red), ZEF-23U (green), FET-75K (purple), RIG-33K (orange), BUP-92O (teal), ROW-71R (pink), POS-79A (gray), and MIR-80Z (brown). A black star marks the queried point at x = 2."
+  },
+  {
+    "answer_a": "20",
+    "answer_b": "90",
+    "candidate_count": 9,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "8bad57b3d89ee9f95de9e56aab09ac1da5f9318f44457af66a3c951beb9e70cb",
+    "candidates": [
+      {
+        "answer": "30",
+        "answer_signature": "numeric",
+        "candidate_id": "624b60c58c9d8bfb",
+        "verbalization": "<answer>30</answer>"
+      },
+      {
+        "answer": "80",
+        "answer_signature": "numeric",
+        "candidate_id": "48449a14a4ff7d79",
+        "verbalization": "<answer>80</answer>"
+      },
+      {
+        "answer": "20",
+        "answer_signature": "numeric",
+        "candidate_id": "f5ca38f748a1d6ea",
+        "verbalization": "<answer>20</answer>"
+      },
+      {
+        "answer": "60",
+        "answer_signature": "numeric",
+        "candidate_id": "39fa9ec190eee7b6",
+        "verbalization": "<answer>60</answer>"
+      },
+      {
+        "answer": "90",
+        "answer_signature": "numeric",
+        "candidate_id": "69f59c273b6e669a",
+        "verbalization": "<answer>90</answer>"
+      },
+      {
+        "answer": "50",
+        "answer_signature": "numeric",
+        "candidate_id": "1a6562590ef19d10",
+        "verbalization": "<answer>50</answer>"
+      },
+      {
+        "answer": "10",
+        "answer_signature": "numeric",
+        "candidate_id": "4a44dc15364204a8",
+        "verbalization": "<answer>10</answer>"
+      },
+      {
+        "answer": "70",
+        "answer_signature": "numeric",
+        "candidate_id": "ff5a1ae012afa5d4",
+        "verbalization": "<answer>70</answer>"
+      },
+      {
+        "answer": "40",
+        "answer_signature": "numeric",
+        "candidate_id": "d59eced1ded07f84",
+        "verbalization": "<answer>40</answer>"
+      }
+    ],
+    "category": "chart_two_hop_read",
+    "gold_candidate_id_a": "f5ca38f748a1d6ea",
+    "gold_candidate_id_b": "69f59c273b6e669a",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/afc01b6ea2ead273.png",
+    "image_a_sha256": "37d8c387c9b7fd62ce8db2419b80015d98709c7c329a8c8cf586eea47f3ae390",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/ab32d1bf3af7753d.png",
+    "image_b_sha256": "2e25ae06c09faacb10a0dc8890f87598490386748004be3179b7386508d71f6f",
+    "pair_id": "0cb37ea1af8c7038",
+    "question": "What is the value of the starred series at x = 3?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_chart9x6_starred_bf933817b5166fb3",
+    "template_id": "starred_series_value_nine_v07",
+    "template_label": "cued chart point-value reading",
+    "caption_a": "The image is a multi-series calibration trace chart with the title \"Multi-Series Calibration Trace.\" It features multiple lines representing different series, each with its unique color and label. The x-axis is labeled \"x,\" and the y-axis is labeled \"100.\" The series include BAS-29Z (blue), HIK-22R (red), XIV-86G (green), FOF-87U (purple), NEG-64J (orange), ZOH-88Z (teal), MOG-65C (pink), MOK-43S (gray), and NEC-10J (brown). Each series has data points plotted at various x-values from 1 to 6. A black star marks the queried point at x = 3. The legend on the right side of the chart identifies each series by its name and color.",
+    "caption_b": "The image is a multi-series calibration trace chart titled \"Multi-Series Calibration Trace.\" It features multiple lines representing different series, each with its unique color and label. The x-axis is labeled \"x,\" and the y-axis is labeled \"100.\" The series include BAS-29Z (blue), HIK-22R (red), XIV-86G (green), FOF-87U (purple), NEG-64J (orange), ZOH-88Z (teal), MOG-65C (pink), MOK-43S (gray), and NEC-10J (brown). A black star marks the queried point at x = 3. The chart shows how these series vary over the range of x values from 1 to 6."
+  },
+  {
+    "answer_a": "80",
+    "answer_b": "50",
+    "candidate_count": 9,
+    "candidate_policy": {
+      "equivalence_parser": "canonical-v2",
+      "large_universe_policy": "both_golds_plus_same_signature_sha256_distractors",
+      "max_candidates": 16,
+      "selection_uses_model_outputs": false,
+      "small_universe_policy": "complete_template_equivalence_universe"
+    },
+    "candidate_set_sha256": "943e53c0273c565365c5a24f591c33bb2597af7227370ee8e382ff79769e263b",
+    "candidates": [
+      {
+        "answer": "20",
+        "answer_signature": "numeric",
+        "candidate_id": "f5ca38f748a1d6ea",
+        "verbalization": "<answer>20</answer>"
+      },
+      {
+        "answer": "60",
+        "answer_signature": "numeric",
+        "candidate_id": "39fa9ec190eee7b6",
+        "verbalization": "<answer>60</answer>"
+      },
+      {
+        "answer": "30",
+        "answer_signature": "numeric",
+        "candidate_id": "624b60c58c9d8bfb",
+        "verbalization": "<answer>30</answer>"
+      },
+      {
+        "answer": "10",
+        "answer_signature": "numeric",
+        "candidate_id": "4a44dc15364204a8",
+        "verbalization": "<answer>10</answer>"
+      },
+      {
+        "answer": "80",
+        "answer_signature": "numeric",
+        "candidate_id": "48449a14a4ff7d79",
+        "verbalization": "<answer>80</answer>"
+      },
+      {
+        "answer": "50",
+        "answer_signature": "numeric",
+        "candidate_id": "1a6562590ef19d10",
+        "verbalization": "<answer>50</answer>"
+      },
+      {
+        "answer": "40",
+        "answer_signature": "numeric",
+        "candidate_id": "d59eced1ded07f84",
+        "verbalization": "<answer>40</answer>"
+      },
+      {
+        "answer": "70",
+        "answer_signature": "numeric",
+        "candidate_id": "ff5a1ae012afa5d4",
+        "verbalization": "<answer>70</answer>"
+      },
+      {
+        "answer": "90",
+        "answer_signature": "numeric",
+        "candidate_id": "69f59c273b6e669a",
+        "verbalization": "<answer>90</answer>"
+      }
+    ],
+    "category": "chart_two_hop_read",
+    "gold_candidate_id_a": "48449a14a4ff7d79",
+    "gold_candidate_id_b": "1a6562590ef19d10",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/d2a3feb55d4017b1.png",
+    "image_a_sha256": "f4f7e8e918f7475916473ee2c22001e6a13ff7035ddca24357b7a86f5a51bf9b",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/0a1ea4fab61e060e.png",
+    "image_b_sha256": "d8ecd9fc48b2948b79f5253253ef3c7596f32753f4d3381e8f6780614f3c35e6",
+    "pair_id": "0013126a391f72a6",
+    "question": "What is the value of the starred series at x = 3?",
+    "schema_version": "blind-gains.visual-evidence-candidates.v1",
+    "source_pair_id": "v02_chart9x6_starred_5caaa6055fdab1c6",
+    "template_id": "starred_series_value_nine_v07",
+    "template_label": "cued chart point-value reading",
+    "caption_a": "The image is a multi-series calibration trace chart with the title \"Multi-Series Calibration Trace.\" It features multiple lines representing different series, each with its unique color and label. The x-axis is labeled as \"x,\" and the y-axis is labeled as \"100.\" The series include TUN-66M (blue), BAJ-95R (red), DAN-83H (green), BAR-65R (purple), JIX-19P (orange), GAS-39U (teal), MIS-65Y (pink), HEM-43G (gray), and REN-26V (brown). A black star marks the queried point at x = 3. The chart shows how these series vary over the range of x values from 1 to 6.",
+    "caption_b": "The image is a multi-series calibration trace chart with the title \"Multi-Series Calibration Trace.\" It features multiple lines representing different series, each with its unique color and label. The x-axis is labeled as \"x,\" and the y-axis is labeled as \"100.\" The series include TUN-66M (blue), BAJ-95R (red), DAN-83H (green), BAR-65R (purple), JIX-19P (orange), GAS-39U (teal), MIS-65Y (pink), HEM-43G (gray), and REN-26V (brown). A black star marks the queried point at x = 3. The legend on the right side of the chart identifies each series by its name and color."
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "condition": "gray",
+  "config_hash": "cfg100",
+  "git_hash": "0000000000000000000000000000000000000000",
+  "job_type": "eval",
+  "model_path": "checkpoints/m7/m7_virl_a2_gray_seed2/global_step_100/actor/huggingface",
+  "node": "fixture",
+  "run_id": "dup_step100_a2_gray_seed2",
+  "seed": 20260710,
+  "status": "complete"
+}

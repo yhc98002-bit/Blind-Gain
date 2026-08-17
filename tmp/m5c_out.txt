@@ -1,0 +1,240 @@
+  step 100: 601/1889 test rows  (4.5s)
+  step 150: 601/601 test rows  (6.0s)
+  step 200: 601/601 test rows  (7.2s)
+  step 300: 601/601 test rows  (9.4s)
+  step 400: 601/601 test rows  (10.1s)
+{
+  "n": 601,
+  "id_sets_identical": true,
+  "levels": {
+    "100": [
+      0.43594009983361065,
+      true,
+      0.43594009983361065,
+      true
+    ],
+    "150": [
+      0.46921797004991683,
+      true,
+      0.46921797004991683,
+      true
+    ],
+    "200": [
+      0.4891846921797005,
+      true,
+      0.4891846921797005,
+      true
+    ],
+    "300": [
+      0.47420965058236275,
+      true,
+      0.47420965058236275,
+      true
+    ],
+    "400": [
+      0.4442595673876872,
+      true,
+      0.4442595673876872,
+      true
+    ]
+  },
+  "recompute_agreement": {
+    "100": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "150": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "200": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "300": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    },
+    "400": {
+      "acc_final": 601,
+      "acc_strict": 601,
+      "n": 601
+    }
+  },
+  "field_mismatch": {
+    "ground_truth": 0,
+    "qid": 0,
+    "image_sha256": 0,
+    "problem_sha256": 0
+  },
+  "main": {
+    "100->400|acc_final": {
+      "from_step": "100",
+      "to_step": "400",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 196,
+        "gained": 71,
+        "lost": 66,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4442595673876872,
+      "net_count": 5,
+      "net_delta": 0.008319467554076539,
+      "acc_to_minus_acc_from": 0.008319467554076532,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 66,
+      "discordant_pairs": 137,
+      "turnover_fraction_of_n": 0.22795341098169716,
+      "turnover_to_abs_net_ratio": 27.4,
+      "abs_net_count": 5,
+      "mcnemar_exact_two_sided_p": 0.7326840935910409,
+      "concordant_pairs": 464,
+      "agreement_fraction": 0.7720465890183028
+    },
+    "100->400|acc_strict": {
+      "from_step": "100",
+      "to_step": "400",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 196,
+        "gained": 71,
+        "lost": 66,
+        "stable_incorrect": 268
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4442595673876872,
+      "net_count": 5,
+      "net_delta": 0.008319467554076539,
+      "acc_to_minus_acc_from": 0.008319467554076532,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 71,
+      "b10_lost": 66,
+      "discordant_pairs": 137,
+      "turnover_fraction_of_n": 0.22795341098169716,
+      "turnover_to_abs_net_ratio": 27.4,
+      "abs_net_count": 5,
+      "mcnemar_exact_two_sided_p": 0.7326840935910409,
+      "concordant_pairs": 464,
+      "agreement_fraction": 0.7720465890183028
+    },
+    "100->200|acc_final": {
+      "from_step": "100",
+      "to_step": "200",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 208,
+        "gained": 86,
+        "lost": 54,
+        "stable_incorrect": 253
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4891846921797005,
+      "net_count": 32,
+      "net_delta": 0.05324459234608985,
+      "acc_to_minus_acc_from": 0.05324459234608986,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 86,
+      "b10_lost": 54,
+      "discordant_pairs": 140,
+      "turnover_fraction_of_n": 0.23294509151414308,
+      "turnover_to_abs_net_ratio": 4.375,
+      "abs_net_count": 32,
+      "mcnemar_exact_two_sided_p": 0.008556547961075816,
+      "concordant_pairs": 461,
+      "agreement_fraction": 0.7670549084858569
+    },
+    "100->200|acc_strict": {
+      "from_step": "100",
+      "to_step": "200",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 208,
+        "gained": 86,
+        "lost": 54,
+        "stable_incorrect": 253
+      },
+      "acc_from": 0.43594009983361065,
+      "acc_to": 0.4891846921797005,
+      "net_count": 32,
+      "net_delta": 0.05324459234608985,
+      "acc_to_minus_acc_from": 0.05324459234608986,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 86,
+      "b10_lost": 54,
+      "discordant_pairs": 140,
+      "turnover_fraction_of_n": 0.23294509151414308,
+      "turnover_to_abs_net_ratio": 4.375,
+      "abs_net_count": 32,
+      "mcnemar_exact_two_sided_p": 0.008556547961075816,
+      "concordant_pairs": 461,
+      "agreement_fraction": 0.7670549084858569
+    },
+    "200->400|acc_final": {
+      "from_step": "200",
+      "to_step": "400",
+      "metric": "acc_final",
+      "n": 601,
+      "counts": {
+        "stable_correct": 223,
+        "gained": 44,
+        "lost": 71,
+        "stable_incorrect": 263
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.4442595673876872,
+      "net_count": -27,
+      "net_delta": -0.04492512479201331,
+      "acc_to_minus_acc_from": -0.04492512479201333,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 44,
+      "b10_lost": 71,
+      "discordant_pairs": 115,
+      "turnover_fraction_of_n": 0.1913477537437604,
+      "turnover_to_abs_net_ratio": 4.2592592592592595,
+      "abs_net_count": 27,
+      "mcnemar_exact_two_sided_p": 0.014964671136824323,
+      "concordant_pairs": 486,
+      "agreement_fraction": 0.8086522462562395
+    },
+    "200->400|acc_strict": {
+      "from_step": "200",
+      "to_step": "400",
+      "metric": "acc_strict",
+      "n": 601,
+      "counts": {
+        "stable_correct": 223,
+        "gained": 44,
+        "lost": 71,
+        "stable_incorrect": 263
+      },
+      "acc_from": 0.4891846921797005,
+      "acc_to": 0.4442595673876872,
+      "net_count": -27,
+      "net_delta": -0.04492512479201331,
+      "acc_to_minus_acc_from": -0.04492512479201333,
+      "net_delta_matches_level_diff": true,
+      "b01_gained": 44,
+      "b10_lost": 71,
+      "discordant_pairs": 115,
+      "turnover_fraction_of_n": 0.1913477537437604,
+      "turnover_to_abs_net_ratio": 4.2592592592592595,
+      "abs_net_count": 27,
+      "mcnemar_exact_two_sided_p": 0.014964671136824323,
+      "concordant_pairs": 486,
+      "agreement_fraction": 0.8086522462562395
+    }
+  },
+  "moved": 241
+}
+wrote reports/m5c_item_substrate_v1.jsonl reports/m5c_turnover_v1.json

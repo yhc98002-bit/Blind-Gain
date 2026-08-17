@@ -1,0 +1,101 @@
+[
+  {
+    "pair_id": "c69b5acf57268204",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "category": "geometry_coordinate_indexing",
+    "question": "What is the x-coordinate of point P4?",
+    "answer_a": "-5",
+    "answer_b": "2",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/ecbd0409bc693f7b.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/7a9fe5f1a68865fd.png",
+    "candidates": 14
+  },
+  {
+    "pair_id": "c41a404a64bbed9c",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "category": "geometry_coordinate_indexing",
+    "question": "What is the x-coordinate of point J2?",
+    "answer_a": "-2",
+    "answer_b": "6",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/a84be71c43f362e5.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/794a27259a022f15.png",
+    "candidates": 14
+  },
+  {
+    "pair_id": "0fcf7c419477baf5",
+    "template_id": "coordinate_register_twenty_point_x_v02",
+    "category": "geometry_coordinate_indexing",
+    "question": "What is the x-coordinate of point V6?",
+    "answer_a": "4",
+    "answer_b": "-6",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/4c85d80eb6e7934a.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/472ce8c38f319476.png",
+    "candidates": 14
+  },
+  {
+    "pair_id": "bdc973625bec3d4f",
+    "template_id": "header_cued_table_code_v02",
+    "category": "document_header_indexing",
+    "question": "What is the 2-character code at row Case-591 and column G4?",
+    "answer_a": "MX",
+    "answer_b": "TX",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/decfc2c6141d8a21.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/e5b5ba829c001c61.png",
+    "candidates": 16
+  },
+  {
+    "pair_id": "aef856ea78daa259",
+    "template_id": "header_cued_table_code_v02",
+    "category": "document_header_indexing",
+    "question": "What is the 2-character code at row Case-389 and column G4?",
+    "answer_a": "UN",
+    "answer_b": "UP",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/16c2165f53549d86.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/2471f5626a3a9a02.png",
+    "candidates": 16
+  },
+  {
+    "pair_id": "930f84ff83767264",
+    "template_id": "header_cued_table_code_v02",
+    "category": "document_header_indexing",
+    "question": "What is the 2-character code at row Case-605 and column L8?",
+    "answer_a": "3T",
+    "answer_b": "NC",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/9e6c64fb94808f1a.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/20a6ae9a0f89e190.png",
+    "candidates": 16
+  },
+  {
+    "pair_id": "79f0cd01c84646e8",
+    "template_id": "starred_series_value_nine_v07",
+    "category": "chart_two_hop_read",
+    "question": "What is the value of the starred series at x = 2?",
+    "answer_a": "70",
+    "answer_b": "40",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/72b1212e1c952ce1.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/bef2e50eaa557f54.png",
+    "candidates": 9
+  },
+  {
+    "pair_id": "0cb37ea1af8c7038",
+    "template_id": "starred_series_value_nine_v07",
+    "category": "chart_two_hop_read",
+    "question": "What is the value of the starred series at x = 3?",
+    "answer_a": "20",
+    "answer_b": "90",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/afc01b6ea2ead273.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/ab32d1bf3af7753d.png",
+    "candidates": 9
+  },
+  {
+    "pair_id": "0013126a391f72a6",
+    "template_id": "starred_series_value_nine_v07",
+    "category": "chart_two_hop_read",
+    "question": "What is the value of the starred series at x = 3?",
+    "answer_a": "80",
+    "answer_b": "50",
+    "image_a_path": "data/fliptrack_v02r19_artifact_expanded/images/d2a3feb55d4017b1.png",
+    "image_b_path": "data/fliptrack_v02r19_artifact_expanded/images/0a1ea4fab61e060e.png",
+    "candidates": 9
+  }
+]

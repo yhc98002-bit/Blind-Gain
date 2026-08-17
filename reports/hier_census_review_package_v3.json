@@ -1,0 +1,71 @@
+{
+  "archive": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/review_packages/hier_v1_census_v3.zip",
+  "archive_sha256": "4b55781197ea399300653efe6a53d157a43870035106db2161d2fa753acb1530",
+  "census_json_sha256": "de0489e2e265125da294517764902c5c2291ab881dfba7d38648c29fe75c43d8",
+  "census_md_sha256": "2ee9a15b3f1d570f5c0ee7f680e711f4525406a474ab2f94ac20264a3ecaa854",
+  "git_hash": "11b30504060191980d9fa381c1f0601f4f48b76f",
+  "n_images_copied": 280,
+  "n_sampled_pairs": 42,
+  "package_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/review_packages/hier_v1_census_v3",
+  "pairs_per_cell_role": 2,
+  "sampled_pair_ids": {
+    "hier_chart_v1_s5_high": [
+      "hier1_chart_s5_high_invariance_059cff2682de__l3",
+      "hier1_chart_s5_high_invariance_e0ef98750891__l3",
+      "hier1_chart_s5_high_target_stable_c5f299b58fae__l3",
+      "hier1_chart_s5_high_target_stable_47d7d849cf3b__l3",
+      "hier1_chart_s5_high_target_switch_25ad2d6d1872__l3",
+      "hier1_chart_s5_high_target_switch_45d1c6bf246c__l3"
+    ],
+    "hier_chart_v1_s5_low": [
+      "hier1_chart_s5_low_invariance_515255534499__l3",
+      "hier1_chart_s5_low_invariance_061e8c29f4a9__l3",
+      "hier1_chart_s5_low_target_stable_5482cc7a3406__l3",
+      "hier1_chart_s5_low_target_stable_3e1beb8223bc__l3",
+      "hier1_chart_s5_low_target_switch_895a2ed4a55f__l3",
+      "hier1_chart_s5_low_target_switch_e03a73935018__l3"
+    ],
+    "hier_chart_v1_s9_high": [
+      "hier1_chart_s9_high_invariance_fc14c23aa405__l3",
+      "hier1_chart_s9_high_invariance_bb56ad80a65f__l3",
+      "hier1_chart_s9_high_target_stable_3d61db6f6650__l3",
+      "hier1_chart_s9_high_target_stable_be76456b21cf__l3",
+      "hier1_chart_s9_high_target_switch_1d827b0fcf80__l3",
+      "hier1_chart_s9_high_target_switch_a1ca93923976__l3"
+    ],
+    "hier_chart_v1_s9_low": [
+      "hier1_chart_s9_low_invariance_e6f11a9b4df0__l3",
+      "hier1_chart_s9_low_invariance_50a9a312cf1c__l3",
+      "hier1_chart_s9_low_target_stable_7757ab402d03__l3",
+      "hier1_chart_s9_low_target_stable_d354415c7128__l3",
+      "hier1_chart_s9_low_target_switch_454d8cebb420__l3",
+      "hier1_chart_s9_low_target_switch_4cce2ddaccf8__l3"
+    ],
+    "hier_coord_v1_n12": [
+      "hier1_coord_n12_invariance_7b6a4919fb92__l3",
+      "hier1_coord_n12_invariance_07031fb10db6__l3",
+      "hier1_coord_n12_target_stable_a3d7e8c4ad73__l3",
+      "hier1_coord_n12_target_stable_697bebd7cf99__l3",
+      "hier1_coord_n12_target_switch_031624a5aad5__l3",
+      "hier1_coord_n12_target_switch_cb98d6dcd756__l3"
+    ],
+    "hier_coord_v1_n20": [
+      "hier1_coord_n20_invariance_a863a3c3d1e4__l3",
+      "hier1_coord_n20_invariance_e795c9cdc8c2__l3",
+      "hier1_coord_n20_target_stable_87f325d68080__l3",
+      "hier1_coord_n20_target_stable_bb94d19b79c4__l3",
+      "hier1_coord_n20_target_switch_ef328d78b308__l3",
+      "hier1_coord_n20_target_switch_862cabcf371d__l3"
+    ],
+    "hier_coord_v1_n8": [
+      "hier1_coord_n8_invariance_50c56abf6a74__l3",
+      "hier1_coord_n8_invariance_84140c7e46ee__l3",
+      "hier1_coord_n8_target_stable_f27df91b66fe__l3",
+      "hier1_coord_n8_target_stable_44710923860a__l3",
+      "hier1_coord_n8_target_switch_2d29f7f41f23__l3",
+      "hier1_coord_n8_target_switch_a7b93ad65f02__l3"
+    ]
+  },
+  "schema_version": "blind-gains.hier-census-review-package.v3",
+  "selection_rule": "first_n_per_cell_role_in_l3_manifest_order"
+}

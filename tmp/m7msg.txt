@@ -1,0 +1,38 @@
+M7 launcher: close 3 blocking and 6 risky divergences from the working launchers
+
+A three-dimension audit against launch_mech_pilot_arm.sh, launch_mini_a5_main.sh
+and launch_m5_anchor_longhorizon.sh. All three blocking defects fire at the SAME
+startup boundary (val_before_train, after ~10-15 min of model load and prompt
+filtering), so fixing them one crash at a time would have cost a cycle each.
+
+BLOCKING
+1. EASYR1_ATTN_IMPLEMENTATION unset, so EasyR1 defaults to flash_attention_2,
+   which is not installed anywhere in this venv. Eight other launchers set sdpa.
+   Observed as the second M7 crash.
+2. PYTHONPATH omitted the repo root. The reward runs inside a Ray actor whose
+   sys.path lacks ROOT, so pilot_reward.py cannot import src.*. Verified
+   empirically by the audit: ModuleNotFoundError: No module named 'src'.
+3. BLIND_GAINS_REWARD_SHADOW_LOG unset while all eight M7 configs set
+   require_shadow_log: true, so pilot_reward raises RuntimeError. Fixed by
+   supplying the path, NOT by flipping the flag off: the shadow log is the
+   mathruler/canonical disagreement record the pilot arms were scored against,
+   and dropping it would make M7 non-comparable to the pilot.
+
+RISKY
+4. RAY_TMPDIR/TMPDIR/TMP/TEMP now point into /dev/shm. Ray was defaulting to the
+   node 32 GB root device; filling that device is precisely what caused the
+   earlier ncclSystemError incident on an29.
+5. Storage-guard env block wired, so EasyR1 patched checkpoint guard is no longer
+   a silent no-op across a multi-day 8-arm run.
+6. PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True.
+7. setsid + flock + stdin redirection, preventing double-launch and orphaning.
+8. Startup liveness probe. The script previously exited 0 while the trainer was
+   dying, reporting success for a dead run.
+9. GPU count is now checked against the config n_gpus_per_node (4), which a
+   free-form list silently violated.
+
+Known remaining: M7 invokes verl directly rather than run_manifest_job.py, so
+run_manifest.json is never finalised on exit, which is why it read "running"
+43 minutes after the trainer died. Crash detection stays external until reworked.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

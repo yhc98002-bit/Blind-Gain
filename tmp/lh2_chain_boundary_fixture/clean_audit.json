@@ -1,0 +1,97 @@
+{
+  "audited_at_utc": "2026-08-06T20:16:25Z",
+  "checkpoint_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/tmp/lh2_chain_boundary_fixture/clean/global_step_50",
+  "checksum_manifest": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/tmp/lh2_chain_boundary_fixture/clean_audit.sha256",
+  "checksum_manifest_sha256": "1b06767bbe4a998b147c1f146ebb4711c907667684c97835156bd8b283ab035b",
+  "expected_step": 50,
+  "extra_state_rank_count": 4,
+  "file_count": 13,
+  "files": [
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/model_world_size_4_rank_0.pt",
+      "sha256": "df9aec5517463e971dd97695cda243efe8cdd44d6b5fc1316007861a2969e7ad",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/model_world_size_4_rank_1.pt",
+      "sha256": "22ff0efe270b305371c97346e0619c987cfd10a5bb7c3acfcd7c92790a9ca91c",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/model_world_size_4_rank_2.pt",
+      "sha256": "640482622b3fea0ac38c6c4b4723dd2cda18e1da45257a4c86f4bb8dc017fdb9",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/model_world_size_4_rank_3.pt",
+      "sha256": "db10e65f58aadc92c8db84ed9bcff87aa5d8d702dee18977c09c684aa75b0d46",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/optim_world_size_4_rank_0.pt",
+      "sha256": "0ef2a5a7072aa7a7b94e869dfaa3d8350bb5232ce20a2ef3b92e431db0954504",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/optim_world_size_4_rank_1.pt",
+      "sha256": "c05dcb8e0fcaa081b354e8aaa78a943a0b48733ac282a75c055d40b4c8793d1f",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/optim_world_size_4_rank_2.pt",
+      "sha256": "4de7fef89b4ab0c64bbca0688e0cd129ce34624d484db2aec02b9d1c02d44639",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/optim_world_size_4_rank_3.pt",
+      "sha256": "b0b863e14b559fc4d163ff7a979c0298f406c756697552592dbed57d2bada782",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/extra_state_world_size_4_rank_0.pt",
+      "sha256": "52dca6c72bd64d16ea79cc670d19c2f915778aef0ba4d8cbc30e531c66fd49b2",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/extra_state_world_size_4_rank_1.pt",
+      "sha256": "1aeba3a7ba2f7318bd54164afdbda229180c3bedd7efc5dd25a0dc4298e707e8",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/extra_state_world_size_4_rank_2.pt",
+      "sha256": "cbf8643aa771e48b4e5b794ae361d1ef27e08cea2a07b24d8d0401b3f737a747",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "actor/extra_state_world_size_4_rank_3.pt",
+      "sha256": "8568bdc2a931aac2e2e81fc95ef2d815c5e92c53410c8bd4071a0c5d1388a635",
+      "size_bytes": 6
+    },
+    {
+      "mtime_ns": 1786047385000000000,
+      "path": "dataloader.pt",
+      "sha256": "2ca69efd4ea5af91a637f19ba0bab8b081d2c03773c4a72fcbf8817c856b33ef",
+      "size_bytes": 2
+    }
+  ],
+  "files_stable_during_hash": true,
+  "markers": [],
+  "model_rank_count": 4,
+  "optimizer_rank_count": 4,
+  "schema_version": "blind-gains.easyr1-resume-checkpoint-audit.v1",
+  "status": "pass",
+  "total_size_bytes": 74,
+  "world_size": 4
+}

@@ -1,0 +1,11 @@
+Add four-arm Gate-1 endpoint readout instrument, fixtures, and evals TODO
+
+Adds scripts/build_mini_a5_gate1_endpoint_readout.py (four-arm Gate-1
+endpoint readout instrument), its fixture test suite
+tests/test_build_mini_a5_gate1_endpoint_readout_fixture.py, and
+scripts/gate1_endpoint_evals_todo.md.
+
+Adversarially verified through 3 lenses; fixture suite passes
+(10 passed) with no real arm data touched.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

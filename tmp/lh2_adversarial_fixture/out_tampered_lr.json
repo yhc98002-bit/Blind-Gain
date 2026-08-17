@@ -1,0 +1,122 @@
+{
+  "configs": {
+    "anchor_template": {
+      "path": "configs/train/anchor_a0_recipe_3b_geo3k.yaml",
+      "sha256": "fdd39cead00fa6932d03c3040d90e76b71599983623b7478d67a309ce4dc3862"
+    },
+    "lh2": {
+      "path": "tmp/lh2_adversarial_fixture/lh2_tampered_lr.yaml",
+      "sha256": "74460ebd5fc25a8805e0b5e9b34c0bb0f1a4220987f3fb790f51039820d349d5"
+    },
+    "m5_reference": {
+      "path": "configs/train/m5_anchor_longhorizon_400.yaml",
+      "sha256": "73ff58bd3b6a5a9a190f6f379a927bc6405c88001bd524f61846ffb22996f48c"
+    }
+  },
+  "failures": [
+    "lh2_vs_anchor: differing paths ['data.seed', 'trainer.experiment_name', 'trainer.max_steps', 'trainer.save_checkpoint_path', 'trainer.save_freq', 'worker.actor.optim.lr'] != registered ['data.seed', 'trainer.experiment_name', 'trainer.max_steps', 'trainer.save_checkpoint_path', 'trainer.save_freq']",
+    "lh2_vs_m5: differing paths ['data.seed', 'trainer.experiment_name', 'trainer.load_checkpoint_path', 'trainer.max_steps', 'trainer.save_checkpoint_path', 'worker.actor.optim.lr'] != registered ['data.seed', 'trainer.experiment_name', 'trainer.load_checkpoint_path', 'trainer.max_steps', 'trainer.save_checkpoint_path']"
+  ],
+  "observed_diffs": {
+    "lh2_vs_anchor": {
+      "data.seed": [
+        1,
+        2
+      ],
+      "trainer.experiment_name": [
+        "anchor_a0_recipe_3b_geo3k",
+        "lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.max_steps": [
+        100,
+        200
+      ],
+      "trainer.save_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k",
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.save_freq": [
+        20,
+        50
+      ],
+      "worker.actor.optim.lr": [
+        1e-06,
+        2e-06
+      ]
+    },
+    "lh2_vs_m5": {
+      "data.seed": [
+        1,
+        2
+      ],
+      "trainer.experiment_name": [
+        "m5_anchor_longhorizon_400",
+        "lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.load_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100",
+        null
+      ],
+      "trainer.max_steps": [
+        400,
+        200
+      ],
+      "trainer.save_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400",
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/lh2_anchor_seed2_3b_geo3k"
+      ],
+      "worker.actor.optim.lr": [
+        1e-06,
+        2e-06
+      ]
+    }
+  },
+  "registered_allowed_diffs": {
+    "lh2_vs_anchor": {
+      "data.seed": [
+        1,
+        2
+      ],
+      "trainer.experiment_name": [
+        "anchor_a0_recipe_3b_geo3k",
+        "lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.max_steps": [
+        100,
+        200
+      ],
+      "trainer.save_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k",
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.save_freq": [
+        20,
+        50
+      ]
+    },
+    "lh2_vs_m5": {
+      "data.seed": [
+        1,
+        2
+      ],
+      "trainer.experiment_name": [
+        "m5_anchor_longhorizon_400",
+        "lh2_anchor_seed2_3b_geo3k"
+      ],
+      "trainer.load_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100",
+        null
+      ],
+      "trainer.max_steps": [
+        400,
+        200
+      ],
+      "trainer.save_checkpoint_path": [
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/m5_anchor_longhorizon_400",
+        "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/lh2_anchor_seed2_3b_geo3k"
+      ]
+    }
+  },
+  "schema": "blind-gains.lh2-config-diff-check.v1",
+  "status": "fail"
+}

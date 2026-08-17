@@ -1,0 +1,55 @@
+M5C Task C: evidence ledger for the geo3k step-100->400 turnover finding
+
+CPU only; cached predictions plus the existing substrate. No GPU job started.
+Adds reports/m5c_evidence_ledger_v1.{json,md} (16 ledger rows) and
+scripts/m5c_evidence_ledger.py.
+
+Holm-Bonferroni is applied over the 10 permutation tests computed in this
+report; each ledger row carries claim / statistic / null / raw p / adjusted p /
+verdict.
+
+1. Problem-type concentration. Bucket rules were imported verbatim from
+   scripts/m5c_lost_item_forensics.py and asserted equal to the rules recorded
+   in the published artifact; the full bucket x {lost, gained, stable_correct,
+   stable_wrong} table is emitted with exact counts and row/column sum checks.
+   LOST chi2 = 11.776933 (reproduces the published statistic to 1e-9), raw
+   p 0.0461 over 10,000 permutations at seed 20260729, Holm-adjusted 0.1383.
+   LOST concentration DOES NOT survive correction. GAINED chi2 = 8.806222, raw
+   p 0.1334, Holm 0.1383.
+
+2. Near-miss difficulty control. The literally requested matched pool (LOST vs
+   stable_correct) is DEGENERATE: stable_correct items are correct at step 400
+   by definition, so their near-miss rate is 176/176 = 1.0 by construction and
+   the contrast cannot test the hypothesis. A non-degenerate matched design
+   (both arms correct at step 100, both scored on a WRONG answer; reference =
+   dip-and-recover, wrong answer read at the first dip step) keeps the effect
+   size (+0.1652 matched vs +0.1167 unmatched) but raw p is 0.0482 and Holm
+   0.1383 with only 26 numeric-comparable reference items. A |gold|-quartile
+   stratified version gives +0.1201, raw p 0.0148, Holm 0.0592. Also recorded:
+   the published 5.0e-4 reproduces exactly under its subset-draw convention but
+   is 0.0179 under arm-label permutation on the same data.
+
+3. Margin / confidence collapse: NOT MEASURABLE. A full field census over all
+   five cached per-item files finds no logprob, logit, decoding-score or margin
+   field at any step; the only substring hits are three "guarded_rescore_*"
+   provenance strings at step 100. Steps 150-400 carry no sampled decode at all.
+   No proxy is substituted. A separately labelled side measurement (step-100
+   16-sample pass rate, LOST 0.4233 vs stable_correct 0.7886, p <= 1e-4) is
+   reported as its own ledger row so the margin row stays NOT MEASURABLE.
+
+4. Five-step pattern structure. 429 observed adjacent flips vs 1197.0 expected
+   under independent per-step flipping at the observed marginals (G2 = 1289.8,
+   Pearson X2 = 3070.9, both above the 10,000-replicate null maxima of 70.9 and
+   73.8; p <= 1e-4). Direction is MORE PERSISTENCE, not more alternation: 198
+   never-correct vs null mean 26.8, 162 always-correct vs 12.7, 360 zero-flip
+   items vs 39.5. Holding each item's own correct-step count fixed, 429 vs
+   480.62 (within-item order permutation) and vs 480.99 (curveball preserving
+   both row and column margins), both p <= 1e-4 and both below the null minimum
+   across 10,000 samples, so movement is temporally ordered rather than
+   scattered.
+
+The ledger carries Task A's directly measured zero replicate noise floor, marks
+the prior 0.2133 dispersion reference as superseded and never a test, and records
+that M5C Task B had not emitted a report when this was written.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

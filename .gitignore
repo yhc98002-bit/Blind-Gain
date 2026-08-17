@@ -41,3 +41,7 @@ experiments/runs/
 
 # Generated datasets stay local. Track checksums under experiments/manifests/.
 /data/
+
+# torch/wandb runtime litter at repo root (keep the shared tmp/ transfer dir)
+/tmp*/
+!/tmp/

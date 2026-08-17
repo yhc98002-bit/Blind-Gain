@@ -1,0 +1,432 @@
+{
+  "schema_version": "blind-gains.m5c-expected-discordance-null.v1",
+  "generated_utc": "2026-07-30T12:42:02Z",
+  "git_hash": "357b4c60fe23f0f730cb98d6cdb2fdb83b6aa650",
+  "question": "Does the OBSERVED greedy discordance between geo3k step 100 and step 400 (137/601) exceed what independent per-item stochastic draws at each endpoint's own sampled success rate would produce?",
+  "item_key_definition": "(split, row_index) on the Geometry3K test split",
+  "null_definition": "E[disc] = mean_i [ p_i(100)(1-p_i(400)) + (1-p_i(100)) p_i(400) ], with p_i estimated separately at EACH endpoint from 16 temperature-1.0 samples.",
+  "sampled_protocol_step100_verbatim": {
+    "run_id": "blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z",
+    "run_dir_registered_generation": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z",
+    "run_dir_guarded_rescore_used_for_p_i": "experiments/runs/blind_solvability_v2_guarded_rescore_anchor_step100_geo3k_real_login_20260712T082107Z",
+    "decoding": {
+      "greedy": {
+        "n": 1,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "max_tokens": 2048,
+      "sampled": {
+        "n": 16,
+        "temperature": 1.0,
+        "top_p": 1
+      },
+      "seed": 20260710
+    },
+    "sample_count": 16,
+    "sample_temperature": 1.0,
+    "seed": 20260710,
+    "max_tokens": 2048,
+    "group_size": 5,
+    "format_weight": 0.5,
+    "symbolic_grader_timeout_seconds": 5.0,
+    "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+    "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+    "parser_version": "canonical-v2",
+    "scoring_mode": "pilot-reward-v1+canonical-v2",
+    "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=5 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --train-filter-ids data/geo3k_pilot_filtered_ids.json --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --condition real --output experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/condition_cache --run-manifest experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/run_manifest.json  --splits train test --batch-size 4 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --symbolic-grader-timeout-seconds 5.0 --seed 20260710",
+    "per_item_sha256": "22d93ad3f5510c49d9755d82dd0cdb148ea0818f75db77e7363b757b8ed0d8c4"
+  },
+  "sampled_protocol_step400_verbatim": {
+    "run_id": "blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z",
+    "run_dir": "experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z",
+    "decoding": {
+      "greedy": {
+        "n": 1,
+        "temperature": 0,
+        "top_p": 1
+      },
+      "max_tokens": 2048,
+      "sampled": {
+        "n": 16,
+        "temperature": 1.0,
+        "top_p": 1
+      },
+      "seed": 20260710
+    },
+    "sample_count": 16,
+    "sample_temperature": 1.0,
+    "seed": 20260710,
+    "max_tokens": 2048,
+    "group_size": 5,
+    "format_weight": 0.5,
+    "symbolic_grader_timeout_seconds": 5.0,
+    "model_revision": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+    "source_manifest_sha256": "0ac91fb836f39776acd5137ccd5cca7259d4ad0a836347be60f96f535d00f639",
+    "parser_version": "canonical-v2",
+    "scoring_mode": "pilot-reward-v1+canonical-v2",
+    "node": "an12",
+    "gpu_allocation": [
+      "5"
+    ],
+    "git_hash": "4b551f8e318e03215a2a7736efb48ac4765b8575",
+    "command": "TRANSFORMERS_OFFLINE=1 HF_HOME=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/hf_home CUDA_VISIBLE_DEVICES=5 VLLM_WORKER_MULTIPROC_METHOD=spawn PYTHONHASHSEED=0 PYTHONPATH=. .venv/bin/python scripts/run_blind_solvability_v2.py --model-path checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100/actor/huggingface --manifest data/geometry3k_caption_images_manifest.jsonl --train-filter-ids data/geo3k_pilot_filtered_ids.json --format-prompt artifacts/repos/EasyR1/examples/format_prompt/r1v.jinja --condition real --output experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/per_item.jsonl --cache-dir /dev/shm/blind-gains/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/condition_cache --run-manifest experiments/runs/blind_solvability_v2_anchor_step100_geo3k_guarded_real_an12_20260712T053344Z/run_manifest.json  --splits train test --batch-size 4 --max-model-len 8192 --max-tokens 2048 --sample-count 16 --sample-temperature 1.0 --group-size 5 --format-weight 0.5 --symbolic-grader-timeout-seconds 5.0 --seed 20260710",
+    "deviations": [],
+    "per_item_sha256": "730cab92c78aa68d182b056c8c939bd40929572a3f0753e88d9d9a19b608e1d1"
+  },
+  "step100_reproduction_cell": {
+    "present": false,
+    "reason": "step-100 reproduction cell not supplied or not complete"
+  },
+  "greedy_source": {
+    "substrate": "reports/m5c_item_substrate_v1.jsonl",
+    "substrate_sha256": "1fc5310785680afbf5420166c97d776ea77ab0b4081533097fd225648882a864",
+    "greedy_decoding": "temperature 0.0, top_p 1.0, n 1, seed 20260710, max_tokens 2048"
+  },
+  "prior_reference_figure_reproduced": {
+    "value_in_m5c_turnover_v1": 0.21327735024958402,
+    "recomputed_here_from_step100_p_i_at_both_ends": 0.21327735024958402
+  },
+  "greedy_replicate_floor_cross_reference": {
+    "source": "reports/m5c_noise_floor_replicate_v1.json",
+    "source_sha256": "54e5e8c3f5d07deb8f2ed093ba9c1cb6fb73fd37753c0da7fac5bf29a408c7e5",
+    "measured_floor_is_zero": true,
+    "max_replicate_discordance_count_across_cells": 0,
+    "response_text_byte_identical_across_all_pairs": true,
+    "relation_to_this_null": "These are two different bars. The greedy replicate floor measured in Task A is the HARNESS floor: re-running the same checkpoint gives 0/601 discordance and byte-identical responses, so none of the observed 137 is measurement noise. The null computed HERE is a strictly more permissive bar: it asks whether 137 exceeds the per-item FRAGILITY implied by each checkpoint's own temperature-1.0 output distribution. A result that clears the Task A floor but not this null means the turnover is fully reproducible yet no larger than each endpoint's own decoding-level answer instability."
+  },
+  "results": {
+    "acc_final_lenient": {
+      "n_items": 601,
+      "samples_per_item": [
+        16
+      ],
+      "observed_greedy_discordance_count": 137,
+      "observed_greedy_discordance_fraction": 0.22795341098169716,
+      "plugin_mle": {
+        "p_estimator": "p_i = c_i / n_i (16 sampled successes / 16 samples)",
+        "mean_p_i_step100": 0.399022462562396,
+        "mean_p_i_step400": 0.399022462562396,
+        "mean_p_i_step400_minus_step100": 0.0,
+        "pearson_r_p100_p400": 1.0,
+        "mean_abs_p400_minus_p100": 0.0,
+        "n_items_p100_eq_0": 135,
+        "n_items_p100_eq_1": 63,
+        "n_items_p400_eq_0": 135,
+        "n_items_p400_eq_1": 63,
+        "expected_discordance_fraction": 0.21327735024958402,
+        "expected_discordance_count": 128.1796875,
+        "expected_discordance_bootstrap_ci95": [
+          0.19845797368968388,
+          0.2282660409733777
+        ],
+        "expected_discordance_bootstrap_sd": 0.007601832127339944,
+        "observed_bootstrap_ci95": [
+          0.194675540765391,
+          0.2628951747088186
+        ],
+        "observed_minus_expected_fraction": 0.014676060732113139,
+        "observed_minus_expected_count": 8.820312499999996,
+        "observed_minus_expected_bootstrap_ci95": [
+          -0.016275608361064904,
+          0.04678400582362727
+        ],
+        "observed_minus_expected_bootstrap_sd": 0.01609910331957814,
+        "bootstrap_draws": 10000,
+        "bootstrap_seed": 20260729,
+        "bootstrap_one_sided_p_observed_gt_expected": 0.1782,
+        "bootstrap_frac_draws_diff_gt_0": 0.8218,
+        "mc_null_plugin": {
+          "draws": 10000,
+          "seed": 20260730,
+          "null_mean_count": 128.1278,
+          "null_sd_count": 8.934855920776368,
+          "null_ci95_count": [
+            111.0,
+            146.0
+          ],
+          "n_draws_ge_observed": 1749,
+          "p_one_sided_observed_ge_null": 0.17498250174982502
+        },
+        "mc_null_posterior_propagated": {
+          "draws": 10000,
+          "seed": 20260731,
+          "prior": "Jeffreys Beta(c+0.5, n-c+0.5) per item per endpoint",
+          "null_mean_count": 147.8626,
+          "null_sd_count": 9.708488384639056,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8788,
+          "p_one_sided_observed_ge_null": 0.8788121187881212
+        }
+      },
+      "jeffreys": {
+        "p_estimator": "p_i = (c_i + 0.5) / (n_i + 1)  [Jeffreys-smoothed]",
+        "mean_p_i_step100": 0.40496231770578445,
+        "mean_p_i_step400": 0.40496231770578445,
+        "mean_p_i_step400_minus_step100": 0.0,
+        "pearson_r_p100_p400": 1.0,
+        "mean_abs_p400_minus_p100": 0.0,
+        "n_items_p100_eq_0": 135,
+        "n_items_p100_eq_1": 63,
+        "n_items_p400_eq_0": 135,
+        "n_items_p400_eq_1": 63,
+        "expected_discordance_fraction": 0.24601730679547928,
+        "expected_discordance_count": 147.85640138408306,
+        "expected_discordance_bootstrap_ci95": [
+          0.23289010818186529,
+          0.25929448612174644
+        ],
+        "expected_discordance_bootstrap_sd": 0.006733802853283826,
+        "observed_bootstrap_ci95": [
+          0.194675540765391,
+          0.2628951747088186
+        ],
+        "observed_minus_expected_fraction": -0.01806389581378212,
+        "observed_minus_expected_count": -10.856401384083055,
+        "observed_minus_expected_bootstrap_ci95": [
+          -0.04863606791449087,
+          0.013936979313600724
+        ],
+        "observed_minus_expected_bootstrap_sd": 0.016032310226579066,
+        "bootstrap_draws": 10000,
+        "bootstrap_seed": 20260729,
+        "bootstrap_one_sided_p_observed_gt_expected": 0.866,
+        "bootstrap_frac_draws_diff_gt_0": 0.134,
+        "mc_null_plugin": {
+          "draws": 10000,
+          "seed": 20260730,
+          "null_mean_count": 147.8709,
+          "null_sd_count": 9.756738829407015,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8782,
+          "p_one_sided_observed_ge_null": 0.8782121787821218
+        },
+        "mc_null_posterior_propagated": {
+          "draws": 10000,
+          "seed": 20260731,
+          "prior": "Jeffreys Beta(c+0.5, n-c+0.5) per item per endpoint",
+          "null_mean_count": 147.8626,
+          "null_sd_count": 9.708488384639056,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8788,
+          "p_one_sided_observed_ge_null": 0.8788121187881212
+        }
+      },
+      "single_endpoint_reference_variants": {
+        "p100_at_both_ends_fraction": 0.21327735024958402,
+        "p400_at_both_ends_fraction": 0.21327735024958402,
+        "note": "p100_at_both_ends reproduces the prior REFERENCE figure recorded in reports/m5c_turnover_v1.json noise_reference_not_a_test."
+      },
+      "metric": "acc_final (lenient, I7)",
+      "direction_of_result": {
+        "verdict": "not_distinguishable",
+        "observed_fraction": 0.22795341098169716,
+        "expected_fraction_plugin": 0.21327735024958402,
+        "difference": 0.014676060732113139,
+        "difference_bootstrap_ci95": [
+          -0.016275608361064904,
+          0.04678400582362727
+        ],
+        "p_one_sided_plugin_mc": 0.17498250174982502,
+        "p_one_sided_posterior_propagated_mc": 0.8788121187881212,
+        "expected_fraction_jeffreys": 0.24601730679547928,
+        "licensed_statement": "The TOTAL turnover between step 100 and step 400 is NOT shown to exceed what independent per-item temperature-1.0 draws at each endpoint's own rate would produce. The turnover COUNT is therefore consistent with per-item stochastic instability at this null, and a claim of hidden churn cannot rest on the turnover magnitude. A claim about WHICH items move is a separate quantity, measured in reports/m5c_lost_item_forensics_v1.json, and is not affected by this result: per-item noise would REDUCE cross-checkpoint agreement of the LOST sets, not manufacture it.",
+        "not_licensed": "This does NOT measure the greedy harness's replicate determinism. Every geo3k greedy eval is single-pass temperature-0.0 decoding; a greedy replicate floor is a separate measurement (Task A)."
+      }
+    },
+    "acc_strict_contract": {
+      "n_items": 601,
+      "samples_per_item": [
+        16
+      ],
+      "observed_greedy_discordance_count": 137,
+      "observed_greedy_discordance_fraction": 0.22795341098169716,
+      "plugin_mle": {
+        "p_estimator": "p_i = c_i / n_i (16 sampled successes / 16 samples)",
+        "mean_p_i_step100": 0.399022462562396,
+        "mean_p_i_step400": 0.399022462562396,
+        "mean_p_i_step400_minus_step100": 0.0,
+        "pearson_r_p100_p400": 1.0,
+        "mean_abs_p400_minus_p100": 0.0,
+        "n_items_p100_eq_0": 135,
+        "n_items_p100_eq_1": 63,
+        "n_items_p400_eq_0": 135,
+        "n_items_p400_eq_1": 63,
+        "expected_discordance_fraction": 0.21327735024958402,
+        "expected_discordance_count": 128.1796875,
+        "expected_discordance_bootstrap_ci95": [
+          0.19845797368968388,
+          0.2282660409733777
+        ],
+        "expected_discordance_bootstrap_sd": 0.007601832127339944,
+        "observed_bootstrap_ci95": [
+          0.194675540765391,
+          0.2628951747088186
+        ],
+        "observed_minus_expected_fraction": 0.014676060732113139,
+        "observed_minus_expected_count": 8.820312499999996,
+        "observed_minus_expected_bootstrap_ci95": [
+          -0.016275608361064904,
+          0.04678400582362727
+        ],
+        "observed_minus_expected_bootstrap_sd": 0.01609910331957814,
+        "bootstrap_draws": 10000,
+        "bootstrap_seed": 20260729,
+        "bootstrap_one_sided_p_observed_gt_expected": 0.1782,
+        "bootstrap_frac_draws_diff_gt_0": 0.8218,
+        "mc_null_plugin": {
+          "draws": 10000,
+          "seed": 20260730,
+          "null_mean_count": 128.1278,
+          "null_sd_count": 8.934855920776368,
+          "null_ci95_count": [
+            111.0,
+            146.0
+          ],
+          "n_draws_ge_observed": 1749,
+          "p_one_sided_observed_ge_null": 0.17498250174982502
+        },
+        "mc_null_posterior_propagated": {
+          "draws": 10000,
+          "seed": 20260731,
+          "prior": "Jeffreys Beta(c+0.5, n-c+0.5) per item per endpoint",
+          "null_mean_count": 147.8626,
+          "null_sd_count": 9.708488384639056,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8788,
+          "p_one_sided_observed_ge_null": 0.8788121187881212
+        }
+      },
+      "jeffreys": {
+        "p_estimator": "p_i = (c_i + 0.5) / (n_i + 1)  [Jeffreys-smoothed]",
+        "mean_p_i_step100": 0.40496231770578445,
+        "mean_p_i_step400": 0.40496231770578445,
+        "mean_p_i_step400_minus_step100": 0.0,
+        "pearson_r_p100_p400": 1.0,
+        "mean_abs_p400_minus_p100": 0.0,
+        "n_items_p100_eq_0": 135,
+        "n_items_p100_eq_1": 63,
+        "n_items_p400_eq_0": 135,
+        "n_items_p400_eq_1": 63,
+        "expected_discordance_fraction": 0.24601730679547928,
+        "expected_discordance_count": 147.85640138408306,
+        "expected_discordance_bootstrap_ci95": [
+          0.23289010818186529,
+          0.25929448612174644
+        ],
+        "expected_discordance_bootstrap_sd": 0.006733802853283826,
+        "observed_bootstrap_ci95": [
+          0.194675540765391,
+          0.2628951747088186
+        ],
+        "observed_minus_expected_fraction": -0.01806389581378212,
+        "observed_minus_expected_count": -10.856401384083055,
+        "observed_minus_expected_bootstrap_ci95": [
+          -0.04863606791449087,
+          0.013936979313600724
+        ],
+        "observed_minus_expected_bootstrap_sd": 0.016032310226579066,
+        "bootstrap_draws": 10000,
+        "bootstrap_seed": 20260729,
+        "bootstrap_one_sided_p_observed_gt_expected": 0.866,
+        "bootstrap_frac_draws_diff_gt_0": 0.134,
+        "mc_null_plugin": {
+          "draws": 10000,
+          "seed": 20260730,
+          "null_mean_count": 147.8709,
+          "null_sd_count": 9.756738829407015,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8782,
+          "p_one_sided_observed_ge_null": 0.8782121787821218
+        },
+        "mc_null_posterior_propagated": {
+          "draws": 10000,
+          "seed": 20260731,
+          "prior": "Jeffreys Beta(c+0.5, n-c+0.5) per item per endpoint",
+          "null_mean_count": 147.8626,
+          "null_sd_count": 9.708488384639056,
+          "null_ci95_count": [
+            129.0,
+            167.0
+          ],
+          "n_draws_ge_observed": 8788,
+          "p_one_sided_observed_ge_null": 0.8788121187881212
+        }
+      },
+      "single_endpoint_reference_variants": {
+        "p100_at_both_ends_fraction": 0.21327735024958402,
+        "p400_at_both_ends_fraction": 0.21327735024958402,
+        "note": "p100_at_both_ends reproduces the prior REFERENCE figure recorded in reports/m5c_turnover_v1.json noise_reference_not_a_test."
+      },
+      "metric": "acc_strict (contract-strict, I7)",
+      "direction_of_result": {
+        "verdict": "not_distinguishable",
+        "observed_fraction": 0.22795341098169716,
+        "expected_fraction_plugin": 0.21327735024958402,
+        "difference": 0.014676060732113139,
+        "difference_bootstrap_ci95": [
+          -0.016275608361064904,
+          0.04678400582362727
+        ],
+        "p_one_sided_plugin_mc": 0.17498250174982502,
+        "p_one_sided_posterior_propagated_mc": 0.8788121187881212,
+        "expected_fraction_jeffreys": 0.24601730679547928,
+        "licensed_statement": "The TOTAL turnover between step 100 and step 400 is NOT shown to exceed what independent per-item temperature-1.0 draws at each endpoint's own rate would produce. The turnover COUNT is therefore consistent with per-item stochastic instability at this null, and a claim of hidden churn cannot rest on the turnover magnitude. A claim about WHICH items move is a separate quantity, measured in reports/m5c_lost_item_forensics_v1.json, and is not affected by this result: per-item noise would REDUCE cross-checkpoint agreement of the LOST sets, not manufacture it.",
+        "not_licensed": "This does NOT measure the greedy harness's replicate determinism. Every geo3k greedy eval is single-pass temperature-0.0 decoding; a greedy replicate floor is a separate measurement (Task A)."
+      }
+    }
+  },
+  "checks": {
+    "substrate_rows": 601,
+    "item_key_sets_identical": true,
+    "samples_per_item_step100": [
+      16
+    ],
+    "samples_per_item_step400": [
+      16
+    ],
+    "step100_greedy_label_matches_substrate_acc_final": 601,
+    "step100_greedy_label_matches_substrate_acc_strict": 601,
+    "step400_sampledrun_greedy_matches_substrate_acc_final": 464,
+    "step400_sampledrun_greedy_matches_substrate_acc_strict": 464,
+    "step100_rescore_vs_guarded_sample_correct_identical": 601,
+    "sampled_rows_correct_but_not_contract_valid_step100": 0,
+    "sampled_rows_correct_but_not_contract_valid_step400": 0,
+    "strict_equals_lenient_sampled_counts_step100": true,
+    "strict_equals_lenient_sampled_counts_step400": true,
+    "strict_equals_lenient_observed_greedy_discordance": true,
+    "decoding_settings_match_between_endpoints": true,
+    "prompt_contract_sha256_match": true,
+    "source_manifest_sha256_match": true,
+    "format_prompt_sha256_match": true,
+    "parser_version_match": true,
+    "scoring_mode_match": true,
+    "step400_run_status": "complete",
+    "step400_run_exit_code": 0,
+    "turnover_report_observed_discordance": 137
+  },
+  "caveats": [
+    "Sampled variability at temperature 1.0 is NOT identical to greedy replicate variability. This null bounds STOCHASTIC INSTABILITY of each checkpoint under temperature decoding; it does not measure the greedy harness's determinism.",
+    "Temperature 1.0 is strictly noisier than temperature 0.0, so this null is an UPPER bound on the per-item stochastic churn a greedy comparison could inherit from decoding randomness. A comparison that fails to clear it does not clear a greedy-replicate noise floor either.",
+    "p_i is estimated from only 16 samples per item per endpoint; the posterior-propagated Monte-Carlo null carries that estimation error, the plug-in null does not.",
+    "The null treats the two endpoints as independent draws. Any true shared item difficulty structure is already inside p_i(100) and p_i(400); the independence assumption concerns only the residual draw, which is exactly the null being tested.",
+    "The step-400 sampled cell was run with --splits test instead of the registered --splits train test. Test rows begin at global row index 1288 in the registered run and 1288 % batch_size(4) == 0, so per-item 4-row batch grouping is unchanged; the step-100 reproduction cell tests this empirically."
+  ]
+}

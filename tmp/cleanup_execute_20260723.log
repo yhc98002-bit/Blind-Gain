@@ -1,0 +1,13 @@
+{"inventory": "reports/cleanup_20260723/cleanup_inventory_execute_20260723T151443Z.json", "total_gib": 383.54}
+{"deleted": "checkpoints/pilot/mech_a2_gray/global_step_60", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a1_real/global_step_60", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a3_caption/global_step_20", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a2_gray_seed2/global_step_20", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a2b_noimage_seed2/global_step_20", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_80", "gib": 38.14}
+{"deleted": "checkpoints/pilot/mech_a2_gray_resume60_retry2/global_step_100", "gib": 38.14}
+{"deleted": "checkpoints/smoke/mini_a5_cp_plumbing_smoke_v1/global_step_1", "gib": 15.15}
+{"deleted": "checkpoints/smoke/mini_a5_member_plumbing_smoke_v1/global_step_1", "gib": 15.15}
+{"deleted": "checkpoints/m5_anchor_resume_integrity_step101/global_step_101", "gib": 43.12}
+{"deleted": "checkpoints/anchor_a0_recipe_3b_geo3k/anchor_a0_recipe_3b_geo3k_20260709T224852Z/global_step_100", "gib": 43.12}
+{"execution_report": "reports/cleanup_20260723/cleanup_execution_20260723T151443Z.json"}

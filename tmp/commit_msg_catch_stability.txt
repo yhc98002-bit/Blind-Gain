@@ -1,0 +1,8 @@
+Add single-arm catch-stability scorer extension for Gate-1 arms with fixture suite
+
+Extends the catch-stability scorer to single-arm (Gate-1) evaluation with a
+dedicated fixture-backed test suite (21 tests). Adversarially verified under
+2 lenses; the cp/member registered path is proven byte-stable
+(sha256-identical on both ends). No real new-arm data touched.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

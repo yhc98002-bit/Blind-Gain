@@ -1,0 +1,1553 @@
+{
+  "decoding_lock": {
+    "parser_version": "canonical-v2",
+    "prompt_contract_id": "answer-tags-v1",
+    "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+    "single_valued_across_all_six_cells": true
+  },
+  "e1_difficulty_band": {
+    "band_carrier_intervention_type": "chained_premise_easy",
+    "branch_d_not_fireable_here": {
+      "reason": "Section-5 branch (d) is defined on 'the single re-measure' and cannot be fired by a first measurement; it is quoted for completeness only.",
+      "registration_quote": "- **(d) the single re-measure also misses:** the label-count lever is declared\n  insufficient for this construct. Escalate to the PAPER2 §6 premise-first\n  redesign (simpler premise curriculum or a small verified warm start, which\n  mandates the SFT+standard-GRPO comparator, I16). The miss is reported as a\n  result; there is no further iteration on this batch."
+    },
+    "contract_not_named_by_registration": "Section 7 E1 states the pass criterion as 'premise member accuracy in [0.40, 0.60]' and requires 'lenient + strict (I7)' without naming which contract carries the band (contrast section 7 E2, which says 'on lenient scoring'). This instrument therefore reports the verdict separately under each contract and does not choose between them; if they disagree, the disagreement is the result and the choice is the PI's.",
+    "contracts_agree": true,
+    "gate": "E1 - difficulty band",
+    "image_mode": "real",
+    "per_intervention_type": {
+      "chained_premise": {
+        "final_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.225,
+            "member_correct": 9,
+            "pair_accuracy": 0.0,
+            "pair_correct": 0
+          },
+          "n_members": 40,
+          "n_pairs": 20,
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.225,
+            "member_correct": 9,
+            "pair_accuracy": 0.0,
+            "pair_correct": 0
+          }
+        },
+        "premise_absent_reason": null,
+        "premise_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.375,
+            "member_correct": 15,
+            "pair_accuracy": 0.25,
+            "pair_correct": 5
+          },
+          "n_differing_gold": 0,
+          "n_equal_gold": 20,
+          "n_members": 40,
+          "n_pairs": 20,
+          "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.375,
+            "member_correct": 15,
+            "pair_accuracy": 0.25,
+            "pair_correct": 5
+          }
+        }
+      },
+      "chained_premise_easy": {
+        "final_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.2125,
+            "member_correct": 17,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          },
+          "n_members": 80,
+          "n_pairs": 40,
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.2125,
+            "member_correct": 17,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          }
+        },
+        "premise_absent_reason": null,
+        "premise_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.2875,
+            "member_correct": 23,
+            "pair_accuracy": 0.175,
+            "pair_correct": 7
+          },
+          "n_differing_gold": 0,
+          "n_equal_gold": 40,
+          "n_members": 80,
+          "n_pairs": 40,
+          "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.2875,
+            "member_correct": 23,
+            "pair_accuracy": 0.175,
+            "pair_correct": 7
+          }
+        }
+      },
+      "fact_read": {
+        "final_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.675,
+            "member_correct": 27,
+            "pair_accuracy": 0.55,
+            "pair_correct": 11
+          },
+          "n_members": 40,
+          "n_pairs": 20,
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.675,
+            "member_correct": 27,
+            "pair_accuracy": 0.55,
+            "pair_correct": 11
+          }
+        },
+        "premise_absent_reason": "no premise-probe rows for this intervention type; the registration (section 3) states: `fact_read` items carry no premise fields at all. Half-specified premise metadata fails closed in the loader.",
+        "premise_member_and_pair_accuracy": null
+      },
+      "premise_transition": {
+        "final_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.1625,
+            "member_correct": 13,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          },
+          "n_members": 80,
+          "n_pairs": 40,
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.1625,
+            "member_correct": 13,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          }
+        },
+        "premise_absent_reason": null,
+        "premise_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.325,
+            "member_correct": 26,
+            "pair_accuracy": 0.175,
+            "pair_correct": 7
+          },
+          "n_differing_gold": 40,
+          "n_equal_gold": 0,
+          "n_members": 80,
+          "n_pairs": 40,
+          "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.325,
+            "member_correct": 26,
+            "pair_accuracy": 0.175,
+            "pair_correct": 7
+          }
+        }
+      },
+      "premise_transition_easy": {
+        "final_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.275,
+            "member_correct": 22,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          },
+          "n_members": 80,
+          "n_pairs": 40,
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.275,
+            "member_correct": 22,
+            "pair_accuracy": 0.025,
+            "pair_correct": 1
+          }
+        },
+        "premise_absent_reason": null,
+        "premise_member_and_pair_accuracy": {
+          "lenient": {
+            "contract": "lenient",
+            "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+            "member_accuracy": 0.4625,
+            "member_correct": 37,
+            "pair_accuracy": 0.2,
+            "pair_correct": 8
+          },
+          "n_differing_gold": 40,
+          "n_equal_gold": 0,
+          "n_members": 80,
+          "n_pairs": 40,
+          "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+          "strict": {
+            "contract": "strict",
+            "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+            "member_accuracy": 0.4625,
+            "member_correct": 37,
+            "pair_accuracy": 0.2,
+            "pair_correct": 8
+          }
+        }
+      }
+    },
+    "registration_quote_readout_and_pass": "Readout: per-intervention-type premise member accuracy (probe run) and final\nmember/pair accuracy (causal run), lenient + strict (I7), no aggregation\nacross types (I13). Pass: `chained_premise_easy` premise member accuracy in\n[0.40, 0.60] (else §5 branches fire).",
+    "registration_quote_target_band": "**Target band: base premise member accuracy ∈ [0.40, 0.60] on\n`chained_premise_easy`** (primary carrier; anchor point 0.275 at n=20).",
+    "verdict_by_scoring_contract_never_merged_I7": {
+      "lenient": {
+        "band_high": 0.6,
+        "band_interval": "[0.40, 0.60] (inclusive both ends)",
+        "band_low": 0.4,
+        "in_band": false,
+        "intervention_type": "chained_premise_easy",
+        "member_correct": 23,
+        "metric": "premise member accuracy (premise-probe cell, image mode real)",
+        "n_members": 80,
+        "n_pairs": 40,
+        "scoring_contract": "lenient",
+        "section5_branch_fired": {
+          "branch": "c",
+          "condition": "acc < 0.40",
+          "label": "(c) still too hard",
+          "registration_quote": "- **(c) still too hard** (acc < 0.40): one pre-committed step to `n=5` (the\n  minimum at which the premise remains a genuine 4-distractor search); same\n  single re-measure discipline."
+        },
+        "value": 0.2875,
+        "verdict": "FAIL"
+      },
+      "strict": {
+        "band_high": 0.6,
+        "band_interval": "[0.40, 0.60] (inclusive both ends)",
+        "band_low": 0.4,
+        "in_band": false,
+        "intervention_type": "chained_premise_easy",
+        "member_correct": 23,
+        "metric": "premise member accuracy (premise-probe cell, image mode real)",
+        "n_members": 80,
+        "n_pairs": 40,
+        "scoring_contract": "strict",
+        "section5_branch_fired": {
+          "branch": "c",
+          "condition": "acc < 0.40",
+          "label": "(c) still too hard",
+          "registration_quote": "- **(c) still too hard** (acc < 0.40): one pre-committed step to `n=5` (the\n  minimum at which the premise remains a genuine 4-distractor search); same\n  single re-measure discipline."
+        },
+        "value": 0.2875,
+        "verdict": "FAIL"
+      }
+    }
+  },
+  "e2_blind_floor": {
+    "blind_image_modes": [
+      "gray",
+      "no_image"
+    ],
+    "failing_types": [
+      "chained_premise",
+      "chained_premise_easy",
+      "fact_read",
+      "premise_transition",
+      "premise_transition_easy"
+    ],
+    "final_member_accuracy_ceiling": 0.133,
+    "gate": "E2 - blind floor",
+    "passing_types": [],
+    "per_intervention_type": {
+      "chained_premise": {
+        "blind_cells": {
+          "gray": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.25,
+                "member_correct": 10,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 40,
+              "n_pairs": 20,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.25,
+                "member_correct": 10,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 0,
+              "n_equal_gold": 20,
+              "n_members": 40,
+              "n_pairs": 20,
+              "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          },
+          "no_image": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.25,
+                "member_correct": 10,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 40,
+              "n_pairs": 20,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.25,
+                "member_correct": 10,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 0,
+              "n_equal_gold": 20,
+              "n_members": 40,
+              "n_pairs": 20,
+              "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          }
+        },
+        "blind_solvable_pair_ids": {
+          "gray": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_chained_premise_3c76f68fdb222eb2",
+                "t4v2c_chained_premise_41bbf3b3c8703284",
+                "t4v2c_chained_premise_4ffe6d4cc79a95c0",
+                "t4v2c_chained_premise_525bdb1e2b6e4c24",
+                "t4v2c_chained_premise_5a71652c3a6e58c1",
+                "t4v2c_chained_premise_7fa51b280faf254c",
+                "t4v2c_chained_premise_baee38f89b94cca8",
+                "t4v2c_chained_premise_c8f3f61c673dcad5",
+                "t4v2c_chained_premise_fb20724a7d3cf532",
+                "t4v2c_chained_premise_fd45eafd654d3712"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 10,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          },
+          "no_image": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_chained_premise_3c76f68fdb222eb2",
+                "t4v2c_chained_premise_41bbf3b3c8703284",
+                "t4v2c_chained_premise_4ffe6d4cc79a95c0",
+                "t4v2c_chained_premise_525bdb1e2b6e4c24",
+                "t4v2c_chained_premise_5a71652c3a6e58c1",
+                "t4v2c_chained_premise_7fa51b280faf254c",
+                "t4v2c_chained_premise_baee38f89b94cca8",
+                "t4v2c_chained_premise_c8f3f61c673dcad5",
+                "t4v2c_chained_premise_fb20724a7d3cf532",
+                "t4v2c_chained_premise_fd45eafd654d3712"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 10,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          }
+        },
+        "criteria": {
+          "gray": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.25
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.10526315789473684,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 20 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          },
+          "no_image": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.25
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.10526315789473684,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 20 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          }
+        },
+        "failing_criteria": [
+          "gray:final_member_accuracy",
+          "no_image:final_member_accuracy"
+        ],
+        "final_member_accuracy_ceiling": 0.133,
+        "n_points": 20,
+        "n_points_source": "difficulty_knobs.n_points (single-valued within the type)",
+        "premise_absent_reason": null,
+        "premise_criterion_applicable": true,
+        "premise_member_accuracy_ceiling": 0.10526315789473684,
+        "registered_consequence": {
+          "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+          "statement": "Registered consequence, applied mechanically: 'Fail => the failing type is excluded from any training use; the blind-solvable `pair_id`s are reported; no silent regeneration.'",
+          "training_use": "EXCLUDED"
+        },
+        "scoring_contract_of_record": "lenient",
+        "verdict": "FAIL"
+      },
+      "chained_premise_easy": {
+        "blind_cells": {
+          "gray": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 0,
+              "n_equal_gold": 40,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          },
+          "no_image": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 0,
+              "n_equal_gold": 40,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_stability (section 4: equal premise golds, invariance reading)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          }
+        },
+        "blind_solvable_pair_ids": {
+          "gray": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_chained_premise_easy_02eb19b3fecf5eb5",
+                "t4v2c_chained_premise_easy_0a27bd760a84983f",
+                "t4v2c_chained_premise_easy_3b298e109d8f4e32",
+                "t4v2c_chained_premise_easy_43fc51bbb30c23d6",
+                "t4v2c_chained_premise_easy_6a8e2a7bbb38e02a",
+                "t4v2c_chained_premise_easy_6fc010b6ca4c589e",
+                "t4v2c_chained_premise_easy_7a4e85593241b6d1",
+                "t4v2c_chained_premise_easy_8093426042fd7b1e",
+                "t4v2c_chained_premise_easy_a07032170750d183",
+                "t4v2c_chained_premise_easy_a09eb5d40669273f",
+                "t4v2c_chained_premise_easy_a1397793ba8d3de1",
+                "t4v2c_chained_premise_easy_a464d71e7cb1fffe",
+                "t4v2c_chained_premise_easy_a89dd70dea6f6530",
+                "t4v2c_chained_premise_easy_ad447251ce648fa5",
+                "t4v2c_chained_premise_easy_c7d19767eeb8056b",
+                "t4v2c_chained_premise_easy_d65e19102ab221ce",
+                "t4v2c_chained_premise_easy_da710a70dd928b6e",
+                "t4v2c_chained_premise_easy_f8cab27f239b232f"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 18,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          },
+          "no_image": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_chained_premise_easy_02eb19b3fecf5eb5",
+                "t4v2c_chained_premise_easy_0a27bd760a84983f",
+                "t4v2c_chained_premise_easy_3b298e109d8f4e32",
+                "t4v2c_chained_premise_easy_43fc51bbb30c23d6",
+                "t4v2c_chained_premise_easy_6a8e2a7bbb38e02a",
+                "t4v2c_chained_premise_easy_6fc010b6ca4c589e",
+                "t4v2c_chained_premise_easy_7a4e85593241b6d1",
+                "t4v2c_chained_premise_easy_8093426042fd7b1e",
+                "t4v2c_chained_premise_easy_a07032170750d183",
+                "t4v2c_chained_premise_easy_a09eb5d40669273f",
+                "t4v2c_chained_premise_easy_a1397793ba8d3de1",
+                "t4v2c_chained_premise_easy_a464d71e7cb1fffe",
+                "t4v2c_chained_premise_easy_a89dd70dea6f6530",
+                "t4v2c_chained_premise_easy_ad447251ce648fa5",
+                "t4v2c_chained_premise_easy_c7d19767eeb8056b",
+                "t4v2c_chained_premise_easy_d65e19102ab221ce",
+                "t4v2c_chained_premise_easy_da710a70dd928b6e",
+                "t4v2c_chained_premise_easy_f8cab27f239b232f"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 18,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          }
+        },
+        "criteria": {
+          "gray": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.225
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.2857142857142857,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 8 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          },
+          "no_image": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.225
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.2857142857142857,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 8 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          }
+        },
+        "failing_criteria": [
+          "gray:final_member_accuracy",
+          "no_image:final_member_accuracy"
+        ],
+        "final_member_accuracy_ceiling": 0.133,
+        "n_points": 8,
+        "n_points_source": "difficulty_knobs.n_points (single-valued within the type)",
+        "premise_absent_reason": null,
+        "premise_criterion_applicable": true,
+        "premise_member_accuracy_ceiling": 0.2857142857142857,
+        "registered_consequence": {
+          "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+          "statement": "Registered consequence, applied mechanically: 'Fail => the failing type is excluded from any training use; the blind-solvable `pair_id`s are reported; no silent regeneration.'",
+          "training_use": "EXCLUDED"
+        },
+        "scoring_contract_of_record": "lenient",
+        "verdict": "FAIL"
+      },
+      "fact_read": {
+        "blind_cells": {
+          "gray": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.2,
+                "member_correct": 8,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 40,
+              "n_pairs": 20,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.2,
+                "member_correct": 8,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": null
+          },
+          "no_image": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.2,
+                "member_correct": 8,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 40,
+              "n_pairs": 20,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.2,
+                "member_correct": 8,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": null
+          }
+        },
+        "blind_solvable_pair_ids": {
+          "gray": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_fact_read_174471d24bf8f6f5",
+                "t4v2c_fact_read_6e2b4ae0c0b0e32c",
+                "t4v2c_fact_read_7ce53b902d1c1b01",
+                "t4v2c_fact_read_9a24012d393ab1fd",
+                "t4v2c_fact_read_a30fbfd81217f3ef",
+                "t4v2c_fact_read_a73e56f92df117d1",
+                "t4v2c_fact_read_c4b7e2d1cc35d9ea",
+                "t4v2c_fact_read_e8290182cb6b08af"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 8,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": null
+          },
+          "no_image": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_fact_read_174471d24bf8f6f5",
+                "t4v2c_fact_read_695157d92ab82297",
+                "t4v2c_fact_read_6e2b4ae0c0b0e32c",
+                "t4v2c_fact_read_7ce53b902d1c1b01",
+                "t4v2c_fact_read_9a24012d393ab1fd",
+                "t4v2c_fact_read_a73e56f92df117d1",
+                "t4v2c_fact_read_c4b7e2d1cc35d9ea",
+                "t4v2c_fact_read_e8290182cb6b08af"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 8,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": null
+          }
+        },
+        "criteria": {
+          "gray": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.2
+            },
+            "premise_member_accuracy": null
+          },
+          "no_image": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.2
+            },
+            "premise_member_accuracy": null
+          }
+        },
+        "failing_criteria": [
+          "gray:final_member_accuracy",
+          "no_image:final_member_accuracy"
+        ],
+        "final_member_accuracy_ceiling": 0.133,
+        "n_points": 20,
+        "n_points_source": "difficulty_knobs.n_points (single-valued within the type)",
+        "premise_absent_reason": "this type carries no premise clause and is absent from the premise-probe manifest by registered design; section 3: `fact_read` items carry no premise fields at all. Half-specified premise metadata fails closed in the loader.",
+        "premise_criterion_applicable": false,
+        "premise_member_accuracy_ceiling": null,
+        "registered_consequence": {
+          "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+          "statement": "Registered consequence, applied mechanically: 'Fail => the failing type is excluded from any training use; the blind-solvable `pair_id`s are reported; no silent regeneration.'",
+          "training_use": "EXCLUDED"
+        },
+        "scoring_contract_of_record": "lenient",
+        "verdict": "FAIL"
+      },
+      "premise_transition": {
+        "blind_cells": {
+          "gray": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.1375,
+                "member_correct": 11,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.1375,
+                "member_correct": 11,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 40,
+              "n_equal_gold": 0,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          },
+          "no_image": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.1375,
+                "member_correct": 11,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.1375,
+                "member_correct": 11,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 40,
+              "n_equal_gold": 0,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          }
+        },
+        "blind_solvable_pair_ids": {
+          "gray": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_premise_transition_07cea3de05268e7d",
+                "t4v2c_premise_transition_0bb30ed12b2cc272",
+                "t4v2c_premise_transition_21f992441bdb5b9f",
+                "t4v2c_premise_transition_35dba92d552473e8",
+                "t4v2c_premise_transition_51ff2dc942ebad9d",
+                "t4v2c_premise_transition_6a2e6e0a936b4e90",
+                "t4v2c_premise_transition_6d9365f5bf26b8b5",
+                "t4v2c_premise_transition_a184d0654a727681",
+                "t4v2c_premise_transition_b04694074d729010",
+                "t4v2c_premise_transition_c4c060f7e80497ea",
+                "t4v2c_premise_transition_fd03f21c6075fa37"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 11,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          },
+          "no_image": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_premise_transition_07cea3de05268e7d",
+                "t4v2c_premise_transition_0bb30ed12b2cc272",
+                "t4v2c_premise_transition_21f992441bdb5b9f",
+                "t4v2c_premise_transition_35dba92d552473e8",
+                "t4v2c_premise_transition_51ff2dc942ebad9d",
+                "t4v2c_premise_transition_6a2e6e0a936b4e90",
+                "t4v2c_premise_transition_6d9365f5bf26b8b5",
+                "t4v2c_premise_transition_a184d0654a727681",
+                "t4v2c_premise_transition_b04694074d729010",
+                "t4v2c_premise_transition_c4c060f7e80497ea",
+                "t4v2c_premise_transition_fd03f21c6075fa37"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 11,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          }
+        },
+        "criteria": {
+          "gray": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.1375
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.10526315789473684,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 20 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          },
+          "no_image": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.1375
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.10526315789473684,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 20 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          }
+        },
+        "failing_criteria": [
+          "gray:final_member_accuracy",
+          "no_image:final_member_accuracy"
+        ],
+        "final_member_accuracy_ceiling": 0.133,
+        "n_points": 20,
+        "n_points_source": "difficulty_knobs.n_points (single-valued within the type)",
+        "premise_absent_reason": null,
+        "premise_criterion_applicable": true,
+        "premise_member_accuracy_ceiling": 0.10526315789473684,
+        "registered_consequence": {
+          "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+          "statement": "Registered consequence, applied mechanically: 'Fail => the failing type is excluded from any training use; the blind-solvable `pair_id`s are reported; no silent regeneration.'",
+          "training_use": "EXCLUDED"
+        },
+        "scoring_contract_of_record": "lenient",
+        "verdict": "FAIL"
+      },
+      "premise_transition_easy": {
+        "blind_cells": {
+          "gray": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 40,
+              "n_equal_gold": 0,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          },
+          "no_image": {
+            "final": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_members": 80,
+              "n_pairs": 40,
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.225,
+                "member_correct": 18,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            },
+            "premise": {
+              "lenient": {
+                "contract": "lenient",
+                "contract_description": "lenient matcher on the extracted answer span (I7 contract 1)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              },
+              "n_differing_gold": 40,
+              "n_equal_gold": 0,
+              "n_members": 80,
+              "n_pairs": 40,
+              "premise_pair_accuracy_semantics": "premise_transition_accuracy (section 4: differing premise golds, discriminative two-gold branch)",
+              "strict": {
+                "contract": "strict",
+                "contract_description": "contract-strict: lenient match AND answer-tags-v1 satisfied (I7 contract 2)",
+                "member_accuracy": 0.0,
+                "member_correct": 0,
+                "pair_accuracy": 0.0,
+                "pair_correct": 0
+              }
+            }
+          }
+        },
+        "blind_solvable_pair_ids": {
+          "gray": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_premise_transition_easy_2f43b4e9f532ad5e",
+                "t4v2c_premise_transition_easy_2f7db136893ea785",
+                "t4v2c_premise_transition_easy_33f5fe1c98234de1",
+                "t4v2c_premise_transition_easy_43681c784ac02b87",
+                "t4v2c_premise_transition_easy_4a9db79b618cfc2a",
+                "t4v2c_premise_transition_easy_55cc839ea54633d0",
+                "t4v2c_premise_transition_easy_5c3ab4173d2eec78",
+                "t4v2c_premise_transition_easy_6eeea720a2e5f3a0",
+                "t4v2c_premise_transition_easy_75cd86cb0c2a46bc",
+                "t4v2c_premise_transition_easy_792c326341347ca4",
+                "t4v2c_premise_transition_easy_a1a1d8f91988108a",
+                "t4v2c_premise_transition_easy_b167d4a96b50fd90",
+                "t4v2c_premise_transition_easy_b4a9a5b79a4ba117",
+                "t4v2c_premise_transition_easy_c3e0dbfc49be8bc8",
+                "t4v2c_premise_transition_easy_cf05532a66fce24b",
+                "t4v2c_premise_transition_easy_e15ed7801213012b",
+                "t4v2c_premise_transition_easy_f43b0ccc7b21202f",
+                "t4v2c_premise_transition_easy_f5c84246535a44c1"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 18,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          },
+          "no_image": {
+            "final": {
+              "any_member_correct": [
+                "t4v2c_premise_transition_easy_2f43b4e9f532ad5e",
+                "t4v2c_premise_transition_easy_2f7db136893ea785",
+                "t4v2c_premise_transition_easy_33f5fe1c98234de1",
+                "t4v2c_premise_transition_easy_43681c784ac02b87",
+                "t4v2c_premise_transition_easy_4a9db79b618cfc2a",
+                "t4v2c_premise_transition_easy_55cc839ea54633d0",
+                "t4v2c_premise_transition_easy_5c3ab4173d2eec78",
+                "t4v2c_premise_transition_easy_6eeea720a2e5f3a0",
+                "t4v2c_premise_transition_easy_75cd86cb0c2a46bc",
+                "t4v2c_premise_transition_easy_792c326341347ca4",
+                "t4v2c_premise_transition_easy_a1a1d8f91988108a",
+                "t4v2c_premise_transition_easy_b167d4a96b50fd90",
+                "t4v2c_premise_transition_easy_b4a9a5b79a4ba117",
+                "t4v2c_premise_transition_easy_c3e0dbfc49be8bc8",
+                "t4v2c_premise_transition_easy_cf05532a66fce24b",
+                "t4v2c_premise_transition_easy_e15ed7801213012b",
+                "t4v2c_premise_transition_easy_f43b0ccc7b21202f",
+                "t4v2c_premise_transition_easy_f5c84246535a44c1"
+              ],
+              "both_members_correct": [],
+              "n_any_member_correct": 18,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            },
+            "premise": {
+              "any_member_correct": [],
+              "both_members_correct": [],
+              "n_any_member_correct": 0,
+              "n_both_members_correct": 0,
+              "scoring_contract": "lenient"
+            }
+          }
+        },
+        "criteria": {
+          "gray": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.225
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.2857142857142857,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 8 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          },
+          "no_image": {
+            "final_member_accuracy": {
+              "ceiling": 0.133,
+              "ceiling_source": "registered literal 0.133 (2x the 1/15 uniform-x chance)",
+              "comparison": "value <= ceiling",
+              "ok": false,
+              "value": 0.225
+            },
+            "premise_member_accuracy": {
+              "ceiling": 0.2857142857142857,
+              "ceiling_source": "2 x 1/(n_points - 1) with n_points = 8 from this type's own difficulty_knobs.n_points",
+              "comparison": "value <= ceiling",
+              "ok": true,
+              "value": 0.0
+            }
+          }
+        },
+        "failing_criteria": [
+          "gray:final_member_accuracy",
+          "no_image:final_member_accuracy"
+        ],
+        "final_member_accuracy_ceiling": 0.133,
+        "n_points": 8,
+        "n_points_source": "difficulty_knobs.n_points (single-valued within the type)",
+        "premise_absent_reason": null,
+        "premise_criterion_applicable": true,
+        "premise_member_accuracy_ceiling": 0.2857142857142857,
+        "registered_consequence": {
+          "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+          "statement": "Registered consequence, applied mechanically: 'Fail => the failing type is excluded from any training use; the blind-solvable `pair_id`s are reported; no silent regeneration.'",
+          "training_use": "EXCLUDED"
+        },
+        "scoring_contract_of_record": "lenient",
+        "verdict": "FAIL"
+      }
+    },
+    "premise_ceiling_rule": "2 x 1/(n_points - 1), derived per type from that type's own difficulty_knobs.n_points",
+    "registration_quote": "**E2 — blind floor** (1 GPU): repeat both E1 commands with\n`--image-mode no_image` and `--image-mode gray` (four runs). Pass, per type:\nblind (no_image and gray) **final** member accuracy ≤ 0.133 (2× the 1/15\nuniform-x chance) and blind **premise** member accuracy ≤ 2×`1/(n_points−1)`\n(n=20: ≤ 0.105; n=8: ≤ 0.286), on lenient scoring. Fail ⇒ the failing type is\nexcluded from any training use; the blind-solvable `pair_id`s are reported; no\nsilent regeneration.",
+    "scoring_contract_note": "Section 7 E2 names its contract: 'on lenient scoring'. The strict contract is computed and reported for every cell (I7) but is never merged into the E2 criterion; see strict_contract_reported_separately_NOT_A_CRITERION.",
+    "scoring_contract_of_record": "lenient",
+    "strict_contract_reported_separately_NOT_A_CRITERION": {
+      "chained_premise": {
+        "gray": {
+          "final_member_accuracy_strict": 0.25,
+          "premise_member_accuracy_strict": 0.0
+        },
+        "no_image": {
+          "final_member_accuracy_strict": 0.25,
+          "premise_member_accuracy_strict": 0.0
+        }
+      },
+      "chained_premise_easy": {
+        "gray": {
+          "final_member_accuracy_strict": 0.225,
+          "premise_member_accuracy_strict": 0.0
+        },
+        "no_image": {
+          "final_member_accuracy_strict": 0.225,
+          "premise_member_accuracy_strict": 0.0
+        }
+      },
+      "fact_read": {
+        "gray": {
+          "final_member_accuracy_strict": 0.2,
+          "premise_member_accuracy_strict": null
+        },
+        "no_image": {
+          "final_member_accuracy_strict": 0.2,
+          "premise_member_accuracy_strict": null
+        }
+      },
+      "premise_transition": {
+        "gray": {
+          "final_member_accuracy_strict": 0.1375,
+          "premise_member_accuracy_strict": 0.0
+        },
+        "no_image": {
+          "final_member_accuracy_strict": 0.1375,
+          "premise_member_accuracy_strict": 0.0
+        }
+      },
+      "premise_transition_easy": {
+        "gray": {
+          "final_member_accuracy_strict": 0.225,
+          "premise_member_accuracy_strict": 0.0
+        },
+        "no_image": {
+          "final_member_accuracy_strict": 0.225,
+          "premise_member_accuracy_strict": 0.0
+        }
+      }
+    }
+  },
+  "gates_not_read_here": {
+    "E3": "caption stress - not read by this instrument",
+    "E4": "attacker check - not read by this instrument",
+    "registration_quote": "The track is unusable for training or release reporting until all four gates\nrun and pass."
+  },
+  "gates_read_here": [
+    "E1",
+    "E2"
+  ],
+  "governing_document": "docs/registered_track4_premise_v2_design_v1.md",
+  "governing_sections": [
+    "section 7 - Acceptance gates (I14): E1 readout and pass criterion, E2 pass criterion and consequence",
+    "section 5 - Easier premise variant: registered branches (a)-(d)",
+    "section 4 - both contracts reported (I7); stability vs transition never aggregated (I13)",
+    "section 3 - fact_read carries no premise fields",
+    "section 8 - declared batch composition"
+  ],
+  "instrument": {
+    "aggregation_grouping": "intervention_type (never template_id, never pooled)",
+    "decides_nothing": "This instrument reports the registered verdicts mechanically and names the section-5 branch the registered rule fires. It does not editorialize and does not decide anything the registration leaves to the PI.",
+    "equal_gold_classifier": "src.eval.fliptrack_metrics.golds_equivalent",
+    "expectation_mode": "registered",
+    "independent_rescore_check": "every banked verdict re-derived row by row with src.eval.fliptrack_metrics.pair_score under src.eval.prompt_contract.DEFAULT_PROMPT_CONTRACT; any disagreement refuses the readout",
+    "path": "scripts/build_track4_premise_v2_gate_readout.py",
+    "reported_numbers_source": "per-row verdict fields banked by scripts/eval_qwen_vl_fliptrack.py (correct_a/b, strict_correct_a/b, pair_correct, strict_pair_correct)"
+  },
+  "invariants": {
+    "I13": "every reported endpoint is per intervention type; nothing is pooled across types anywhere in this output; each cell's own pooled metrics.json is carried by sha256 only",
+    "I15": "schema_version carried at top level",
+    "I7": "lenient and contract-strict contracts computed and reported separately for every cell and every intervention type; never merged"
+  },
+  "per_intervention_type_n_points": {
+    "chained_premise": 20,
+    "chained_premise_easy": 8,
+    "fact_read": 20,
+    "premise_transition": 20,
+    "premise_transition_easy": 8
+  },
+  "per_intervention_type_template_id": {
+    "chained_premise": "t4v2_coordinate_register_n20_v1",
+    "chained_premise_easy": "t4v2_coordinate_register_n8_v1",
+    "fact_read": "t4v2_coordinate_register_n20_v1",
+    "premise_transition": "t4v2_coordinate_register_n20_v1",
+    "premise_transition_easy": "t4v2_coordinate_register_n8_v1"
+  },
+  "provenance": {
+    "cells": {
+      "final_gray": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_gray",
+        "family": "final",
+        "image_mode": "gray",
+        "metrics_decoding_lock": {
+          "image_mode": "gray",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_gray/metrics.json",
+        "metrics_sha256": "b7002a69bc7cc7c0b24febd45b7ec7b4470d5b8751b819f4c745ccdd782703e7",
+        "n_rows": 160,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_gray/predictions.jsonl",
+        "predictions_sha256": "9d878d919fb2c8631fb5a86fd6ffe08e05fdf7fd6f9bbae9a6cd2768ae995135",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "fact_read": 20,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      },
+      "final_no_image": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_no_image",
+        "family": "final",
+        "image_mode": "no_image",
+        "metrics_decoding_lock": {
+          "image_mode": "no_image",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_no_image/metrics.json",
+        "metrics_sha256": "be1058a0a1f99381afb52aabb2c39db45365e33cc58c35efc48934381734d251",
+        "n_rows": 160,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final_no_image/predictions.jsonl",
+        "predictions_sha256": "3a95a3362e6175f3919bcee7811849c755b7488c88da6100d012c3b8d894104f",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "fact_read": 20,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      },
+      "final_real": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final",
+        "family": "final",
+        "image_mode": "real",
+        "metrics_decoding_lock": {
+          "image_mode": "real",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final/metrics.json",
+        "metrics_sha256": "7c5b397adda9d7c976bd97356b78749e9ecf1db5b739405f6205f433d55e75c4",
+        "n_rows": 160,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/final/predictions.jsonl",
+        "predictions_sha256": "59c9240a0594429384d95bf73047ca95499d5ad811c4cef11eb24b91226477f1",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "fact_read": 20,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      },
+      "premise_probe_gray": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_gray",
+        "family": "premise",
+        "image_mode": "gray",
+        "metrics_decoding_lock": {
+          "image_mode": "gray",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_gray/metrics.json",
+        "metrics_sha256": "8de1ff35e1e1066e1ff15acb3f4699a46545ee998bd1f79bde69d3e0f5b116c7",
+        "n_rows": 140,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_gray/predictions.jsonl",
+        "predictions_sha256": "f92b174f9b8131c663d0629c5c7f0ff52f717de4bb873a61c315147850286ec0",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      },
+      "premise_probe_no_image": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_no_image",
+        "family": "premise",
+        "image_mode": "no_image",
+        "metrics_decoding_lock": {
+          "image_mode": "no_image",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_no_image/metrics.json",
+        "metrics_sha256": "c4e957ba5c9035014952607b8f2c57a5b287ca931eba97effbe89768830cade0",
+        "n_rows": 140,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe_no_image/predictions.jsonl",
+        "predictions_sha256": "2e719f697f4d5ca1a607b934987e7e253cb399e4308cf0d17625e1c86bcde3ec",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      },
+      "premise_probe_real": {
+        "dir": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe",
+        "family": "premise",
+        "image_mode": "real",
+        "metrics_decoding_lock": {
+          "image_mode": "real",
+          "max_new_tokens": 32,
+          "noise_seed": 0,
+          "parser_version": "canonical-v2",
+          "prompt_contract_id": "answer-tags-v1",
+          "prompt_contract_sha256": "7ac39f53a2a824490fc5ee22671a888d2d79d55e1d8351919006d7d71c7a8f3f",
+          "seed": 0
+        },
+        "metrics_note": "this cell's metrics.json is POOLED across intervention types and is NOT the registered endpoint; it is carried here by sha256 only and no value is copied out of it (I13)",
+        "metrics_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe/metrics.json",
+        "metrics_sha256": "06f93e561c8e5e72224ff69c8ac7f87223168e355d0ceeb43c577b9e5e1087db",
+        "n_rows": 140,
+        "predictions_path": "experiments/runs/track4_premise_v2_gates_an29_20260811T095522Z/premise_probe/predictions.jsonl",
+        "predictions_sha256": "6813dbe50dc3fd030bce4b1162cec9304974a834aadbada3920188d06086701b",
+        "rows_by_intervention_type": {
+          "chained_premise": 20,
+          "chained_premise_easy": 40,
+          "premise_transition": 40,
+          "premise_transition_easy": 40
+        }
+      }
+    },
+    "git_head": "2ebf8c0dbd9753c272498f0e999fdabba369b9f3",
+    "manifests": {
+      "causal_pairs": {
+        "n_rows": 160,
+        "path": "data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl",
+        "sha256": "5963dd0f9899dc8b0ea38463edbaba546ae5c85c6630dd55c1fedbf8db4143a3"
+      },
+      "premise_probe": {
+        "n_rows": 140,
+        "path": "data/track4_premise_v2_dev_v1/manifest_premise_probe.jsonl",
+        "sha256": "693ef38bea73fb81e5f3e4b7cc2d0712a634f98b4b06413e4939e8ddaf7e7290"
+      }
+    },
+    "registration": {
+      "path": "docs/registered_track4_premise_v2_design_v1.md",
+      "quotes_verified": [
+        "all_four_gates",
+        "e1_readout",
+        "e2_criterion",
+        "fact_read_no_premise",
+        "section5_branch_a",
+        "section5_branch_b",
+        "section5_branch_c",
+        "section5_branch_d",
+        "target_band"
+      ],
+      "sha256": "9ba7c96970d0150e733d1421b6f0712f2bf7558370694143336fa4a8d4c7df19"
+    },
+    "root": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain"
+  },
+  "schema_version": "blind-gains.track4-premise-v2-gate-readout.v1",
+  "title": "Track-4 premise-v2 acceptance gates E1 (difficulty band) and E2 (blind floor): registered per-intervention-type readout"
+}

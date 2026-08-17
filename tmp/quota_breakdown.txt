@@ -1,0 +1,15 @@
+  332032401800  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/AudioDiffusion
+  147089853032  /XYFS02/HDD_POOL/paratera_xy/pxy1289/blindgain_archive
+  137322333173  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/benchmark_v2_runtime
+   56862365532  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/AudioDiffusion_envs
+   44015451632  /XYFS02/HDD_POOL/paratera_xy/pxy1289/.uv_cache
+    6191803182  /XYFS02/HDD_POOL/paratera_xy/pxy1289/zhaotong
+    1778524453  /XYFS02/HDD_POOL/paratera_xy/pxy1289/source
+     445459485  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/AudioDiffusion-neutral-control-20260717
+     381154391  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/newrepo_runtime
+     216775584  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/AudioDiffusion_v15_gate0_20260717
+      46858510  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/ORBIT
+       4449454  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/AudioDiffusion_exit1_20260716
+        374155  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/newrepo.xyfs-project-quota-backup-20260719T113200Z
+         19703  /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/ResearchSeeds
+DONE

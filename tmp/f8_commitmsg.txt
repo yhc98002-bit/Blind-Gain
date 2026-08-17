@@ -1,0 +1,45 @@
+F8 readout: Mini-A5 endpoint numbers and branch 2 fires
+
+Primary endpoint (R19 coordinate survey register, n=600, CP minus member at
+step 120, paired item bootstrap 10000 draws seed 20260729, percentile 2.5/97.5):
+
+  lenient pair_correct   -0.0100  CI [-0.0300, +0.0100]  McNemar p 0.4050   NOT MOVED
+  contract-strict        +0.0700  CI [+0.0417, +0.0983]  McNemar p 1.4e-06  MOVED
+
+The two registered contracts disagree, which binding spec section 3 pre-committed
+to treating as the result ("neither is privileged").
+
+Branch fired: branch 2 -- both flat; the Paper-2 gate is reconsidered,
+premise-first redesign (C3 before C2), C1 retained.
+
+Why not branch 1: its antecedent is "CP moves ... while matched same-data GRPO
+does not", and against the frozen base cited from f2d_template_decomposition_v1
+CP is +0.0000 lenient / +0.0100 strict on the primary anchor. The strict
+CP-minus-member gap decomposes exactly as (CP-base) - (member-base) =
++0.0100 - (-0.0600), i.e. 85.7% of it comes from the member arm falling below
+base, not from CP rising. The whole strict gap is also exactly a response-format
+contract-validity difference: strict_delta = lenient_delta - (CP contract loss -
+member contract loss) = -0.0100 - (0.0183 - 0.0983) = +0.0700 (residual 1e-17);
+contract_valid_rate CP 0.9683 vs member 0.8133. acc_strict is defined as
+contract_valid AND acc_final, so strict is a subset of lenient by construction.
+
+Branch 3 is instrument-absent: attribution is VAG against a matched blind
+control (PAPER2 line 51) and no blind arm is in the six F8 cells. The
+lenient/strict contrast is not used as a proxy for it.
+
+Other roles, never aggregated with the primary (I13):
+- R19 header-cued retention canary: lenient flat +0.0000; contract-strict DROP
+  -0.0400 CI [-0.0700, -0.0133] p 0.0118, recorded as a damage signal. Both arms
+  remain above base on that contract.
+- R19 nine-series readout control: moved on both contracts (+0.0767 / +0.0967).
+- R20 and chart-v08 reported separately, per template.
+- Pooled R19/R20 numbers labelled NON-ENDPOINT.
+
+Both contracts reported for every metric (I7). R19/R20 read-only (I11).
+No chart-v08 base number exists in reports/; that cell is left explicitly empty
+rather than proxied.
+
+Artifacts: reports/f8_mini_a5_endpoint_readout_v1.{json,md}, three paired
+comparisons, six per-arm aggregates.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

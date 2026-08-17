@@ -1,0 +1,1764 @@
+{
+  "bootstrap": {
+    "draws": 5000,
+    "registered_draws": 5000,
+    "registered_seed": 20260716,
+    "seed": 20260716,
+    "unit": "paired items resampled within every frozen joint stratum for rank statistics; paired items across the corpus for aggregates"
+  },
+  "checks": {
+    "blind_arms_pooled": false,
+    "bootstrap_draws_registered_5000": true,
+    "bootstrap_seed_registered_20260716": true,
+    "conditions_match_arms": true,
+    "eligible_strata_recount": 22,
+    "heldout_sha256_matches_registered": true,
+    "pooled_only_readout": false,
+    "small_n_strata_recount": 38,
+    "step0_coverage_complete_all_arms": true,
+    "step0_step100_pairing_exact_all_arms": null
+  },
+  "corpus": {
+    "arms": {
+      "a1_real": {
+        "acc_final_step0": 0.2743571597074782,
+        "n": 4239,
+        "q_bar": 0.5121520449535757
+      },
+      "a2_gray": {
+        "acc_final_step0": 0.18943146968624675,
+        "n": 4239,
+        "q_bar": 0.4235257290814632
+      },
+      "a2b_noimage": {
+        "acc_final_step0": 0.15380986081623024,
+        "n": 4239,
+        "q_bar": 0.41536987102073736
+      },
+      "a3_caption": {
+        "acc_final_step0": 0.18494928049068177,
+        "n": 4239,
+        "q_bar": 0.4457581881229798
+      }
+    }
+  },
+  "descriptive_views": {
+    "category_only": {
+      "role": "descriptive robustness view; does not replace the registered joint-stratum analysis",
+      "rows": [
+        {
+          "a1_real": {
+            "acc_final_step0": 0.26485568760611206,
+            "q_bar": 0.5116838276635651
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.22835314091680814,
+            "q_bar": 0.4789654212296252
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.1833616298811545,
+            "q_bar": 0.4792827626040148
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2037351443123939,
+            "q_bar": 0.45330079013504715
+          },
+          "group": "(GradeSchool) Geometric",
+          "n": 1178
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.29271523178807946,
+            "q_bar": 0.5257882609291029
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.20860927152317882,
+            "q_bar": 0.4387629174991958
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.16622516556291392,
+            "q_bar": 0.43896707363362086
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2,
+            "q_bar": 0.48537712112058745
+          },
+          "group": "(GradeSchool) Non-Geo Math",
+          "n": 1510
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.22939866369710468,
+            "q_bar": 0.46904520518678355
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.21603563474387527,
+            "q_bar": 0.44542379036796664
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.18485523385300667,
+            "q_bar": 0.4294579858941628
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.10690423162583519,
+            "q_bar": 0.3728639879161394
+          },
+          "group": "(GradeSchool) Science",
+          "n": 449
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.410958904109589,
+            "q_bar": 0.6057556499202154
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.1917808219178082,
+            "q_bar": 0.43697519555823305
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.19863013698630136,
+            "q_bar": 0.41510082650036506
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2876712328767123,
+            "q_bar": 0.5432877659510782
+          },
+          "group": "Broader STEM Topics",
+          "n": 146
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.2695288863325944
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.22354551780160314
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.17423272405926474
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.26548107891796907
+          },
+          "group": "Commonsense",
+          "n": 13
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.028985507246376812,
+            "q_bar": 0.2579872193038668
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.014492753623188406,
+            "q_bar": 0.1956272192413989
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.028985507246376812,
+            "q_bar": 0.17481756085295921
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.043478260869565216,
+            "q_bar": 0.1922760703764688
+          },
+          "group": "Social Science",
+          "n": 69
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.17391304347826086,
+            "q_bar": 0.44679810414772025
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.1383399209486166,
+            "q_bar": 0.3604900193617728
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.09486166007905138,
+            "q_bar": 0.3350797334442362
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.12648221343873517,
+            "q_bar": 0.3583366474115312
+          },
+          "group": "Spatial Reasoning",
+          "n": 253
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.322061191626409,
+            "q_bar": 0.5489889847772961
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.09339774557165861,
+            "q_bar": 0.31750449075638193
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.07568438003220612,
+            "q_bar": 0.2911168143543639
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.18840579710144928,
+            "q_bar": 0.4324440526600762
+          },
+          "group": "Tables/Diagrams/Charts",
+          "n": 621
+        }
+      ]
+    },
+    "source_only": {
+      "role": "descriptive robustness view; does not replace the registered joint-stratum analysis",
+      "rows": [
+        {
+          "a1_real": {
+            "acc_final_step0": 0.4489795918367347,
+            "q_bar": 0.6597774719494962
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.3129251700680272,
+            "q_bar": 0.5015055330090514
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.21768707482993196,
+            "q_bar": 0.5027272714500007
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.3197278911564626,
+            "q_bar": 0.5808140730340579
+          },
+          "group": "K12",
+          "n": 147
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.04,
+            "q_bar": 0.227970317986751
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.011428571428571429,
+            "q_bar": 0.20530535947332323
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.005714285714285714,
+            "q_bar": 0.17624679935071935
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.19518745927029474
+          },
+          "group": "M3CoT",
+          "n": 175
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.0625,
+            "q_bar": 0.2733107541815831
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.13865898995462222
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.13865898995462222
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.1931774643502832
+          },
+          "group": "M3CoTConverted",
+          "n": 16
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.32889403590040533,
+            "q_bar": 0.5697008430529215
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.2154024319629415,
+            "q_bar": 0.47187113239976053
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.1795020266357846,
+            "q_bar": 0.4657691473763447
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2142443543717429,
+            "q_bar": 0.4850865883325482
+          },
+          "group": "MMK12",
+          "n": 1727
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.3333333333333333,
+            "q_bar": 0.5529859256953341
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.18518518518518517,
+            "q_bar": 0.4494125063689904
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.14814814814814814,
+            "q_bar": 0.4569555195034117
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.14814814814814814,
+            "q_bar": 0.4829835709981123
+          },
+          "group": "MMK12Converted",
+          "n": 27
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.3364485981308411,
+            "q_bar": 0.5649250434749915
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.32710280373831774,
+            "q_bar": 0.5441326623098987
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.2733644859813084,
+            "q_bar": 0.547069972720499
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.25,
+            "q_bar": 0.5435896794997106
+          },
+          "group": "MMMath",
+          "n": 428
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.20399666944213155,
+            "q_bar": 0.43743734841858867
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.1440466278101582,
+            "q_bar": 0.36027369382468755
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.12323064113238967,
+            "q_bar": 0.35174873715616417
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.1523730224812656,
+            "q_bar": 0.3958298744283661
+          },
+          "group": "Processed",
+          "n": 1201
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.08571428571428572,
+            "q_bar": 0.31323954882176774
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.05714285714285714,
+            "q_bar": 0.26664048990245404
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.02857142857142857,
+            "q_bar": 0.25255421219984026
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0380952380952381,
+            "q_bar": 0.3156256039969418
+          },
+          "group": "R1OneVision",
+          "n": 105
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.058823529411764705,
+            "q_bar": 0.2913680303720727
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.058823529411764705,
+            "q_bar": 0.22284704551232984
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.23510708296680582
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.26671061768896454
+          },
+          "group": "R1OneVisionConverted",
+          "n": 17
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.018867924528301886,
+            "q_bar": 0.17256866310653318
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.018867924528301886,
+            "q_bar": 0.17256866310653324
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.16483588863539692
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.1977527033648526
+          },
+          "group": "ScienceQA",
+          "n": 53
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.4672897196261682,
+            "q_bar": 0.7360063804536483
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.16822429906542055,
+            "q_bar": 0.5141613959195668
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.1308411214953271,
+            "q_bar": 0.458757846954826
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.29906542056074764,
+            "q_bar": 0.5590460166881752
+          },
+          "group": "ai2d",
+          "n": 107
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.1111111111111111,
+            "q_bar": 0.5134449719232289
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.13865898995462222
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.13865898995462222
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.2840415883430515
+          },
+          "group": "chartqa",
+          "n": 9
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.323943661971831,
+            "q_bar": 0.6628958732821011
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.15168599117604065
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.0,
+            "q_bar": 0.14517249056533146
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.15492957746478872,
+            "q_bar": 0.40446293468236283
+          },
+          "group": "dvqa",
+          "n": 71
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.2542372881355932,
+            "q_bar": 0.563170363223377
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.2542372881355932,
+            "q_bar": 0.5487616252605911
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.16101694915254236,
+            "q_bar": 0.5522005756595468
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.15254237288135594,
+            "q_bar": 0.4505456889051957
+          },
+          "group": "geoqa_plus",
+          "n": 118
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.21052631578947367,
+            "q_bar": 0.5242199172726177
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.23684210526315788,
+            "q_bar": 0.47646404245008656
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.10526315789473684,
+            "q_bar": 0.4057813777058276
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.21052631578947367,
+            "q_bar": 0.41305972371272537
+          },
+          "group": "geoqa_plusConverted",
+          "n": 38
+        }
+      ]
+    }
+  },
+  "partial_mode": {
+    "computes": [
+      "q_bar per arm per stratum",
+      "Acc_final(step_0) per arm (corpus, strata, descriptive views)"
+    ],
+    "reason": "step-100 evaluations are not provided; this output is a plumbing readout of the step-0 side only and is not the registered R3 result",
+    "refused_estimands": [
+      "gain",
+      "recovery",
+      "rho_gain",
+      "rho_recovery",
+      "aggregate_recovery",
+      "geometry3k_anchor_comparison",
+      "m10_support_sharpening"
+    ]
+  },
+  "pooling_discipline": "Pooled-only readout is prohibited; corpus aggregate, every joint stratum, and source-only/category-only descriptive tables are all published; A2/A2b/A3 are never pooled into one generic blind arm (docs/registered_extensions_v1.md Extension 3, docs/registered_m7_amendment_v1.md).",
+  "provenance": {
+    "analysis_git_head": "553221fc3b97c3259143973273c9e8841d053b3c",
+    "bootstrap": {
+      "draws": 5000,
+      "seed": 20260716,
+      "stream_mechanism": "deterministic statistic/arm labels hashed into independent streams via src.analysis.pilot_fourarm.deterministic_seed"
+    },
+    "heldout_manifest": "data/virl39k_m7_heldout_v3.jsonl",
+    "heldout_row_count": 4239,
+    "heldout_sha256": "50f3b85c11c4046ef2512c544faec04286648688bb6d47548995f18cab40716c",
+    "registered_documents": [
+      "docs/registered_m7_amendment_v1.md",
+      "docs/registered_m7_seed_scope_v1.md",
+      "docs/registered_m7_single_image_v2.md",
+      "docs/registered_extensions_v1.md"
+    ],
+    "runs": {
+      "a1_real": {
+        "step0": {
+          "config_hash": "843ddb70900cac4dc847af63a644950a104d0fb856c5ecab8d151910a5f84923",
+          "job_type": "r3_m7_step0_heldout_base_eval",
+          "node": "an29",
+          "per_item_sha256": "50c0cda2fdaf6d2ae1bfcfb17b216f0658a72879a0f3c28f48c08592719fb7c3",
+          "run_dir": "experiments/runs/m7_step0_heldout_base_real_an29_20260730T154447Z",
+          "run_id": "m7_step0_heldout_base_real_an29_20260730T154447Z",
+          "run_manifest_sha256": "46c1b29a122890caa4cdcc1b5556752507d17bacb71eb8884bb2ab84badb5bb0",
+          "training_git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f"
+        }
+      },
+      "a2_gray": {
+        "step0": {
+          "config_hash": "f5018be1bc9793cbda88770b5132777229f0312224fb03d84f2d6aaba967b74d",
+          "job_type": "r3_m7_step0_heldout_base_eval",
+          "node": "an29",
+          "per_item_sha256": "c168b70cd7b53f50f7de3d3b771533d32362ed5d99bc8cfabf99e1998b834c9e",
+          "run_dir": "experiments/runs/m7_step0_heldout_base_gray_an29_20260730T154458Z",
+          "run_id": "m7_step0_heldout_base_gray_an29_20260730T154458Z",
+          "run_manifest_sha256": "1697abfd976d5b870e536ff66b3f59fe515a2cb0cfce2bff33980510b6ec7c69",
+          "training_git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f"
+        }
+      },
+      "a2b_noimage": {
+        "step0": {
+          "config_hash": "78c1bbd59bf56b781327ddf44f542255ab1cfd206e9ce4d2e8f04f2996fde442",
+          "job_type": "r3_m7_step0_heldout_base_eval",
+          "node": "an29",
+          "per_item_sha256": "825c92ff2d51bf5bcd10ca0a3d6995d386b19ce526fa4fe11435d2a3a8bd3ac7",
+          "run_dir": "experiments/runs/m7_step0_heldout_base_none_an29_20260730T154501Z",
+          "run_id": "m7_step0_heldout_base_none_an29_20260730T154501Z",
+          "run_manifest_sha256": "280affd5571c1f81d96c7dafedfbf72a80c73483be5cbdcc31546b60db828ba0",
+          "training_git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f"
+        }
+      },
+      "a3_caption": {
+        "step0": {
+          "config_hash": "2a3b0b630f9c1dfe082262b67294840b566a935440e8df7b17f90b1d72e1fa46",
+          "job_type": "r3_m7_step0_heldout_base_eval",
+          "node": "an29",
+          "per_item_sha256": "ac04a4e2740a4838f7358b38d8af1b47ca8e21b93e8c67f00c83d1e23059a207",
+          "run_dir": "experiments/runs/m7_step0_heldout_base_caption_an29_20260730T154503Z",
+          "run_id": "m7_step0_heldout_base_caption_an29_20260730T154503Z",
+          "run_manifest_sha256": "c22149f45ba328deb1caaefab8d14aa8da952d600d6ad0be8e5185fc4d412644",
+          "training_git_hash": "80a2cb0625ca6b15e0dcfeb0d926d1d9861ac55f"
+        }
+      }
+    },
+    "split_manifest_v2_note": "data/virl39k_m7_split_manifest_v2.json n_strata_rank_eligible=21 counts component labels, not items, and was not used; eligibility was recounted directly from the held-out jsonl"
+  },
+  "schema_version": "blind-gains.m7-r3-readout.v1",
+  "seed_scope": {
+    "between_seed_dispersion": "unmeasured: seed 1 only; seed 2 deferred, not abandoned (docs/registered_m7_seed_scope_v1.md)",
+    "statement": "Seed scope: seed 1 only for all four arms; every gain, recovery, and correlation below is a per-seed (one seed) number and no between-seed variance claim is made (docs/registered_m7_seed_scope_v1.md).",
+    "tag": "one seed (seed 1)"
+  },
+  "single_image_restriction": {
+    "retained_heldout_fraction": 0.942,
+    "retained_train_fraction": 0.932,
+    "statement": "Single-image restriction: M7 is restricted to single-image rows (worker.rollout.limit_images=1); retained 23,542/25,255 train rows (93.2%) and 4,239/4,501 held-out rows (94.2%) (docs/registered_m7_single_image_v2.md)."
+  },
+  "status": "partial-step0-only",
+  "strata": {
+    "definition": "joint (metadata.source, metadata.category)",
+    "eligibility_threshold_items": 30,
+    "eligible_count": 22,
+    "recount_source": "data/virl39k_m7_heldout_v3.jsonl",
+    "small_n_count": 38,
+    "total": 60
+  },
+  "stratum_table": [
+    {
+      "acc_final_step0": {
+        "a1_real": 0.4489795918367347,
+        "a2_gray": 0.3129251700680272,
+        "a2b_noimage": 0.21768707482993196,
+        "a3_caption": 0.3197278911564626
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": true,
+      "label": "eligible",
+      "n": 147,
+      "q_bar": {
+        "a1_real": 0.6597774719494962,
+        "a2_gray": 0.5015055330090514,
+        "a2b_noimage": 0.5027272714500007,
+        "a3_caption": 0.5808140730340579
+      },
+      "source": "K12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.6666666666666666,
+        "a2_gray": 0.16666666666666666,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 6,
+      "q_bar": {
+        "a1_real": 0.49205813507980034,
+        "a2_gray": 0.24550337639635544,
+        "a2b_noimage": 0.17719720190131827,
+        "a3_caption": 0.2847150716586248
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.2727272727272727,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 11,
+      "q_bar": {
+        "a1_real": 0.23897943195559967,
+        "a2_gray": 0.29247441579744243,
+        "a2b_noimage": 0.15967983283463824,
+        "a3_caption": 0.3182790310765611
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 65,
+      "q_bar": {
+        "a1_real": 0.2325391103849516,
+        "a2_gray": 0.18765265621819668,
+        "a2b_noimage": 0.19716845740315891,
+        "a3_caption": 0.18684309473527158
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Broader STEM Topics",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.13865898995462222,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Commonsense",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 12,
+      "q_bar": {
+        "a1_real": 0.28043471103075873,
+        "a2_gray": 0.23061939512218488,
+        "a2b_noimage": 0.17719720190131827,
+        "a3_caption": 0.27604958633158133
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.018867924528301886,
+        "a3_caption": 0.0
+      },
+      "category": "Social Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 53,
+      "q_bar": {
+        "a1_real": 0.212401600840191,
+        "a2_gray": 0.19058751860621212,
+        "a2b_noimage": 0.16483588863539692,
+        "a3_caption": 0.16820584665973745
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.05,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 20,
+      "q_bar": {
+        "a1_real": 0.16178191712263984,
+        "a2_gray": 0.19383523305515982,
+        "a2b_noimage": 0.16178191712263987,
+        "a3_caption": 0.16178191712263984
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 7,
+      "q_bar": {
+        "a1_real": 0.17169174305179027,
+        "a2_gray": 0.3081202204065017,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.17169174305179027
+      },
+      "source": "M3CoT"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 6,
+      "q_bar": {
+        "a1_real": 0.28404158834305154,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.20696516444965943
+      },
+      "source": "M3CoTConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Social Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 5,
+      "q_bar": {
+        "a1_real": 0.30259380874271147,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.18490484429065748
+      },
+      "source": "M3CoTConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.13865898995462222,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "M3CoTConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.3333333333333333,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 3,
+      "q_bar": {
+        "a1_real": 0.2928118377414064,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.2157354138480143
+      },
+      "source": "M3CoTConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.29555895865237364,
+        "a2_gray": 0.25114854517611024,
+        "a2b_noimage": 0.22970903522205208,
+        "a3_caption": 0.24042879019908117
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": true,
+      "label": "eligible",
+      "n": 653,
+      "q_bar": {
+        "a1_real": 0.5572992442611887,
+        "a2_gray": 0.53286943629898,
+        "a2b_noimage": 0.5325090075557196,
+        "a3_caption": 0.49460499526276636
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.3442982456140351,
+        "a2_gray": 0.17324561403508773,
+        "a2b_noimage": 0.1162280701754386,
+        "a3_caption": 0.18859649122807018
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": true,
+      "label": "eligible",
+      "n": 456,
+      "q_bar": {
+        "a1_real": 0.5362888564426597,
+        "a2_gray": 0.41054735525071234,
+        "a2b_noimage": 0.41248115822115966,
+        "a3_caption": 0.4830456679977744
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.41379310344827586,
+        "a2_gray": 0.39901477832512317,
+        "a2b_noimage": 0.35960591133004927,
+        "a3_caption": 0.20689655172413793
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 203,
+      "q_bar": {
+        "a1_real": 0.7114794416471644,
+        "a2_gray": 0.6981331919826894,
+        "a2b_noimage": 0.6645820004974413,
+        "a3_caption": 0.5123137263847334
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.43333333333333335,
+        "a2_gray": 0.08333333333333333,
+        "a2b_noimage": 0.03333333333333333,
+        "a3_caption": 0.3
+      },
+      "category": "Broader STEM Topics",
+      "eligible": true,
+      "label": "eligible",
+      "n": 60,
+      "q_bar": {
+        "a1_real": 0.6298288753726607,
+        "a2_gray": 0.26827160235150443,
+        "a2b_noimage": 0.2751456220591228,
+        "a3_caption": 0.5655366614384405
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Social Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 3,
+      "q_bar": {
+        "a1_real": 0.2157354138480143,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.24778761061946902,
+        "a2_gray": 0.23008849557522124,
+        "a2b_noimage": 0.17699115044247787,
+        "a3_caption": 0.17699115044247787
+      },
+      "category": "Spatial Reasoning",
+      "eligible": true,
+      "label": "eligible",
+      "n": 113,
+      "q_bar": {
+        "a1_real": 0.566229110891829,
+        "a2_gray": 0.4897746491714818,
+        "a2b_noimage": 0.47797458574617396,
+        "a3_caption": 0.43735738312011624
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.33472803347280333,
+        "a2_gray": 0.07112970711297072,
+        "a2b_noimage": 0.0502092050209205,
+        "a3_caption": 0.19665271966527198
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": true,
+      "label": "eligible",
+      "n": 239,
+      "q_bar": {
+        "a1_real": 0.5378998994264916,
+        "a2_gray": 0.2768630264310046,
+        "a2b_noimage": 0.2624164805544108,
+        "a3_caption": 0.4465665444849162
+      },
+      "source": "MMK12"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.38461538461538464,
+        "a2_gray": 0.3076923076923077,
+        "a2b_noimage": 0.23076923076923078,
+        "a3_caption": 0.3076923076923077
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 13,
+      "q_bar": {
+        "a1_real": 0.6104979470847036,
+        "a2_gray": 0.5648599546129809,
+        "a2b_noimage": 0.5863009003723614,
+        "a3_caption": 0.5400550460363263
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.7429980184624227,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.5768272350666299
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.375,
+        "a2_gray": 0.125,
+        "a2b_noimage": 0.125,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 8,
+      "q_bar": {
+        "a1_real": 0.3813936016091761,
+        "a2_gray": 0.2963214341303385,
+        "a2b_noimage": 0.3252250930903605,
+        "a3_caption": 0.3692933513727087
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 1.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Broader STEM Topics",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.6838212844673794,
+        "a2_gray": 0.8547962488475952,
+        "a2b_noimage": 0.5484960369248454,
+        "a3_caption": 0.3698882616347985
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.5484960369248454,
+        "a2_gray": 0.5484960369248454,
+        "a2b_noimage": 0.5484960369248454,
+        "a3_caption": 0.8547962488475952
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.6123422552411968,
+        "a2_gray": 0.3698882616347985,
+        "a2b_noimage": 0.3698882616347985,
+        "a3_caption": 0.3435775134397338
+      },
+      "source": "MMK12Converted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.3364485981308411,
+        "a2_gray": 0.32710280373831774,
+        "a2b_noimage": 0.2733644859813084,
+        "a3_caption": 0.25
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": true,
+      "label": "eligible",
+      "n": 428,
+      "q_bar": {
+        "a1_real": 0.5649250434749915,
+        "a2_gray": 0.5441326623098987,
+        "a2b_noimage": 0.547069972720499,
+        "a3_caption": 0.5435896794997106
+      },
+      "source": "MMMath"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.2,
+        "a2_gray": 0.17352941176470588,
+        "a2b_noimage": 0.11764705882352941,
+        "a3_caption": 0.15294117647058825
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": true,
+      "label": "eligible",
+      "n": 340,
+      "q_bar": {
+        "a1_real": 0.4068889067701889,
+        "a2_gray": 0.35543663023811556,
+        "a2b_noimage": 0.35928314435890374,
+        "a3_caption": 0.3798180468173908
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.1575492341356674,
+        "a2_gray": 0.10940919037199125,
+        "a2b_noimage": 0.10722100656455143,
+        "a3_caption": 0.13566739606126915
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": true,
+      "label": "eligible",
+      "n": 457,
+      "q_bar": {
+        "a1_real": 0.44593852816324164,
+        "a2_gray": 0.3560853414347214,
+        "a2b_noimage": 0.3561908587331789,
+        "a3_caption": 0.41063680226702776
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.17567567567567569,
+        "a2_gray": 0.14864864864864866,
+        "a2b_noimage": 0.0945945945945946,
+        "a3_caption": 0.06756756756756757
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 74,
+      "q_bar": {
+        "a1_real": 0.34972259363804603,
+        "a2_gray": 0.33108955524051725,
+        "a2b_noimage": 0.3242006096864456,
+        "a3_caption": 0.3338041177214858
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.5,
+        "a2_gray": 0.3484848484848485,
+        "a2b_noimage": 0.4090909090909091,
+        "a3_caption": 0.36363636363636365
+      },
+      "category": "Broader STEM Topics",
+      "eligible": true,
+      "label": "eligible",
+      "n": 66,
+      "q_bar": {
+        "a1_real": 0.6611228558740262,
+        "a2_gray": 0.6457075710953478,
+        "a2b_noimage": 0.6093830103697383,
+        "a3_caption": 0.6056863352820357
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Commonsense",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.13865898995462222,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.25,
+        "a2_gray": 0.25,
+        "a2b_noimage": 0.25,
+        "a3_caption": 0.5
+      },
+      "category": "Social Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 4,
+      "q_bar": {
+        "a1_real": 0.6757619341243519,
+        "a2_gray": 0.3755006225979095,
+        "a2b_noimage": 0.299935794590582,
+        "a3_caption": 0.4539838783060548
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.16279069767441862,
+        "a2_gray": 0.06976744186046512,
+        "a2b_noimage": 0.03488372093023256,
+        "a3_caption": 0.11627906976744186
+      },
+      "category": "Spatial Reasoning",
+      "eligible": true,
+      "label": "eligible",
+      "n": 86,
+      "q_bar": {
+        "a1_real": 0.3894526909121588,
+        "a2_gray": 0.250532399872696,
+        "a2b_noimage": 0.21263565032941162,
+        "a3_caption": 0.30154797790724125
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.2543352601156069,
+        "a2_gray": 0.1329479768786127,
+        "a2b_noimage": 0.12138728323699421,
+        "a3_caption": 0.16184971098265896
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": true,
+      "label": "eligible",
+      "n": 173,
+      "q_bar": {
+        "a1_real": 0.4472711052974597,
+        "a2_gray": 0.33991604807707154,
+        "a2b_noimage": 0.31028641562784426,
+        "a3_caption": 0.3816647467706194
+      },
+      "source": "Processed"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.25,
+        "a2_gray": 0.08333333333333333,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.08333333333333333
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 12,
+      "q_bar": {
+        "a1_real": 0.27604958633158133,
+        "a2_gray": 0.2989255696172221,
+        "a2b_noimage": 0.37884558973192367,
+        "a3_caption": 0.3658174291495553
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 5,
+      "q_bar": {
+        "a1_real": 0.2668722536847021,
+        "a2_gray": 0.27739655296272797,
+        "a2b_noimage": 0.22062639934866687,
+        "a3_caption": 0.18490484429065748
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.06,
+        "a2_gray": 0.06,
+        "a2b_noimage": 0.04,
+        "a3_caption": 0.02
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 50,
+      "q_bar": {
+        "a1_real": 0.26605150201745675,
+        "a2_gray": 0.23435288729780537,
+        "a2b_noimage": 0.22502289843272955,
+        "a3_caption": 0.27946369775266106
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Broader STEM Topics",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 14,
+      "q_bar": {
+        "a1_real": 0.33177552010016303,
+        "a2_gray": 0.25266367996414935,
+        "a2b_noimage": 0.18820811960037426,
+        "a3_caption": 0.3106666287520504
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.1111111111111111,
+        "a2_gray": 0.1111111111111111,
+        "a2b_noimage": 0.05555555555555555,
+        "a3_caption": 0.1111111111111111
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 18,
+      "q_bar": {
+        "a1_real": 0.4773063560860941,
+        "a2_gray": 0.35965630400338444,
+        "a2b_noimage": 0.32887063333373245,
+        "a3_caption": 0.438638436241584
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.16666666666666666,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 6,
+      "q_bar": {
+        "a1_real": 0.28404158834305154,
+        "a2_gray": 0.2157354138480143,
+        "a2b_noimage": 0.17719720190131827,
+        "a3_caption": 0.2680575843201111
+      },
+      "source": "R1OneVision"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.5,
+        "a2_gray": 0.5,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.7693087666574874,
+        "a2_gray": 0.7386428263550485,
+        "a2b_noimage": 0.8428531447180948,
+        "a3_caption": 0.7016461428862203
+      },
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.3435775134397338,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.3435775134397338
+      },
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 9,
+      "q_bar": {
+        "a1_real": 0.1643511312524196,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.2098885809157777
+      },
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.25427362579471036,
+        "a2_gray": 0.25427362579471036,
+        "a2b_noimage": 0.25427362579471036,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.3698882616347985,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "R1OneVisionConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.029411764705882353,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Science",
+      "eligible": true,
+      "label": "eligible",
+      "n": 34,
+      "q_bar": {
+        "a1_real": 0.16586243368170178,
+        "a2_gray": 0.1590615727499319,
+        "a2b_noimage": 0.15226071181816203,
+        "a3_caption": 0.19151818633848344
+      },
+      "source": "ScienceQA"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Broader STEM Topics",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 3,
+      "q_bar": {
+        "a1_real": 0.2157354138480143,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "ScienceQA"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.3333333333333333,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Social Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 3,
+      "q_bar": {
+        "a1_real": 0.27527133894469663,
+        "a2_gray": 0.2157354138480143,
+        "a2b_noimage": 0.2928118377414064,
+        "a3_caption": 0.35234776283808866
+      },
+      "source": "ScienceQA"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 9,
+      "q_bar": {
+        "a1_real": 0.1643511312524196,
+        "a2_gray": 0.23558072221357504,
+        "a2b_noimage": 0.19004327255021694,
+        "a3_caption": 0.2157354138480143
+      },
+      "source": "ScienceQA"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 4,
+      "q_bar": {
+        "a1_real": 0.13865898995462222,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "ScienceQA"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.4672897196261682,
+        "a2_gray": 0.16822429906542055,
+        "a2b_noimage": 0.1308411214953271,
+        "a3_caption": 0.29906542056074764
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": true,
+      "label": "eligible",
+      "n": 107,
+      "q_bar": {
+        "a1_real": 0.7360063804536483,
+        "a2_gray": 0.5141613959195668,
+        "a2b_noimage": 0.458757846954826,
+        "a3_caption": 0.5590460166881752
+      },
+      "source": "ai2d"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.1111111111111111,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 9,
+      "q_bar": {
+        "a1_real": 0.5134449719232289,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.2840415883430515
+      },
+      "source": "chartqa"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Broader STEM Topics",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.9019400809377283,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "dvqa"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 1.0
+      },
+      "category": "Social Science",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 1,
+      "q_bar": {
+        "a1_real": 0.8547962488475952,
+        "a2_gray": 0.13865898995462222,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.13865898995462222
+      },
+      "source": "dvqa"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.3333333333333333,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.14492753623188406
+      },
+      "category": "Tables/Diagrams/Charts",
+      "eligible": true,
+      "label": "eligible",
+      "n": 69,
+      "q_bar": {
+        "a1_real": 0.6566502996122298,
+        "a2_gray": 0.15206358541434262,
+        "a2b_noimage": 0.14536128768448242,
+        "a3_caption": 0.4121673968483844
+      },
+      "source": "dvqa"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.2542372881355932,
+        "a2_gray": 0.2542372881355932,
+        "a2b_noimage": 0.16101694915254236,
+        "a3_caption": 0.15254237288135594
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": true,
+      "label": "eligible",
+      "n": 118,
+      "q_bar": {
+        "a1_real": 0.563170363223377,
+        "a2_gray": 0.5487616252605911,
+        "a2b_noimage": 0.5522005756595468,
+        "a3_caption": 0.4505456889051957
+      },
+      "source": "geoqa_plus"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.23529411764705882,
+        "a2_gray": 0.2647058823529412,
+        "a2b_noimage": 0.11764705882352941,
+        "a3_caption": 0.23529411764705882
+      },
+      "category": "(GradeSchool) Geometric",
+      "eligible": true,
+      "label": "eligible",
+      "n": 34,
+      "q_bar": {
+        "a1_real": 0.5385522538537332,
+        "a2_gray": 0.493370767267408,
+        "a2b_noimage": 0.4304066800389053,
+        "a3_caption": 0.4172539470524145
+      },
+      "source": "geoqa_plusConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "(GradeSchool) Non-Geo Math",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.3435775134397338,
+        "a2_gray": 0.41124013721100083,
+        "a2b_noimage": 0.25427362579471036,
+        "a3_caption": 0.3435775134397338
+      },
+      "source": "geoqa_plusConverted"
+    },
+    {
+      "acc_final_step0": {
+        "a1_real": 0.0,
+        "a2_gray": 0.0,
+        "a2b_noimage": 0.0,
+        "a3_caption": 0.0
+      },
+      "category": "Spatial Reasoning",
+      "eligible": false,
+      "label": "descriptive-small-n",
+      "n": 2,
+      "q_bar": {
+        "a1_real": 0.4612125992265418,
+        "a2_gray": 0.25427362579471036,
+        "a2b_noimage": 0.13865898995462222,
+        "a3_caption": 0.41124013721100083
+      },
+      "source": "geoqa_plusConverted"
+    }
+  ]
+}

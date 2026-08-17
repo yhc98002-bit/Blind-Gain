@@ -1,0 +1,12 @@
+{
+  "condition": "real",
+  "config_hash": "cfg0",
+  "git_hash": "0000000000000000000000000000000000000000",
+  "job_type": "eval",
+  "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+  "model_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+  "node": "fixture",
+  "run_id": "step0_a1_real",
+  "seed": 20260710,
+  "status": "complete"
+}

@@ -1,0 +1,13 @@
+Add Gate-1 section-9 acceptance-audit runner for mini-A5 plus fixture tests
+
+scripts/audit_mini_a5_gate1_acceptance.py implements the section-9
+acceptance audit for the mini-A5 Gate-1 chain;
+tests/test_audit_mini_a5_gate1_acceptance_fixture.py covers it with 22
+fixture tests (all passing on the cluster venv).
+
+Verified adversarially under 2 lenses, including false-pass hunting
+(fixtures that must fail the audit do fail) and a sealing guard on the
+audit output. No real acceptance report was produced in this round: the
+necessity arm is still training, so only synthetic fixtures were audited.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

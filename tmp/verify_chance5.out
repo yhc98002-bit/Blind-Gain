@@ -1,0 +1,31 @@
+TSV question_type x n_choices: {('free_form', 0): 460, ('multi_choice', 4): 272, ('multi_choice', 5): 51, ('multi_choice', 2): 185, ('multi_choice', 3): 18, ('multi_choice', 6): 9, ('multi_choice', 7): 3, ('multi_choice', 8): 1}
+TSV k dist (MC only): {4: 272, 5: 51, 2: 185, 3: 18, 6: 9, 7: 3, 8: 1}
+TSV free-form count: 460
+MC items with duplicate choice TEXT: 2 ['mathvista_587', 'mathvista_740']
+free-form answer_type: {'float': 40, 'integer': 418, 'list': 2}
+==================== 3B n_with 999 n_blind 999 ids equal True ids==tsv True
+MathVista 3B MC k=2                                n=185   with=0.8757 blind=0.5351 null=0.5000 naive=0.6111 corr=0.0935 CI=[-0.0922,0.2960]
+MathVista 3B MC k=3                                n=18    with=0.6667 blind=0.5000 null=0.3333 naive=0.7500 corr=0.5000 CI=[-0.3333,1.2500]
+MathVista 3B MC k=4                                n=272   with=0.6728 blind=0.5551 null=0.2500 naive=0.8251 corr=0.7217 CI=[0.6000,0.8515]
+MathVista 3B MC k=5                                n=51    with=0.5490 blind=0.2549 null=0.2000 naive=0.4643 corr=0.1573 CI=[-0.1905,0.5312]
+MathVista 3B MC k=6                                n=9     with=0.4444 blind=0.1111 null=0.1667 naive=0.2500 corr=-0.2000 CI=[-3.0000,1.6667]
+MathVista 3B MC k=7                                n=3     with=0.6667 blind=1.0000 null=0.1429 naive=1.5000 corr=1.6364 CI=[-6.0000,4.5000]
+MathVista 3B MC k=8 n=1 (too small for boot) [{'i': 'mathvista_340', 'k': 8, 'nul': 0.125, 'w': False, 'b': False, 'ws': False, 'bs': False}]
+MathVista 3B MC pooled                             n=539   with=0.7254 blind=0.5121 null=0.3316 naive=0.7059 corr=0.4582 CI=[0.3532,0.5644]
+MathVista 3B free-form                             n=460   with=0.5043 blind=0.1152 null=0.0000 naive=0.2284 corr=0.2284 CI=[0.1730,0.2869]
+MathVista 3B WHOLE (null=0 naive ref)              n=999   with=0.6236 blind=0.3293 null=0.0000 naive=0.5281 corr=0.5281 CI=[0.4834,0.5739]
+MathVista 3B MC pooled [STRICT]                    n=539   with=0.1095 blind=0.1707 null=0.3316 naive=1.5593 corr=0.7244 CI=[0.5874,0.8552]
+MathVista 3B free-form [STRICT]                    n=460   with=0.2348 blind=0.1022 null=0.0000 naive=0.4352 corr=0.4352 CI=[0.3145,0.5806]
+==================== 7B n_with 999 n_blind 999 ids equal True ids==tsv True
+MathVista 7B MC k=2                                n=185   with=0.8865 blind=0.4757 null=0.5000 naive=0.5366 corr=-0.0629 CI=[-0.2517,0.1293]
+MathVista 7B MC k=3                                n=18    with=0.7778 blind=0.5000 null=0.3333 naive=0.6429 corr=0.3750 CI=[-0.1429,1.0000]
+MathVista 7B MC k=4                                n=272   with=0.7279 blind=0.6103 null=0.2500 naive=0.8384 corr=0.7538 CI=[0.6515,0.8582]
+MathVista 7B MC k=5                                n=51    with=0.5490 blind=0.3922 null=0.2000 naive=0.7143 corr=0.5506 CI=[0.1919,0.9519]
+MathVista 7B MC k=6                                n=9     with=0.5556 blind=0.1111 null=0.1667 naive=0.2000 corr=-0.1429 CI=[-1.0000,0.4545]
+MathVista 7B MC k=7                                n=3     with=0.3333 blind=0.6667 null=0.1429 naive=2.0000 corr=2.7500 CI=[-6.0000,2.7500]
+MathVista 7B MC k=8 n=1 (too small for boot) [{'i': 'mathvista_340', 'k': 8, 'nul': 0.125, 'w': False, 'b': False, 'ws': False, 'bs': False}]
+MathVista 7B MC pooled                             n=539   with=0.7607 blind=0.5306 null=0.3316 naive=0.6976 corr=0.4638 CI=[0.3681,0.5595]
+MathVista 7B free-form                             n=460   with=0.5478 blind=0.1152 null=0.0000 naive=0.2103 corr=0.2103 CI=[0.1583,0.2654]
+MathVista 7B WHOLE (null=0 naive ref)              n=999   with=0.6627 blind=0.3393 null=0.0000 naive=0.5121 corr=0.5121 CI=[0.4691,0.5547]
+MathVista 7B MC pooled [STRICT]                    n=539   with=0.2746 blind=0.1855 null=0.3316 naive=0.6757 corr=2.5608 CI=[1.6462,7.1697]
+MathVista 7B free-form [STRICT]                    n=460   with=0.3804 blind=0.0717 null=0.0000 naive=0.1886 corr=0.1886 CI=[0.1269,0.2588]

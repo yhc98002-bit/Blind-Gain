@@ -1,0 +1,34 @@
+M7 completion chain: autonomous train->close->merge->eval->R3 waiter
+
+scripts/m7_completion_chain.sh drives the three in-flight M7 arms (a2_gray,
+a2b_noimage, a3_caption) from trainer exit to the full R3 readout with no
+human in the loop, one state machine per arm so a slow arm never blocks the
+others:
+
+  TRAIN_WAIT  tracker last_global_step==100 AND trainer pid exited
+  CLOSE       post-hoc manifest close via scripts/close_orphaned_run_manifest.py
+              (the arms launched at ed4aa96 through the pre-runner
+              launch_m7_virl_arm.sh, which never self-finalizes; closed exactly
+              as arm 1 was, never hand-edited, with evidence checks first:
+              five checkpoints, four actor shards, clean log tail)
+  MERGE       scripts/launch_easyr1_checkpoint_merge.sh on the arm's own node;
+              verified against the arm-1 shape (825 index entries /
+              8,131,575,808 bytes) before any eval
+  EVAL        scripts/launch_virl39k_blind_v1_condition.sh with the exact
+              step-0 override set (tmp/launch_m7_step0.sh), model path swapped
+              to the merged step-100 checkpoint; one GPU per condition on the
+              GPUs the arm itself vacated (manifest gpu_ids), gated by
+              m7_gpu_occupancy_guard.py plus a reservation claim file written
+              BEFORE launch and pid-stamped after (the C5 TOCTOU mechanism)
+  READOUT     full-mode scripts/build_m7_r3_readout.py when all four step-100
+              evals are complete; its refusal, if any, is the logged result
+
+A1 (trained+merged+verified) starts at EVAL_LAUNCH and was launched
+immediately on an idle an29 GPU. Deadlines: 30 h training wait per arm,
+45 min merge, 16 h eval, 48 h global hard stop (the global stop exceeds the
+planned ~30 h because measured cadence projects the a2_gray eval finishing
+~31-33 h out; recorded as a deviation). All actions logged with timestamps
+to logs/m7_completion_chain.log; state persisted under
+logs/m7_completion_chain_state/ so a relaunch resumes idempotently.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

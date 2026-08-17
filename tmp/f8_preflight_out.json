@@ -1,0 +1,142 @@
+{
+  "checkpoints": [
+    {
+      "architectures": [
+        "Qwen2_5_VLForConditionalGeneration"
+      ],
+      "arm": "cp",
+      "exists": true,
+      "files": [
+        "added_tokens.json",
+        "chat_template.jinja",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors",
+        "model.safetensors.index.json",
+        "preprocessor_config.json",
+        "special_tokens_map.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "video_preprocessor_config.json",
+        "vocab.json"
+      ],
+      "has_config.json": true,
+      "has_generation_config.json": true,
+      "has_preprocessor_config.json": true,
+      "has_tokenizer_config.json": true,
+      "index_parses": true,
+      "index_present": true,
+      "index_sha256": "4bb3b752a9895596f57798116b660406110198669dcfefbc213594d540baed21",
+      "index_shards": [
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors"
+      ],
+      "index_tensor_count": 825,
+      "index_total_size_bytes": 8131575808,
+      "missing_shard_files": [],
+      "model_type": "qwen2_5_vl",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_cp_seed1/global_step_120/actor/huggingface",
+      "shard_bytes_on_disk": 8131667976
+    },
+    {
+      "architectures": [
+        "Qwen2_5_VLForConditionalGeneration"
+      ],
+      "arm": "member",
+      "exists": true,
+      "files": [
+        "added_tokens.json",
+        "chat_template.jinja",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors",
+        "model.safetensors.index.json",
+        "preprocessor_config.json",
+        "special_tokens_map.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "video_preprocessor_config.json",
+        "vocab.json"
+      ],
+      "has_config.json": true,
+      "has_generation_config.json": true,
+      "has_preprocessor_config.json": true,
+      "has_tokenizer_config.json": true,
+      "index_parses": true,
+      "index_present": true,
+      "index_sha256": "b4270b12dda440fdfdb345c4c074decd1dbbe8d40c751b67392ce6d96bd037f6",
+      "index_shards": [
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors"
+      ],
+      "index_tensor_count": 825,
+      "index_total_size_bytes": 8131575808,
+      "missing_shard_files": [],
+      "model_type": "qwen2_5_vl",
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/checkpoints/mini_a5/mini_a5_same_data_seed1/global_step_120/actor/huggingface",
+      "shard_bytes_on_disk": 8131668008
+    }
+  ],
+  "manifests": [
+    {
+      "exists": true,
+      "image_refs": 2400,
+      "missing_images": 0,
+      "missing_images_sample": [],
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/experiments/runs/caption_qa_pair_build_fliptrack_v02r19_qwen25vl3b_384_20260710T140200Z/shards/captions_shard_0.jsonl",
+      "rows": 1200,
+      "schema_ok": true,
+      "set": "r19_locked",
+      "sha256": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "sha256_expected": "e1dde98451e1c7473906637c029713ab4f95ab4f7c915bd035f697953bf2ffb2",
+      "sha256_match": true,
+      "template_counts": {
+        "coordinate_register_twenty_point_x_v02": 600,
+        "header_cued_table_code_v02": 300,
+        "starred_series_value_nine_v07": 300
+      },
+      "unique_pair_ids": 1200
+    },
+    {
+      "exists": true,
+      "image_refs": 2400,
+      "missing_images": 0,
+      "missing_images_sample": [],
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/fliptrack_r20_source_manifest.jsonl",
+      "rows": 1200,
+      "schema_ok": true,
+      "set": "r20",
+      "sha256": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "sha256_expected": "20222e60201b4e116b4520f1aad8bd749bf49185a0a414087c1a8fe22dbf2ef3",
+      "sha256_match": true,
+      "template_counts": {
+        "coordinate_register_twenty_point_x_v02": 600,
+        "header_cued_table_code_v02": 300,
+        "starred_series_value_nine_v07": 300
+      },
+      "unique_pair_ids": 1200
+    },
+    {
+      "exists": true,
+      "image_refs": 200,
+      "missing_images": 0,
+      "missing_images_sample": [],
+      "path": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+      "rows": 100,
+      "schema_ok": true,
+      "set": "chart_v08",
+      "sha256": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+      "sha256_expected": "d90f3f13c1f3304669c8ca6c717ae58eaa7cfe4e785fab3bae8520e15065c292",
+      "sha256_match": true,
+      "template_counts": {
+        "chart_v08_legend_target_flip": 50,
+        "chart_v08_point_value_flip": 50
+      },
+      "unique_pair_ids": 100
+    }
+  ]
+}

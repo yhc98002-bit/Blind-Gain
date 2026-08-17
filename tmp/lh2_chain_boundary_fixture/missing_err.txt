@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/scripts/audit_easyr1_resume_checkpoint.py", line 173, in <module>
+    main()
+  File "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/scripts/audit_easyr1_resume_checkpoint.py", line 161, in main
+    payload, checksums = audit_checkpoint(
+  File "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/scripts/audit_easyr1_resume_checkpoint.py", line 79, in audit_checkpoint
+    raise ValueError(
+ValueError: optim rank set mismatch: expected [0, 1, 2, 3], found [0, 1, 2]

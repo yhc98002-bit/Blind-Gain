@@ -1,0 +1,33 @@
+M7: set limit_images for the multi-image ViRL39K corpus
+
+Fifth crash, new cause, at the first rollout:
+  ValueError: You set image=1 (or defaulted to 1) in --limit-mm-per-prompt,
+  but passed 4 image items in the same prompt.
+
+EasyR1 forwards the limit only when it is truthy
+(verl/workers/rollout/vllm_rollout_spmd.py:122):
+    if config.limit_images:
+        engine_kwargs["limit_mm_per_prompt"] = {"image": config.limit_images}
+so limit_images: 0 leaves vLLM at its default of one image per prompt.
+
+Geometry3K is single-image, so the pilot recipe M7 inherited never needed this.
+ViRL39K is not. Measured over the registered M7 splits:
+  train   1:23542  2:984  3:307  4:279  5:133  6:6  7:2  8:2   -> max 8
+  heldout 1:4239   2:152  3:40   4:44   5:25   7:1            -> max 7
+1,713 of 25,255 training rows carry more than one image.
+
+Set to 8 so every registered row is servable. Capping lower would require
+dropping rows from a registered split, which is a corpus change, not a config
+change.
+
+build_m7_configs.py asserts each arm matches the geo3k recipe in algorithm and
+worker, to stop silent drift between arms. Rather than weaken that guard, this
+exempts exactly worker.rollout.limit_images and additionally pins it to 8 for
+every arm, so arm-to-arm parity -- the property the guard protects -- is
+strengthened rather than loosened.
+
+Note for future audits: config-diffing M7 against the geo3k launchers cannot
+find this class of defect, because limit_images is 0 in both. It is a property
+of the corpus, not a divergence from the reference.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

@@ -1,0 +1,45 @@
+M7 bookkeeping: close arm 1, route the launcher through the manifest runner, open the deviations log
+
+Arm 1 finished (last_global_step 100, five checkpoints, pid gone from an12) but
+its manifest still read "status": "running". The cause is structural:
+scripts/launch_m7_virl_arm.sh exec'd verl.trainer.main directly, so nothing
+outlived the trainer to call finalize_manifest, whereas every other training
+launcher here (launch_mech_pilot_arm.sh:311, launch_mini_a5_main.sh:230) routes
+through scripts/run_manifest_job.py, which reads payload["command"] and
+finalizes on exit.
+
+Part A -- arm 1 closed with the tested finalizer, never by hand. New
+scripts/close_orphaned_run_manifest.py delegates to finalize_manifest and then
+records what a post-hoc close cannot observe: end_time_utc is the close-time
+stamp (2026-07-30T15:45:49Z), NOT the completion time
+(observed_completion_utc 2026-07-30T12:57:54Z, from the mtimes of
+global_step_100, checkpoint_tracker.json, experiment_log.jsonl and an12.log);
+exit_code 0 is inferred from artifacts, and exit_code_provenance says so. It
+refuses any manifest that is not "running" and any run whose recorded pid is
+still alive or whose liveness is indeterminate, so a job in flight is never
+touched.
+
+Part B -- launch_m7_virl_arm.sh now starts the trainer through
+run_manifest_job.py, adds expected_artifacts so artifacts_exist is not vacuous,
+and adds the runner and finalizer to the byte-clean CRITICAL contract list. The
+command string keeps its self-contained `env ...` prefix, so the runner's
+PYTHONPATH="." cannot leak into the trainer, and the trainer's argv still
+carries `-m verl.trainer.main config=...`, so m7_gpu_occupancy_guard.py resolves
+occupancy unchanged. FUTURE LAUNCHES ONLY: arms 2-4 were launched from the old
+path, hold their own pids and were not touched; they still need the post-hoc
+close before the R3 readout.
+
+Part C -- the amendment's Deviations Log is opened with eight verified rows:
+q_i covers 448/4,239 held-out items (10.57%); held-out 4,239 vs in-training
+validation 4,095 (144 dropped by filter_overlong_prompts, denominator recovered
+by exact rational reconstruction of the val metrics); the arm-4 an29 CUDA OOM
+and its an12 relaunch; the arm-1 post-hoc close and its timestamp discrepancy;
+an aborted arm-1 run directory with no manifest; the step-0 held-out runs
+writing no manifests under an untracked launcher; the stale "No M7 optimizer
+step has run" Status line; and the sanctioned save_model_only asymmetry.
+
+Also pins the interpreter in tests/test_finalize_run_manifest.py: it invoked
+bare "python", which is 2.7 on login node ln206 and 3.10 on ln207, so the
+finalizer's own test only passed on one of the two nodes ssh lands on.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

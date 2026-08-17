@@ -1,0 +1,136 @@
+[
+  {
+    "checks_applied": {
+      "question_names_target_label": 100
+    },
+    "manifest": "data/b1_geometry_track_v1/manifest.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 100,
+    "rows_checked": 100,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 20
+    },
+    "manifest": "data/b1_premise_probe_v1.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 20,
+    "rows_checked": 20,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 160
+    },
+    "manifest": "data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 160,
+    "rows_checked": 160,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 160
+    },
+    "manifest": "data/track4_premise_v2_dev_v1/manifest_invariance_pairs.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 160,
+    "rows_checked": 160,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 140
+    },
+    "manifest": "data/track4_premise_v2_dev_v1/manifest_premise_probe.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 140,
+    "rows_checked": 140,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 160
+    },
+    "manifest": "data/track4_premise_v2_dev_v2/manifest_causal_pairs.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 160,
+    "rows_checked": 160,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 160
+    },
+    "manifest": "data/track4_premise_v2_dev_v2/manifest_invariance_pairs.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 160,
+    "rows_checked": 160,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_label": 140
+    },
+    "manifest": "data/track4_premise_v2_dev_v2/manifest_premise_probe.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 140,
+    "rows_checked": 140,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {
+      "question_names_target_x": 100
+    },
+    "manifest": "data/fliptrack_chart_v08_calibration_v1_manifest.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 100,
+    "rows_checked": 100,
+    "rows_without_checkable_operands": 0
+  },
+  {
+    "checks_applied": {},
+    "manifest": "data/fliptrack_chart_v08_calibration_v1_necessity_eval_manifest_v1.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 200,
+    "rows_checked": 0,
+    "rows_without_checkable_operands": 200
+  },
+  {
+    "checks_applied": {
+      "coord_register_gold_recompute": 600,
+      "question_names_target_label": 600,
+      "question_names_target_x": 300
+    },
+    "manifest": "data/fliptrack_v02r19_artifact_expanded_source_manifest.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 1200,
+    "rows_checked": 900,
+    "rows_without_checkable_operands": 300
+  },
+  {
+    "checks_applied": {
+      "coord_register_gold_recompute": 600,
+      "question_names_target_label": 600,
+      "question_names_target_x": 300
+    },
+    "manifest": "data/fliptrack_r20_source_manifest.jsonl",
+    "n_problems": 0,
+    "problems": [],
+    "rows": 1200,
+    "rows_checked": 900,
+    "rows_without_checkable_operands": 300
+  }
+]

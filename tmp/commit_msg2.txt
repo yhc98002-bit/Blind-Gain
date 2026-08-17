@@ -1,0 +1,28 @@
+M7 deviations log: record that the bookkeeping change landed in a foreign commit
+
+The arm-1 closure, the launcher routing through scripts/run_manifest_job.py and
+the first eight deviations rows were committed inside 2d12d4f, whose message
+describes unrelated G0.2 work: several sessions share one git index on this
+shared filesystem, and a concurrent session ran git commit between this
+session's git add and git commit. History is not rewritten -- other sessions
+have already built on it -- so the discrepancy is recorded in the log the
+amendment reserves for exactly this, and this commit uses git commit --only so
+the shared index cannot be captured again.
+
+Content of the swept change, for the record:
+- scripts/close_orphaned_run_manifest.py: post-hoc closer that delegates to the
+  tested finalize_manifest, refuses any manifest that is not "running" and any
+  run whose pid is still alive or indeterminate, and stamps
+  end_time_utc_source, observed_completion_utc, observed_completion_evidence
+  and exit_code_provenance so a close-time stamp is never mistaken for a
+  completion time.
+- scripts/launch_m7_virl_arm.sh: starts the trainer through run_manifest_job.py
+  instead of exec'ing verl.trainer.main, declares expected_artifacts, and adds
+  the runner and finalizer to the byte-clean CRITICAL list. Future launches
+  only; arms 2-4 hold their own pids and were not touched.
+- tests/test_m7_launcher_manifest_lifecycle.py,
+  tests/test_close_orphaned_run_manifest.py: pin both contracts.
+- tests/test_finalize_run_manifest.py: pin the interpreter, since bare "python"
+  is 2.7 on ln206 and 3.10 on ln207.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

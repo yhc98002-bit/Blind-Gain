@@ -1,0 +1,53 @@
+R3: registered M7 readout script + adversarial fixture suite
+
+scripts/build_m7_r3_readout.py turns the eight M7 held-out evaluations
+(step-0 and step-100 per_item.jsonl for a1_real/a2_gray/a2b_noimage/
+a3_caption) into the registered R3 result, implementing
+docs/registered_m7_amendment_v1.md with no free parameters:
+
+- q_bar[b,s] from each arm's own-condition q_i; gain[b,s] =
+  Acc_final(step_100) - Acc_final(step_0) on paired items (seed 1 only,
+  every number carries the one-seed tag per registered_m7_seed_scope_v1);
+- recovery[b,s] = gain[b,s]/gain[A1,s] only when gain[A1,s] > 0 and
+  >= 2 paired SE, else undefined-unstable-denominator: the stratum stays
+  in the gain table and is omitted from the recovery rank statistic;
+- tie-corrected Spearman rho_gain[b], rho_recovery[b] across eligible
+  strata; 5,000 within-stratum item-bootstrap draws at seed 20260716 with
+  statistic/arm labels hashed into independent streams
+  (src.analysis.pilot_fourarm.deterministic_seed); percentile 95%
+  intervals; undefined draws counted, never zero-filled; > 5% undefined
+  labels the interval unstable;
+- secondary corpus aggregate recovery vs the fixed Geometry3K seed-1
+  anchors (A2 0.0789, A2b 0.1184), labeled informed comparison;
+- M10 support-sharpening candidates (0/16 under the arm's own base
+  condition, step-0 greedy wrong -> step-100 greedy correct) via
+  src.analysis.support_sharpening.build_resampling_candidates;
+- pooled-only readout prohibited: corpus aggregate, all 60 joint strata
+  (22 eligible + 38 descriptive-small-n), and source-only/category-only
+  descriptive views are all published; A2/A2b/A3 never pooled;
+- strata recounted directly from data/virl39k_m7_heldout_v3.jsonl
+  (sha256 50f3b85c...) with a hard 22/38 assertion; the split manifest's
+  n_strata_rank_eligible=21 (component-label count) is never consulted,
+  and CLI expectation overrides are refused on the registered file;
+- --partial mode computes q_bar and step-0 accuracies only and refuses
+  every gain/recovery/rho estimand; readiness gate requires complete run
+  manifests and exact 4,239-item step-0 coverage; step-0/step-100
+  pairing mismatches fail loudly, items are never silently dropped.
+
+tests/test_m7_r3_readout_fixture.py (I10): synthetic hand-verifiable
+fixtures a naive readout fails -- planted +1/-1 rank correlations
+recovered exactly; an unstable-A1 stratum present in gains, excluded
+from rho_recovery; a constant q_bar vector yields None and 100%
+undefined draws labeled unstable; a missing step-100 item hard-fails;
+29 vs 30 item eligibility boundary; byte-identical JSON/markdown across
+two runs at seed 20260716; running-manifest refusal; partial-mode
+refusals. 9/9 pass under .venv pytest.
+
+Real-data invocation today (--partial, the four live
+m7_step0_heldout_base_*_an29_20260730T1544*Z runs): the registered
+manifest loaded and the 22/38 recount held; the readiness gate refused
+as designed (manifests running, coverage 818-934/4239, zero items
+outside the frozen set). No report artifact emitted; rerun after the
+step-0 runs complete.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

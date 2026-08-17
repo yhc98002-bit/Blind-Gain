@@ -1,0 +1,94 @@
+{
+  "schema_version": "blind-gains.track4-premise-v2-e3-caption-stress-provenance.v1",
+  "gate": "E3",
+  "registration": "docs/registered_track4_premise_v2_design_v1.md#7-E3",
+  "judged": false,
+  "judgement_note": "This runner runs and records only. The registered E3 criterion (per type: caption member accuracy <= blind-floor threshold + 0.10 absolute) is NOT evaluated here. metrics.json is aggregate-only; the per-type readout needs a post-hoc join of predictions.jsonl to data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl on pair_id, which is not part of the registered chain.",
+  "status": "failed",
+  "failed_stage": "gpu_guard",
+  "failure_message": "guard denied an29:3 before claiming",
+  "node": "an29",
+  "gpu": 3,
+  "gpu_budget": "exactly one GPU (an29 gpu3), taken via guard -> claim -> re-check and released at the end",
+  "git_hash": "2ebf8c0dbd9753c272498f0e999fdabba369b9f3",
+  "git_branch": "agent/gate2-recovery",
+  "git_dirty_path_count": 365,
+  "runner": "scripts/run_e3_caption_stress.sh",
+  "stamp": "20260811T154649Z",
+  "start_time_utc": "2026-08-11T15:46:49Z",
+  "end_time_utc": "2026-08-11T15:47:51Z",
+  "models": {
+    "base_model_under_test": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+    "captioner": "artifacts/models/Qwen/Qwen2.5-VL-7B-Instruct"
+  },
+  "inputs": {
+    "data_batch": "data/track4_premise_v2_dev_v1",
+    "image_dir": "data/track4_premise_v2_dev_v1/images",
+    "release_manifest": "data/track4_premise_v2_dev_v1/caption_qa_inputs/manifest.jsonl",
+    "release_key": "data/track4_premise_v2_dev_v1/caption_qa_inputs/key.jsonl",
+    "release_manifest_sha256": "82842b6cf2a9e4734e393e2825d790277439e8c3f196d98f32cc3a95f1707ccd",
+    "release_key_sha256": "56be7961fb6c8139c2e479f24849185b820f999615a47673590bb34a9af8c68f",
+    "release_fixture_sha256_verified": true
+  },
+  "run_dirs": {
+    "e3": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z",
+    "caption_store": "experiments/runs/track4_premise_v2_caption_store_an29_20260811T154649Z",
+    "caption_merge": null
+  },
+  "artifacts": {
+    "caption_qa_input": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/caption_qa/qa.jsonl",
+    "predictions": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/caption_qa/predictions.jsonl",
+    "metrics": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/caption_qa/metrics.json",
+    "coverage_manifest": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_release_480.jsonl"
+  },
+  "stages": [
+    {
+      "name": "preflight_coverage_manifest",
+      "command": "derive experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_release_480.jsonl from data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl + data/track4_premise_v2_dev_v1/manifest_invariance_pairs.jsonl and assert it equals discover_images(data/track4_premise_v2_dev_v1/images)",
+      "rc": 0,
+      "start_utc": "2026-08-11T15:46:49Z",
+      "end_utc": "2026-08-11T15:47:40Z",
+      "artifacts": [
+        "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_release_480.jsonl",
+        "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_manifest_summary.json"
+      ]
+    },
+    {
+      "name": "gpu_guard_claim",
+      "command": "m7_gpu_occupancy_guard.py --node an29 --gpus 3",
+      "rc": 1,
+      "start_utc": "2026-08-11T15:47:40Z",
+      "end_utc": "2026-08-11T15:47:51Z",
+      "artifacts": []
+    }
+  ],
+  "caption_coverage": {
+    "caption_qa_release_manifest": "data/track4_premise_v2_dev_v1/caption_qa_inputs/manifest.jsonl",
+    "causal_equals_caption_qa_release": true,
+    "coverage_equals_image_dir": true,
+    "coverage_manifest": "experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_release_480.jsonl",
+    "coverage_manifest_rows": 320,
+    "coverage_manifest_sha256": "422a40be3a3b533071a10fbc6d7794159660e87d3d5a7db81cca13ebb70ae695",
+    "image_dir": "data/track4_premise_v2_dev_v1/images",
+    "n_caption_qa_release_hashes": 320,
+    "n_causal_hashes": 320,
+    "n_coverage_hashes": 480,
+    "n_distinct_image_sha256": 480,
+    "n_extra_captions_carried_unused": 160,
+    "n_image_files": 640,
+    "n_invariance_hashes": 320,
+    "n_shared_original_hashes": 160,
+    "purpose": "expected-hash set for scripts/merge_caption_stores.py, derived from the dev batch's own pair manifests so it describes exactly what the registered E3 caption command captions",
+    "schema_version": "blind-gains.track4-premise-v2-caption-coverage-summary.v1",
+    "source_manifests": [
+      "data/track4_premise_v2_dev_v1/manifest_causal_pairs.jsonl",
+      "data/track4_premise_v2_dev_v1/manifest_invariance_pairs.jsonl"
+    ]
+  },
+  "merge_summary": null,
+  "caption_qa_input_summary": null,
+  "caption_qa_metrics_aggregate_only": null,
+  "deviations": [
+    "E3 merge: scripts/merge_caption_stores.py accepts exactly one --release-manifest and src/captioning/store.py::merge_caption_rows (lines 148-152) treats EXTRA caption hashes as fatal, with no override flag. The registered E3 command captions all of $DATA/images (640 files / 480 distinct sha256) while the caption-QA release covers 320, so merging against caption_qa_inputs/manifest.jsonl fails with missing=0 extra=160 after the GPU pass. No documented option covers this. Resolution: --release-manifest points at a NEW derived coverage manifest, experiments/runs/track4_premise_v2_e3_an29_20260811T154649Z/merge_inputs/coverage_release_480.jsonl, written inside this run dir (the dev batch is not written to at all), whose members[].image_sha256 union is exactly the 480 distinct sha256 of $DATA/images (= hashes(manifest_causal_pairs.jsonl) union hashes(manifest_invariance_pairs.jsonl), asserted equal to the image dir's own distinct-hash set as computed by src.captioning.store.discover_images, with 0 outside, before any GPU is spent; the causal half is additionally asserted identical to the 320 hashes of caption_qa_inputs/manifest.jsonl). Derived by a minimal emitter over the two flat pair manifests' image_a_sha256/image_b_sha256 fields, not by scripts/build_track4_premise_v2_caption_qa_inputs.py. No hash is invented; the dev batch is not mutated; no coverage check is disabled -- the merge's own enforcement still runs and must report coverage_complete=true over 480. The restriction to the 160 causal pairs / 320 member images is applied one step later, at scripts/build_caption_qa_pairs.py, via its documented --allow-extra-captions (src/captioning/qa_pairs.py:87-89), which carries the 160 non-causal captions unused. The 320-hash caption-QA release+key (manifest sha256 82842b6c..., key 56be7961...) are passed to the QA build unchanged."
+  ]
+}

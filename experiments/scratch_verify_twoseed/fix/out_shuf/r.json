@@ -1,0 +1,1605 @@
+{
+  "bootstrap": {
+    "draws": 5000,
+    "registered_draws": 5000,
+    "registered_seed": 20260716,
+    "seed": 20260716,
+    "unit": "paired items resampled within every frozen joint stratum for rank statistics; paired items across the corpus for aggregates"
+  },
+  "checks": {
+    "all_four_arms_present_for_every_seed": true,
+    "arm_seed_labels_match_cli_keys": true,
+    "blind_arms_pooled": false,
+    "bootstrap_draws_registered_5000": true,
+    "bootstrap_seed_registered_20260716": true,
+    "conditions_match_arms": true,
+    "cross_seed_item_identity_exact": true,
+    "eligible_strata_recount": 3,
+    "heldout_sha256_matches_registered": false,
+    "per_seed_candidate_lists_merged": false,
+    "pooled_only_readout": false,
+    "seed_mean_taken_per_item": true,
+    "seeds_present": [
+      1,
+      2
+    ],
+    "small_n_strata_recount": 1,
+    "step0_cells_are_not_seeded_checkpoints": true,
+    "step0_cells_shared_across_seeds": true,
+    "step0_coverage_complete_all_arms": true,
+    "step0_step100_pairing_exact_all_arms": true
+  },
+  "corpus": {
+    "a1_denominator": {
+      "estimate": 0.10526315789473684,
+      "paired_se": 0.03252592801749016,
+      "rule": "gain[A1] > 0 and gain[A1] >= 2 * paired_se",
+      "stable": true
+    },
+    "aggregate_recovery": {
+      "a2_gray": {
+        "bootstrap": {
+          "ci95": [
+            0.7600000000000001,
+            2.918910256410253
+          ],
+          "defined_draw_count": 4467,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "aggregate_recovery:a2_gray",
+          "undefined_draw_count": 533,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.1066
+        },
+        "estimate": 1.6,
+        "status": "stable"
+      },
+      "a2b_noimage": {
+        "bootstrap": {
+          "ci95": [
+            0.6139957264957264,
+            2.3125
+          ],
+          "defined_draw_count": 4468,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "aggregate_recovery:a2b_noimage",
+          "undefined_draw_count": 532,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.1064
+        },
+        "estimate": 1.3000000000000003,
+        "status": "stable"
+      },
+      "a3_caption": {
+        "bootstrap": {
+          "ci95": [
+            0.5,
+            2.230769230769231
+          ],
+          "defined_draw_count": 4461,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "aggregate_recovery:a3_caption",
+          "undefined_draw_count": 539,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.1078
+        },
+        "estimate": 1.2000000000000002,
+        "status": "stable"
+      }
+    },
+    "arms": {
+      "a1_real": {
+        "acc_final_step0": 0.2736842105263158,
+        "acc_final_step100": 0.37894736842105264,
+        "gain": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.042105263157894736,
+            0.16842105263157894
+          ],
+          "estimate": 0.10526315789473684,
+          "n": 95,
+          "paired_se": 0.03252592801749016
+        },
+        "n": 95,
+        "q_bar": 0.21052631578947362
+      },
+      "a2_gray": {
+        "acc_final_step0": 0.23157894736842105,
+        "acc_final_step100": 0.4,
+        "gain": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.10526315789473684,
+            0.23157894736842105
+          ],
+          "estimate": 0.16842105263157894,
+          "n": 95,
+          "paired_se": 0.032280377167006644
+        },
+        "n": 95,
+        "q_bar": 0.21052631578947362
+      },
+      "a2b_noimage": {
+        "acc_final_step0": 0.23157894736842105,
+        "acc_final_step100": 0.3684210526315789,
+        "gain": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.07894736842105263,
+            0.19473684210526315
+          ],
+          "estimate": 0.1368421052631579,
+          "n": 95,
+          "paired_se": 0.03034156550083261
+        },
+        "n": 95,
+        "q_bar": 0.21052631578947364
+      },
+      "a3_caption": {
+        "acc_final_step0": 0.2631578947368421,
+        "acc_final_step100": 0.3894736842105263,
+        "gain": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.06842105263157895,
+            0.18947368421052632
+          ],
+          "estimate": 0.12631578947368421,
+          "n": 95,
+          "paired_se": 0.030823360722295908
+        },
+        "n": 95,
+        "q_bar": 0.21052631578947362
+      }
+    },
+    "geometry3k_anchor_comparison": {
+      "a2_gray": {
+        "difference_ci95": [
+          0.6811000000000001,
+          2.840010256410253
+        ],
+        "difference_from_anchor": 1.5211000000000001,
+        "direction_holds": true,
+        "direction_registered": "greater than the anchor",
+        "geometry3k_seed1_anchor": 0.0789,
+        "informed_comparison": true,
+        "informed_comparison_statement": "The Geometry3K anchors are the completed seed-1 recovery readout; the registered direction was written after that readout (Informed-Prediction Disclosure, docs/registered_m7_amendment_v1.md).",
+        "interval_label": "unstable",
+        "virl_recovery": 1.6
+      },
+      "a2b_noimage": {
+        "difference_ci95": [
+          0.4955957264957265,
+          2.1941
+        ],
+        "difference_from_anchor": 1.1816000000000002,
+        "direction_holds": true,
+        "direction_registered": "greater than the anchor",
+        "geometry3k_seed1_anchor": 0.1184,
+        "informed_comparison": true,
+        "informed_comparison_statement": "The Geometry3K anchors are the completed seed-1 recovery readout; the registered direction was written after that readout (Informed-Prediction Disclosure, docs/registered_m7_amendment_v1.md).",
+        "interval_label": "unstable",
+        "virl_recovery": 1.3000000000000003
+      }
+    }
+  },
+  "descriptive_views": {
+    "category_only": {
+      "role": "descriptive robustness view; does not replace the registered joint-stratum analysis",
+      "rows": [
+        {
+          "a1_real": {
+            "acc_final_step0": 0.26666666666666666,
+            "acc_final_step100": 0.35,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.008333333333333333,
+                0.15833333333333333
+              ],
+              "estimate": 0.08333333333333333,
+              "n": 60,
+              "paired_se": 0.03971413861619518
+            },
+            "q_bar": 0.20000000000000007
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.23333333333333334,
+            "acc_final_step100": 0.4083333333333333,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.1,
+                0.25833333333333336
+              ],
+              "estimate": 0.175,
+              "n": 60,
+              "paired_se": 0.04086805280549825
+            },
+            "q_bar": 0.14999999999999994
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.23333333333333334,
+            "acc_final_step100": 0.35,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.05,
+                0.19166666666666668
+              ],
+              "estimate": 0.11666666666666667,
+              "n": 60,
+              "paired_se": 0.03637273041566679
+            },
+            "q_bar": 0.2
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.26666666666666666,
+            "acc_final_step100": 0.44166666666666665,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.1,
+                0.25833333333333336
+              ],
+              "estimate": 0.175,
+              "n": 60,
+              "paired_se": 0.04086805280549825
+            },
+            "q_bar": 0.25000000000000006
+          },
+          "group": "catX",
+          "n": 60
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.2857142857142857,
+            "acc_final_step100": 0.42857142857142855,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.02857142857142857,
+                0.2571428571428571
+              ],
+              "estimate": 0.14285714285714285,
+              "n": 35,
+              "paired_se": 0.05640277040184818
+            },
+            "q_bar": 0.22857142857142862
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.22857142857142856,
+            "acc_final_step100": 0.38571428571428573,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.05714285714285714,
+                0.2571428571428571
+              ],
+              "estimate": 0.15714285714285714,
+              "n": 35,
+              "paired_se": 0.053339835538011256
+            },
+            "q_bar": 0.31428571428571433
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.22857142857142856,
+            "acc_final_step100": 0.4,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.07142857142857142,
+                0.2714285714285714
+              ],
+              "estimate": 0.17142857142857143,
+              "n": 35,
+              "paired_se": 0.05401080324108038
+            },
+            "q_bar": 0.22857142857142862
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2571428571428571,
+            "acc_final_step100": 0.3,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                -0.04285714285714286,
+                0.12857142857142856
+              ],
+              "estimate": 0.04285714285714286,
+              "n": 35,
+              "paired_se": 0.04285714285714286
+            },
+            "q_bar": 0.14285714285714288
+          },
+          "group": "catY",
+          "n": 35
+        }
+      ]
+    },
+    "source_only": {
+      "role": "descriptive robustness view; does not replace the registered joint-stratum analysis",
+      "rows": [
+        {
+          "a1_real": {
+            "acc_final_step0": 0.26666666666666666,
+            "acc_final_step100": 0.35,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.008333333333333333,
+                0.15833333333333333
+              ],
+              "estimate": 0.08333333333333333,
+              "n": 60,
+              "paired_se": 0.039714138616195174
+            },
+            "q_bar": 0.14999999999999994
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.23333333333333334,
+            "acc_final_step100": 0.4,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.09166666666666666,
+                0.25
+              ],
+              "estimate": 0.16666666666666666,
+              "n": 60,
+              "paired_se": 0.040593525037287886
+            },
+            "q_bar": 0.20000000000000007
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.23333333333333334,
+            "acc_final_step100": 0.4083333333333333,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.09979166666666674,
+                0.25833333333333336
+              ],
+              "estimate": 0.175,
+              "n": 60,
+              "paired_se": 0.04086805280549825
+            },
+            "q_bar": 0.24999999999999994
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.26666666666666666,
+            "acc_final_step100": 0.36666666666666664,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.03312500000000007,
+                0.175
+              ],
+              "estimate": 0.1,
+              "n": 60,
+              "paired_se": 0.037204580241691376
+            },
+            "q_bar": 0.15
+          },
+          "group": "srcA",
+          "n": 60
+        },
+        {
+          "a1_real": {
+            "acc_final_step0": 0.2857142857142857,
+            "acc_final_step100": 0.42857142857142855,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.04285714285714286,
+                0.2571428571428571
+              ],
+              "estimate": 0.14285714285714285,
+              "n": 35,
+              "paired_se": 0.05640277040184818
+            },
+            "q_bar": 0.31428571428571433
+          },
+          "a2_gray": {
+            "acc_final_step0": 0.22857142857142856,
+            "acc_final_step100": 0.4,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.07142857142857142,
+                0.2714285714285714
+              ],
+              "estimate": 0.17142857142857143,
+              "n": 35,
+              "paired_se": 0.054010803241080374
+            },
+            "q_bar": 0.22857142857142862
+          },
+          "a2b_noimage": {
+            "acc_final_step0": 0.22857142857142856,
+            "acc_final_step100": 0.3,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                -0.014285714285714285,
+                0.15714285714285714
+              ],
+              "estimate": 0.07142857142857142,
+              "n": 35,
+              "paired_se": 0.041721652394307265
+            },
+            "q_bar": 0.14285714285714288
+          },
+          "a3_caption": {
+            "acc_final_step0": 0.2571428571428571,
+            "acc_final_step100": 0.42857142857142855,
+            "gain": {
+              "bootstrap_draws": 5000,
+              "ci95": [
+                0.05714285714285714,
+                0.2714285714285714
+              ],
+              "estimate": 0.17142857142857143,
+              "n": 35,
+              "paired_se": 0.05401080324108038
+            },
+            "q_bar": 0.31428571428571433
+          },
+          "group": "srcB",
+          "n": 35
+        }
+      ]
+    }
+  },
+  "joined_items_artifact": "out_shuf/arts/m7_joined_items.jsonl",
+  "joined_items_sha256": "32351009b9eb409cb152aa600004ddd825f7f0e15f3c15d2a6bea98ad9ffe953",
+  "pooling_discipline": "Pooled-only readout is prohibited; corpus aggregate, every joint stratum, and source-only/category-only descriptive tables are all published; A2/A2b/A3 are never pooled into one generic blind arm (docs/registered_extensions_v1.md Extension 3, docs/registered_m7_amendment_v1.md).",
+  "provenance": {
+    "analysis_git_head": "d5848c37e10e04472961640e28c9e4eb4ad8af5e",
+    "arm_seed_label_gate": {
+      "arms": {
+        "a1_real": {
+          "step0": {
+            "is_seeded_training_checkpoint": false,
+            "manifest_condition": "real",
+            "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+            "model_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+            "run_id": "step0_a1_real"
+          },
+          "step100_seed1": {
+            "checkpoint_arm": "a1_real",
+            "checkpoint_seed": 1,
+            "checkpoint_step": 100,
+            "cli_arm": "a1_real",
+            "cli_seed": 1,
+            "manifest_condition": "real",
+            "model_path": "checkpoints/m7/m7_virl_a1_real_seed1/global_step_100/actor/huggingface",
+            "run_id": "step100_a1_real_seed1"
+          },
+          "step100_seed2": {
+            "checkpoint_arm": "a1_real",
+            "checkpoint_seed": 2,
+            "checkpoint_step": 100,
+            "cli_arm": "a1_real",
+            "cli_seed": 2,
+            "manifest_condition": "real",
+            "model_path": "checkpoints/m7/m7_virl_a1_real_seed2/global_step_100/actor/huggingface",
+            "run_id": "step100_a1_real_seed2"
+          }
+        },
+        "a2_gray": {
+          "step0": {
+            "is_seeded_training_checkpoint": false,
+            "manifest_condition": "gray",
+            "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+            "model_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+            "run_id": "step0_a2_gray"
+          },
+          "step100_seed1": {
+            "checkpoint_arm": "a2_gray",
+            "checkpoint_seed": 1,
+            "checkpoint_step": 100,
+            "cli_arm": "a2_gray",
+            "cli_seed": 1,
+            "manifest_condition": "gray",
+            "model_path": "checkpoints/m7/m7_virl_a2_gray_seed1/global_step_100/actor/huggingface",
+            "run_id": "step100_a2_gray_seed1"
+          },
+          "step100_seed2": {
+            "checkpoint_arm": "a2_gray",
+            "checkpoint_seed": 2,
+            "checkpoint_step": 100,
+            "cli_arm": "a2_gray",
+            "cli_seed": 2,
+            "manifest_condition": "gray",
+            "model_path": "checkpoints/m7/m7_virl_a2_gray_seed2/global_step_100/actor/huggingface",
+            "run_id": "step100_a2_gray_seed2"
+          }
+        },
+        "a2b_noimage": {
+          "step0": {
+            "is_seeded_training_checkpoint": false,
+            "manifest_condition": "none",
+            "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+            "model_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+            "run_id": "step0_a2b_noimage"
+          },
+          "step100_seed1": {
+            "checkpoint_arm": "a2b_noimage",
+            "checkpoint_seed": 1,
+            "checkpoint_step": 100,
+            "cli_arm": "a2b_noimage",
+            "cli_seed": 1,
+            "manifest_condition": "none",
+            "model_path": "checkpoints/m7/m7_virl_a2b_noimage_seed1/global_step_100/actor/huggingface",
+            "run_id": "step100_a2b_noimage_seed1"
+          },
+          "step100_seed2": {
+            "checkpoint_arm": "a2b_noimage",
+            "checkpoint_seed": 2,
+            "checkpoint_step": 100,
+            "cli_arm": "a2b_noimage",
+            "cli_seed": 2,
+            "manifest_condition": "none",
+            "model_path": "checkpoints/m7/m7_virl_a2b_noimage_seed2/global_step_100/actor/huggingface",
+            "run_id": "step100_a2b_noimage_seed2"
+          }
+        },
+        "a3_caption": {
+          "step0": {
+            "is_seeded_training_checkpoint": false,
+            "manifest_condition": "caption",
+            "model_path": "artifacts/models/Qwen/Qwen2.5-VL-3B-Instruct",
+            "model_revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+            "run_id": "step0_a3_caption"
+          },
+          "step100_seed1": {
+            "checkpoint_arm": "a3_caption",
+            "checkpoint_seed": 1,
+            "checkpoint_step": 100,
+            "cli_arm": "a3_caption",
+            "cli_seed": 1,
+            "manifest_condition": "caption",
+            "model_path": "checkpoints/m7/m7_virl_a3_caption_seed1/global_step_100/actor/huggingface",
+            "run_id": "step100_a3_caption_seed1"
+          },
+          "step100_seed2": {
+            "checkpoint_arm": "a3_caption",
+            "checkpoint_seed": 2,
+            "checkpoint_step": 100,
+            "cli_arm": "a3_caption",
+            "cli_seed": 2,
+            "manifest_condition": "caption",
+            "model_path": "checkpoints/m7/m7_virl_a3_caption_seed2/global_step_100/actor/huggingface",
+            "run_id": "step100_a3_caption_seed2"
+          }
+        }
+      },
+      "rule": "each step-100 run manifest's model_path must name checkpoints/m7/m7_virl_<cli_arm>_seed<cli_seed>/global_step_100/actor/huggingface; each step-0 run manifest's model_path must NOT name a seeded training checkpoint"
+    },
+    "bootstrap": {
+      "draws": 5000,
+      "seed": 20260716,
+      "stream_mechanism": "deterministic statistic/arm labels hashed into independent streams via src.analysis.pilot_fourarm.deterministic_seed"
+    },
+    "heldout_manifest": "data/fixture_heldout.jsonl",
+    "heldout_row_count": 95,
+    "heldout_sha256": "00317d1babc4dde5165c844effc94f67a20607a26b314a5fea8d32920fbb9605",
+    "registered_documents": [
+      "docs/registered_m7_amendment_v1.md",
+      "docs/registered_m7_seed_scope_v1.md",
+      "docs/registered_m7_single_image_v2.md",
+      "docs/registered_extensions_v1.md"
+    ],
+    "runs": {
+      "a1_real": {
+        "step0": {
+          "config_hash": "cfg0",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "847188da1c9a7cd83b42fa10cd3abdce81c39de337eafd94b8c3710fd329d8d9",
+          "run_dir": "runs/step0_a1_real",
+          "run_id": "step0_a1_real",
+          "run_manifest_sha256": "d19b6604eae1e662d269017c2575717f57c9bd3b4382356c65eba9b77fc4c14b",
+          "shared_across_seeds": true,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": null
+        },
+        "step100_seed1": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a1_real_seed1/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "241bfc561a9bea78329a28c242cb764fbee7b106e0baa4a2227fd0df1121a9d5",
+          "run_dir": "runs/step100_a1_real_seed1",
+          "run_id": "step100_a1_real_seed1",
+          "run_manifest_sha256": "4dc87af2a8e887d01cc7d41e7cc5c7ad2de9afedee695b6d2aa69c18191a08d1",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 1
+        },
+        "step100_seed2": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a1_real_seed2/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "e0e64bda946303c7a3ca21d57d14958df3de82b4045f1d080426ac82141e56c8",
+          "run_dir": "runs/shuf_step100_a1_real_seed2",
+          "run_id": "step100_a1_real_seed2",
+          "run_manifest_sha256": "374b156e414905a19861892ba80ed1f3aa23c0918fb4567236742577ebc7d268",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 2
+        }
+      },
+      "a2_gray": {
+        "step0": {
+          "config_hash": "cfg0",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "4aafb26660aed79232ea357aae759377745d1e11577fb004d9cf2ba95bb78b47",
+          "run_dir": "runs/step0_a2_gray",
+          "run_id": "step0_a2_gray",
+          "run_manifest_sha256": "6dbd7e281db526fb8cc0abe11625e51a62c6f20e400e834b24a4f460c72e0646",
+          "shared_across_seeds": true,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": null
+        },
+        "step100_seed1": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a2_gray_seed1/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "515dcebe9c9d2bfbe90be55ac801be12d417c9d4399b065ac1eb5e7b9d283243",
+          "run_dir": "runs/step100_a2_gray_seed1",
+          "run_id": "step100_a2_gray_seed1",
+          "run_manifest_sha256": "00c18c9ef1e74cbc04bd6544305aa892f8e403cd56effe3173a2bafd75c844a7",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 1
+        },
+        "step100_seed2": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a2_gray_seed2/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "e9db137ca8a54b4deae0fb8e5797aae0232d0e9c2898e4ae3a7e23235e96990b",
+          "run_dir": "runs/shuf_step100_a2_gray_seed2",
+          "run_id": "step100_a2_gray_seed2",
+          "run_manifest_sha256": "f2af3d570c76e952645f7cada251069b5f8b76728a49e839173c8d0d6592bf8a",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 2
+        }
+      },
+      "a2b_noimage": {
+        "step0": {
+          "config_hash": "cfg0",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "92d284867827110958c9ae8fa8a99ddaae6720136a28b7b312994bbc464537c6",
+          "run_dir": "runs/step0_a2b_noimage",
+          "run_id": "step0_a2b_noimage",
+          "run_manifest_sha256": "f5c1ec9007511fe0c77c3633773220f832f9dd2ee6e8108fa97ef582576515b6",
+          "shared_across_seeds": true,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": null
+        },
+        "step100_seed1": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a2b_noimage_seed1/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "5c819689148b0e549f03629c92b83f65cd7f6fd031b25a0c4063e5f3cc9fc649",
+          "run_dir": "runs/step100_a2b_noimage_seed1",
+          "run_id": "step100_a2b_noimage_seed1",
+          "run_manifest_sha256": "e61e3d79570f90fe1b579d52c9e02c7cbcbbe0a0b3b6620e30bd9d0ae1aff4e0",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 1
+        },
+        "step100_seed2": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a2b_noimage_seed2/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "c34039b242673ba13fe3b8106b83fdad0181653efa5c52048d05bf86509c22c3",
+          "run_dir": "runs/shuf_step100_a2b_noimage_seed2",
+          "run_id": "step100_a2b_noimage_seed2",
+          "run_manifest_sha256": "ef42ef954fa0ced3715c9d537671cb379e95509a66480f65d3d9dd54d4c0a4ef",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 2
+        }
+      },
+      "a3_caption": {
+        "step0": {
+          "config_hash": "cfg0",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "ba6a574fd97bce953f81de861d393a997239fad0a84002b2e3658e77f00bbec9",
+          "run_dir": "runs/step0_a3_caption",
+          "run_id": "step0_a3_caption",
+          "run_manifest_sha256": "b9a05a30caab8011e78451385fc8af8a43e9a59d2f89c548fec08abd2e98b907",
+          "shared_across_seeds": true,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": null
+        },
+        "step100_seed1": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a3_caption_seed1/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "236a817458f5b957b33091d19e324ae4175480d1859e18104b7b9174bf160cf0",
+          "run_dir": "runs/step100_a3_caption_seed1",
+          "run_id": "step100_a3_caption_seed1",
+          "run_manifest_sha256": "af32e2577f80352c3f27da69d3a79222d96c3305d886728a42852a93f4f37a4e",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 1
+        },
+        "step100_seed2": {
+          "checkpoint_model_path": "checkpoints/m7/m7_virl_a3_caption_seed2/global_step_100/actor/huggingface",
+          "config_hash": "cfg100",
+          "job_type": "eval",
+          "node": "fixture",
+          "per_item_sha256": "113a013cd07dfd4089a7256bb0b5595345eead7bde2dda253271586f2c7b39d9",
+          "run_dir": "runs/shuf_step100_a3_caption_seed2",
+          "run_id": "step100_a3_caption_seed2",
+          "run_manifest_sha256": "175171ebbb1b50cb67016fe60d8670aa823333395323ebfbc4b807efb42b3524",
+          "shared_across_seeds": false,
+          "training_git_hash": "0000000000000000000000000000000000000000",
+          "training_seed": 2
+        }
+      }
+    },
+    "seeds": [
+      1,
+      2
+    ],
+    "split_manifest_v2_note": "data/virl39k_m7_split_manifest_v2.json n_strata_rank_eligible=21 counts component labels, not items, and was not used; eligibility was recounted directly from the held-out jsonl",
+    "step0_reuse": {
+      "claim": "the four step-0 cells are seed-independent and one set serves both seeds",
+      "enforced_by": "arm_seed_label_gate: every step-0 run manifest must carry a model_path that is NOT a seeded training checkpoint, and every step-100 run manifest must carry the seeded training checkpoint of its own (arm, seed).",
+      "identity": "under a shared step_0, mean_over_seeds(Acc_100,seed - Acc_0) = mean_over_seeds(Acc_100,seed) - Acc_0 exactly; the step-0 term is shared, not averaged",
+      "mechanical_basis": [
+        "configs/train/m7_virl_a1_real_seed{1,2}_3b.yaml differ only in data.seed, trainer.experiment_name and trainer.save_checkpoint_path (docs/registered_pilot_seed23_v1.md:23).",
+        "data.seed reaches exactly one consumer, the TRAIN dataloader shuffle generator at artifacts/repos/EasyR1/verl/trainer/data_loader.py:51; the val dataloader is built with shuffle=False and never receives it.",
+        "the step-0 runs evaluate the frozen base revision Qwen/Qwen2.5-VL-3B-Instruct@66285546d2b821cf421d4f5eb2576359d3770cd3 at decoding seed 20260710 and take no trainer config at all."
+      ],
+      "registered_basis": [
+        "docs/registered_m7_seed_scope_v1.md:62-64 - 'Every registered M7 estimand is a two-point contrast, Acc_final(step_final) - Acc_final(step_0). step_0 is the shared base model and is never checkpointed (registered_pilot_seed23_v1.md:19).'",
+        "docs/registered_pilot_seed23_v1.md:19 - 'Checkpoints are {0,20,40,60,80,100}. Step 0 is the shared base model and is never duplicated.'",
+        "docs/registered_m7_amendment_v1.md:72-73 - item identity is preserved 'across step 0, all arms, and both seeds': step 0 is one node shared by both seeds, not a per-seed node.",
+        "docs/registered_pilot_seed23_v1.md:18 - the intervention seed is fixed at data.image_condition_seed=20260710 in all arms and all seeds, so the gray/no-image/caption construction is not a run-level variable."
+      ]
+    }
+  },
+  "rank_statistics": {
+    "a2_gray": {
+      "rho_gain": {
+        "bootstrap": {
+          "ci95": [
+            -1.0,
+            1.0
+          ],
+          "defined_draw_count": 4962,
+          "draws": 5000,
+          "interval_label": "stable",
+          "seed_label": "rho_gain:a2_gray",
+          "undefined_draw_count": 38,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.0076
+        },
+        "direction_holds": false,
+        "direction_registered": "rho_gain > 0",
+        "estimate": 0.0,
+        "n_strata": 3,
+        "status": "computed"
+      },
+      "rho_recovery": {
+        "bootstrap": {
+          "ci95": [
+            -1.0,
+            0.9999999999999999
+          ],
+          "defined_draw_count": 2688,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "rho_recovery:a2_gray",
+          "undefined_draw_count": 2312,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.4624
+        },
+        "direction_holds": false,
+        "direction_registered": "rho_recovery > 0",
+        "estimate": -0.9999999999999999,
+        "excluded_unstable_strata": [
+          "srcA||catX"
+        ],
+        "n_recovery_strata": 2,
+        "n_strata": 3,
+        "recovery_strata": [
+          "srcA||catY",
+          "srcB||catX"
+        ],
+        "status": "computed"
+      }
+    },
+    "a2b_noimage": {
+      "rho_gain": {
+        "bootstrap": {
+          "ci95": [
+            0.0,
+            1.0
+          ],
+          "defined_draw_count": 4997,
+          "draws": 5000,
+          "interval_label": "stable",
+          "seed_label": "rho_gain:a2b_noimage",
+          "undefined_draw_count": 3,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.0006
+        },
+        "direction_holds": true,
+        "direction_registered": "rho_gain > 0",
+        "estimate": 1.0,
+        "n_strata": 3,
+        "status": "computed"
+      },
+      "rho_recovery": {
+        "bootstrap": {
+          "ci95": [
+            -0.9999999999999999,
+            1.0
+          ],
+          "defined_draw_count": 2789,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "rho_recovery:a2b_noimage",
+          "undefined_draw_count": 2211,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.4422
+        },
+        "direction_holds": true,
+        "direction_registered": "rho_recovery > 0",
+        "estimate": 0.9999999999999999,
+        "excluded_unstable_strata": [
+          "srcA||catX"
+        ],
+        "n_recovery_strata": 2,
+        "n_strata": 3,
+        "recovery_strata": [
+          "srcA||catY",
+          "srcB||catX"
+        ],
+        "status": "computed"
+      }
+    },
+    "a3_caption": {
+      "rho_gain": {
+        "bootstrap": {
+          "ci95": [
+            0.0,
+            1.0
+          ],
+          "defined_draw_count": 5000,
+          "draws": 5000,
+          "interval_label": "stable",
+          "seed_label": "rho_gain:a3_caption",
+          "undefined_draw_count": 0,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.0
+        },
+        "direction_holds": true,
+        "direction_registered": "rho_gain > 0",
+        "estimate": 1.0,
+        "n_strata": 3,
+        "status": "computed"
+      },
+      "rho_recovery": {
+        "bootstrap": {
+          "ci95": [
+            -0.9999999999999999,
+            0.9999999999999999
+          ],
+          "defined_draw_count": 2852,
+          "draws": 5000,
+          "interval_label": "unstable",
+          "seed_label": "rho_recovery:a3_caption",
+          "undefined_draw_count": 2148,
+          "undefined_draw_policy": "undefined draws are counted, not replaced with zero",
+          "undefined_fraction": 0.4296
+        },
+        "direction_holds": true,
+        "direction_registered": "rho_recovery > 0",
+        "estimate": 0.9999999999999999,
+        "excluded_unstable_strata": [
+          "srcA||catX"
+        ],
+        "n_recovery_strata": 2,
+        "n_strata": 3,
+        "recovery_strata": [
+          "srcA||catY",
+          "srcB||catX"
+        ],
+        "status": "computed"
+      }
+    }
+  },
+  "schema_version": "blind-gains.m7-r3-readout.v2",
+  "seed_dispersion": {
+    "differences": {
+      "aggregate_recovery": {
+        "a2_gray": -0.6868686868686869,
+        "a2b_noimage": 0.06060606060606055,
+        "a3_caption": -0.16161616161616177
+      },
+      "corpus_gain": {
+        "a1_real": -0.021052631578947364,
+        "a2_gray": -0.10526315789473684,
+        "a2b_noimage": -0.02105263157894735,
+        "a3_caption": -0.04210526315789473
+      },
+      "definition": "seed1 minus seed2",
+      "rho_gain": {
+        "a2_gray": null,
+        "a2b_noimage": -1.8660254037844388,
+        "a3_caption": 0.0
+      },
+      "rho_recovery": {
+        "a2_gray": null,
+        "a2b_noimage": null,
+        "a3_caption": null
+      }
+    },
+    "inference_permitted": false,
+    "n_seeds": 2,
+    "per_seed": {
+      "seed1": {
+        "aggregate_recovery": {
+          "a2_gray": {
+            "estimate": 1.222222222222222,
+            "status": "stable"
+          },
+          "a2b_noimage": {
+            "estimate": 1.3333333333333333,
+            "status": "stable"
+          },
+          "a3_caption": {
+            "estimate": 1.111111111111111,
+            "status": "stable"
+          }
+        },
+        "corpus": {
+          "a1_real": {
+            "acc_final_step100": 0.3684210526315789,
+            "gain": 0.09473684210526316,
+            "n": 95,
+            "paired_se": 0.04252312251712141
+          },
+          "a2_gray": {
+            "acc_final_step100": 0.3473684210526316,
+            "gain": 0.11578947368421053,
+            "n": 95,
+            "paired_se": 0.041965052102021574
+          },
+          "a2b_noimage": {
+            "acc_final_step100": 0.35789473684210527,
+            "gain": 0.12631578947368421,
+            "n": 95,
+            "paired_se": 0.04296435998767705
+          },
+          "a3_caption": {
+            "acc_final_step100": 0.3684210526315789,
+            "gain": 0.10526315789473684,
+            "n": 95,
+            "paired_se": 0.04356376493026642
+          }
+        },
+        "corpus_a1_denominator": {
+          "estimate": 0.09473684210526316,
+          "paired_se": 0.04252312251712141,
+          "rule": "gain[A1] > 0 and gain[A1] >= 2 * paired_se",
+          "stable": true
+        },
+        "rank_statistics": {
+          "a2_gray": {
+            "n_recovery_strata": 0,
+            "n_strata": 3,
+            "rho_gain": 0.0,
+            "rho_recovery": null
+          },
+          "a2b_noimage": {
+            "n_recovery_strata": 0,
+            "n_strata": 3,
+            "rho_gain": -0.8660254037844387,
+            "rho_recovery": null
+          },
+          "a3_caption": {
+            "n_recovery_strata": 0,
+            "n_strata": 3,
+            "rho_gain": 0.8660254037844387,
+            "rho_recovery": null
+          }
+        },
+        "scope_tag": "one seed (seed 1)",
+        "seed": 1
+      },
+      "seed2": {
+        "aggregate_recovery": {
+          "a2_gray": {
+            "estimate": 1.909090909090909,
+            "status": "stable"
+          },
+          "a2b_noimage": {
+            "estimate": 1.2727272727272727,
+            "status": "stable"
+          },
+          "a3_caption": {
+            "estimate": 1.2727272727272727,
+            "status": "stable"
+          }
+        },
+        "corpus": {
+          "a1_real": {
+            "acc_final_step100": 0.3894736842105263,
+            "gain": 0.11578947368421053,
+            "n": 95,
+            "paired_se": 0.044553672841404074
+          },
+          "a2_gray": {
+            "acc_final_step100": 0.45263157894736844,
+            "gain": 0.22105263157894736,
+            "n": 95,
+            "paired_se": 0.04774640777496721
+          },
+          "a2b_noimage": {
+            "acc_final_step100": 0.37894736842105264,
+            "gain": 0.14736842105263157,
+            "n": 95,
+            "paired_se": 0.04224500885626315
+          },
+          "a3_caption": {
+            "acc_final_step100": 0.4105263157894737,
+            "gain": 0.14736842105263157,
+            "n": 95,
+            "paired_se": 0.04224500885626315
+          }
+        },
+        "corpus_a1_denominator": {
+          "estimate": 0.11578947368421053,
+          "paired_se": 0.044553672841404074,
+          "rule": "gain[A1] > 0 and gain[A1] >= 2 * paired_se",
+          "stable": true
+        },
+        "rank_statistics": {
+          "a2_gray": {
+            "n_recovery_strata": 2,
+            "n_strata": 3,
+            "rho_gain": null,
+            "rho_recovery": null
+          },
+          "a2b_noimage": {
+            "n_recovery_strata": 2,
+            "n_strata": 3,
+            "rho_gain": 1.0,
+            "rho_recovery": 0.9999999999999999
+          },
+          "a3_caption": {
+            "n_recovery_strata": 2,
+            "n_strata": 3,
+            "rho_gain": 0.8660254037844387,
+            "rho_recovery": 0.9999999999999999
+          }
+        },
+        "scope_tag": "one seed (seed 2)",
+        "seed": 2
+      }
+    },
+    "q_bar_is_seed_free": "q_bar[b,s] is the item mean of the frozen Jeffreys-smoothed base q_i under arm b's own information condition (docs/registered_m7_amendment_v1.md:49-51); it comes from the shared step-0 cells and is identical for both seeds",
+    "registered_direction_verdict_source": "payload['rank_statistics'], computed on the two-seed mean; the per-seed values below fire no registered branch",
+    "role": "descriptive only. 'Seed-to-seed dispersion is also reported descriptively and is not replaced by item-bootstrap uncertainty' (docs/registered_m7_amendment_v1.md:81-82); 'Use item-paired intervals; seed dispersion is separately descriptive' (docs/registered_extensions_v1.md:143). Two seeds is n=2: no seed-level confidence interval, significance test, or 'the effect replicates' claim is registered. No registered branch keys on seed disagreement; the direction verdict is read off the two-seed mean statistic in payload['rank_statistics'] and fires unchanged whatever the per-seed values do."
+  },
+  "seed_scope": {
+    "between_seed_dispersion": "measured and reported descriptively in payload['seed_dispersion']; n_seeds = 2, so no seed-level interval, test, or replication claim is registered or made. Item-paired bootstrap uncertainty does not replace seed dispersion and seed dispersion does not replace it (docs/registered_m7_amendment_v1.md:81-82, docs/registered_extensions_v1.md:143).",
+    "estimator": "registered two-seed mean: gain[b,s] is the mean across the two fixed M7 seeds of Acc_final(step_final) - Acc_final(step_0) on paired held-out items (docs/registered_m7_amendment_v1.md:52-53)",
+    "seed_mean_is_taken": "per item, before any stratum mean, ratio, rank statistic or bootstrap draw",
+    "seeds": [
+      1,
+      2
+    ],
+    "statement": "Seed scope: the registered two-seed estimator over both fixed M7 seeds (1 and 2) for all four arms. gain[b,s] is the mean across the two seeds of Acc_final(step_final) - Acc_final(step_0) on paired held-out items, taken per item before any stratum mean, ratio, rank statistic or bootstrap draw (docs/registered_m7_amendment_v1.md:52-53). step_0 is the shared base model and is never checkpointed, so one step-0 cell per arm serves both seeds (docs/registered_m7_seed_scope_v1.md:62-64, docs/registered_pilot_seed23_v1.md:19).",
+    "step0_reuse": {
+      "claim": "the four step-0 cells are seed-independent and one set serves both seeds",
+      "enforced_by": "arm_seed_label_gate: every step-0 run manifest must carry a model_path that is NOT a seeded training checkpoint, and every step-100 run manifest must carry the seeded training checkpoint of its own (arm, seed).",
+      "identity": "under a shared step_0, mean_over_seeds(Acc_100,seed - Acc_0) = mean_over_seeds(Acc_100,seed) - Acc_0 exactly; the step-0 term is shared, not averaged",
+      "mechanical_basis": [
+        "configs/train/m7_virl_a1_real_seed{1,2}_3b.yaml differ only in data.seed, trainer.experiment_name and trainer.save_checkpoint_path (docs/registered_pilot_seed23_v1.md:23).",
+        "data.seed reaches exactly one consumer, the TRAIN dataloader shuffle generator at artifacts/repos/EasyR1/verl/trainer/data_loader.py:51; the val dataloader is built with shuffle=False and never receives it.",
+        "the step-0 runs evaluate the frozen base revision Qwen/Qwen2.5-VL-3B-Instruct@66285546d2b821cf421d4f5eb2576359d3770cd3 at decoding seed 20260710 and take no trainer config at all."
+      ],
+      "registered_basis": [
+        "docs/registered_m7_seed_scope_v1.md:62-64 - 'Every registered M7 estimand is a two-point contrast, Acc_final(step_final) - Acc_final(step_0). step_0 is the shared base model and is never checkpointed (registered_pilot_seed23_v1.md:19).'",
+        "docs/registered_pilot_seed23_v1.md:19 - 'Checkpoints are {0,20,40,60,80,100}. Step 0 is the shared base model and is never duplicated.'",
+        "docs/registered_m7_amendment_v1.md:72-73 - item identity is preserved 'across step 0, all arms, and both seeds': step 0 is one node shared by both seeds, not a per-seed node.",
+        "docs/registered_pilot_seed23_v1.md:18 - the intervention seed is fixed at data.image_condition_seed=20260710 in all arms and all seeds, so the gray/no-image/caption construction is not a run-level variable."
+      ]
+    },
+    "tag": "two seeds (seeds 1, 2; registered two-seed mean)",
+    "tag_provenance": "PI sign-off flag: docs/registered_m7_seed_scope_v1.md:39-40 reads 'Every M7 readout must carry the scope tag \"one seed\" wherever a gain, recovery or correlation is reported.' That sentence was written for the seed-1-only regime it introduces at lines 23-26. This readout keeps a scope tag on every gain, recovery and correlation but sets its value to the true scope; it does not print the literal string 'one seed' on a two-seed number. That literal wording is the one line a two-seed readout contradicts and is flagged here rather than silently reinterpreted."
+  },
+  "single_image_restriction": {
+    "retained_heldout_fraction": 0.942,
+    "retained_train_fraction": 0.932,
+    "statement": "Single-image restriction: M7 is restricted to single-image rows (worker.rollout.limit_images=1); retained 23,542/25,255 train rows (93.2%) and 4,239/4,501 held-out rows (94.2%) (docs/registered_m7_single_image_v2.md)."
+  },
+  "status": "complete",
+  "strata": {
+    "definition": "joint (metadata.source, metadata.category)",
+    "eligibility_threshold_items": 30,
+    "eligible_count": 3,
+    "recount_source": "data/fixture_heldout.jsonl",
+    "small_n_count": 1,
+    "total": 4
+  },
+  "stratum_table": [
+    {
+      "a1_denominator": {
+        "estimate": 0.016666666666666666,
+        "paired_se": 0.05076049992356676,
+        "rule": "gain[A1,s] > 0 and gain[A1,s] >= 2 * paired_se",
+        "stable": false
+      },
+      "acc_final_step0": {
+        "a1_real": 0.26666666666666666,
+        "a2_gray": 0.23333333333333334,
+        "a2b_noimage": 0.23333333333333334,
+        "a3_caption": 0.26666666666666666
+      },
+      "acc_final_step100": {
+        "a1_real": 0.2833333333333333,
+        "a2_gray": 0.4,
+        "a2b_noimage": 0.4166666666666667,
+        "a3_caption": 0.43333333333333335
+      },
+      "category": "catX",
+      "eligible": true,
+      "gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.08333333333333333,
+            0.1
+          ],
+          "estimate": 0.016666666666666666,
+          "n": 30,
+          "paired_se": 0.05076049992356676
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.06666666666666667,
+            0.26666666666666666
+          ],
+          "estimate": 0.16666666666666666,
+          "n": 30,
+          "paired_se": 0.05536365323582664
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.08333333333333333,
+            0.3
+          ],
+          "estimate": 0.18333333333333332,
+          "n": 30,
+          "paired_se": 0.056136806073810275
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.06666666666666667,
+            0.2833333333333333
+          ],
+          "estimate": 0.16666666666666666,
+          "n": 30,
+          "paired_se": 0.05536365323582664
+        }
+      },
+      "label": "eligible",
+      "n": 30,
+      "q_bar": {
+        "a1_real": 0.10000000000000003,
+        "a2_gray": 0.10000000000000003,
+        "a2b_noimage": 0.30000000000000004,
+        "a3_caption": 0.20000000000000007
+      },
+      "recovery": {
+        "a2_gray": {
+          "status": "undefined-unstable-denominator"
+        },
+        "a2b_noimage": {
+          "status": "undefined-unstable-denominator"
+        },
+        "a3_caption": {
+          "status": "undefined-unstable-denominator"
+        }
+      },
+      "source": "srcA"
+    },
+    {
+      "a1_denominator": {
+        "estimate": 0.15,
+        "paired_se": 0.059451516032988504,
+        "rule": "gain[A1,s] > 0 and gain[A1,s] >= 2 * paired_se",
+        "stable": true
+      },
+      "acc_final_step0": {
+        "a1_real": 0.26666666666666666,
+        "a2_gray": 0.23333333333333334,
+        "a2b_noimage": 0.23333333333333334,
+        "a3_caption": 0.26666666666666666
+      },
+      "acc_final_step100": {
+        "a1_real": 0.4166666666666667,
+        "a2_gray": 0.4,
+        "a2b_noimage": 0.4,
+        "a3_caption": 0.3
+      },
+      "category": "catY",
+      "eligible": true,
+      "gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.03333333333333333,
+            0.26666666666666666
+          ],
+          "estimate": 0.15,
+          "n": 30,
+          "paired_se": 0.059451516032988504
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.05,
+            0.2833333333333333
+          ],
+          "estimate": 0.16666666666666666,
+          "n": 30,
+          "paired_se": 0.06033114240004924
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.05,
+            0.2833333333333333
+          ],
+          "estimate": 0.16666666666666666,
+          "n": 30,
+          "paired_se": 0.06033114240004924
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.05,
+            0.11666666666666667
+          ],
+          "estimate": 0.03333333333333333,
+          "n": 30,
+          "paired_se": 0.04754509857458951
+        }
+      },
+      "label": "eligible",
+      "n": 30,
+      "q_bar": {
+        "a1_real": 0.20000000000000007,
+        "a2_gray": 0.30000000000000004,
+        "a2b_noimage": 0.20000000000000007,
+        "a3_caption": 0.10000000000000003
+      },
+      "recovery": {
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.23076923076923078,
+            4.587499999999939
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 1.1111111111111112,
+          "retained_bootstrap_draws": 4980,
+          "status": "stable"
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.4,
+            3.0
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 1.1111111111111112,
+          "retained_bootstrap_draws": 4986,
+          "status": "stable"
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.5,
+            1.2857142857142856
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 0.22222222222222224,
+          "retained_bootstrap_draws": 4979,
+          "status": "stable"
+        }
+      },
+      "source": "srcA"
+    },
+    {
+      "a1_denominator": {
+        "estimate": 0.15,
+        "paired_se": 0.059451516032988504,
+        "rule": "gain[A1,s] > 0 and gain[A1,s] >= 2 * paired_se",
+        "stable": true
+      },
+      "acc_final_step0": {
+        "a1_real": 0.26666666666666666,
+        "a2_gray": 0.23333333333333334,
+        "a2b_noimage": 0.23333333333333334,
+        "a3_caption": 0.26666666666666666
+      },
+      "acc_final_step100": {
+        "a1_real": 0.4166666666666667,
+        "a2_gray": 0.4166666666666667,
+        "a2b_noimage": 0.2833333333333333,
+        "a3_caption": 0.45
+      },
+      "category": "catX",
+      "eligible": true,
+      "gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.03333333333333333,
+            0.26666666666666666
+          ],
+          "estimate": 0.15,
+          "n": 30,
+          "paired_se": 0.059451516032988504
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.06666666666666667,
+            0.3
+          ],
+          "estimate": 0.18333333333333332,
+          "n": 30,
+          "paired_se": 0.06104140922232008
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.03333333333333333,
+            0.13333333333333333
+          ],
+          "estimate": 0.05,
+          "n": 30,
+          "paired_se": 0.043878096543968716
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.06666666666666667,
+            0.3
+          ],
+          "estimate": 0.18333333333333332,
+          "n": 30,
+          "paired_se": 0.06104140922232008
+        }
+      },
+      "label": "eligible",
+      "n": 30,
+      "q_bar": {
+        "a1_real": 0.30000000000000004,
+        "a2_gray": 0.20000000000000007,
+        "a2b_noimage": 0.10000000000000003,
+        "a3_caption": 0.30000000000000004
+      },
+      "recovery": {
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.3333333333333333,
+            5.333333333333333
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 1.222222222222222,
+          "retained_bootstrap_draws": 4980,
+          "status": "stable"
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.2,
+            2.0
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 0.33333333333333337,
+          "retained_bootstrap_draws": 4984,
+          "status": "stable"
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.3333333333333333,
+            5.333333333333333
+          ],
+          "denominator_estimate": 0.15,
+          "estimate": 1.222222222222222,
+          "retained_bootstrap_draws": 4980,
+          "status": "stable"
+        }
+      },
+      "source": "srcB"
+    },
+    {
+      "a1_denominator": {
+        "estimate": 0.1,
+        "paired_se": 0.18708286933869706,
+        "rule": "gain[A1,s] > 0 and gain[A1,s] >= 2 * paired_se",
+        "stable": false
+      },
+      "acc_final_step0": {
+        "a1_real": 0.4,
+        "a2_gray": 0.2,
+        "a2b_noimage": 0.2,
+        "a3_caption": 0.2
+      },
+      "acc_final_step100": {
+        "a1_real": 0.5,
+        "a2_gray": 0.3,
+        "a2b_noimage": 0.4,
+        "a3_caption": 0.3
+      },
+      "category": "catY",
+      "eligible": false,
+      "gain": {
+        "a1_real": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            -0.2,
+            0.4
+          ],
+          "estimate": 0.1,
+          "n": 5,
+          "paired_se": 0.18708286933869706
+        },
+        "a2_gray": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.0,
+            0.3
+          ],
+          "estimate": 0.1,
+          "n": 5,
+          "paired_se": 0.10000000000000002
+        },
+        "a2b_noimage": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.0,
+            0.4
+          ],
+          "estimate": 0.2,
+          "n": 5,
+          "paired_se": 0.12247448713915891
+        },
+        "a3_caption": {
+          "bootstrap_draws": 5000,
+          "ci95": [
+            0.0,
+            0.3
+          ],
+          "estimate": 0.1,
+          "n": 5,
+          "paired_se": 0.1
+        }
+      },
+      "label": "descriptive-small-n",
+      "n": 5,
+      "q_bar": {
+        "a1_real": 0.4,
+        "a2_gray": 0.4,
+        "a2b_noimage": 0.4,
+        "a3_caption": 0.4
+      },
+      "recovery": null,
+      "source": "srcB"
+    }
+  ],
+  "support_sharpening": {
+    "arms": {
+      "a1_real": {
+        "per_seed": {
+          "seed1": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a1_real_seed1.jsonl",
+            "candidate_count": 4,
+            "candidate_sha256": "e46753d26e74ed73b30a5a563adfefe455423ef052859776540cdb0c20ea5f87",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          },
+          "seed2": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a1_real_seed2.jsonl",
+            "candidate_count": 2,
+            "candidate_sha256": "8cba1a1220bf47914bbd738e48c2cff739f03c4af32b0ae7f865d787514f6e7b",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          }
+        }
+      },
+      "a2_gray": {
+        "per_seed": {
+          "seed1": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a2_gray_seed1.jsonl",
+            "candidate_count": 1,
+            "candidate_sha256": "3768356ca535084e64e540802592b3f62acbb078c727ef5abc6fc21a0cb36e30",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          },
+          "seed2": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a2_gray_seed2.jsonl",
+            "candidate_count": 5,
+            "candidate_sha256": "85af48de7c64cd4e3005b2d4a701022ba1ba0342f21715aa6a7c6f2664cdcea1",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          }
+        }
+      },
+      "a2b_noimage": {
+        "per_seed": {
+          "seed1": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a2b_noimage_seed1.jsonl",
+            "candidate_count": 5,
+            "candidate_sha256": "8931c03023e197ba499f7ba17b6633d5a73faa7bd84b93ca3b8bdd075faf027c",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          },
+          "seed2": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a2b_noimage_seed2.jsonl",
+            "candidate_count": 3,
+            "candidate_sha256": "94f1cac08f78e873242def30d3c80a2aa8a5bd41db716ec3495d31b3f9d1ddc9",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          }
+        }
+      },
+      "a3_caption": {
+        "per_seed": {
+          "seed1": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a3_caption_seed1.jsonl",
+            "candidate_count": 0,
+            "candidate_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          },
+          "seed2": {
+            "candidate_artifact": "out_shuf/arts/support_candidates_a3_caption_seed2.jsonl",
+            "candidate_count": 3,
+            "candidate_sha256": "8a4a4a52bf905fb6ed5a6fa846f9b884d486db45651ba51992f76640ede9f513",
+            "followup_samples_per_candidate": 64,
+            "followup_status": "pending"
+          }
+        }
+      }
+    },
+    "causal_capability_claim_permitted": false,
+    "merged_across_seeds": false,
+    "rule": "base 0/16 under the arm's own condition, step-0 greedy wrong, step-100 greedy correct; 64-sample frozen-base follow-up is reported separately under M10",
+    "seed_rule": "candidate lists are computed per seed and published separately; no union/intersection/two-seed candidate rule is registered (docs/registered_extensions_v1.md:142), so they are not merged"
+  }
+}

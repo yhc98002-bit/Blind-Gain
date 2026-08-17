@@ -1,0 +1,25 @@
+Track-4 premise-v2 acceptance-gate runner (E1-E4, registered commands verbatim)
+
+Adds scripts/track4_premise_v2_gates.sh, which runs the four acceptance gates
+registered in docs/registered_track4_premise_v2_design_v1.md section 7 (I14) in
+the registered order, strictly sequentially, on an29 gpu 2 only, under the
+standard guard -> /dev/shm claim -> guard re-check discipline with the claim
+refreshed while waiting and released on every exit path.
+
+The runner only runs and records: it emits each registered command verbatim
+(E1/E2 eval_qwen_vl_fliptrack.py, E3 caption-store -> merge -> QA-build -> QA
+eval, E4 launch_artifact_gate_v02.sh) and captures raw outputs, return codes,
+run dirs, node, git hash and UTC times. It computes no pass/fail judgment, does
+not restate any section-7 criterion as a threshold, trains nothing, and leaves
+groups_v2.jsonl untouched (section 7 names no rescore script and none exists on
+disk, so that judgment is deferred). Failures are fail-closed: any nonzero rc,
+timeout, or dead remote pid stops the chain and no later gate is attempted.
+
+The command strings were adversarially diffed against section 7 before launch:
+no deviation found, flags reproduced exactly with BASE=artifacts/models/Qwen/
+Qwen2.5-VL-3B-Instruct and DATA=data/track4_premise_v2_dev_v1. Mechanics the
+registration leaves open (venv python + offline env, an29 dispatch, E2 sibling
+output subdirs, E3 shards=1/GPU_LIST=2, E3 release/key inputs) are recorded in
+the provenance JSON rather than silently absorbed into the criteria.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

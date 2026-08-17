@@ -1,0 +1,21 @@
+427	checkpoints/pilot
+51	checkpoints/m5_anchor_longhorizon_400
+51	checkpoints/anchor_a0_recipe_3b_geo3k
+44	checkpoints/m5_anchor_resume_integrity_step101
+38	artifacts/models
+31	checkpoints/smoke
+17	experiments
+17	data
+8	.venv
+8	checkpoints/stage0_repro
+3	artifacts/hf_home
+2	artifacts/datasets
+1	.venv-ocr
+1	tmp
+1	logs
+1	checkpoints/m5_anchor_longhorizon_400_resume150
+1	artifacts/repos
+1	artifacts/generated_images
+1	artifacts/envs
+1	artifacts/cache
+TOTAL_DONE

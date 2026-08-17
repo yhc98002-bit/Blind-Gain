@@ -1,0 +1,14 @@
+{
+  "schema": "blind-gains.lh2-adversarial-fixture.v1",
+  "exit_codes": {
+    "clean_pass": 0,
+    "tampered_lr_fail": 1,
+    "tampered_seed3_fail": 1
+  },
+  "expected": {
+    "clean_pass": 0,
+    "tampered_lr_fail": 1,
+    "tampered_seed3_fail": 1
+  },
+  "status": "pass"
+}

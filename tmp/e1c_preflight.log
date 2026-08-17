@@ -1,0 +1,12 @@
+The image processor of type `Qwen2VLImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. Note that this behavior will be extended to all models in a future release.
+blink           n= 1901 withimg_n= 1901 max_prompt_tok=   241 residual_image_str=0 missing_idx=0 gold_mismatch=0 labels_mismatch=0
+                k_dist={2: 924, 3: 134, 4: 843} contracts={'multiple_choice_final_span': 1901} cats=14
+hallusionbench  n= 1129 withimg_n= 1129 max_prompt_tok=    87 residual_image_str=0 missing_idx=0 gold_mismatch=0 labels_mismatch=0
+                k_dist={0: 1129} contracts={'open_final_span': 1129} cats=2
+mmvp            n=  300 withimg_n=  300 max_prompt_tok=    84 residual_image_str=0 missing_idx=0 gold_mismatch=0 labels_mismatch=0
+                k_dist={2: 300} contracts={'multiple_choice_final_span': 300} cats=1
+mathverse       n= 3940 withimg_n= 3940 max_prompt_tok=   374 residual_image_str=0 missing_idx=0 gold_mismatch=5 labels_mismatch=0
+                k_dist={0: 1760, 2: 105, 3: 60, 4: 1835, 5: 150, 6: 30} contracts={'multiple_choice_final_span': 2180, 'open_final_span': 1760} cats=5
+mmmu            n= 1050 withimg_n= 1050 max_prompt_tok=   618 residual_image_str=0 missing_idx=0 gold_mismatch=0 labels_mismatch=0
+                k_dist={0: 62, 2: 35, 3: 133, 4: 699, 5: 108, 6: 6, 7: 2, 9: 5} contracts={'multiple_choice_final_span': 988, 'open_final_span': 62} cats=30
+PREFLIGHT FAIL

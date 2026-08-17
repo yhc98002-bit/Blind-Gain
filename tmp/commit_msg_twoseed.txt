@@ -1,0 +1,32 @@
+M7 R3 readout: two-seed capable instrument + two-seed fixture suite
+
+Extends scripts/build_m7_r3_readout.py from a single-seed readout to a
+two-seed readout (per-seed arms, cross-seed pooling, and the seed-scoped
+provenance/artifact paths that go with them), and adds
+tests/test_m7_r3_readout_two_seed_fixture.py, a 21-case synthetic fixture
+suite covering the new two-seed paths. experiments/scratch_twoseed/ carries
+the verification harness: the pre-change instrument snapshot
+(build_m7_r3_readout.ORIGINAL.py), the golden probe, the seed-1 replay
+driver and its comparator, the two-seed sampler, and the replay outputs
+(replay/replay.json, replay/replay.md).
+
+Adversarial verification, three independent lenses:
+  1. Hand-checked arithmetic. Fixture-derived estimates were recomputed by
+     hand, off the instrument's own code path, and matched.
+  2. Registered-estimator fidelity. The two-seed estimators were checked
+     against the registered specification rather than against the
+     implementation, so a self-consistent-but-wrong estimator would fail.
+  3. Byte-stability replay. The seed-1 path was replayed through the new
+     instrument and compared against the pre-change snapshot's outputs.
+
+Scope and honesty notes:
+  - The seed-1 code path and its published outputs are proven byte-stable
+    across this change: the replay reproduces the prior artifacts byte for
+    byte, so no previously reported seed-1 number moves.
+  - No real seed-2 data was read. The seed-2 arms are still training. Every
+    two-seed result exercised here is synthetic fixture data used to test the
+    instrument; nothing in this commit is an empirical two-seed finding.
+  - Fixture suite: 21 passed
+    (.venv/bin/python -m pytest tests/test_m7_r3_readout_two_seed_fixture.py -q).
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

@@ -1613,18 +1613,24 @@ section originally made, and it is the claim Paper 2 inherits.
 
 ## 19. Still in flight
 
-*Current as of 2026-08-16T10:15Z. The 08-12→08-14 storage deadlock and its
+*Current as of 2026-08-17T01:00Z. The 08-12→08-14 storage deadlock and its
 recovery are recorded in `reports/storage_cleanup_20260814.md` and the
 2026-08-14 commit history; the 08-15 chain outcomes and their diagnosis are in
 the "2026-08-16 — Consolidation round" section.*
 
-**Running now** — **LH2 stage 1, seg-1 training** since 2026-08-16T17:22:36Z
-(`lh2_seed2_seg1_an12_20260816T172233Z`, an12 0–3; the chain runs from the
-immutable copy `tmp/immutable_lh2_segment_chain_20260816.sh`, banks and
-hash-audits each 50-step boundary, and stops at the registered step-200
-go/no-go). Both M7 seed-2 held-out evals landed 2026-08-16 (4,239 rows each)
-and the **two-seed R3 readout is complete** — numbers in the consolidation
-section below.
+**Running now**
+
+- **LH2 stage 1, seg-1 training** since 2026-08-16T17:22:36Z
+  (`lh2_seed2_seg1_an12_20260816T172233Z`, an12 0–3; the chain runs from the
+  immutable copy `tmp/immutable_lh2_segment_chain_20260816.sh`, banks and
+  hash-audits each 50-step boundary, and stops at the registered step-200
+  go/no-go).
+- **HB P2.3 caption-stress chain** (an29): 72B ephemeral ModelScope download →
+  question-blind TP4 caption store over the hier L3 causal images → base-3B
+  text QA → readout; detached chain
+  `logs/chains/hier_caption_stress_chain_20260817.sh`, log
+  `logs/hier_caption_stress_chain_20260817T003947Z.log`. Every other HB P2
+  cell is complete — numbers in the 2026-08-17 section below.
 
 **Open, not running**
 
@@ -1643,9 +1649,14 @@ section below.
   DRAFT; launch gates = two-seed R3 landed + HB P2 informativeness gates + PI
   merge with the launch-time amendment (training-batch pin, configs,
   blind-control decision).
-- **HB dev-batch generation** (P1.2 of the 08-12 dispatch) under
-  `docs/registered_hier_benchmark_v1.md`; the chart-v08 no-zoom audit
-  (Richard) still blocks P2 of that build.
+- **HB chart revision fork — PI call.** `hier_chart_v1` fails the P2.3
+  artifact-attacker gate decisively (numbers in the 2026-08-17 section); the
+  leak is numerically pinned to the unidirectional switch edit + the
+  filter-induced direction bias of low-crossing stable edits. Any fix is a
+  registered revision cycle (one-shot discipline), not silent regeneration.
+  Coord's single marginal template (dinov2 n20 folded 0.5577) is part of the
+  same disposition. The chart-v08 no-zoom audit (Richard) additionally still
+  blocks chart-side P2 freeze.
 - **§21 ledger gaps** surfaced by the M13 table
   (`reports/paper1_numbers_table_v1.md`): F1b, F2, F4, F5, F6 Tier 1, F7 have
   no §21 row; F0/F1/F10 rows carry artifacts but no numbers.
@@ -2396,6 +2407,107 @@ registration (above). `reports/paper1_numbers_table_v1.md` — M13 paper-facing
 numbers table, one row per PAPER1 §3 claim, frozen slots marked (two-seed R3,
 LH2 direction, C6 tier), §21 gaps listed.
 
+## 2026-08-17 — HB P0–P2 development validation: the hierarchy is informative (family L3 floors pass; 3/7 cells clean on every gate), blind floors are hard zeros/near-chance, and the attacker gate catches a real construction artifact in the chart family before any training
+
+*Per the 08-12 HB dispatch (P0–P2, STOP after P2). Ledger:
+`reports/hier_benchmark_progress.md`; registration
+`docs/registered_hier_benchmark_v1.md` + Amendments A1/A2. Instruments: the
+registered FlipTrack open-form eval (I7 locked decoding) and the sha-pinned
+candidate-ranking eval; 7 knob cells × 4 layers × 4 models; 150 mother-items
+per family per cell, one shot, from-disk re-verification 0 problems.*
+
+**P2.2 informativeness gates (base 3B, registered HB.7 criteria).** Family L3
+floor (≥ 0.05 in ≥ 1 cell) **passes both families**. Monotone L1>L2>L3 in 6/7
+cells. Cells passing every per-cell gate: coord n8 (L1/L2/L3
+0.725/0.640/0.425), coord n12 (0.675/0.595/0.325), chart s9_low
+(0.795/0.745/0.200). Band failures are calibration signal, not noise: s5_high
+fails monotone+L1 (0.495/0.535 — the L1 cue does not rescue dense 5-series
+crossings), s9_high L1 0.450, s5_low L2 0.880 (too easy), n20 L1 0.575.
+Target-switch L3 (reported separately per A2): 0.040–0.370.
+`reports/hier_p2_gate_readout_v1.{json,md}`.
+
+**P2.3 blind floors are clean.** Chart L3 blind member accuracy is exactly
+**0.0000 in all four cells** (gray AND no_image); every discovery probe is
+0.0000; coord L3 sits at 0.1200/0.1133/0.1367 (n8/n12/n20) with gray =
+no_image to four decimals — i.e., the image channel carries everything the
+gates measure. `reports/hier_p23_readout_v1.{json,md}`.
+
+**P2.3 attacker gates: coord near-clean, chart fails decisively — and the
+failure is diagnosable to the constructor.** Registered criterion: folded
+AUC ≤ 0.55 point and CI-upper ≤ 0.62, per attacker, pooled + per template.
+
+- `hier_coord_v1`: pooled clean (dinov2 0.5096, frequency_stat 0.5096,
+  metadata 0.5137); gate **false** by exactly one per-template point —
+  dinov2 n20 folded **0.5577** (CI up 0.5897, under the CI criterion).
+- `hier_chart_v1`: pooled dinov2 **0.6711** [0.6472, 0.6969], frequency_stat
+  **0.6957** [0.6661, 0.7241], metadata 0.5910 — and per-template the
+  low-crossing cells are near-perfectly separable: s5_low frequency **0.9819**
+  (CI up 0.9962), metadata 0.9315, dinov2 0.9190; s9_low 0.7831/0.8637/0.8103;
+  the high-crossing cells only graze the line (dinov2 s5_high 0.5629, s9_high
+  0.5609).
+
+**The leak is numerically pinned** (`scripts/verify_hier_leak_direction.py` →
+`reports/hier_p2_leak_verification_v1.json`, causal pairs, swap-honoring):
+
+- The chart **target_switch edit lowers the target's value at the asked x in
+  200/200 pairs** — the constructor's switch edit is unidirectional by
+  construction (all four cells 50/50).
+- The chart **target_stable edit is direction-biased only where the attacker
+  fires**: 99/100 downward in the low-crossing cells (the registered
+  low-crossing FILTER kills upward proposals) vs balanced 25/25 and 20/30 in
+  the high cells.
+- The pixel side-channel follows: in low cells the edited side's PNG is larger
+  in **198/200** pairs (cell means +1,053 to +1,521 B — banded base compresses
+  well, the band-breaking edit doesn't); that is the metadata/frequency
+  signal. Coord's
+  stable edits are balanced and its switch is a 2-D move; its one marginal
+  template (n20) shows the same size skew in miniature (38/50 smaller, mean
+  −148 B).
+
+Insight: the acceptance machinery worked exactly as designed — a brand-new
+track shipped with a systematic side signature and the gate caught it at
+development time, before any training or freeze. The fix (symmetrized switch
+edit; band-preserving low-cell stable edits, or band-breaking jitter on both
+sides) changes the registered construction, so it is a **PI-visible
+registered revision cycle**, not a silent regeneration. Chart P3 is blocked
+at this gate; coord's disposition (one template at 0.5577) rides the same
+decision.
+
+**P2.1 candidate-ranking readout**
+(`reports/hier_p2_ranking_readout_v1.{json,md}`; mean pair MRR (top-1 rate),
+14 registered sha-pinned configs × 4 models). The layer split reproduces in
+ranking form: **L2 is largely solvable** — chart L2 0.8332–1.0000 MRR (base
+7B a perfect 1.0000 on s5_low), coord L2 0.6363–0.8857 — while **L3 drops
+sharply in every cell** (coord n8 base 3B 0.4851 vs 0.7209 at L2; base 7B
+0.7760 vs 0.8777). Base 7B leads base 3B on all seven L3 cells
+(0.5306–0.7965 vs 0.4033–0.6395). The Gate-1 step-120 checkpoints
+(`mini_a5_std`/`cp`) sit within ±0.08 MRR of base 3B in every cell at both
+layers — RL training moved no hierarchy-discovery capability, matching the
+open-form picture. Caution (numbers only): the two low-crossing chart cells
+the attacker flags are also the L3 cells with the highest 3B MRR (s5_low
+0.6395, s9_low 0.5936, vs 0.4428/0.4033 in the high cells) — consistent with
+the band-breaking edit being visually salient; the registered revision will
+resolve how much low-cell L3 "discovery" rides that artifact.
+
+**P2.4 census review package v3 → human gates queue.** Census v3
+(`reports/generator_census_v3.{json,md}`): 138 manifests, 51 families, 217
+variants, 84 loudly stage-unmapped; the hier cells appear as 100-pair
+variants across their L1/L2/L3 stages. Package
+`reports/review_packages/hier_v1_census_v3{,.zip}` (zip sha256
+`4b55781197ea399300653efe6a53d157a43870035106db2161d2fa753acb1530`):
+deterministic no-RNG sample per the R19/R20 discipline (first 2 mother-pairs
+per cell × role — 42 pairs, 280 images, all existing layers joined by
+`mother_item_id`), README + `queue.md` with four human gates (chart-v08
+no-zoom [Richard, blocks chart-side P2 freeze], hier_coord legibility + cue
+visibility, hier_chart review marked diagnostic-only pending the revision,
+census v3 sign-off). Nothing self-certified.
+
+**In flight at collection time**: the 72B caption-stress chain (P2.3's last
+cell; §19) — its readout (`reports/hier_caption_stress_readout_v1.*`) will be
+appended to this section when it lands. Post-P2 branch selection (band
+recalibration, chart symmetrization, coord n20 disposition) is PI work; per
+the dispatch this round reports gate outcomes as numbers only.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:
@@ -2426,6 +2538,11 @@ mirrors to GitHub refs `agent/gate2-recovery` = `master` = `main`.*
 | E4 wording resolution: literal "CI includes 0.5" holds in every per-template scope for all three attackers; excluded only by pooled dinov2 [0.508, 0.553] and pooled frequency_stat [0.516, 0.576]; v1 folded numbers reproduced exactly; folded criterion and verdict untouched | `docs/registered_track4_premise_v2_design_v1.md` §7-E4 + PI decision 2026-08-16 (EXPERIMENT_TODO PART 5) | `reports/track4_premise_v2_e4_wording_resolution_v1.{json,md}`, `track4_premise_v2_attacker_gate_v2_unfolded.json`, `track4_premise_v2_attacker_oof_scores_v1.jsonl` | inline cmd block J |
 | E1/E2 on dev_v2 (branch-(c) n=5 + registered balance cap, one-shot): E1 PASS both contracts (0.5125 in [0.40, 0.60], branch (a) — n=5 frozen); E2 FAIL all five (0.15–0.20 vs 0.133) via the tier-1 lenient class collision (constant `-1` harvests golds `1` and `-1`; per-value cap held at 0.10; blind pair acc 0.000) — exclusions stand | `docs/registered_track4_premise_v2_design_v1.md` §5/§7 + `docs/registered_hier_benchmark_v1.md` §8 | `reports/track4_premise_v2_gate_readout_v2.{json,md}`, `track4_premise_v2_dev_v2_build_v1.json`, cells under `experiments/runs/track4_premise_v2_gates_an29_20260816T090907Z` | inline cmd block K |
 | E3 on dev_v2: PASS all five types under BOTH readings — `chained_premise_easy` 0.2000 ≤ 0.233 (reading (a), unmodified) and ≤ 0.300 (measured floor + 0.10); the v1 indeterminacy resolves | `docs/registered_track4_premise_v2_design_v1.md` §7-E3 + `docs/registered_hier_benchmark_v1.md` §8 | `reports/track4_premise_v2_e3_readout_v2.{json,md}`, provenance `track4_premise_v2_e3_caption_stress_run_provenance_v2.json`, run dirs `experiments/runs/track4_premise_v2_e3_an29_20260816T091115Z` + caption store/merge siblings | inline cmd block L |
+| HB P2.2 informativeness (base 3B): family L3 floor PASS both families; monotone 6/7 cells; all-gates cells coord n8/n12 + chart s9_low; band failures s5_high/s9_high/s5_low/n20 as listed | `docs/registered_hier_benchmark_v1.md` §7 + Amendments A1/A2 | `reports/hier_p2_gate_readout_v1.{json,md}`; open-form run dirs `experiments/runs/hier_p2_openform_*_20260816T2109*` | report provenance |
+| HB P2.3 blind floors: chart L3 0.0000 all cells, probes 0.0000, coord L3 0.1133–0.1367 with gray = no_image | `docs/registered_hier_benchmark_v1.md` §7 (P3-freeze prerequisite) | `reports/hier_p23_readout_v1.{json,md}`; run dirs `hier_p2_openform_base3b_{gray,no_image}_*_20260816T2244*` | report provenance |
+| HB P2.3 attacker gates: coord pooled clean (≤ 0.5137), gate false only via dinov2 n20 0.5577; chart fails decisively (pooled freq 0.6957; s5_low freq 0.9819) — leak pinned: switch edit unidirectional 200/200, low-cell stable 99/100, PNG size 198/200 | premise-v2 attacker criterion (folded ≤ 0.55 / CI-up ≤ 0.62) carried by `docs/registered_hier_benchmark_v1.md` §7 | `reports/hier_p2_attacker_gate_hier_{coord,chart}_v1.json`, `reports/hier_p2_leak_verification_v1.json`, `reports/hier_p23_readout_v1.{json,md}`; releases `data/hier_v1_dev/attacker_release_*` | `scripts/verify_hier_leak_direction.py` + report provenance |
+| HB P2.4 census review package v3: census 138 manifests / 51 families / 217 variants / 84 stage-unmapped; deterministic 42-pair sample; 4-gate human queue | R19/R20 audit-package discipline; `docs/registered_hier_benchmark_v1.md` §7 (HB.8) | `reports/generator_census_v3.{json,md}`, `reports/review_packages/hier_v1_census_v3{,.zip}` (zip sha `4b55781197ea…1530`), `reports/hier_census_review_package_v3.json` | `scripts/build_hier_census_review_package.py` |
+| HB P2.1 candidate-ranking: L2 largely solvable (chart 0.8332–1.0000 MRR), L3 drops sharply every cell (base 3B 0.4033–0.6395); base 7B leads all L3 cells; Gate-1 step-120 checkpoints within ±0.08 of base 3B everywhere; low-crossing L3 elevation coincides with attacker-flagged cells | `docs/registered_hier_benchmark_v1.md` §7 | `reports/hier_p2_ranking_readout_v1.{json,md}`; run dirs `hier_p2_ranking_*_20260816T212*` | report provenance |
 
 **Inline command blocks** *(verbatim as run; working dir = repo root; PATH must
 include `~/.local/bin` (jq); Python = `.venv/bin/python`; scripts importing

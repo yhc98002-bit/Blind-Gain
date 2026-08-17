@@ -1,0 +1,11 @@
+done BLINK 3B
+done BLINK 7B
+done HallusionBench 3B
+done HallusionBench 7B
+done MMVP 3B
+done MMVP 7B
+done MathVerse 3B
+done MathVerse 7B
+done MMMU dev+validation 3B
+done MMMU dev+validation 7B
+wrote /XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/e1c_blind_columns_v1.json

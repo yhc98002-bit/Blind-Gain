@@ -1,0 +1,49 @@
+### gemma3 blind=none
+  MC k=2                                             n=75    with=0.0000 blind=0.0000 null=0.5000 naive=nan corr=1.0000 CI=[1.0000,1.0000] negden=1.000
+  MC k=3                                             n=72    with=0.0278 blind=0.0000 null=0.3333 naive=0.0000 corr=1.0909 CI=[1.0000,1.2632] negden=1.000
+  MC k=4                                             n=1010  with=0.1574 blind=0.1010 null=0.2500 naive=0.6415 corr=1.6096 CI=[1.3291,2.0581] negden=1.000
+  MC k=5                                             n=58    with=0.0517 blind=0.0345 null=0.2000 naive=0.6667 corr=1.1163 CI=[0.7674,1.8696] negden=1.000
+  MC pooled (k determinable)                         n=1215  with=0.1350 blind=0.0856 null=0.2680 naive=0.6341 corr=1.3713 CI=[1.2214,1.5653] negden=1.000
+  free-form numeric                                  n=1982  with=0.5030 blind=0.3567 null=0.0000 naive=0.7091 corr=0.7091 CI=[0.6693,0.7490] negden=0.000
+  free-form text_or_expression                       n=807   with=0.2491 blind=0.2032 null=0.0000 naive=0.8159 corr=0.8159 CI=[0.7206,0.9175] negden=0.000
+  free-form pooled                                   n=2789  with=0.4295 blind=0.3123 null=0.0000 naive=0.7270 corr=0.7270 CI=[0.6901,0.7651] negden=0.000
+  free-form pooled [STRICT]                          n=2789  with=0.0000 blind=0.0000 null=0.0000 naive=nan corr=nan CI=[nan,nan] negden=1.000
+  WHOLE 4096 naive ref                               n=4096  with=0.3418 blind=0.2424 null=0.0000 naive=0.7093 corr=0.7093 CI=[0.6753,0.7452] negden=0.000
+  k-indeterminable n=92 with=0.4130 blind=0.1957
+### gemma3 blind=caption
+  MC k=2                                             n=75    with=0.0000 blind=0.0400 null=0.5000 naive=nan corr=0.9200 CI=[0.8133,1.0000] negden=1.000
+  MC k=3                                             n=72    with=0.0278 blind=0.0278 null=0.3333 naive=1.0000 corr=1.0000 CI=[0.8261,1.2105] negden=1.000
+  MC k=4                                             n=1010  with=0.1574 blind=0.1297 null=0.2500 naive=0.8239 corr=1.2995 CI=[1.0717,1.6241] negden=1.000
+  MC k=5                                             n=58    with=0.0517 blind=0.0345 null=0.2000 naive=0.6667 corr=1.1163 CI=[0.7674,1.8696] negden=1.000
+  MC pooled (k determinable)                         n=1215  with=0.1350 blind=0.1136 null=0.2680 naive=0.8415 corr=1.1609 CI=[1.0290,1.3276] negden=1.000
+  free-form numeric                                  n=1982  with=0.5030 blind=0.4768 null=0.0000 naive=0.9478 corr=0.9478 CI=[0.9055,0.9927] negden=0.000
+  free-form text_or_expression                       n=807   with=0.2491 blind=0.1995 null=0.0000 naive=0.8010 corr=0.8010 CI=[0.7005,0.9077] negden=0.000
+  free-form pooled                                   n=2789  with=0.4295 blind=0.3966 null=0.0000 naive=0.9232 corr=0.9232 CI=[0.8849,0.9645] negden=0.000
+  free-form pooled [STRICT]                          n=2789  with=0.0000 blind=0.0000 null=0.0000 naive=nan corr=nan CI=[nan,nan] negden=1.000
+  WHOLE 4096 naive ref                               n=4096  with=0.3418 blind=0.3091 null=0.0000 naive=0.9043 corr=0.9043 CI=[0.8673,0.9427] negden=0.000
+  k-indeterminable n=92 with=0.4130 blind=0.2391
+### internvl3 blind=none
+  MC k=2                                             n=75    with=0.0133 blind=0.0000 null=0.5000 naive=0.0000 corr=1.0274 CI=[1.0000,1.0870] negden=1.000
+  MC k=3                                             n=72    with=0.2500 blind=0.0000 null=0.3333 naive=0.0000 corr=4.0000 CI=[-12.0000,24.0000] negden=0.955
+  MC k=4                                             n=1010  with=0.3277 blind=0.2465 null=0.2500 naive=0.7523 corr=-0.0446 CI=[-0.4757,0.2825] negden=0.000
+  MC k=5                                             n=58    with=0.1207 blind=0.0000 null=0.2000 naive=0.0000 corr=2.5217 CI=[-8.2857,19.3333] negden=0.958
+  MC pooled (k determinable)                         n=1215  with=0.2938 blind=0.2049 null=0.2680 naive=0.6975 corr=-2.4395 CI=[-19.8165,-0.2314] negden=0.025
+  free-form numeric                                  n=1982  with=0.3290 blind=0.1544 null=0.0000 naive=0.4693 corr=0.4693 CI=[0.4204,0.5204] negden=0.000
+  free-form text_or_expression                       n=807   with=0.1202 blind=0.0706 null=0.0000 naive=0.5876 corr=0.5876 CI=[0.4491,0.7500] negden=0.000
+  free-form pooled                                   n=2789  with=0.2686 blind=0.1302 null=0.0000 naive=0.4846 corr=0.4846 CI=[0.4387,0.5339] negden=0.000
+  free-form pooled [STRICT]                          n=2789  with=0.2675 blind=0.1241 null=0.0000 naive=0.4638 corr=0.4638 CI=[0.4180,0.5124] negden=0.000
+  WHOLE 4096 naive ref                               n=4096  with=0.2805 blind=0.1538 null=0.0000 naive=0.5483 corr=0.5483 CI=[0.5062,0.5899] negden=0.000
+  k-indeterminable n=92 with=0.4674 blind=0.1957
+### internvl3 blind=caption
+  MC k=2                                             n=75    with=0.0133 blind=0.0000 null=0.5000 naive=0.0000 corr=1.0274 CI=[1.0000,1.0870] negden=1.000
+  MC k=3                                             n=72    with=0.2500 blind=0.0556 null=0.3333 naive=0.2222 corr=3.3333 CI=[-9.5000,19.0000] negden=0.955
+  MC k=4                                             n=1010  with=0.3277 blind=0.2079 null=0.2500 naive=0.6344 corr=-0.5414 CI=[-1.1513,-0.1844] negden=0.000
+  MC k=5                                             n=58    with=0.1207 blind=0.0172 null=0.2000 naive=0.1429 corr=2.3043 CI=[-8.2857,17.6667] negden=0.958
+  MC pooled (k determinable)                         n=1215  with=0.2938 blind=0.1770 null=0.2680 naive=0.6022 corr=-3.5223 CI=[-26.3667,-0.5586] negden=0.025
+  free-form numeric                                  n=1982  with=0.3290 blind=0.2417 null=0.0000 naive=0.7347 corr=0.7347 CI=[0.6768,0.7971] negden=0.000
+  free-form text_or_expression                       n=807   with=0.1202 blind=0.1016 null=0.0000 naive=0.8454 corr=0.8454 CI=[0.6727,1.0588] negden=0.000
+  free-form pooled                                   n=2789  with=0.2686 blind=0.2011 null=0.0000 naive=0.7490 corr=0.7490 CI=[0.6911,0.8077] negden=0.000
+  free-form pooled [STRICT]                          n=2789  with=0.2675 blind=0.1958 null=0.0000 naive=0.7319 corr=0.7319 CI=[0.6757,0.7910] negden=0.000
+  WHOLE 4096 naive ref                               n=4096  with=0.2805 blind=0.1951 null=0.0000 naive=0.6954 corr=0.6954 CI=[0.6516,0.7409] negden=0.000
+  k-indeterminable n=92 with=0.4674 blind=0.2500
+strict sums: {('gemma3', 'none'): 0, ('gemma3', 'real'): 0, ('gemma3', 'caption'): 0, ('internvl3', 'none'): 586, ('internvl3', 'real'): 1144, ('internvl3', 'caption'): 762}

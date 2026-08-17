@@ -1,0 +1,36 @@
+M7 arms 2-4: model-only checkpoints at unchanged save_freq 20, seed 1 in execution scope
+
+Implements docs/registered_m7_seed_scope_v1.md (merged at a0ff9d5) in the
+config generator.
+
+1(b) checkpoint format: SAVE_MODEL_ONLY_ARMS = a2_gray, a2b_noimage,
+a3_caption now emit save_model_only: true. save_freq stays 20 in all four
+arms, so the registered matched checkpoint CADENCE is unchanged and only the
+on-disk FORMAT differs (7.6 GB HF weights vs 38.5 GB with FSDP optimizer
+shards). Arms 2-4 consequently cannot be resumed mid-run. Arm 1 is untouched
+at save_model_only: false and its emitted bytes are unchanged
+(sha256 e3bc7896... for seed 1, 2c1cfe9e... for seed 2, both identical to the
+pre-change files).
+
+1(a) seed scope: EXECUTION_SEEDS = (1,) and each manifest record carries
+in_execution_scope. Seed 2 configs are still generated and still registered,
+because the amendment defers seed 2 rather than abandoning it and states the
+launcher's SEED in {1,2} guard is untouched; dropping them from the manifest
+would have made seed 2 unlaunchable without a rebuild.
+
+Both deviations are recorded in the existing SANCTIONED_DEVIATIONS mechanism
+and emitted into reports/m7_arm_configs_v1.json as sanctioned_deviations,
+execution_scope and checkpoint_policy, so the difference is discoverable from
+the artifacts alone.
+
+New generator assertions: save_freq must equal the pilot template's value in
+every arm; save_model_only must match the arm policy exactly; and the diff
+against the same-seed arm 1 config must be confined to the trainer fields the
+registration names.
+
+Verified independently of the generator's own asserts: algorithm and worker
+blocks hash-identical across all four seed-1 arms and across all eight
+configs; the only non-trainer diffs vs arm 1 are the intended manipulation
+(data.image_condition, and data.caption_store_paths for a3); save_freq 20,
+max_steps 100, n_gpus_per_node 4 in all four; all eight manifest hashes match
+on disk; the running arm-1 effective_config is byte-identical and untouched.

@@ -1,0 +1,36 @@
+M7: restrict to single-image rows so the recipe matches the geo3k pilot
+
+Registered in docs/registered_m7_single_image_v2.md before any optimizer step.
+PI decision after the sixth M7 crash, which was not a bug but a genuine
+incompatibility between the registered corpus and the registered recipe.
+
+The problem. M7 deliberately reuses the Geometry3K pilot recipe with only the
+corpus changed, which is what makes R3 a second-corpus test of the same method.
+Geometry3K is single-image, so the recipe carries max_prompt_length 2048 with
+max_pixels 4194304, about 5350 vision tokens for one image at the cap. ViRL39K
+has 1713 train and 262 heldout rows carrying 2 to 8 images. One image at the cap
+already exceeds the 2048-token budget; eight cannot fit under any setting.
+Raising limit_images to 8 so those rows were servable made vLLM worst-case
+multimodal profiling kill a worker during actor_rollout_ref_init_model
+(m7_virl_a1_real_seed1_an12_20260728T100830Z, ncclRemoteError reporting the
+remote process exit).
+
+The decision. Restrict to single-image rows; limit_images returns to 1. This
+keeps the recipe byte-identical to the pilot, so any recovery difference between
+corpora is attributable to the corpus rather than to a retuned context window or
+changed image resolution. Rejected: raising max_prompt_length changes a
+result-affecting parameter; lowering max_pixels changes visual input for every
+row, which is indefensible in a paper about visual information access; capping at
+2 images still changes the split and leaves the memory risk.
+
+The cost, stated exactly. Retained 23542/25255 train (93.2%) and 4239/4501
+heldout (94.2%). The registered primary estimand is unaffected: M7 rank statistic
+runs over joint (source, category) strata with at least 30 heldout items, and
+22 strata qualify both before and after, with zero falling below the threshold.
+The recovery-tracks-q_bar prediction and its Informed-Prediction Disclosure are
+unchanged.
+
+New splits are written as _v3 rather than overwriting _v2, so the originally
+registered split remains inspectable.
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

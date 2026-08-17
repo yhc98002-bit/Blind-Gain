@@ -1,0 +1,90 @@
+{
+  "caption_store": "data/virl39k_caption_store_3b_main_v2.jsonl",
+  "configs": [
+    {
+      "arm": "a1_real",
+      "condition": "real",
+      "config": "configs/train/m7_virl_a1_real_seed1_3b.yaml",
+      "config_sha256": "e3bc78967821b9d12b23d6d0a06114e9277971e6507d356f515e919e90e48258",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 1,
+      "template": "mech_a1_real_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a1_real",
+      "condition": "real",
+      "config": "configs/train/m7_virl_a1_real_seed2_3b.yaml",
+      "config_sha256": "2c1cfe9e972893c94b53399e13d918e3147a569fac45cb8d8eee3a07a22a8056",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 2,
+      "template": "mech_a1_real_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a2_gray",
+      "condition": "gray",
+      "config": "configs/train/m7_virl_a2_gray_seed1_3b.yaml",
+      "config_sha256": "e36a91670dd82f931004575a56bc72d87b0c84c541fb5d014ac8b03273686a6c",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 1,
+      "template": "mech_a2_gray_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a2_gray",
+      "condition": "gray",
+      "config": "configs/train/m7_virl_a2_gray_seed2_3b.yaml",
+      "config_sha256": "233e5191138fd33c3801c230c72002bd3a32995232d5d48f3827ff138a026d97",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 2,
+      "template": "mech_a2_gray_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a2b_noimage",
+      "condition": "none",
+      "config": "configs/train/m7_virl_a2b_noimage_seed1_3b.yaml",
+      "config_sha256": "9c5cc66d690b3ae3219b009eac897f824b5147e5295d763812c8a70824df0b85",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 1,
+      "template": "mech_a2b_noimage_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a2b_noimage",
+      "condition": "none",
+      "config": "configs/train/m7_virl_a2b_noimage_seed2_3b.yaml",
+      "config_sha256": "01fbb630e4d521410cc301959982873318058fcf061422cd870bdd7c2b810b7f",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 2,
+      "template": "mech_a2b_noimage_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a3_caption",
+      "condition": "caption",
+      "config": "configs/train/m7_virl_a3_caption_seed1_3b.yaml",
+      "config_sha256": "7dd7d5cda6491dc0e90808ab870ee93e0d1e6805fe126714667cc47005bce904",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 1,
+      "template": "mech_a3_caption_seed3_3b_geo3k.yaml"
+    },
+    {
+      "arm": "a3_caption",
+      "condition": "caption",
+      "config": "configs/train/m7_virl_a3_caption_seed2_3b.yaml",
+      "config_sha256": "f567521e382817664b06f938d536f921d0b7032f7cae3ae904e4b58d45bf2820",
+      "max_steps": 100,
+      "n_gpus_per_node": 4,
+      "seed": 2,
+      "template": "mech_a3_caption_seed3_3b_geo3k.yaml"
+    }
+  ],
+  "matched_recipe_check": "algorithm and worker blocks byte-identical across all eight configs",
+  "registration": "docs/registered_m7_amendment_v1.md + docs/registered_m7_heldout_split_v2.md",
+  "schema_version": "blind-gains.m7-arm-configs.v1",
+  "train_file": "data/virl39k_m7_train_v3.jsonl",
+  "val_file": "data/virl39k_m7_heldout_v3.jsonl"
+}
