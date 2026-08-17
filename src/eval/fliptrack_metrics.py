@@ -21,6 +21,25 @@ from src.rewards.answer_reward import (
 )
 
 
+# Tier-1 (lenient) matching version. Dispatch 2026-08-16b ruling 2: substring
+# containment is replaced by sign-aware parsed-numeric equality. The old rule
+# credited gold "1" against the prediction "-1" because the word-boundary
+# guard treats "-" as a non-word character, so a sign error scored as correct;
+# 721 of 785 tier-1 credits in the hierarchy runs were exactly that.
+# PARSER_VERSION (the answer EXTRACTOR's version) is deliberately unchanged —
+# extraction semantics did not move — so scored rows carry both stamps.
+MATCHER_VERSION = "match-tier-v3-sign-aware"
+
+_NUMBER_RE = re.compile(r"[-+]?\d+(?:\.\d+)?")
+
+
+def _numeric_tokens(text: str) -> list[float]:
+    """Signed numbers appearing in `text`, sign attached. A leading '-' counts
+    as part of the number, which is precisely what the old containment rule
+    ignored."""
+    return [float(match.group()) for match in _NUMBER_RE.finditer(text)]
+
+
 def match_tier(span: Any, answer: Any, numeric_tol: float = 1e-4) -> int:
     pred = normalize_text(span)
     gold = normalize_text(answer)
@@ -34,6 +53,14 @@ def match_tier(span: Any, answer: Any, numeric_tol: float = 1e-4) -> int:
     gold_num = numeric_value(gold)
     if pred_num is not None and gold_num is not None and math.isclose(pred_num, gold_num, rel_tol=numeric_tol, abs_tol=numeric_tol):
         return 2
+    if gold_num is not None:
+        # Numeric gold: tier 1 iff some signed number in the prediction equals
+        # it. "-1" no longer satisfies gold "1", and "15" no longer satisfies
+        # gold "5", while "x = 5 m" still satisfies gold "5".
+        for value in _numeric_tokens(pred):
+            if math.isclose(value, gold_num, rel_tol=numeric_tol, abs_tol=numeric_tol):
+                return 1
+        return 0
     if re.search(r"\w", gold):
         if re.search(rf"(?<!\w){re.escape(gold)}(?!\w)", pred):
             return 1
@@ -106,6 +133,7 @@ def _score_member(
         f"contract_valid_{prefix}": contract_valid,
         f"format_valid_{prefix}": contract_valid,
         f"parser_version_{prefix}": PARSER_VERSION,
+        f"matcher_version_{prefix}": MATCHER_VERSION,
         f"ambiguous_{prefix}": ambiguous,
         f"equal_gold_{prefix}": equal_gold,
         f"full_text_mentions_both_{prefix}": full_text_mentions_both,
@@ -148,6 +176,7 @@ def pair_score(
         "contract_valid": bool(side_a["contract_valid_a"] and side_b["contract_valid_b"]),
         "format_valid": bool(side_a["contract_valid_a"] and side_b["contract_valid_b"]),
         "parser_version": PARSER_VERSION,
+        "matcher_version": MATCHER_VERSION,
         **prompt_contract_metadata(prompt_contract),
         "ambiguous": bool(side_a["ambiguous_a"] or side_b["ambiguous_b"]),
         "full_text_mentions_both": bool(side_a["full_text_mentions_both_a"] or side_b["full_text_mentions_both_b"]),
@@ -178,6 +207,8 @@ def aggregate_pair_metrics(
             "contract_valid_rate": math.nan,
             "extraction_fallback_rate": math.nan,
             "parser_version": PARSER_VERSION,
+            "matcher_version": MATCHER_VERSION,
+        "matcher_version": MATCHER_VERSION,
             **prompt_contract_metadata(prompt_contract),
         }
     n = len(scores)
@@ -203,6 +234,7 @@ def aggregate_pair_metrics(
         / (2 * n),
         "extraction_fallback_rate": sum(score["extraction_fallback_used_a"] + score["extraction_fallback_used_b"] for score in scores) / (2 * n),
         "parser_version": PARSER_VERSION,
+        "matcher_version": MATCHER_VERSION,
         **prompt_contract_metadata(prompt_contract),
     }
 

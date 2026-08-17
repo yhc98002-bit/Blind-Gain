@@ -26,6 +26,7 @@ from PIL import Image
 from scripts.build_track4_premise_v2_dev_batch import split_of
 from scripts.hier_v1_lib import (
     CHART_ALLOWED,
+    CROSSING_BANDS,
     COORD_ALLOWED,
     EXTREMUM_KINDS,
     HIER_LABELS,
@@ -40,6 +41,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FAMILIES = {
     "hier_coord_v1": ("n8", "n12", "n20"),
     "hier_chart_v1": ("s5_low", "s5_high", "s9_low", "s9_high"),
+    "hier_chart_v2": ("s5_low", "s5_high", "s9_low", "s9_high"),
 }
 LAYERS = ("l3", "l2", "l1", "probe")
 
@@ -100,12 +102,42 @@ def verify_cell(data_dir: Path, family: str, cell: str,
                     f"{row['pair_id']}: rendered_text is not the registered "
                     f"in-image text for {family}")
 
+    # Amendment A4 (hier_chart_v2): every causal edit is a column
+    # transposition, so each x-column carries the identical value multiset on
+    # both sides and the crossing band holds on BOTH sides. Either failing
+    # means the v1 leak class is back.
+    if family == "hier_chart_v2":
+        low, high = CROSSING_BANDS[
+            rows["l3"][0]["verifier_results"]["density"]] if rows["l3"] else (0.0, 1.0)
+        for row in rows["l3"]:
+            vr = row["verifier_results"]
+            series_count = vr["series_count"]
+            a, b = row["scene_a"], row["scene_b"]
+            for x in range(len(a[0])):
+                if sorted(a[s][x] for s in range(series_count)) != sorted(
+                        b[s][x] for s in range(series_count)):
+                    problems.append(
+                        f"{row['pair_id']}: column {x} multiset differs across "
+                        "sides (A4 transposition invariant)")
+                    break
+            if vr.get("edit_kind") != "column_transposition":
+                problems.append(f"{row['pair_id']}: edit_kind is not a transposition")
+            for side, key in (("a", "crossing_fraction_a"), ("b", "crossing_fraction_b")):
+                frac = vr.get(key)
+                if frac is None or not (low <= frac <= high):
+                    problems.append(
+                        f"{row['pair_id']}: side {side} crossing fraction {frac} "
+                        f"outside the registered band [{low}, {high}]")
+
     for mid, layer_rows in by_mother.items():
         l3 = layer_rows["l3"]
         pid = l3["pair_id"]
         # split rule
-        if l3["split"] != "development" or split_of(l3["scene_program_id"]) != "development":
-            problems.append(f"{pid}: split rule violated")
+        declared = l3["split"]
+        if declared not in ("training", "development", "confirmatory"):
+            problems.append(f"{pid}: unknown split {declared!r}")
+        elif split_of(l3["scene_program_id"]) != declared:
+            problems.append(f"{pid}: scene program is not in its declared split")
         # (b) golds + targets from scene truth, per side; probe targets
         for side in ("a", "b"):
             try:

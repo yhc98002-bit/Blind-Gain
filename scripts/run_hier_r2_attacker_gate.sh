@@ -7,12 +7,12 @@ ROOT=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain
 cd "$ROOT" || exit 1
 export PATH="$HOME/.local/bin:$PATH"
 PY=.venv/bin/python
-[[ $# -eq 2 ]] || { echo "Usage: $0 NODE GPU" >&2; exit 2; }
-NODE="$1"; GPU="$2"
+[[ $# -eq 2 || $# -eq 3 ]] || { echo "Usage: $0 NODE GPU [SEED]" >&2; exit 2; }
+NODE="$1"; GPU="$2"; SEED="${3:-20260710}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-LOG="$ROOT/logs/hier_r2_attacker_gate_${NODE}_gpu${GPU}_${STAMP}.log"
+LOG="$ROOT/logs/hier_r2_attacker_gate_seed${SEED}_${NODE}_gpu${GPU}_${STAMP}.log"
 CLAIMS=/dev/shm/blind-gains/gpu_claims
-RUN_ID="hier_r2_attacker_gate_${STAMP}"
+RUN_ID="hier_r2_attacker_gate_seed${SEED}_${STAMP}"
 
 "$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "$GPU" >> "$LOG" 2>&1 \
   || { echo "guard denied" >> "$LOG"; exit 1; }
@@ -30,10 +30,10 @@ ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
    python -m src.fliptrack.artifact_attackers \
      --release-dir data/hier_v1_dev_r2/attacker_release_hier_coord_v1 \
      --key-file data/hier_v1_dev_r2/attacker_key_hier_coord_v1.jsonl \
-     --output reports/hier_r2_attacker_gate_hier_coord_v1.json \
+     --output reports/hier_r2_attacker_gate_hier_coord_v1_seed${SEED}.json \
      --dinov2-model facebook/dinov2-small --batch-size 32 \
      --old-input-jsonl data/fliptrack_v01_manifest.jsonl \
-     --n-splits 5 --n-bootstrap 1000 --seed 20260710" >> "$LOG" 2>&1
+     --n-splits 5 --n-bootstrap 1000 --seed ${SEED}" >> "$LOG" 2>&1
 rc=$?
 ssh -o ConnectTimeout=25 "$NODE" "rm -f '$CLAIMS/${NODE}_gpu${GPU}.claim'" 2>/dev/null
 echo "attacker gate rc=$rc" >> "$LOG"

@@ -266,6 +266,81 @@ resort with longest-needle-first matching (the v3 census's "chart" needle
 shadowed "hier_chart" and mislabeled every hier chart variant L1 — corrected
 in census v4; v3 retained with a correction note).
 
+## Amendment A4 — hier_chart_v2, the confirmatory chart family (2026-08-17, before generation)
+
+Ratified by dispatch 2026-08-16b ruling 1 ("symmetrize the switch edit …
+band-preserving low-cell edits … add a file-size attacker to the PERMANENT
+acceptance suite"), and filed BEFORE any v2 item exists.
+
+**Why v1 failed.** `hier_chart_v1` failed the artifact-attacker gate
+structurally, not statistically: every causal edit added ink to exactly one
+side (the switch lowered the winner in 200/200 pairs; in low-crossing cells
+the edited PNG was the larger one in 198/200), so three independent attackers
+could read *which side was edited* without reading the task (pooled dinov2
+0.6711, frequency_stat 0.6957; per-template s5_low frequency 0.9819).
+Symmetrising the edit direction alone cannot fix this: an edit in either
+direction still breaks the banded structure and adds ink to the side it lands
+on.
+
+**The v2 construction.** Every causal edit is a **transposition within a
+column**: two series exchange their values at one x.
+
+- **target_switch** — swap the top-2 values at the anchor x. The argmax
+  becomes the runner-up with the *identical* margin; both read-x values are
+  untouched. A swap has no direction, which satisfies the ratified
+  "symmetrized switch" with no direction bookkeeping.
+- **target_stable** — swap the target's value at the read x with a
+  non-target's value there. The answer moves, the identity does not.
+- **invariance** — swap two non-target values; answers equal on both sides.
+
+**Invariants, verifier-enforced from disk.** Every x-column carries the
+identical value multiset on both sides (so ink budget, compression profile
+and file size are equal by construction and neither side is structurally "the
+edited one"); the registered crossing band is checked on **both** sides (v1
+checked side A only, leaving the edited side unobserved); `edit_kind ==
+"column_transposition"` is recorded per item. The knob grid, band definitions,
+layer × role matrix (A2), question forms, palettes and in-image text policy
+(A3) are unchanged from v1.
+
+**Acceptance.** The full registered battery re-runs once on v2: HB.7
+informativeness gates on base 3B, blind floors, candidate ranking, caption
+stress, and the artifact-attacker gate now including the **permanent
+file_size attacker**. One shot, no knob iteration. v1 is retained as the
+failed-acceptance archive and is not deleted.
+
+**Tier intent.** The 9-series v2 cells are the confirmatory instrument (§6:
+"chart confirmatory cells keep 9-series density for caption resistance");
+chart caption stress measures 0.0413 against a 0.0000 blind floor and is
+unaffected by the matcher fix.
+
+## Amendment A5 — caption ceiling, split sizes, and freeze tiers (2026-08-17)
+
+Three gaps this amendment closes, all of which the P3 freeze depends on.
+
+**(1) Caption-stress ceiling — adopted verbatim from the premise-v2 E3
+criterion** (`registered_track4_premise_v2_design_v1.md` §7-E3), not invented
+here: per cell, pooled over roles, on L3 causal pairs,
+
+> caption member accuracy ≤ blind floor + 0.10,
+
+scored with matcher v3. The interpretable secondary reported alongside is the
+**caption recovery fraction** (caption − floor) / (real − floor), the same
+recovery statistic the R3 rung uses.
+
+**(2) Split sizes** (previously unregistered anywhere): the **confirmatory**
+bucket is generated at **150 mother-items per family per accepted cell**,
+mirroring the dev batch and A2's row counts; the **training** bucket size is
+pinned in the ST3 launch amendment, which §3 of
+`registered_stage3_7b_v1.md` already designates as the mechanism.
+
+**(3) Freeze tiers.** A cell is **confirmatory-eligible** only if it passes the
+HB.7 informativeness gates, the artifact-attacker gate, and the caption
+ceiling above. A cell that passes the gates but fails the caption ceiling is
+**training/development-eligible** and is excluded from confirmatory readouts;
+a cell that fails an informativeness band is **exploratory-hard tier**
+(reported, never pooled into a confirmatory claim). Tiers are recorded per
+cell in the freeze record with their numbers.
+
 ## Deviations log
 
 - (none)

@@ -38,6 +38,7 @@ from scripts.hier_v1_lib import (
     REGISTERED_TEXT,
     _render_hier_coordinate_register,
     build_chart_geometry,
+    build_chart_v2_geometry,
     build_coord_geometry,
     chart_hard_negatives,
     chart_value_px,
@@ -60,6 +61,13 @@ BALANCE_CAP = 0.10  # registered_hier_benchmark_v1.md §8, coord causal golds
 COORD_CELLS = (("n8", 8), ("n12", 12), ("n20", 20))
 CHART_CELLS = (("s5_low", 5, "low"), ("s5_high", 5, "high"),
                ("s9_low", 9, "low"), ("s9_high", 9, "high"))
+# Amendment A4: hier_chart_v2 reuses the identical knob grid; only the causal
+# edit construction changes (column transposition).
+CHART_V2_CELLS = CHART_CELLS
+# Mother-id tags must not collide across chart families: the old rule
+# family.split("_")[1] yields "chart" for BOTH v1 and v2.
+FAMILY_TAG = {"hier_coord_v1": "coord", "hier_chart_v1": "chart",
+              "hier_chart_v2": "chartv2"}
 
 
 def attempt_rng(family: str, cell: str, role: str, attempt: int) -> random.Random:
@@ -98,7 +106,8 @@ def _mask(image_a, image_b, path: Path) -> str:
 
 
 def build_family_cell(family: str, cell_name: str, cell_args: dict,
-                      out_dir: Path) -> dict[str, Any]:
+                      out_dir: Path, split: str = "development",
+                      per_role: int | None = None) -> dict[str, Any]:
     rows_by_layer: dict[str, list[dict]] = {"l3": [], "l2": [], "l1": [], "probe": []}
     attempts_by_role: dict[str, int] = {}
     cue_rejections = 0
@@ -107,13 +116,14 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
     gold_counts: Counter = Counter()
     # switch+stable pooled member golds; max(1, ...) keeps smoke-scale builds
     # (tiny PER_ROLE in fixtures) from a zero budget while real cells get 20.
-    causal_gold_budget = max(1, int(BALANCE_CAP * 2 * 2 * PER_ROLE))
+    per_role = PER_ROLE if per_role is None else per_role
+    causal_gold_budget = max(1, int(BALANCE_CAP * 2 * 2 * per_role))
 
     for role_index, role in enumerate(ROLES):
         built = 0
         attempt = 0
-        cap_attempts = PER_ROLE * 4000
-        while built < PER_ROLE:
+        cap_attempts = per_role * 4000
+        while built < per_role:
             attempt += 1
             if attempt > cap_attempts:
                 raise RuntimeError(
@@ -122,17 +132,22 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                     f"split {split_rejections}, balance {balance_rejections})")
             rng = attempt_rng(family, cell_name, role, attempt)
             if family == "hier_coord_v1":
-                kind = EXTREMUM_ROTATION[(role_index * PER_ROLE + built) % 4]
+                kind = EXTREMUM_ROTATION[(role_index * per_role + built) % 4]
                 geometry = build_coord_geometry(role, kind, cell_args["n_points"], rng)
-            else:
+            elif family == "hier_chart_v2":
+                geometry = build_chart_v2_geometry(
+                    role, cell_args["series_count"], cell_args["density"], rng)
+            elif family == "hier_chart_v1":
                 geometry = build_chart_geometry(
                     role, cell_args["series_count"], cell_args["density"], rng)
+            else:
+                raise AssertionError(f"unknown family {family}")
             if geometry is None:
                 continue
             scene_payload = (sorted(geometry["points_a"].items())
                              if family == "hier_coord_v1" else geometry["values_a"])
             spid = scene_program_id(scene_payload)
-            if split_of(spid) != "development":
+            if split_of(spid) != split:
                 split_rejections += 1
                 continue
             causal = role != "invariance"
@@ -184,7 +199,7 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                 negatives = chart_hard_negatives(geometry)
 
             swap = rng.random() < 0.5
-            mid = f"hier1_{family.split('_')[1]}_{cell_name}_{role}_{spid[-12:]}"
+            mid = (f"hier1_{FAMILY_TAG[family]}_{cell_name}_{role}_{spid[-12:]}")
 
             def side(a_thing, b_thing):
                 return (b_thing, a_thing) if swap else (a_thing, b_thing)
@@ -212,7 +227,7 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                 "category": "hier_v1",
                 "template_id": f"{family}_{cell_name}",
                 "scene_program_id": spid,
-                "split": "development",
+                "split": split,
                 "answers_equal": answer_a == answer_b,
                 "answer_a": answer_a,
                 "answer_b": answer_b,
@@ -240,7 +255,11 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
                     "series_count": cell_args["series_count"],
                     "density": cell_args["density"],
                     "crossing_fraction_a": geometry["crossing_fraction_a"],
-                    "granularity": CHART_GRANULARITY}),
+                    "granularity": CHART_GRANULARITY,
+                    **({"crossing_fraction_b": geometry["crossing_fraction_b"],
+                        "edit_kind": geometry["edit_kind"],
+                        "changed": geometry["changed"]}
+                       if family == "hier_chart_v2" else {})}),
             }
 
             rows_by_layer["l3"].append({
@@ -347,11 +366,21 @@ def build_family_cell(family: str, cell_name: str, cell_args: dict,
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out-dir", type=Path, default=ROOT / "data/hier_v1_dev")
+    parser.add_argument("--split", choices=("training", "development", "confirmatory"),
+                        default="development",
+                        help="scene-program bucket to generate (I6 split policy)")
+    parser.add_argument("--per-role", type=int, default=None,
+                        help="mother-items per role per cell (default: PER_ROLE=50)")
     parser.add_argument("--report", type=Path,
                         default=ROOT / "reports/hier_v1_dev_build_v1.json")
-    parser.add_argument("--family", choices=("hier_coord_v1", "hier_chart_v1", "both"),
+    parser.add_argument("--family", choices=("hier_coord_v1", "hier_chart_v1",
+                                            "hier_chart_v2", "both"),
                         default="both")
     args = parser.parse_args()
+    # --out-dir/--report may be given relative; every later relative_to(ROOT)
+    # needs them absolute (this bit the chart-v2 build at manifest write).
+    args.out_dir = args.out_dir.resolve()
+    args.report = args.report.resolve()
     if args.report.exists():
         raise FileExistsError("refusing to overwrite the declared hier_v1 dev build report")
 
@@ -361,12 +390,16 @@ def main() -> None:
     if args.family in ("hier_chart_v1", "both"):
         cells += [("hier_chart_v1", name, {"series_count": s, "density": d})
                   for name, s, d in CHART_CELLS]
+    if args.family == "hier_chart_v2":
+        cells += [("hier_chart_v2", name, {"series_count": s, "density": d})
+                  for name, s, d in CHART_V2_CELLS]
 
     report: dict[str, Any] = {
         "schema_version": "blind-gains.hier-v1-dev-build.v1",
         "registrations": ["docs/registered_hier_benchmark_v1.md (§6–§7, A1, A2)"],
         "batch_seed": BATCH_SEED,
-        "per_role": PER_ROLE,
+        "per_role": args.per_role or PER_ROLE,
+        "split": args.split,
         "roles": ROLES,
         "layer_role_matrix": "A2: l3 all roles; l2/l1 stable+invariance; probe all",
         "palette_report_9_series": hier_palette_report(),
@@ -384,7 +417,8 @@ def main() -> None:
         "file_sha256": {},
     }
     for family, cell_name, cell_args in cells:
-        result = build_family_cell(family, cell_name, cell_args, args.out_dir)
+        result = build_family_cell(family, cell_name, cell_args, args.out_dir,
+                                   split=args.split, per_role=args.per_role)
         manifests = {}
         for layer, rows in result["rows_by_layer"].items():
             manifest = args.out_dir / f"manifest_{family}_{cell_name}_{layer}.jsonl"

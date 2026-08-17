@@ -332,6 +332,8 @@ CHART_FOOTER = ("Each series is identified by its legend entry "
 REGISTERED_TEXT = {
     "hier_coord_v1": {"title": COORD_TITLE, "footer": COORD_FOOTER},
     "hier_chart_v1": {"title": CHART_TITLE, "footer": CHART_FOOTER},
+    # v2 renders with the same renderer and therefore the same registered text
+    "hier_chart_v2": {"title": CHART_TITLE, "footer": CHART_FOOTER},
 }
 # Any of these substrings in drawn text marks a task-procedure instruction.
 PROCEDURE_TOKENS = ("locate", "requested", "then read", "first find")
@@ -720,3 +722,167 @@ def coord_hard_negatives(geometry: dict[str, Any]) -> list[dict[str, Any]]:
 
 def hier_palette_report() -> dict[str, float]:
     return palette_distance_report(HIER_COLORS)
+
+
+# ---------------------------------------------------------------------------
+# chart family v2 (hier_chart_v2) — Amendment A4, 2026-08-17
+#
+# v1 failed the artifact-attacker gate structurally, not statistically: every
+# causal edit ADDED ink to exactly one side (switch lowered the winner in
+# 200/200 pairs; in low-crossing cells the edited PNG was larger in 198/200),
+# so dinov2/frequency/metadata could all read "which side was edited" without
+# reading the task. Symmetrising the direction cannot fix that — an edit in
+# either direction still breaks the band and adds ink to the side it lands on.
+#
+# v2 therefore makes every causal edit a TRANSPOSITION WITHIN A COLUMN: two
+# series exchange their values at one x. The column's value multiset — and
+# hence the global ink budget, the compression profile and the file size — is
+# identical on both sides by construction, and neither side is structurally
+# "the edited one". This satisfies the ratified "symmetrized switch edit" with
+# no direction bookkeeping (a swap has no direction) and the ratified
+# "band-preserving low-cell edits" exactly (a swap cannot leave the band).
+# ---------------------------------------------------------------------------
+
+
+def _column_multiset(values: list[list[int]], series_count: int, x: int) -> list[int]:
+    return sorted(values[s][x] for s in range(series_count))
+
+
+def build_chart_v2_geometry(role: str, series_count: int, density: str,
+                            rng) -> dict[str, Any] | None:
+    """hier_chart_v2 geometry: identical scene proposal and registered band
+    filter as v1, but all three roles edit by column transposition, and the
+    crossing band is now verified on BOTH sides (v1 checked side A only)."""
+    xa = rng.randrange(1, X_COUNT - 1)
+    xr = rng.choice([x for x in range(1, X_COUNT - 1) if x != xa])
+    center = rng.randrange(30, 71)
+    values: list[list[int]] = []
+    if density == "low":
+        grid = list(range(15, 91, CHART_GRANULARITY))
+        idxs = [round(i * (len(grid) - 1) / (series_count - 1))
+                for i in range(series_count)]
+        centers = [grid[i] for i in idxs]
+        rng.shuffle(centers)
+        for series in range(series_count):
+            row = []
+            for _ in range(X_COUNT):
+                jitter = rng.choice((0, 0, 0, -CHART_GRANULARITY, CHART_GRANULARITY))
+                row.append(min(90, max(15, centers[series] + jitter)))
+            values.append(row)
+    else:
+        for _ in range(series_count):
+            row = [rng.randrange(15, 91, CHART_GRANULARITY) for _ in range(X_COUNT)]
+            for x in (xr - 1, xr, xr + 1):
+                pulled = center + rng.randrange(-10, 11, CHART_GRANULARITY)
+                row[x] = min(90, max(15, pulled))
+            values.append(row)
+
+    low, high = CROSSING_BANDS[density]
+    if not (low <= crossing_fraction(values, series_count, xr) <= high):
+        return None
+    target_a, gap = chart_argmax(values, series_count, xa)
+    if gap < CHART_GRANULARITY:
+        return None
+    answer_a = str(values[target_a][xr])
+
+    values_b = [row[:] for row in values]
+    if role == "target_switch":
+        # Swap the top-2 values at the ANCHOR x. The argmax becomes the
+        # runner-up with the identical margin, both read-x values are
+        # untouched, and the anchor column's multiset is unchanged.
+        ordered = sorted(((values[s][xa], s) for s in range(series_count)), reverse=True)
+        runner_up = ordered[1][1]
+        if ordered[0][0] == ordered[1][0]:
+            return None
+        values_b[target_a][xa], values_b[runner_up][xa] = (
+            values[runner_up][xa], values[target_a][xa])
+        new_target, new_gap = chart_argmax(values_b, series_count, xa)
+        if new_target != runner_up or new_gap < CHART_GRANULARITY:
+            return None
+        target_b = runner_up
+        answer_b = str(values_b[target_b][xr])
+        if not _answers_distinguishable(answer_a, answer_b):
+            return None
+        changed = ("swap", target_a, runner_up, xa)
+    elif role == "target_stable":
+        # Swap the target's value at the READ x with a non-target's value
+        # there: the answer moves, the target identity does not, and the read
+        # column's multiset is unchanged. The anchor column is untouched, so
+        # the argmax cannot move.
+        partners = [s for s in range(series_count)
+                    if s != target_a and values[s][xr] != values[target_a][xr]
+                    and _answers_distinguishable(answer_a, str(values[s][xr]))]
+        if not partners:
+            return None
+        partner = partners[rng.randrange(len(partners))]
+        values_b[target_a][xr], values_b[partner][xr] = (
+            values[partner][xr], values[target_a][xr])
+        target_b = target_a
+        answer_b = str(values_b[target_b][xr])
+        if not _answers_distinguishable(answer_a, answer_b):
+            return None
+        changed = ("swap", target_a, partner, xr)
+    elif role == "invariance":
+        # Swap two NON-target values at some x: the answer is untouched on both
+        # sides, and the argmax at the anchor is preserved because the target's
+        # own value never moves and the column multiset is unchanged.
+        candidates = []
+        for x in range(X_COUNT):
+            others = [s for s in range(series_count) if s != target_a]
+            for i, s in enumerate(others):
+                for t in others[i + 1:]:
+                    if values[s][x] != values[t][x]:
+                        candidates.append((x, s, t))
+        if not candidates:
+            return None
+        rng.shuffle(candidates)
+        changed = None
+        for x, s, t in candidates:
+            values_b = [row[:] for row in values]
+            values_b[s][x], values_b[t][x] = values[t][x], values[s][x]
+            new_target, new_gap = chart_argmax(values_b, series_count, xa)
+            if new_target == target_a and new_gap >= CHART_GRANULARITY:
+                changed = ("swap", s, t, x)
+                break
+        if changed is None:
+            return None
+        target_b = target_a
+        answer_b = str(values_b[target_b][xr])
+        if answer_a != answer_b:
+            return None
+    else:
+        raise AssertionError(f"unknown role {role}")
+
+    # Both-side band filter (v1 checked side A only, which let the edited side
+    # leave the registered band unobserved).
+    crossing_b = crossing_fraction(values_b, series_count, xr)
+    if not (low <= crossing_b <= high):
+        return None
+    # Multiset invariance: the defining property of the v2 construction.
+    for x in range(X_COUNT):
+        if _column_multiset(values, series_count, x) != _column_multiset(
+                values_b, series_count, x):
+            return None
+
+    return {
+        "family": "hier_chart_v2",
+        "role": role,
+        "series_count": series_count,
+        "density": density,
+        "xa": xa + 1,
+        "xr": xr + 1,
+        "values_a": values,
+        "values_b": values_b,
+        "target_a": target_a,
+        "target_b": target_b,
+        "target_a_name": HIER_LABELS[target_a],
+        "target_b_name": HIER_LABELS[target_b],
+        "answer_a": answer_a,
+        "answer_b": answer_b,
+        "changed": list(changed),
+        "questions": chart_questions(HIER_LABELS[target_a], xa + 1, xr + 1),
+        "questions_b_target": chart_questions(HIER_LABELS[target_b], xa + 1, xr + 1),
+        "crossing_fraction_a": crossing_fraction(values, series_count, xr),
+        "crossing_fraction_b": crossing_b,
+        "edit_kind": "column_transposition",
+    }
