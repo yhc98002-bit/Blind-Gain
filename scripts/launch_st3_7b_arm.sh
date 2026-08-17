@@ -94,6 +94,13 @@ done
 "$PY" scripts/m7_gpu_occupancy_guard.py --node "$NODE" --gpus "$GPU_LIST" \
   --ignore-claim-run-id "$RUN_ID" || exit 75
 
+# Reservations live exactly as long as the trainer: the command releases them
+# on ANY exit. Releasing only at the 25s liveness check left claims behind
+# when a run died later (empty dataloader), blocking the retry for 30 min.
+CLAIM_PATHS=""
+for gpu in "${GPU_IDS[@]}"; do
+  CLAIM_PATHS="${CLAIM_PATHS} ${CLAIMS}/${NODE}_gpu${gpu}.claim"
+done
 RAY_TMP="/dev/shm/bg-ray-$(printf '%s' "$RUN_ID" | sha256sum | cut -c1-12)"
 COMMAND="env CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa \
 BLIND_GAINS_STORAGE_GUARD_ENABLED=1 BLIND_GAINS_CHECKPOINT_TIER=S \
@@ -102,7 +109,8 @@ PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' \
 RAY_TMPDIR='${RAY_TMP}' TMPDIR='${RAY_TMP}' \
 TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 \
 PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}' \
-${PY} -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}"
+${PY} -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}; rc=\$?; \
+rm -f ${CLAIM_PATHS}; exit \$rc"
 
 jq -n --arg run_id "$RUN_ID" --arg node "$NODE" --arg arm "$ARM" \
   --argjson gpu_ids "$(printf '%s\n' "${GPU_IDS[@]}" | jq -sc 'map(tonumber)')" \
