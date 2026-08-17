@@ -125,8 +125,22 @@ jq -n --arg run_id "$RUN_ID" --arg node "$NODE" --arg arm "$ARM" \
 ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
   "cd '$ROOT' && mkdir -p '${RAY_TMP}' && (nohup setsid ${PY} scripts/run_manifest_job.py '${ROOT}/${RUN_DIR}/run_manifest.json' '${ROOT}/${RUN_DIR}/logs/${NODE}.log' > /dev/null 2>&1 < /dev/null & echo \$! > '${ROOT}/${RUN_DIR}/pids/${NODE}.pid')" \
   || { echo "dispatch failed" >&2; exit 1; }
+release_claims() {
+  for gpu in "${GPU_IDS[@]}"; do
+    ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
+      "rm -f '$CLAIMS/${NODE}_gpu${gpu}.claim'" 2>/dev/null
+  done
+}
+
 sleep 25
 PID=$(cat "$RUN_DIR/pids/${NODE}.pid" 2>/dev/null)
-ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" "kill -0 ${PID}" 2>/dev/null \
-  || { echo "trainer died within 25s; see $RUN_DIR/logs/${NODE}.log" >&2; exit 1; }
+if ! ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" "kill -0 ${PID}" 2>/dev/null; then
+  # The trainer died during startup (a bad config fails here). Release the
+  # reservations immediately: leaving them to age out would block the retry
+  # for 30 minutes on GPUs that are demonstrably idle.
+  release_claims
+  "$PY" scripts/finalize_run_manifest.py "$RUN_DIR/run_manifest.json" 1 >/dev/null 2>&1
+  echo "trainer died within 25s; claims released; see $RUN_DIR/logs/${NODE}.log" >&2
+  exit 1
+fi
 echo "$RUN_DIR"
