@@ -1,0 +1,154 @@
+{
+  "data_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/hier_v1_dev_r2",
+  "family": "hier_coord_v1",
+  "instrument": "hier_coord_r2_human_audit",
+  "items": [
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_switch_2d29f7f41f23",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_switch_a7b93ad65f02",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_switch_0093bf8093bf",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_stable_f27df91b66fe",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_stable_44710923860a",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_target_stable_ad2d210990ac",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_invariance_50c56abf6a74",
+      "role": "invariance"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_invariance_84140c7e46ee",
+      "role": "invariance"
+    },
+    {
+      "cell": "n8",
+      "mother_item_id": "hier1_coord_n8_invariance_ac1948d0337d",
+      "role": "invariance"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_switch_031624a5aad5",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_switch_cb98d6dcd756",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_switch_87e6b3d218f9",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_stable_a3d7e8c4ad73",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_stable_697bebd7cf99",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_target_stable_1bc145372e70",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_invariance_7b6a4919fb92",
+      "role": "invariance"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_invariance_07031fb10db6",
+      "role": "invariance"
+    },
+    {
+      "cell": "n12",
+      "mother_item_id": "hier1_coord_n12_invariance_0b9cf6df585e",
+      "role": "invariance"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_switch_ef328d78b308",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_switch_862cabcf371d",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_switch_915c354829a9",
+      "role": "target_switch"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_stable_87f325d68080",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_stable_bb94d19b79c4",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_target_stable_c9840ab7061a",
+      "role": "target_stable"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_invariance_a863a3c3d1e4",
+      "role": "invariance"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_invariance_e795c9cdc8c2",
+      "role": "invariance"
+    },
+    {
+      "cell": "n20",
+      "mother_item_id": "hier1_coord_n20_invariance_fab4a9c1eede",
+      "role": "invariance"
+    }
+  ],
+  "n_items": 27,
+  "output": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/reports/review_packages/hier_coord_r2_human_audit_20260817.html",
+  "output_bytes": 4001621,
+  "output_sha256": "40314ff3d5d39e868c1921a162ffe3f4533d6f14d2d89bd5d72817d1854b23f5",
+  "registered_in_image_text": {
+    "footer": "Each point is identified by its printed label.",
+    "title": "Coordinate Survey Register"
+  },
+  "render_rev": "r2-footer-neutral",
+  "retired_v1_footer": "Locate the requested label, then read its coordinate from the numbered axes.",
+  "schema_version": "blind-gains.hier-coord-r2-audit-page.v1",
+  "selection_rule": "first 3 mother-items per (cell, role) in frozen L3 manifest order (no RNG)"
+}
