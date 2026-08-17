@@ -2688,6 +2688,18 @@ and the only edit channel left that does not move ink is permuting series
 *identity* (legend colour/style/label) rather than values — a v3 proposal, and
 the PI's call, since this is the first of the two pre-committed chart failures.
 
+
+**ST3's training corpus is visually necessary — measured, not assumed.** Before
+arm 2 can sample by necessity it needs Δq per item, so both blind-solvability
+passes were run on the **7B base** over all 2,880 ST3 training rows under the
+registered contract (16 samples, T=1): **q_real 0.2515** (median 0.25, max
+0.81) against **q_blind 0.0029** (median 0.0000), giving **Δq 0.2486** and
+positive necessity for 2,675 of 2,880 rows. The model solves a quarter of the
+training items with the image and essentially none without it. That is a
+stronger statement than the dev-bucket blind floors (0.04–0.067 at 3B): at 7B
+with 16 samples the blind channel on the training split is 0.3%. Whatever ST3's
+arms do, they cannot do it by not looking.
+
 ## 21. Evidence & reproduction ledger (maintained)
 
 *Convention: every collection round appends or updates its row here. Each row:

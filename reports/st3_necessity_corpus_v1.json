@@ -1,0 +1,19 @@
+{
+  "delta_q_mean": 0.24856770833333333,
+  "delta_q_positive_groups": 720,
+  "distinct_groups_drawn": 449,
+  "draw_seed": 20260817,
+  "empirical_frequency_max_abs_error": 0.005270103716106227,
+  "group_size": 4,
+  "max_min_draw_ratio": 7.2,
+  "n_groups": 720,
+  "n_rows": 2880,
+  "out_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_necessity_train_v1",
+  "parquet": true,
+  "q_blind_mean": 0.0028862847222222224,
+  "q_real_mean": 0.25145399305555555,
+  "registration": "docs/registered_stage3_7b_v1.md \u00a72 arm st3_igpo (C1)",
+  "schema_version": "blind-gains.st3-necessity-corpus.v1",
+  "train_jsonl_sha256": "22e1b860ebb8d5ad20736e0f57b1324b5b15dbbfbc246bdb3c6bc01c16e373ba",
+  "weight_law": "w = max(delta_q, 0) + 1/16; p = w / sum(w); draw unit = intervention GROUP, with replacement"
+}
