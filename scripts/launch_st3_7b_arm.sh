@@ -56,8 +56,13 @@ CKPT=$(grep -E "^  save_checkpoint_path:" "$CONFIG" | awk '{print $2}')
 # --- placement safety ---------------------------------------------------------
 # One ramping trainer per node: a 7B host-offload arm colocated with another
 # trainer took down both on 2026-08-03 (registered_c5_7b_access_pair_v1.md).
+# The pattern is assembled remotely with printf so that neither this script's
+# ssh command line nor the remote shell's own command line contains the literal
+# string — pgrep -f matches full command lines and would otherwise count itself
+# (it did, on the first launch attempt).
 LIVE=$(ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
-        "pgrep -fc 'verl.trainer.main' || true" 2>/dev/null | tr -d '[:space:]')
+        'p=$(printf "%s.%s" verl.trainer mai)n; pgrep -fc "$p" || true' \
+        2>/dev/null | tr -d '[:space:]')
 [[ "${LIVE:-0}" == "0" ]] || {
   echo "another trainer is live on $NODE (count=$LIVE); 7B arms run alone" >&2; exit 73; }
 AVAIL=$(ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
