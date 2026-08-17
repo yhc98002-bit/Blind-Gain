@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 # HB P2.1 candidate-ranking sweep: one model over the 14 hier ranking configs.
-# Usage: run_hier_p2_ranking.sh MODEL_KEY NODE GPU
+# Usage: run_hier_p2_ranking.sh MODEL_KEY NODE GPU [CONDITION]
+# CONDITION defaults to real; no_image gives the blind candidate-ranking floor.
 set -uo pipefail
 ROOT=/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain
 cd "$ROOT" || exit 1
 export PATH="$HOME/.local/bin:$PATH"
 PY=.venv/bin/python
 
-[[ $# -eq 3 ]] || { echo "Usage: $0 MODEL_KEY NODE GPU" >&2; exit 2; }
-MODEL_KEY="$1"; NODE="$2"; GPU="$3"
+[[ $# -eq 3 || $# -eq 4 ]] || { echo "Usage: $0 MODEL_KEY NODE GPU [CONDITION]" >&2; exit 2; }
+MODEL_KEY="$1"; NODE="$2"; GPU="$3"; CONDITION="${4:-real}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN="hier_p2_ranking_${MODEL_KEY}_${NODE}_gpu${GPU}_${STAMP}"
+RUN="hier_p2_ranking_${MODEL_KEY}_${CONDITION}_${NODE}_gpu${GPU}_${STAMP}"
 RUN_DIR="experiments/runs/${RUN}"
 LOG="$ROOT/logs/${RUN}.log"
 CLAIMS=/dev/shm/blind-gains/gpu_claims
@@ -28,11 +29,12 @@ printf '%s\n' "$payload" | ssh -o BatchMode=yes -o ConnectTimeout=25 "$NODE" \
 
 mkdir -p "$RUN_DIR"
 jq -n --arg run_id "$RUN" --arg model_key "$MODEL_KEY" --arg node "$NODE" \
+  --arg condition "$CONDITION" \
   --argjson gpu "$GPU" --arg git_hash "$(git rev-parse HEAD)" \
   --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '{schema_version:"blind-gains.run-manifest.v1", run_id:$run_id,
     job_type:"hier_p2_ranking_sweep", status:"running", node:$node,
-    gpu_ids:[$gpu], model_key:$model_key, git_hash:$git_hash,
+    gpu_ids:[$gpu], model_key:$model_key, condition:$condition, git_hash:$git_hash,
     start_time_utc:$started, end_time_utc:null, exit_code:null,
     registration:"docs/registered_hier_benchmark_v1.md §7 + A2",
     deviations:[]}' > "$RUN_DIR/run_manifest.json"
@@ -47,7 +49,7 @@ for config in configs/eval/hier_p2_ranking_v1_*.json; do
      env PYTHONUNBUFFERED=1 TRANSFORMERS_OFFLINE=1 HF_HOME=$ROOT/artifacts/hf_home \
      CUDA_VISIBLE_DEVICES=$GPU PYTHONPATH=. \
      python scripts/eval_qwen_vl_visual_evidence_ranking.py \
-       --config '$config' --model-key '$MODEL_KEY' --condition real \
+       --config '$config' --model-key '$MODEL_KEY' --condition $CONDITION \
        --cache-dir '$RUN_DIR/cache' \
        --output '$out'" >> "$LOG" 2>&1
   rc=$?

@@ -204,6 +204,38 @@ def trainer_occupancy(node: str) -> dict:
     return claimed
 
 
+LH2_PID_LINE_RE = re.compile(r"^pid (pending|\d+)$")
+LH2_RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
+
+
+def parse_lh2_plaintext_claim(path: str, body: str):
+    """The LH2 segment chain (scripts/lh2_segment_chain.sh write_claims) writes
+    3-line plain-text claims: run_id / 'pid pending' / epoch. Recognize exactly
+    that shape, derive the GPU index from the claim filename, and mark the
+    claim ALWAYS occupied — an LH2 claim guards a live multi-day trainer, so
+    the 30-minute age-based release must not apply to it. Anything else
+    remains unparseable and keeps the fail-closed refusal. Returns a payload
+    dict or None."""
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
+    if len(lines) != 3:
+        return None
+    run_id, pid_line, epoch = lines
+    if not LH2_RUN_ID_RE.fullmatch(run_id):
+        return None
+    if not LH2_PID_LINE_RE.fullmatch(pid_line):
+        return None
+    if not epoch.isdigit():
+        return None
+    match = re.search(r"_gpu(\d)\.claim$", path)
+    if not match:
+        return None
+    gpu = int(match.group(1))
+    if not 0 <= gpu <= 7:
+        return None
+    return {"claim_format": "lh2_plaintext", "gpu": gpu, "run_id": run_id,
+            "pid": None, "always_occupied": True}
+
+
 def evaluate_claims(
     now_epoch: float,
     claims: list,
@@ -236,6 +268,10 @@ def evaluate_claims(
             raise ClaimIndeterminate(f"claim {path} has no usable run_id: {run_id!r}")
         if ignore_run_id and run_id == ignore_run_id:
             continue  # the caller's own reservation, written after its first guard pass
+        if payload.get("claim_format") == "lh2_plaintext":
+            occupied.setdefault(gpu, []).append(
+                f"claim:{run_id} (lh2 plaintext, always occupied) [{path}]")
+            continue
         pid = payload.get("pid")
         alive = False
         if pid is not None:
@@ -301,6 +337,8 @@ def claim_occupancy(node: str, ignore_run_id: str = "") -> dict:
             payload = json.loads(body) if body else None
         except ValueError:
             payload = None
+        if payload is None and body:
+            payload = parse_lh2_plaintext_claim(entry["path"], body)
         claims.append({"path": entry["path"], "mtime": entry["mtime"], "payload": payload})
     pids = set()
     for claim in claims:
