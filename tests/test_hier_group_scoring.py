@@ -20,6 +20,7 @@ from src.train.cp_grouping import (  # noqa: E402
     broadcast_joint_accuracy as binary_broadcast,
 )
 from src.train.hier_group_scoring import (  # noqa: E402
+    broadcast_group_mean,
     broadcast_joint_accuracy,
     compute_group_level_grpo_advantage,
     repeated_group_metadata,
@@ -135,3 +136,29 @@ def test_repeated_metadata_matches_interleaved_rollouts():
     assert meta["pair_group_uid"].tolist() == ["g0"] * 6
     assert meta["pair_member"].tolist() == ["l3_a"] * 3 + ["l3_b"] * 3
     assert meta["pair_rollout_index"].tolist() == [0, 1, 2, 0, 1, 2]
+
+
+def test_group_mean_broadcasts_a_shared_value():
+    # a per-member format score differs within a rollout; averaging first is what
+    # keeps the group reward broadcast-identical for the advantage step.
+    uids, mems, idx = group_batch(n_groups=1, rollouts=1)
+    out = broadcast_group_mean([1.0, 0.0, 1.0, 1.0], uids, mems, idx)
+    assert out.tolist() == pytest.approx([0.75] * 4)
+
+
+def test_per_member_format_would_break_the_advantage_but_group_mean_does_not():
+    uids, mems, idx = group_batch(n_groups=1, rollouts=2)
+    fmt = [1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    acc = [1.0] * 4 + [0.0] * 4
+    joint = broadcast_joint_accuracy(acc, uids, mems, idx)
+    mean_fmt = broadcast_group_mean(fmt, uids, mems, idx)
+    overall = 0.5 * joint + 0.5 * mean_fmt
+    rewards = overall.unsqueeze(-1).to(torch.float32)
+    # broadcast-identical within each rollout, so the advantage step accepts it
+    returns, _ = compute_group_level_grpo_advantage(
+        rewards, torch.ones_like(rewards), uids, mems, idx)
+    assert returns.squeeze(-1)[:4].tolist() == pytest.approx([returns[0].item()] * 4)
+    # the raw per-member format is NOT broadcast-identical and must be refused
+    raw = torch.tensor(fmt).unsqueeze(-1)
+    with pytest.raises(ValueError, match="broadcast identically"):
+        compute_group_level_grpo_advantage(raw, torch.ones_like(raw), uids, mems, idx)

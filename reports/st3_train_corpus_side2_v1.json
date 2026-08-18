@@ -1,0 +1,31 @@
+{
+  "cells": [
+    "n8",
+    "n12"
+  ],
+  "corpus_seed": 20260817,
+  "family": "hier_coord_v1",
+  "group_definition": "one SIDE of a mother-item = one intervention group of 2 members (that side's L3 read + its discovery probe); both sides written adjacently so they share a rollout batch",
+  "group_mode": "side2",
+  "group_size": 2,
+  "member_order": [
+    "l3",
+    "probe"
+  ],
+  "mothers_per_cell": {
+    "n12": 360,
+    "n8": 360
+  },
+  "n_groups": 1440,
+  "n_mothers": 720,
+  "n_rows": 2880,
+  "out_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_train_side2_v1",
+  "parquet": true,
+  "plumbing_val_note": "development-bucket rows; validation is disabled (val_freq 0) and this file exists only to satisfy EasyR1's non-null val_files requirement",
+  "plumbing_val_rows": 8,
+  "plumbing_val_sha256": "752da76f89d924273abee1581b5863602475ab9d569f8613fa419b562fc549c4",
+  "registration": "docs/registered_stage3_7b_v1.md \u00a73 + Launch amendments 1, 2",
+  "schema_version": "blind-gains.st3-train-corpus.v1",
+  "split": "training",
+  "train_jsonl_sha256": "3c4cfcf2793b3f40960891db4cc2c95c2dd8fb6726831788860eb16a87f5c9dd"
+}

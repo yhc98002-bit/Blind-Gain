@@ -1,0 +1,26 @@
+{
+  "corpus": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_train_side2_v1/train.jsonl",
+  "delta_q_mean": 0.24856770833333333,
+  "delta_q_positive_groups": 1430,
+  "distinct_groups_drawn": 892,
+  "draw_seed": 20260817,
+  "empirical_frequency_max_abs_error": 0.003675119761871541,
+  "group_size": 2,
+  "join": "per-member p_sample joined by member identity, not row position",
+  "max_min_draw_ratio": 10.5,
+  "member_order": [
+    "l3",
+    "probe"
+  ],
+  "n_groups": 1440,
+  "n_rows": 2880,
+  "out_dir": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_necessity_train_side2_v1",
+  "parquet": true,
+  "q_blind_mean": 0.0028862847222222224,
+  "q_real_mean": 0.25145399305555555,
+  "registration": "docs/registered_stage3_7b_v1.md \u00a72 arm st3_igpo (C1) + Launch amendment 2",
+  "schema_version": "blind-gains.st3-necessity-corpus.v1",
+  "scored_corpus": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_train_v1/train.jsonl",
+  "train_jsonl_sha256": "9e3664b45690304d13ba88e04312e2f0fbe45ba76c7a0f493c5b2583d10fe68a",
+  "weight_law": "w = max(delta_q, 0) + 1/16; p = w / sum(w); draw unit = intervention GROUP, with replacement"
+}

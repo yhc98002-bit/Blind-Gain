@@ -21,15 +21,35 @@ GPU_COUNT=${#GPU_IDS[@]}
 
 LABEL="st3_${ARM}_seed1_7b"
 CONFIG="configs/train/${LABEL}.yaml"
-CORPUS_REPORT="reports/st3_train_corpus_v1.json"
 REGISTRATION="docs/registered_stage3_7b_v1.md"
 [[ -f "$CONFIG" ]] || { echo "missing config $CONFIG" >&2; exit 2; }
+
+# Arm 2 reads the C1 necessity-sampled side2 corpus and runs on the trainer tree
+# carrying the grouping patch; arm 1 reads the uniform corpus on the unpatched
+# tree. Everything else about the two launches is identical.
+HIER_REPORT="reports/easyr1_hier_tree_v1.json"
+if [[ "$ARM" == "igpo" ]]; then
+  CORPUS_REPORT="reports/st3_necessity_corpus_side2_v1.json"
+  EASYR1_TREE="artifacts/repos/EasyR1-hier"
+  ARM_CRITICAL=("src/rewards/igpo_reward.py" "src/train/hier_group_scoring.py"
+                "scripts/build_st3_necessity_corpus.py"
+                "scripts/build_easyr1_hier_tree.py" "$HIER_REPORT")
+else
+  CORPUS_REPORT="reports/st3_train_corpus_v1.json"
+  EASYR1_TREE="artifacts/repos/EasyR1"
+  ARM_CRITICAL=("src/rewards/pilot_reward.py")
+fi
 
 # --- registered preconditions -------------------------------------------------
 grep -q "RATIFIED\|Launch amendment 1" "$REGISTRATION" || {
   echo "registration is not ratified / carries no launch amendment" >&2; exit 3; }
+if [[ "$ARM" == "igpo" ]]; then
+  grep -q "Launch amendment 2" "$REGISTRATION" || {
+    echo "arm 2 requires Launch amendment 2 (group structure) in the registration" >&2
+    exit 3; }
+fi
 CRITICAL=("$REGISTRATION" "$CONFIG" "$CORPUS_REPORT" "scripts/launch_st3_7b_arm.sh"
-          "scripts/build_st3_train_corpus.py" "src/rewards/pilot_reward.py"
+          "scripts/build_st3_train_corpus.py" "${ARM_CRITICAL[@]}"
           "scripts/m7_gpu_occupancy_guard.py" "scripts/run_manifest_job.py")
 for path in "${CRITICAL[@]}"; do
   git ls-files --error-unmatch "$path" >/dev/null 2>&1 || {
@@ -46,6 +66,25 @@ ACTUAL_SHA=$(sha256sum "${REPORT_DIR}/train.jsonl" | awk '{print $1}')
 [[ "$JSONL_SHA" == "$ACTUAL_SHA" ]] || {
   echo "corpus sha mismatch: report $JSONL_SHA vs disk $ACTUAL_SHA" >&2; exit 3; }
 [[ -f "$CFG_TRAIN" ]] || { echo "config train_files missing on disk: $CFG_TRAIN" >&2; exit 3; }
+
+# Arm 2's trainer tree must still be arm 1's tree plus the grouping patch and
+# nothing else -- the property that makes the arms comparable. Re-checked here
+# rather than trusted from build time.
+if [[ "$ARM" == "igpo" ]]; then
+  [[ -d "$EASYR1_TREE" ]] || { echo "missing trainer tree $EASYR1_TREE" >&2; exit 3; }
+  while read -r rel expect; do
+    [[ -n "$rel" ]] || continue
+    got=$(sha256sum "${EASYR1_TREE}/${rel}" | awk '{print $1}')
+    [[ "$got" == "$expect" ]] || {
+      echo "hier tree drift: $rel ($got != $expect)" >&2; exit 3; }
+  done < <(jq -r '.hier_file_sha256 | to_entries[] | "\(.key) \(.value)"' "$HIER_REPORT")
+  BASE_TREE=$(jq -r '.base_tree' "$HIER_REPORT")
+  UNEXPECTED=$(diff -rq --exclude=.git --exclude=__pycache__ --exclude='*.pyc' \
+      "$BASE_TREE" "$EASYR1_TREE" 2>/dev/null | grep -c '^Files ')
+  [[ "$UNEXPECTED" == "3" ]] || {
+    echo "hier tree differs from the base tree in $UNEXPECTED files, expected 3" >&2
+    exit 3; }
+fi
 
 CFG_GPUS=$(grep -E "^  n_gpus_per_node:" "$CONFIG" | awk '{print $2}')
 [[ "$GPU_COUNT" == "$CFG_GPUS" ]] || {
@@ -102,7 +141,7 @@ for gpu in "${GPU_IDS[@]}"; do
   CLAIM_PATHS="${CLAIM_PATHS} ${CLAIMS}/${NODE}_gpu${gpu}.claim"
 done
 RAY_TMP="/dev/shm/bg-ray-$(printf '%s' "$RUN_ID" | sha256sum | cut -c1-12)"
-# pilot_reward refuses to score without a shadow-log destination (it records
+# Both rewards refuse to score without a shadow-log destination (they record
 # mathruler-vs-canonical disagreements); the c5 launcher supplies it via env.
 SHADOW="${ROOT}/${RUN_DIR}/reward_shadow.jsonl"
 COMMAND="env CUDA_VISIBLE_DEVICES='${GPU_LIST}' EASYR1_ATTN_IMPLEMENTATION=sdpa \
@@ -112,7 +151,7 @@ BLIND_GAINS_CHECKPOINT_REQUIRED_BYTES=330000000000 \
 PYTORCH_CUDA_ALLOC_CONF='expandable_segments:True' \
 RAY_TMPDIR='${RAY_TMP}' TMPDIR='${RAY_TMP}' \
 TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 \
-PYTHONPATH='${ROOT}/artifacts/repos/EasyR1:${ROOT}' \
+PYTHONPATH='${ROOT}/${EASYR1_TREE}:${ROOT}' \
 ${PY} -u -m verl.trainer.main config=${ROOT}/${EFFECTIVE}; rc=\$?; \
 rm -f ${CLAIM_PATHS}; exit \$rc"
 

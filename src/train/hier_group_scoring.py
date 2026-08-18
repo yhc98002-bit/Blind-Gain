@@ -14,6 +14,8 @@ The three pieces mirror cp_grouping:
 
 * `source_grpo_uids`   — which rows share a GRPO normalization group
 * `broadcast_joint_accuracy` — the joint outcome, copied to every member
+* `broadcast_group_mean`   — a per-member quantity averaged over the group,
+  for terms that must stay broadcast-identical (the format term)
 * `compute_group_level_grpo_advantage` — normalize the G unique group
   outcomes, then broadcast, so the k copies of one joint reward are never
   counted as k independent samples.
@@ -121,44 +123,82 @@ def repeated_group_metadata(uids: Sequence[Any], members: Sequence[Any],
     }
 
 
-def broadcast_joint_accuracy(scores: Sequence[float], uids: Sequence[Any],
-                             members: Sequence[Any],
-                             rollout_indices: Sequence[int],
-                             *, expected_members: Sequence[str] | None = None
-                             ) -> torch.Tensor:
-    """Return the product of member accuracies on every member of each
-    (group, rollout) — the k-ary generalisation of acc(a)*acc(b).
+def _grouped_rows(uids: list[str], members: list[str], indices: list[int],
+                  expected: set[str]) -> dict[tuple[str, int], dict[str, int]]:
+    """(group, rollout) -> {member: row}, refusing duplicates and part-groups.
 
     The key is (pair_group_uid, pair_rollout_index): the k-th rollout of every
-    member is judged together, so the joint outcome is 1 only when the model
-    got the whole intervention group right in the same sample.
+    member is judged together, so a group outcome reflects one coherent sample
+    of the whole intervention group rather than a mix of rollouts.
     """
-    values = torch.tensor([float(score) for score in scores], dtype=torch.float64)
-    uid_list = _text_list(uids, "pair_group_uid")
-    member_list = _text_list(members, "pair_member")
-    indices = [int(value) for value in rollout_indices]
-    if not (len(values) == len(uid_list) == len(member_list) == len(indices)):
-        raise ValueError("joint-reward metadata does not align with scores")
-    expected = validate_group_rows(uid_list, member_list, expected_members)
-
     grouped: dict[tuple[str, int], dict[str, int]] = defaultdict(dict)
     for row, (uid, member, rollout_index) in enumerate(
-            zip(uid_list, member_list, indices, strict=True)):
+            zip(uids, members, indices, strict=True)):
         key = (uid, rollout_index)
         if member in grouped[key]:
             raise ValueError(f"duplicate member {member!r} for rollout {key!r}")
         grouped[key][member] = row
-
-    output = torch.empty_like(values)
     for key, rows in grouped.items():
         if set(rows) != expected:
             raise ValueError(
                 f"rollout {key!r} does not contain the full group "
                 f"{sorted(expected)}; found {sorted(rows)}")
-        joint = torch.prod(torch.stack([values[row] for row in rows.values()]))
+    return grouped
+
+
+def _broadcast(scores: Sequence[float], uids: Sequence[Any], members: Sequence[Any],
+               rollout_indices: Sequence[int], expected_members: Sequence[str] | None,
+               reduce: str) -> torch.Tensor:
+    values = torch.tensor([float(score) for score in scores], dtype=torch.float64)
+    uid_list = _text_list(uids, "pair_group_uid")
+    member_list = _text_list(members, "pair_member")
+    indices = [int(value) for value in rollout_indices]
+    if not (len(values) == len(uid_list) == len(member_list) == len(indices)):
+        raise ValueError("group metadata does not align with scores")
+    expected = validate_group_rows(uid_list, member_list, expected_members)
+    grouped = _grouped_rows(uid_list, member_list, indices, expected)
+
+    output = torch.empty_like(values)
+    for rows in grouped.values():
+        stacked = torch.stack([values[row] for row in rows.values()])
+        if reduce == "product":
+            reduced = torch.prod(stacked)
+        elif reduce == "mean":
+            reduced = torch.mean(stacked)
+        else:
+            raise ValueError(f"unknown reduction {reduce!r}")
         for row in rows.values():
-            output[row] = joint
+            output[row] = reduced
     return output
+
+
+def broadcast_joint_accuracy(scores: Sequence[float], uids: Sequence[Any],
+                             members: Sequence[Any],
+                             rollout_indices: Sequence[int],
+                             *, expected_members: Sequence[str] | None = None
+                             ) -> torch.Tensor:
+    """Product of member accuracies, on every member of each (group, rollout).
+
+    The k-ary generalisation of acc(a)*acc(b): 1 only when the model got the
+    whole intervention group right within one sample.
+    """
+    return _broadcast(scores, uids, members, rollout_indices, expected_members,
+                      "product")
+
+
+def broadcast_group_mean(scores: Sequence[float], uids: Sequence[Any],
+                         members: Sequence[Any], rollout_indices: Sequence[int],
+                         *, expected_members: Sequence[str] | None = None
+                         ) -> torch.Tensor:
+    """Mean of a per-member quantity, broadcast to every member of the group.
+
+    Used for the format term: a per-member format score would differ across
+    members of one rollout, which `compute_group_level_grpo_advantage` refuses
+    (the group reward must be broadcast identically). Averaging first keeps the
+    reward shape of the member arm while staying broadcast-identical.
+    """
+    return _broadcast(scores, uids, members, rollout_indices, expected_members,
+                      "mean")
 
 
 def compute_group_level_grpo_advantage(
@@ -187,12 +227,10 @@ def compute_group_level_grpo_advantage(
         raise ValueError("advantage metadata does not align with rewards")
     expected = validate_group_rows(uid_list, member_list, expected_members)
 
-    grouped: dict[str, dict[int, dict[str, int]]] = defaultdict(lambda: defaultdict(dict))
-    for row, (uid, member, rollout_index) in enumerate(
-            zip(uid_list, member_list, indices, strict=True)):
-        if member in grouped[uid][rollout_index]:
-            raise ValueError(f"duplicate member {member!r} for {(uid, rollout_index)!r}")
-        grouped[uid][rollout_index][member] = row
+    flat = _grouped_rows(uid_list, member_list, indices, expected)
+    grouped: dict[str, dict[int, dict[str, int]]] = defaultdict(dict)
+    for (uid, rollout_index), rows in flat.items():
+        grouped[uid][rollout_index] = rows
 
     normalized = torch.empty_like(scalar_rewards)
     for uid, rollouts in grouped.items():
@@ -202,9 +240,6 @@ def compute_group_level_grpo_advantage(
         unique_rewards = []
         for rollout_index in ordered:
             rows = rollouts[rollout_index]
-            if set(rows) != expected:
-                raise ValueError(
-                    f"rollout {(uid, rollout_index)!r} does not contain the full group")
             member_rewards = [scalar_rewards[row] for row in rows.values()]
             first = member_rewards[0]
             for reward in member_rewards[1:]:

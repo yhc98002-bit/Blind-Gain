@@ -1,0 +1,61 @@
+{
+  "base_file_sha256": {
+    "verl/trainer/config.py": "011bcf589a99844a6c4e4bfa0eb7d3587aaca6f4cebc98ed5b80395c42cc9f1c",
+    "verl/trainer/ray_trainer.py": "523a1934e042cedd5c44560755e706db1cf109a4597b66bb235c3910a168f9c9",
+    "verl/workers/reward/function.py": "59fa38dda0d879d76b82bf3c37815df4ccc6c33c9e39390da8933cc310bdfc3b"
+  },
+  "base_tree": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1",
+  "differing_files_vs_base": [
+    "verl/trainer/config.py",
+    "verl/trainer/ray_trainer.py",
+    "verl/workers/reward/function.py"
+  ],
+  "grouping_module": "src/train/hier_group_scoring.py",
+  "grouping_module_sha256": "bca15d62398e56708eeb1126b11c0436d43495fa2d8f99fc0f9b9889b41df9e1",
+  "hier_file_sha256": {
+    "verl/trainer/config.py": "a095b010f9c4387df42f2816cf426e53123130eec24d7d62b237ca9c95a6b953",
+    "verl/trainer/ray_trainer.py": "da2b022c77ea24461cd4dd4e9723b63c916002d2e2f044101978b8e17a0f51d1",
+    "verl/workers/reward/function.py": "d70fc03b6dc75438613d6b78ba8bd9c3d5627543b83cc073a29f9be1749919ae"
+  },
+  "out_tree": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1-hier",
+  "patch_source_sha256": {
+    "verl/trainer/config.py": "a095b010f9c4387df42f2816cf426e53123130eec24d7d62b237ca9c95a6b953",
+    "verl/trainer/ray_trainer.py": "bb9e6749fe7a014311c90def1b45b16e743912a710aea72edd95ebb08c3fdb2d",
+    "verl/workers/reward/function.py": "d70fc03b6dc75438613d6b78ba8bd9c3d5627543b83cc073a29f9be1749919ae"
+  },
+  "patch_source_tree": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/artifacts/repos/EasyR1-mini-a5",
+  "patched_files": [
+    "verl/trainer/config.py",
+    "verl/trainer/ray_trainer.py",
+    "verl/workers/reward/function.py"
+  ],
+  "purpose": "ST3 arm 2 trainer tree: arm 1's tree + the grouping patch only",
+  "schema_version": "blind-gains.easyr1-hier-tree.v1",
+  "swaps": [
+    {
+      "new": "from src.train.hier_group_scoring import (",
+      "occurrences": 1,
+      "old": "from src.train.cp_grouping import ("
+    },
+    {
+      "new": "compute_group_level_grpo_advantage",
+      "occurrences": 2,
+      "old": "compute_pair_level_grpo_advantage"
+    },
+    {
+      "new": "repeated_group_metadata",
+      "occurrences": 3,
+      "old": "repeated_pair_metadata"
+    },
+    {
+      "new": "repeat_times,\n                    group_mode=",
+      "occurrences": 1,
+      "old": "repeat_times,\n                    pair_group_mode="
+    },
+    {
+      "new": "self.config.worker.rollout.n,\n                    group_mode=",
+      "occurrences": 1,
+      "old": "self.config.worker.rollout.n,\n                    pair_group_mode="
+    }
+  ]
+}
