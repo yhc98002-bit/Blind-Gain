@@ -1,0 +1,102 @@
+{
+  "accepted": [
+    {
+      "bytes": 3240925809,
+      "file_count": 747,
+      "is_dir": true,
+      "mtime_utc": "2026-08-03T15:18:33Z",
+      "path": "/dev/shm/bg-ray-1cea6313ad3d",
+      "removed": true
+    },
+    {
+      "bytes": 1115990319,
+      "file_count": 838,
+      "is_dir": true,
+      "mtime_utc": "2026-07-27T07:36:14Z",
+      "path": "/dev/shm/bg-ray-1e57d119ca89",
+      "removed": true
+    },
+    {
+      "bytes": 982507,
+      "file_count": 650,
+      "is_dir": true,
+      "mtime_utc": "2026-07-28T10:08:42Z",
+      "path": "/dev/shm/bg-ray-297564c43bdb",
+      "removed": true
+    },
+    {
+      "bytes": 2586766729,
+      "file_count": 786,
+      "is_dir": true,
+      "mtime_utc": "2026-08-06T15:08:47Z",
+      "path": "/dev/shm/bg-ray-3a4558f03f5e",
+      "removed": true
+    },
+    {
+      "bytes": 2290271319,
+      "file_count": 785,
+      "is_dir": true,
+      "mtime_utc": "2026-07-30T13:13:28Z",
+      "path": "/dev/shm/bg-ray-58517dc9be1b",
+      "removed": true
+    },
+    {
+      "bytes": 9671146,
+      "file_count": 644,
+      "is_dir": true,
+      "mtime_utc": "2026-07-28T09:44:38Z",
+      "path": "/dev/shm/bg-ray-66de229ef2d2",
+      "removed": true
+    },
+    {
+      "bytes": 3008878593,
+      "file_count": 780,
+      "is_dir": true,
+      "mtime_utc": "2026-07-30T12:22:21Z",
+      "path": "/dev/shm/bg-ray-67e178370dbc",
+      "removed": true
+    },
+    {
+      "bytes": 2608051005,
+      "file_count": 778,
+      "is_dir": true,
+      "mtime_utc": "2026-07-28T10:21:25Z",
+      "path": "/dev/shm/bg-ray-70c81420c1e2",
+      "removed": true
+    },
+    {
+      "bytes": 885655174,
+      "file_count": 793,
+      "is_dir": true,
+      "mtime_utc": "2026-08-09T14:51:44Z",
+      "path": "/dev/shm/bg-ray-83c2c0fdbf4d",
+      "removed": true
+    },
+    {
+      "bytes": 5501588183,
+      "file_count": 787,
+      "is_dir": true,
+      "mtime_utc": "2026-08-10T14:51:18Z",
+      "path": "/dev/shm/bg-ray-c9182a4ad554",
+      "removed": true
+    }
+  ],
+  "accepted_bytes": 21248780784,
+  "accepted_count": 10,
+  "accepted_gib": 19.789,
+  "failures": [],
+  "generated_at_utc": "2026-08-18T17:18:27Z",
+  "mode": "execute",
+  "node": "an12",
+  "rejected": [
+    {
+      "path": "/dev/shm/bg-ray-868dafa61268",
+      "reason": "inside protected path /dev/shm/bg-ray-868dafa61268"
+    }
+  ],
+  "rejected_count": 1,
+  "removed_count": 10,
+  "schema_version": "blind-gains.cleanup-manifest.v1",
+  "tier": "an12_devshm",
+  "uid": 22847
+}
