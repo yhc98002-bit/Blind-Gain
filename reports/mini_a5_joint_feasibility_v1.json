@@ -1,0 +1,19 @@
+{
+  "arm1_informative_prompt_fraction": 0.6660314178466797,
+  "arm2_informative_group_fraction": 0.4218204839085229,
+  "arm2_informative_groups_per_step": 50.61845806902275,
+  "corpus": "/XYFS02/HDD_POOL/paratera_xy/pxy1289/HaocunYe/Research/BlindGain/data/st3_train_v1/train.jsonl",
+  "field": "p_sample",
+  "groups_q_gt_0": 0.872,
+  "joint_mean_q": 0.17330208333333333,
+  "joint_median_q": 0.078125,
+  "member_mean_p": 0.35172916666666665,
+  "n_groups": 3000,
+  "per_member_mean_p": {
+    "a": 0.3518541666666667,
+    "b": 0.35160416666666666
+  },
+  "rollout_n": 5,
+  "schema_version": "blind-gains.st3-joint-feasibility.v1",
+  "source": "registered Delta-q real pass (16 samples, T=1, base ckpt)"
+}

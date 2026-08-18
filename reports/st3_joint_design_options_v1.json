@@ -1,0 +1,80 @@
+{
+  "designs": [
+    {
+      "design": "A. k=4 joint  (AS REGISTERED: C2 x C3)",
+      "detail": "l3_a*l3_b*probe_a*probe_b",
+      "informative_fraction": 0.024076261683058764,
+      "mean_q": 0.00496978759765625,
+      "ratio_to_mini_a5_reference": 0.05707980484366705,
+      "rollouts": 5
+    },
+    {
+      "design": "B. k=2 per-side premise gate  (C3 only)",
+      "detail": "l3_s*probe_s, one group per side",
+      "informative_fraction": 0.25238983802410075,
+      "mean_q": 0.06233452690972222,
+      "ratio_to_mini_a5_reference": 0.5983637696161705,
+      "rollouts": 5
+    },
+    {
+      "design": "C. k=2 counterfactual pair  (C2 only)",
+      "detail": "l3_a*l3_b; probes scored as members",
+      "informative_fraction": 0.19604074462646773,
+      "mean_q": 0.047705078125,
+      "ratio_to_mini_a5_reference": 0.4647717985454427,
+      "rollouts": 5
+    },
+    {
+      "design": "D. k=4 joint at R=16 rollouts",
+      "detail": "as registered, more rollouts (breaks the matched rollout budget)",
+      "informative_fraction": 0.07105299057257586,
+      "mean_q": 0.00496978759765625,
+      "ratio_to_mini_a5_reference": 0.16845185057509687,
+      "rollouts": 16
+    },
+    {
+      "design": "E. member reward  (ARM 1 baseline)",
+      "detail": "each member scored alone",
+      "informative_fraction": 0.6669048468271891,
+      "mean_q": 0.25145399305555555,
+      "ratio_to_mini_a5_reference": 1.5810925718994526,
+      "rollouts": 5
+    }
+  ],
+  "mini_a5_reference_informative_fraction": 0.4218,
+  "n_groups": 720,
+  "rollout_n": 5,
+  "schema_version": "blind-gains.st3-design-options.v1",
+  "warm_start_homogeneous": [
+    {
+      "informative_fraction": 0.019379256991669536,
+      "member_p": 0.25,
+      "q": 0.00390625
+    },
+    {
+      "informative_fraction": 0.1216120246763518,
+      "member_p": 0.4,
+      "q": 0.025600000000000005
+    },
+    {
+      "informative_fraction": 0.38110892214574554,
+      "member_p": 0.55,
+      "q": 0.09150625000000003
+    },
+    {
+      "informative_fraction": 0.7458163067251995,
+      "member_p": 0.7,
+      "q": 0.24009999999999995
+    },
+    {
+      "informative_fraction": 0.9362881397907764,
+      "member_p": 0.85,
+      "q": 0.5220062499999999
+    },
+    {
+      "informative_fraction": 0.6412944704769165,
+      "member_p": 0.95,
+      "q": 0.8145062499999999
+    }
+  ]
+}
