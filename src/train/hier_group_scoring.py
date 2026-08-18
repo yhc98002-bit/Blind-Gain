@@ -41,15 +41,19 @@ def _text_list(values: Sequence[Any], field: str) -> list[str]:
 
 def group_member_sets(uids: Sequence[Any],
                       members: Sequence[Any]) -> dict[str, set[str]]:
-    """uid -> its member set, refusing duplicates within a group."""
+    """uid -> the DISTINCT members seen for that group.
+
+    Deliberately not a duplicate check: with `rollout.n > 1` every member
+    appears once per rollout, so duplicates are only meaningful at the
+    (group, rollout) key — where `broadcast_joint_accuracy` and
+    `compute_group_level_grpo_advantage` enforce them.
+    """
     uid_list = _text_list(uids, "pair_group_uid")
     member_list = _text_list(members, "pair_member")
     if len(uid_list) != len(member_list):
         raise ValueError("group uid and member sequences differ in length")
     seen: dict[str, set[str]] = defaultdict(set)
     for uid, member in zip(uid_list, member_list, strict=True):
-        if member in seen[uid]:
-            raise ValueError(f"duplicate member {member!r} in group {uid!r}")
         seen[uid].add(member)
     return dict(seen)
 
@@ -68,6 +72,10 @@ def validate_group_rows(uids: Sequence[Any], members: Sequence[Any],
     if expected_members is not None:
         expected = set(_text_list(expected_members, "expected member"))
     else:
+        # Inference can only catch groups that disagree with each other; a
+        # batch where EVERY group is missing the same member is invisible.
+        # Callers that know the group contract (the ST3 reward does) must pass
+        # expected_members so an under-specified joint reward cannot slip by.
         expected = next(iter(sets.values()))
     malformed = {uid: sorted(found) for uid, found in sets.items()
                  if found != expected}

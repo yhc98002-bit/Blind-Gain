@@ -35,6 +35,9 @@ from src.rewards.pilot_reward import (  # noqa: E402
 from src.train.hier_group_scoring import broadcast_joint_accuracy  # noqa: E402
 
 REWARD_TYPE = "batch"
+# The ST3 group contract, passed explicitly so a batch missing a member
+# everywhere cannot silently shrink the joint product.
+ST3_GROUP_MEMBERS = ("l3_a", "l3_b", "probe_a", "probe_b")
 IGPO_REWARD_VERSION = "blind-gains-igpo-v1"
 GROUP_FIELDS = ("pair_group_uid", "pair_member", "pair_rollout_index")
 
@@ -76,6 +79,7 @@ def compute_score(
         [_required(row, "pair_group_uid") for row in reward_inputs],
         [_required(row, "pair_member") for row in reward_inputs],
         [_required(row, "pair_rollout_index") for row in reward_inputs],
+        expected_members=ST3_GROUP_MEMBERS,
     )
     outputs = []
     for row, score in enumerate(member_scores):
@@ -107,6 +111,7 @@ def compute_member_score(
         [_required(row, "pair_group_uid") for row in reward_inputs],
         [_required(row, "pair_member") for row in reward_inputs],
         [_required(row, "pair_rollout_index") for row in reward_inputs],
+        expected_members=ST3_GROUP_MEMBERS,
     )
     return [{
         "overall": score["accuracy"],

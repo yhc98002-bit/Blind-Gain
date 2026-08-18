@@ -60,18 +60,31 @@ def test_binary_case_matches_the_pinned_implementation():
         assert mine.tolist() == pytest.approx(theirs.tolist())
 
 
-def test_incomplete_group_is_refused():
+def test_incomplete_group_is_refused_against_the_declared_contract():
+    # Every group missing the same member is invisible to inference, so the
+    # ST3 reward passes its contract explicitly; that is what catches it.
     uids = ["g0"] * 3
-    mems = ["l3_a", "l3_b", "probe_a"]          # probe_b missing
+    mems = ["l3_a", "l3_b", "probe_a"]          # probe_b missing everywhere
     with pytest.raises(ValueError, match="expected member set|full group"):
-        broadcast_joint_accuracy([1, 1, 1], uids, mems, [0, 0, 0])
+        broadcast_joint_accuracy([1, 1, 1], uids, mems, [0, 0, 0],
+                                 expected_members=ST3_MEMBERS)
 
 
-def test_duplicate_member_is_refused():
+def test_members_repeat_across_rollouts_without_being_duplicates():
+    # rollout.n > 1 means every member recurs once per rollout; treating that
+    # as a duplicate would reject every real training batch.
+    uids, mems, idx = group_batch(n_groups=1, rollouts=5)
+    assert validate_group_rows(uids, mems, ST3_MEMBERS) == set(ST3_MEMBERS)
+    joint = broadcast_joint_accuracy([1] * 20, uids, mems, idx,
+                                     expected_members=ST3_MEMBERS)
+    assert joint.tolist() == [1] * 20
+
+
+def test_duplicate_member_within_one_rollout_is_refused():
     uids = ["g0"] * 4
     mems = ["l3_a", "l3_a", "probe_a", "probe_b"]
     with pytest.raises(ValueError, match="duplicate member"):
-        validate_group_rows(uids, mems)
+        broadcast_joint_accuracy([1, 1, 1, 1], uids, mems, [0, 0, 0, 0])
 
 
 def test_groups_must_share_one_member_set():
