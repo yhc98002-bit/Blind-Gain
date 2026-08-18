@@ -3036,3 +3036,50 @@ detection now lives at the `(group, rollout)` key; `igpo_reward` additionally
 passes its member contract explicitly, since inferring the expected set from
 the first group cannot see a batch where *every* group is missing the same
 member. 10/10 fixtures green.
+
+## Q — ST3 arm 2 rebuilt at k=2 and launch-ready (blocked only on arm 1's node)
+
+Built per Launch amendment 2. Nothing launched: the one-ramping-trainer-per-node
+rule keeps the 7B arms sequential on an29, and arm 1 is still running.
+
+**Corpus.** `build_st3_train_corpus.py` gains `--group-mode`. Regression: the
+`mother4` mode reproduces arm 1's running corpus byte for byte
+(sha `dc76d9a8…`), so the refactor provably cannot disturb it. `side2` emits one
+group per SIDE of a mother item (that side's L3 read + its discovery probe):
+1440 groups over the same 720 mothers, both sides written adjacently so they
+still share a rollout batch (I2–I5 presence preserved).
+
+**Necessity (C1).** Rebuilt at k=2. The join is now by MEMBER IDENTITY, not row
+position — the Δq passes were scored against `mother4`, whose row order differs
+from `side2` within each mother, so a positional join would have mis-assigned
+every probability silently. Results: `q_real` 0.2515 (matches the independent
+base-accuracy measurement exactly), **`q_blind` 0.0029** — the task is
+essentially unsolvable without the image — and Δq 0.2486. Necessity resampling
+leaves feasibility slightly *better* than uniform (0.2536 vs 0.2524 usable).
+
+**Reward.** `igpo_reward` now carries arm 1's reward SHAPE,
+`(1-fw)*accuracy + fw*format`, with member accuracy replaced by the
+premise-gated joint accuracy. The format term is averaged over the group because
+a per-member format term is not broadcast-identical and the group advantage step
+refuses it; format saturates by step 2 and a constant offset cancels under GRPO
+normalisation, so the term is near-inert either way. Without this the arms would
+have differed in reward *shape* as well as in the intervention. It also emits
+the pilot reward's shadow-log fields, so either arm's accuracy/format trajectory
+reads with the same tooling — the diagnostic that found the k=4 blocker.
+
+**Trainer tree.** `artifacts/repos/EasyR1-hier` = arm 1's tree + the grouping
+patch and nothing else, derived from the Mini-A5 tree (the one its CP arm
+actually ran) with only the grouping module swapped, because `cp_grouping`
+hardcodes member names to `{a, b}` and would have forced ST3's meaningful labels
+out of every batch, reward and log. `build_easyr1_hier_tree.py` proves the
+property by diff (exactly 3 files differ) and asserts both source trees stay
+byte-identical; the launcher re-checks the shas and the 3-file diff at launch
+time rather than trusting build time.
+
+**Config.** `st3_igpo_seed1_7b.yaml` diffs against arm 1 in exactly four things:
+corpus, `pair_group_mode: joint`, reward function, and run paths. Identical base
+checkpoint, optimizer, KL, batch/rollout budget (240 divisible by 2 → 120
+groups/step), max_steps, save cadence, decoding lock, seed.
+
+17/17 fixtures green, including one asserting the k-ary module reduces to the
+pinned binary implementation row by row.
