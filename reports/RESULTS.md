@@ -2943,3 +2943,96 @@ verbatim as `tmp/run_m7_r3_readout_v2_20260816.sh`):
 scripted end-to-end in `scripts/gate1_std_evals_chain.sh` and
 `scripts/gate1_necessity_evals_chain.sh`; M7 seed-2 held-out evals in
 `scripts/launch_m7_seed2_eval.sh`. All committed at `4ac5c57` or earlier.*
+
+---
+
+# Round 2026-08-18 — ST3 arm 2 pre-launch blocker; hierarchy instrument sweep
+
+## N — ST3 arm 2's registered k=4 joint reward is below the trainable threshold
+
+Found **before any arm-2 GPU time was spent**, from data already on disk.
+
+Members of an intervention group are separate prompts sampled independently, so
+the joint reward rate is exactly the product of per-member sampling
+probabilities — computable from the registered Δq `real` pass (16 samples,
+T=1, base checkpoint, full 2880-row coverage). Under GRPO a group whose
+rollouts all score 0 (or all 1) contributes nothing, so what matters is
+`P(var) = 1 - q^R - (1-q)^R`.
+
+Base per-member accuracy, ST3 training corpus, Qwen2.5-VL-7B-Instruct:
+`l3_a` 0.1980, `l3_b` 0.2061, `probe_a` 0.3036, `probe_b` 0.2982; **all 0.2515**.
+
+At k=4: mean q = **0.0050**, median 0.0022 → only **2.41%** of groups can
+produce a gradient at R=5 (~1.4 of the 60 groups per step), against **66.7%**
+of prompts for the arm-1 member reward. Arm 2 would start with **1/41st** of
+arm 1's usable signal.
+
+Anchor — the same code, same R, on the design the registration names as C2's
+reference implementation and which trained successfully:
+
+| | Mini-A5 CP (k=2, 3B) — trained | ST3 arm 2 (k=4, 7B) — as registered |
+|---|---|---|
+| base member p | 0.3517 | 0.2515 |
+| mean joint q | 0.1733 | 0.0050 |
+| groups with any gradient | **42.2%** | **2.4%** |
+| signal vs own member arm | 0.63× | 0.04× |
+
+ST3 arm 2 as specified is **17× below the working reference**. Launching it
+would most likely have yielded "IGPO does not buy hierarchy" from a
+numerically dead reward, at ~16 GPU-hours.
+
+Options scored identically (`reports/st3_joint_design_options_v1.json`):
+
+| grouping | mean q | usable | vs Mini-A5 |
+|---|---|---|---|
+| A. k=4 as registered (C2×C3) | 0.0050 | 0.0241 | 0.06× |
+| **B. k=2 per-side premise gate (C3)** | 0.0623 | **0.2524** | 0.60× |
+| C. k=2 counterfactual pair (C2) | 0.0477 | 0.1960 | 0.46× |
+| D. k=4 at R=16 | 0.0050 | 0.0711 | 0.17× |
+| E. member reward (arm 1) | 0.2515 | 0.6669 | 1.58× |
+
+**Pinned: option B**, under the authority `registered_stage3_7b_v1.md` §3
+already gives the launch-gate amendment over *group counts* (k=4 was an
+implementation choice in `build_st3_train_corpus.py`, not a PI ruling).
+Recorded cost: C2's both-sides product leaves arm 2's **reward** (both sides
+stay present and group-adjacent in every batch, so I2–I5 are unaffected); no
+C2-at-7B claim may be read off this arm. **OPEN for the PI:** a shared ~4-step
+warm start would restore the registered k=4 to ~0.75 usable and keep §4
+matching intact, but changes the base checkpoint — outside what §3 delegates.
+
+Insight: the same shadow logs show arm-1 training accuracy **0.269 → 0.974 by
+step 19** of 100, with format saturating separately within 2 steps. The ST3
+training split is easy for a member reward and hard for a joint one — the two
+facts have the same root cause (p≈0.25 per member, k-fold product).
+
+Artifacts: `reports/st3_joint_feasibility_v1.{md,json}`,
+`reports/st3_joint_design_options_v1.json`, `reports/mini_a5_joint_feasibility_v1.json`,
+`scripts/diagnose_st3_joint_feasibility.py`, `scripts/st3_joint_design_options.py`,
+`scripts/inspect_st3_shadow.py`.
+
+## O — HB diagnostic D1: no RLVR recipe buys target discovery
+
+Instrument: frozen coord r2, `match-tier-v3-sign-aware`; 8 checkpoint arms ×
+12 cells (`reports/hier_instrument_sweep_v1.md`). All four M7 3B arms land
+within ~0.01 of one another on L3 discovery, **including the blind ones**:
+
+| cell | base3b | a1_real | a2_gray | a2b_noimg | a3_caption |
+|---|---|---|---|---|---|
+| n8/l3 | 0.3300 | 0.3825 | 0.3725 | 0.3675 | 0.3700 |
+| n12/l3 | 0.2600 | 0.3375 | 0.2975 | 0.3025 | 0.3225 |
+| n20/l3 | 0.2450 | 0.3300 | 0.3150 | 0.3175 | 0.3400 |
+
+The modest L3 lift over base is therefore **content-free** — it appears under
+gray, no-image and caption arms as readily as under the real-image arm. This
+corroborates Paper 1's no-content claim on an instrument it was not built from,
+and supplies the baseline table ST3 will be read against.
+
+## P — bug caught pre-launch by its own fixtures (arm-2 group scoring)
+
+`src/train/hier_group_scoring.py` keyed duplicate-member detection by group
+alone. With `rollout.n=5` every member legitimately recurs once per rollout, so
+this would have rejected **every real training batch** on step 1. Duplicate
+detection now lives at the `(group, rollout)` key; `igpo_reward` additionally
+passes its member contract explicitly, since inferring the expected set from
+the first group cannot see a batch where *every* group is missing the same
+member. 10/10 fixtures green.

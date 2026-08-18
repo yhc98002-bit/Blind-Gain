@@ -130,3 +130,60 @@ answer; no third arm.
 ## Deviations log
 
 - (none)
+
+---
+
+## Launch amendment 2 — arm-2 group structure pinned to k=2 (2026-08-18)
+
+Authority: §3, which states the concrete batch — *"family cells, **group
+counts**, Δq metadata for C1"* — is pinned by amendment at launch-gate time.
+Group size was never a ratified constant; k=4 was an implementation choice made
+in `scripts/build_st3_train_corpus.py`, and this amendment revises it on
+measured evidence before any arm-2 GPU time is spent.
+
+### Evidence
+
+Members of an intervention group are separate prompts sampled independently, so
+the joint reward rate is exactly `q = prod_m p_m` and a group yields a GRPO
+gradient with probability `1 - q^R - (1-q)^R`. Using the registered Δq `real`
+pass (16 samples, T=1, base checkpoint, full 2880-row coverage):
+
+* base per-member accuracy 0.2515 (`l3_a` 0.1980, `l3_b` 0.2061,
+  `probe_a` 0.3036, `probe_b` 0.2982);
+* at k=4, mean q = 0.0050 and only **2.41%** of groups can produce a gradient at
+  R=5 — ~1.4 of the 60 groups per step, against 66.7% of prompts for arm 1;
+* Mini-A5's k=2 CP arm — which §2 names as C2's reference implementation and
+  which trained successfully — scores **42.2%** on identical code at the same R.
+
+Arm 2 as previously implemented was therefore 17× below the working reference,
+and would most likely have produced a false negative about the method.
+Full record: `reports/st3_joint_feasibility_v1.md`.
+
+### Pinned
+
+Arm 2's reward group is **`(mother item, side)` with members `{l3, probe}`**,
+k=2: a side's read counts only when that side's discovery probe was also correct
+in the same rollout. This is the literal statement of C3 (premise-verified
+hierarchical reward) and scores 0.2524 usable, 0.60× the Mini-A5 reference.
+
+Unchanged: base checkpoint, training items (the same 720 mother items, now
+contributing two reward groups each), total optimizer steps, batch and rollout
+budget, save cadence, eval schedule, decoding lock, and C1's necessity sampling
+(which remains a sampling probability only, I1).
+
+### Deviation recorded against §2
+
+C2's requirement that **both sides** of the counterfactual be correct in one
+rollout is dropped from arm 2's **reward**. Both sides remain present and
+group-adjacent in every batch, so invariance-group presence (I2–I5) is
+unaffected, but **no claim about C2 at 7B may be read off this arm**. The
+arm-1 counterpart of this deviation is: none — arm 1's member reward is
+unchanged.
+
+### Open for the PI
+
+Testing the registered C2 × C3 k=4 reward as written requires a **shared warm
+start** (~4 std steps, ≈40 min, both arms branching from that identical
+checkpoint), which restores k=4 to ~0.75 usable and keeps §4 matching intact by
+construction, but changes the base checkpoint — outside what §3 delegates. Not
+taken; available as a third arm on request.
