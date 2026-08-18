@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# jq lives in ~/.local/bin, which a non-interactive ssh shell does not
+# have on PATH; without this the manifest write dies on "jq: command not
+# found" and set -e aborts the launch before the merge ever starts.
+export PATH="$HOME/.local/bin:$PATH"
 
 if [[ $# -ne 3 ]]; then
   echo "Usage: $0 NODE ACTOR_DIR RUN_TAG" >&2
