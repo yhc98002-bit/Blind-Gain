@@ -3083,3 +3083,114 @@ groups/step), max_steps, save cadence, decoding lock, seed.
 
 17/17 fixtures green, including one asserting the k-ary module reduces to the
 pinned binary implementation row by row.
+
+---
+
+# Round 2026-08-19 — ST3 first positive result; the 7B×8 host-RAM ceiling
+
+## R — Standard GRPO on the hierarchy split buys L3 target discovery, and the gain is content-dependent
+
+**This is the first recipe in the program that moves L3.** Every arm in the D1
+sweep (§O) left target discovery flat; this one does not.
+
+Checkpoint: ST3 arm 1 (`st3_std`, Qwen2.5-VL-7B-Instruct), **step 20**, evaluated
+on the frozen coord-r2 instrument under the registered decoding lock (greedy,
+answer-tag contract, `max_new_tokens` 32), scored with `match-tier-v3-sign-aware`.
+Composition = stable+invariance member accuracy; switch and probe reported
+separately, never averaged (I13).
+
+| cell/layer | base 7B | c5_7b_real | **st3_std @20** | **same ckpt, GRAY** |
+|---|---|---|---|---|
+| n12/l1 | 0.800 | 0.810 | 0.925 | 0.035 |
+| n12/l2 | 0.825 | 0.830 | 0.960 | 0.035 |
+| **n12/l3** | 0.575 | 0.575 | **0.845** | **0.000** |
+| n12/probe | 0.910 | 0.905 | 0.960 | 0.000 |
+| n20/l1 | 0.685 | 0.730 | 0.890 | 0.025 |
+| n20/l2 | 0.725 | 0.735 | 0.905 | 0.025 |
+| **n20/l3** | 0.470 | 0.460 | **0.785** | **0.000** |
+| n20/probe | 0.840 | 0.855 | 0.970 | 0.000 |
+| n8/l1 | 0.870 | 0.875 | 0.955 | 0.045 |
+| n8/l2 | 0.845 | 0.865 | 0.975 | 0.045 |
+| **n8/l3** | 0.660 | 0.765 | **0.965** | **0.000** |
+| n8/probe | 0.940 | 0.940 | 1.000 | 0.000 |
+
+target_switch L3 (the primary pair role): 0.890 / 0.810 / 0.930 (n12/n20/n8)
+against a 7B base of 0.530 / 0.410 / 0.670.
+
+Three things make this interpretable:
+
+1. **The gain is entirely image-dependent.** The matched gray-image control on
+   the *same checkpoint* scores **exactly 0.000 on every L3 and probe cell** and
+   0.025–0.045 on L1/L2. Contrast §O, where M7's blind arms (`a2_gray`,
+   `a2b_noimg`) matched the real arm on L3 to within ~0.01 — those gains were
+   content-free; this one cannot be.
+2. **It transfers to an unseen density.** Training used coord n8/n12 only; n20
+   was excluded, and still moved 0.470 → 0.785.
+3. **It is not a scoring artifact.** Same instrument, same scorer, same decoding
+   as the eight arms it is compared against, all re-derived in one pass
+   (`reports/hier_instrument_sweep_v2.{json,md}`, blind control in
+   `reports/st3_step20_blind_control_v1.{json,md}`).
+
+**Scope limits to state in the paper.** Training items were coord n8/n12 of the
+same family as the instrument, so this is *program-level held-out transfer within
+family* (the r2 development bucket is a disjoint scene-program set), not evidence
+of general hierarchy capability; n20 is the one genuinely unseen cell. And this
+is a **step-20 diagnostic**, not the registered terminal-step endpoint — it was
+read off the checkpoint of the run that later died (§S). The registered endpoint
+readout belongs on the completed 30-step run's `global_step_30`.
+
+## S — A 7B × 8-GPU EasyR1 arm leaks ~3.4 GB of host RAM per worker per hour
+
+Reproduction-critical: **this configuration cannot run 100 steps on a 1-TiB
+node**, and the reason is not the checkpoint save.
+
+Two distinct host-RAM failures, only the first of which is documented elsewhere:
+
+* **Save-time (fixed).** With `save_model_only: false`, all 8 ranks materialize a
+  full FSDP checkpoint at once — 94.5–98.9 GB each, ~770 GB — and Ray OOM-kills
+  the node inside `_save_checkpoint`. Fix: `save_model_only: true` (the c5 7B
+  precedent). Cost: the run is not resumable. Verified effective.
+* **Generation-time (characterized here).** Independently, the
+  `actor_rollout_ref_generate_sequences` workers grow without bound. Arm 1's
+  first attempt died at **step 39/100** inside `_make_batch_data` →
+  `generate_sequences` with 8 workers at 109–113.6 GB (~886 GB / 1007 GiB).
+
+Measured curve (per-worker max RSS, 30-step run, 120 s sampling via
+`scripts/sample_trainer_host_ram.sh`):
+
+| elapsed h | per-worker GB | node sum GB | MemAvailable GB |
+|---|---|---|---|
+| 0.00 | 16.8 | 133.8 | 881 |
+| 0.80 | 73.6 | 565.1 | 441 |
+| 2.40 | 80.4 | 617.0 | 391 |
+| 4.81 | 87.9 | 678.8 | 326 |
+| 7.21 | 97.1 | 751.0 | 256 |
+| 9.61 | 104.5 | 813.9 | 193 |
+| 11.42 | 109.7 | 854.6 | 152 |
+
+Shape: a step to ~74 GB/worker within the first ~50 min (engine warm-up), then
+**linear growth of ~3.4 GB/worker/hour with no plateau** (~27 GB/h node-wide).
+Extrapolated to 100 steps (~38 h) that is ~200 GB/worker ≈ 1.6 TB — unreachable.
+
+**The accumulation is per-process and fully reclaimed on exit**: MemAvailable
+returned from 152 GB to 861 GB the moment the workers terminated. It is therefore
+recoverable by **recycling the generation workers** — i.e. segmenting a long run
+into restarts, exactly as LH2 does with 50-step segments — rather than by any
+config knob. Surveyed and *not* available as a switch: `RolloutConfig` has no
+`free_cache_engine`; vLLM sleep/wake is already used
+(`verl/workers/sharding_manager/fsdp_vllm.py`); the offload path calls only
+`torch.cuda.empty_cache()`/`gc.collect()`, which are GPU-side. Leading mechanism:
+host-side double buffering between the actor's `offload_params`/
+`offload_optimizer` and vLLM's sleep-mode CPU copies.
+
+**Consequence adopted (Launch amendment 3):** both ST3 arms run **30 steps**,
+`save_freq` 10 (checkpoints at 10/20/30), applied identically so §4 matching
+holds. This is scientifically sufficient — training accuracy saturates at
+0.974 by step 19 and 0.982–0.992 by step 36 — and it is what makes the arm-1 vs
+arm-2 comparison affordable. Arm 1 completed 30/30 (exit 0) in 11.4 h under this
+budget.
+
+**Practical guidance for anyone rerunning this:** budget ~23 min/step late in a
+run (throughput degrades with the leak, from ~9.5 min/step early); keep one
+ramping trainer per node; and if a long horizon is needed, segment the run
+rather than raising the node's memory.
