@@ -3194,3 +3194,42 @@ budget.
 run (throughput degrades with the leak, from ~9.5 min/step early); keep one
 ramping trainer per node; and if a long horizon is needed, segment the run
 rather than raising the node's memory.
+
+## T — Arm-1 trajectory: held-out hierarchy keeps improving after training accuracy saturates
+
+Arm 1 (`st3_std`, 30-step budget) evaluated at all three banked checkpoints on
+the frozen coord-r2 instrument, real and matched-gray, same scorer and decoding
+lock as every column in §O/§R (`reports/st3_arm1_trajectory_v1.{json,md}`).
+
+L3 composition (target discovery), the layer no prior recipe moved:
+
+| cell | base 7B | @10 | @20 | @30 | @30 GRAY |
+|---|---|---|---|---|---|
+| n12/l3 | 0.575 | 0.760 | 0.815 | **0.890** | 0.000 |
+| n20/l3 | 0.470 | 0.675 | 0.760 | **0.800** | 0.000 |
+| n8/l3 | 0.660 | 0.870 | 0.945 | **0.965** | 0.000 |
+
+L1/L2/probe rise monotonically too (e.g. n20/l2 0.725 → 0.855 → 0.900 → 0.925;
+n8/probe 0.940 → 0.985 → 0.995 → 1.000). The gray control at step 30 is 0.000 on
+every L3 and probe cell and 0.025–0.045 on L1/L2 — identical in character to the
+step-20 control in §R, so the gain is image-dependent across the whole
+trajectory, not just at one point.
+
+**The finding that matters for design, not just for the result table:** training
+accuracy saturates at 0.974 by step 19 and 0.982–0.992 by step 36, but held-out
+L3 is *still climbing at step 30* on every cell — n12 gains +0.075 between steps
+20 and 30 while the training metric is flat. **Training accuracy is therefore a
+poor proxy for the transfer this program measures**, and the 30-step cap adopted
+in Launch amendment 3 (forced by the host-RAM leak, §S) very likely truncated the
+effect rather than capturing its plateau. Two consequences:
+
+1. Any claim of the form "N steps suffice" must be justified on the held-out
+   instrument, never on training reward.
+2. Recovering the 100-step budget — by recycling the generation workers, which
+   §S shows releases the accumulation completely — is worth doing: the curve has
+   not turned over, so the measured effect is a lower bound.
+
+Reproduction: `scripts/st3_arm1_readout_chain.sh` merges each banked checkpoint
+and runs `run_hier_p2_openform.sh` over `data/hier_v1_dev_r2` in both conditions
+across an12 GPUs 4–7, then folds the results in with
+`build_hier_instrument_sweep_readout.py`.

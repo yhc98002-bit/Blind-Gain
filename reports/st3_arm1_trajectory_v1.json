@@ -1,0 +1,139 @@
+{
+  "arms": {
+    "base7b": {
+      "accuracy": {
+        "n12/l1/composition": 0.8,
+        "n12/l2/composition": 0.825,
+        "n12/l3/composition": 0.575,
+        "n12/l3/target_switch": 0.53,
+        "n12/probe/composition": 0.91,
+        "n12/probe/target_switch": 0.88,
+        "n20/l1/composition": 0.685,
+        "n20/l2/composition": 0.725,
+        "n20/l3/composition": 0.47,
+        "n20/l3/target_switch": 0.41,
+        "n20/probe/composition": 0.84,
+        "n20/probe/target_switch": 0.91,
+        "n8/l1/composition": 0.87,
+        "n8/l2/composition": 0.845,
+        "n8/l3/composition": 0.66,
+        "n8/l3/target_switch": 0.67,
+        "n8/probe/composition": 0.94,
+        "n8/probe/target_switch": 0.9
+      },
+      "n_seeds": 1,
+      "run_dirs": [
+        "experiments/runs/hier_r2_openform_base7b_real_an29_gpu5_20260817T062059Z"
+      ]
+    },
+    "std_step10": {
+      "accuracy": {
+        "n12/l1/composition": 0.88,
+        "n12/l2/composition": 0.9,
+        "n12/l3/composition": 0.76,
+        "n12/l3/target_switch": 0.75,
+        "n12/probe/composition": 0.95,
+        "n12/probe/target_switch": 0.91,
+        "n20/l1/composition": 0.815,
+        "n20/l2/composition": 0.855,
+        "n20/l3/composition": 0.675,
+        "n20/l3/target_switch": 0.61,
+        "n20/probe/composition": 0.94,
+        "n20/probe/target_switch": 0.93,
+        "n8/l1/composition": 0.945,
+        "n8/l2/composition": 0.96,
+        "n8/l3/composition": 0.87,
+        "n8/l3/target_switch": 0.87,
+        "n8/probe/composition": 0.985,
+        "n8/probe/target_switch": 0.96
+      },
+      "n_seeds": 1,
+      "run_dirs": [
+        "experiments/runs/hier_d1_st3_st3_std30_step10_real_an12_gpu4_20260819T175246Z"
+      ]
+    },
+    "std_step20": {
+      "accuracy": {
+        "n12/l1/composition": 0.91,
+        "n12/l2/composition": 0.955,
+        "n12/l3/composition": 0.815,
+        "n12/l3/target_switch": 0.85,
+        "n12/probe/composition": 0.96,
+        "n12/probe/target_switch": 0.94,
+        "n20/l1/composition": 0.86,
+        "n20/l2/composition": 0.9,
+        "n20/l3/composition": 0.76,
+        "n20/l3/target_switch": 0.81,
+        "n20/probe/composition": 0.975,
+        "n20/probe/target_switch": 0.96,
+        "n8/l1/composition": 0.955,
+        "n8/l2/composition": 0.995,
+        "n8/l3/composition": 0.945,
+        "n8/l3/target_switch": 0.93,
+        "n8/probe/composition": 0.995,
+        "n8/probe/target_switch": 0.98
+      },
+      "n_seeds": 1,
+      "run_dirs": [
+        "experiments/runs/hier_d1_st3_st3_std30_step20_real_an12_gpu6_20260819T171555Z"
+      ]
+    },
+    "std_step30": {
+      "accuracy": {
+        "n12/l1/composition": 0.91,
+        "n12/l2/composition": 0.955,
+        "n12/l3/composition": 0.89,
+        "n12/l3/target_switch": 0.88,
+        "n12/probe/composition": 0.975,
+        "n12/probe/target_switch": 0.96,
+        "n20/l1/composition": 0.87,
+        "n20/l2/composition": 0.925,
+        "n20/l3/composition": 0.8,
+        "n20/l3/target_switch": 0.84,
+        "n20/probe/composition": 0.975,
+        "n20/probe/target_switch": 0.96,
+        "n8/l1/composition": 0.965,
+        "n8/l2/composition": 0.995,
+        "n8/l3/composition": 0.965,
+        "n8/l3/target_switch": 0.95,
+        "n8/probe/composition": 1.0,
+        "n8/probe/target_switch": 0.99
+      },
+      "n_seeds": 1,
+      "run_dirs": [
+        "experiments/runs/hier_d1_st3_st3_std30_step30_real_an12_gpu4_20260819T171505Z"
+      ]
+    },
+    "std_step30_GRAY": {
+      "accuracy": {
+        "n12/l1/composition": 0.03,
+        "n12/l2/composition": 0.03,
+        "n12/l3/composition": 0.0,
+        "n12/l3/target_switch": 0.0,
+        "n12/probe/composition": 0.0,
+        "n12/probe/target_switch": 0.0,
+        "n20/l1/composition": 0.025,
+        "n20/l2/composition": 0.025,
+        "n20/l3/composition": 0.0,
+        "n20/l3/target_switch": 0.0,
+        "n20/probe/composition": 0.0,
+        "n20/probe/target_switch": 0.0,
+        "n8/l1/composition": 0.045,
+        "n8/l2/composition": 0.045,
+        "n8/l3/composition": 0.0,
+        "n8/l3/target_switch": 0.0,
+        "n8/probe/composition": 0.0,
+        "n8/probe/target_switch": 0.0
+      },
+      "n_seeds": 1,
+      "run_dirs": [
+        "experiments/runs/hier_d1_st3_st3_std30_step30_gray_an12_gpu5_20260819T171530Z"
+      ]
+    }
+  },
+  "composition": "stable+invariance member accuracy (A2); switch and probe reported separately (I13)",
+  "instrument": "data/hier_v1_dev_r2 (coord r2, frozen)",
+  "matcher_version": "match-tier-v3-sign-aware",
+  "registration": "docs/registered_hier_instrument_sweep_v1.md",
+  "schema_version": "blind-gains.hier-instrument-sweep.v1"
+}
