@@ -187,3 +187,61 @@ start** (~4 std steps, ≈40 min, both arms branching from that identical
 checkpoint), which restores k=4 to ~0.75 usable and keeps §4 matching intact by
 construction, but changes the base checkpoint — outside what §3 delegates. Not
 taken; available as a third arm on request.
+
+---
+
+## Launch amendment 3 — 30-step budget, forced by node host RAM (2026-08-18)
+
+PI decision, recorded at the time it was taken: *"cap both arms at 30 steps and
+proceed immediately. The step-20 signal is already strong, and I don't want the
+100-step memory issue to stall the science."*
+
+### What forced it
+
+`st3_std_seed1_7b_an29_20260818T013741Z` died at **step 39 of 100** with
+`ray.exceptions.OutOfMemoryError` raised inside `_make_batch_data` ->
+`generate_sequences` (not at a checkpoint save). The node report shows all eight
+`ray::WorkerDict.actor_rollout_ref_generate_sequences` workers at **109-113.6 GB
+each, ~886 GB** on a 1007-GiB node.
+
+The growth is progressive and roughly linear in steps:
+
+| attempt | step | per-worker RSS | total |
+|---|---|---|---|
+| `...20260817T173226Z` | 19 | 94.5-98.9 GB | ~770 GB |
+| `...20260818T013741Z` | 39 | 109.1-113.6 GB | ~886 GB |
+
+That is ~0.8 GB per worker per step; step 100 would need ~1.24 TB. Throughput
+degraded with it (15h07m for 39 steps, ~23 min/step, against ~9.5 min/step
+early). **No configuration of this arm reaches 100 steps on a 1-TiB node**, so
+the registered budget was unreachable rather than merely expensive.
+
+This is distinct from the earlier save-time OOM fixed by `save_model_only: true`
+(that fix held: the step-20 save succeeded and training continued past it).
+
+### Pinned
+
+`trainer.max_steps` 100 -> **30** and `trainer.save_freq` 20 -> **10**, applied
+**identically to both arms**, so §4's "identical total optimizer steps" and
+"identical save cadence" continue to hold between arms. Save cadence 10 yields
+checkpoints at steps 10/20/30, i.e. a three-point trajectory per arm rather than
+a single endpoint.
+
+Everything else is unchanged: base checkpoint, training items, batch and rollout
+budget, decoding lock, seed, image condition, reward definitions, grouping mode.
+
+### Why 30 steps is scientifically sufficient
+
+Training accuracy on the ST3 split saturates early — 0.269 -> 0.974 by step 19,
+0.982-0.992 by step 36 — so steps beyond ~30 carry little gradient. The step-20
+checkpoint already shows the full effect on the frozen r2 instrument: L3
+composition 0.845 / 0.785 / 0.965 (n12/n20/n8) against a 7B base of 0.575 /
+0.470 / 0.660, with the matched gray-image control at **0.000 on every L3 and
+probe cell** — the gain is entirely image-dependent.
+
+### Open, not blocking
+
+The 100-step run is deferred, not abandoned. The RAM growth is being diagnosed
+in parallel (per-worker RSS sampling on the live run; whether recycling the
+generation workers releases the accumulation). If a cheap fix lands, a matched
+100-step extension can be run later as a long-horizon stability experiment.
