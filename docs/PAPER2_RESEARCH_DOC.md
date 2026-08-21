@@ -16,7 +16,9 @@ Paper 1 establishes that RLVR improves *utilization* of pretrained visual eviden
 
 **The ceiling argument (inherited from Paper 1's D3 result).** RLVR learns a *readout policy* over a frozen encoder: half the gain is obtainable with no visual information at all, and under blind evaluation the training condition is irrelevant entirely. If the policy only queries what the encoder already represents, then the ceiling on RL-driven multimodal improvement is representational — and improving it requires reward variance that is **resolvable only through distinctions the encoder can make but the policy does not yet use.** That is the precise job description for intervention groups, and it is why scalar answer rewards cannot do it.
 
-**Thesis.** Standard answer-level RLVR cannot identify whether reward was earned through visual evidence. IGPO makes visual credit identifiable by combining necessity-aware sampling with verified counterfactual intervention rewards, converting benchmark improvements into newly acquired visual distinctions.
+**Thesis (PI-agreed 2026-08-20, verbatim):** *Paper 2 develops visually resolvable RLVR as a method for turning reward optimization into genuine visual capability acquisition; the capacity x resolvability law explains when and why that method works.* Capacity is the boundary condition; resolvability is the lever we engineer. The law is the intellectual contribution connecting both papers; the method is this paper's spine.
+
+**Superseded thesis.** Standard answer-level RLVR cannot identify whether reward was earned through visual evidence. IGPO makes visual credit identifiable by combining necessity-aware sampling with verified counterfactual intervention rewards, converting benchmark improvements into newly acquired visual distinctions.
 
 ## 2. Method
 
@@ -96,6 +98,16 @@ Large-scale natural-image counterfactuals; video; open-world VQA; a dozen additi
 
 ### Reporting profile — no single headline accuracy
 Oracle-localized readout · search and binding · causal sensitivity · invariance specificity · premise accuracy · reasoning given a correct premise · full chained pair accuracy · structured hard-negative discrimination · ordinary task accuracy · matched blind-control gain.
+
+## 5-pre. ST3 state and the evidence-completion plan (2026-08-20)
+
+**Arm 1 (standard GRPO, 7B, hierarchy corpus) — acquisition confirmed:** L3 0.575->0.890 (n12), 0.470->0.800 (n20, unseen density), 0.660->0.965 (n8); **test-time gray control 0.000 on every L3/probe cell** (language lock: "test-time gray control" — the trained model evaluated on gray inputs; never a gray-trained arm). Held-out L3 still climbing at the step-30 cap while training accuracy saturates from step 19 — training reward is a poor proxy for transfer (a finding in every branch). Launch amendments in force: coord-only fallback (chart-v2 failed twice); k=4->k=2 premise-gated regrouping (k=4 numerically dead: 2.41% gradient-producing groups); 30-step segmentation (host-RAM leak; recycling regime validated). Arm 2 trained (joint 0.093->0.968); readout in progress.
+
+**Evidence completion (all pre-decision):** (1) Arm1-vs-Arm2 table across steps 10/20/30 — L1/L2/L3/probe, pair roles, gray controls, paired CIs — with acquisition curves on **three x-axes** (steps, total rollouts, unique scenes consumed); (2) **sampling-divergence measurement** (CPU, manifests): realized per-item/per-cell histograms both arms, KL + TV + dq-weighted exposure difference — quantifies the C1 confound before any decomposition arm (the corpus is high-necessity by construction, so C1 reweights among already-necessary items; the confound may be empirically negligible); (3) both arms extend 30->100 under recycling (registered terminal; boundaries 50/75/100); (4) **focused transfer pass** (inference, banked checkpoints, all boundaries): R19 coordinate register / premise-v2 nearest n=5 / geo3k + blind column / R20 — does acquired discovery leave the procedural family?
+
+**Conditional stack (no decision before evidence):** Arm 2 clearly ahead AND sampling divergence material -> one matched necessity+standard-GRPO 7B arm decomposes selection from credit assignment. Arm 2 ahead, divergence negligible -> the credit-assignment claim stands without a new run. Rough tie -> resolvability is the dominant lever; the **7B resolvability dose-response** (3-4 hierarchy/ViRL mixtures at matched compute, 30-50 steps, endpoints L3 + R19 anchor) becomes the theory experiment. k=4 warm-start arm: deferred; trigger = k=2 beats standard at 100 steps.
+
+**Confirmatory instrument:** re-gate at the scale of use (7B base), coord n20 as anchor cell (L3 0.470 at 7B = mid-band; 20-point density is the caption-resistant regime — run its caption-stress cell if unmeasured). **Chart family: out of the confirmatory instrument and out of IGPO training groups** (edit-position leakage is exploitable by group-based policies); the informativeness/attackability anti-correlation is retained as a methods finding; chart-v4, if ever needed by a claim, abandons edit-based construction for render-twice.
 
 ## 5. Gates and stages — REVISED after Gate 1 and C6 (2026-08-16, PI branch decision)
 

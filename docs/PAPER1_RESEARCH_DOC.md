@@ -69,6 +69,8 @@ Tested blind, every arm lands between +0.016 and +0.046 with no ordering: A1, tr
 
 **F7 — Confidence tracks image presence, not correctness.** Underconfident when right (≈0.19 vs 0.75 accuracy, ECE 0.57); identical confidence under twin images where accuracy is 0.012 (+0.17–0.19 overconfidence gap).
 
+**F8b — Independent corroboration on a fresh instrument (D1 sweep).** All four M7-trained 3B arms sit within ~0.01 of one another on hierarchy L3 — *including the blind-trained arms* — on frozen r2 cells the arms were never tuned against. The modest 3B L3 movement is content-free, measured on an instrument Paper 1 was not built from.
+
 **F8 — Trainability (Mini-A5, Gate 1 complete).** Four arms at 3B: no recipe moves held-out content on the primary anchor; every registered difference is strict/format (pairing = a strict-contract tax, −0.32 canary; necessity refunds +0.043 [0.018, 0.070]); all four move the oracle-localized readout +0.15–0.23. The lever at 3B is reward *resolvability*, not reward shape.
 
 **F9 — Scale begins to buy grounding, and only with real images (C6; one seed, tiered).** At 7B, A1-real moves the **primary anchor**: +0.0250 [0.0033, 0.0467] on R19 and +0.0233 [0.0017, 0.0433] on R20, both contracts, both instruments — the first content movement in the program. A2-gray at 7B moves neither anchor nor readout. Readout stays flat, so this is not more sharpening. *Tier: observed at one seed, internally replicated across two instruments; upgrade condition = a second 7B seed reproducing direction.* Read with F8: at 3B nothing moves L2; at 7B real-image training begins to. The dissociation is scale-qualified — which tells the field where the door is, and hands Paper 2 its decisive experiment.
@@ -116,6 +118,8 @@ If RLVR learns a readout policy over a frozen encoder, the ceiling on RL-driven 
 
 ## 6. Evidence in hand
 
+**Scoring note (global):** matcher v3 replaced substring containment with sign-aware parsed-numeric equality; 721/785 tier-1 lenient credits in the affected class were the sign collision. All FlipTrack member-accuracy tables are re-derived from v3 artifacts; maximum Paper-1 exposure <=0.031 member accuracy, direction conservative (blind floors fall).
+
 Three-seed task gains: A1 +0.2435, A3 +0.1048, A2b +0.0460, A2 +0.0161 under matched evaluation; strict-format gain larger (+0.3583), so the reported lenient figure is conservative. D2 access verdict image-mediated-at-inference, 3/3 seeds. D3 complete, 36 cells, registered branch (a). X1/X5 sharpening. X2 hard negatives (bottom branch). X3 corrosion forensics. X4 calibration (exploratory). B1 declared batch. Instrument dossier per §5.
 
 ## 7. Pending
@@ -145,7 +149,10 @@ Three-seed task gains: A1 +0.2435, A3 +0.1048, A2b +0.0460, A2 +0.0161 under mat
 
 Inference-time ablation is the axis this literature does not report; we supply it with matched arms, three seeds, and a certified instrument, and we show the standard matched-condition protocol understates image-free training by a factor of two to thirteen. Novelty is argued through the X6 nine-column table on the integrated combination: paired counterfactual interventions × controlled information channels at train and test × ranking/generation decomposition × RLVR dynamics × trainability validation.
 
-## 11. Relation to Paper 2
+## 11. Relation to Paper 2 — the connecting principle
+
+**The capacity x resolvability law (joint statement of the program):** RLVR acquires genuine capability in a modality only when reward is unreachable without that modality (resolvability) *and* the model has capacity to spare; otherwise it sharpens readout of existing evidence, and under prolonged optimization corrodes grounding. Paper 1 is the negative half — either term absent: leaky corpora at any scale (readout sharpening, blind-learnable gains growing with scale), resolvable data at 3B (content-free movement, F8b). Paper 2 is the positive half: both terms present. *Confound named once:* the 3B evidence comes from ViRL-trained arms and the 7B acquisition evidence from hierarchy-corpus training, so the contrast is scale x data; C6 (7B on geo3k moving the R19 anchor +0.025) is the partial bridge.
+
 
 Paper 1 diagnoses; Paper 2 repairs. The access matrix, the mechanism, the instrument, and the audit belong here; Paper 2 cites them and contributes method. The representational-ceiling argument (§3) is what gives Paper 2 its thesis: improving multimodal RL requires reward variance resolvable only through distinctions the encoder can make but the policy does not yet use. Charter in `PAPER2_RESEARCH_DOC.md`, gated on Mini-A5; its Discover→Ground→Read hierarchy retroactively organizes R19 (L1/L1/L2) and premise-v2 (L3), giving both papers one capability vocabulary.
 

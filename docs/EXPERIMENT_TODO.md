@@ -221,3 +221,35 @@ Ledger `reports/main_progress.md`, one line per task, `pass | fail | blocked` wi
 **Infra fixes ordered (each ships an adversarial fixture, I10):** storage snapshot "pass"-while-over-quota bug · waiter wedged-vs-dead distinction (a stalled-but-alive trainer must not exhaust a deadline silently) · E3 STAGE-B argument-order bug · premise-v2 answer-balance constraint added to the registered design, failing types regenerated one-shot under it.
 
 **Writing phase opens:** Paper-1 drafting begins (intro, F0–F2, instrument, mechanism, corrosion sections writable now; frozen slots: two-seed R3, LH2 direction, C6 tier). X6 related-work table remains PI-owned. Human gates queue unchanged (four delivered packages + chart-v08 no-zoom + R20 sample).
+
+## PART 6 — Decisions 2026-08-16 (post HB-P2; Claude Code report f398406)
+
+**R3 CLOSED at two seeds** (registered estimator: ViRL blind recovery 0.71–0.88 vs geo3k 0.08–0.12; per-seed contrasts +0.6476 [0.5803, 0.7172], +0.5948 [0.5299, 0.6660]). Paper-1 numbers table shipped (reports/paper1_numbers_table_v1.md) — drafting proceeds.
+
+**HB P2 verdict:** informative pre-training (3/7 knob cells pass all HB.7 gates: coord n8/n12, chart s9_low; base-7B leads all L3 cells; Gate-1 RL checkpoints within ±0.08 of base-3B — no discovery capability bought, confirmed out-of-sample).
+
+**CHART-V2 (approved revision, one-shot):** symmetrized switch edits (signed-direction distribution verified against registered tolerance) + band-preserving low-cell edits; full gate re-run; **file-size attacker added to the permanent acceptance suite** (the 198/200 PNG-size leak class). Coord n20: exploratory hard tier, out of the freeze (fails HB.7 independently) — no revision.
+
+**E2-MATCHER (fix, not fork):** sign-aware parsed-numeric equality replaces substring containment; adversarial fixtures (1 vs −1, 5 vs 15, 0.5 vs 5); re-score only collision-class cells; amend registered readouts only on beyond-rounding movement.
+
+**ST3-7B: RATIFIED.** Registration merges now. Launch gates: chart-v2 acceptance pass + free node. Training split = both revised families; pre-committed fallback = coord-only split if chart-v2 fails its re-run gates twice.
+
+**Critical path = human gates:** chart-v08 no-zoom audit (~1–2 h, blocks chart-v08 freeze) + hier census v3 review (~1 h, blocks P3). GPU side has days of runway (LH2 → step-200 go/no-go; 72B caption cell; chart-v2 regen).
+
+## PART 7 — Evidence-completion plan (2026-08-20; supersedes conflicting rows above)
+
+| ID | Task | Requirement |
+|---|---|---|
+| ST3.R | Arm1-vs-Arm2 readout table, steps 10/20/30 | L1/L2/L3/probe, pair roles, test-time gray controls, paired CIs; acquisition curves on three x-axes (steps, rollouts, unique scenes) from run manifests. No interpretation text. |
+| ST3.S | Sampling-divergence measurement (CPU) | Realized per-item/per-cell histograms, both arms; KL both directions + TV + dq-weighted exposure difference. Quantifies the C1 confound BEFORE any decomposition arm. |
+| ST3.X | Extend both arms 30->100 (registered terminal) | Symmetric recycling schedule; eval boundaries 50/75/100. |
+| ST3.T | Focused transfer pass (inference only) | Banked checkpoints, all boundaries x {R19 coordinate register, premise-v2 nearest n=5, geo3k + blind column, R20}; locked decoding; per-endpoint tables with base references. |
+| ST3.D | Conditional: necessity+standard-GRPO 7B arm | Trigger = Arm 2 clearly ahead AND ST3.S divergence material. |
+| ST3.Q | Conditional: resolvability dose-response @7B | Trigger = rough tie. 3-4 hierarchy/ViRL mixtures, matched compute, 30-50 steps; endpoints L3 + R19 anchor. Registration before launch. |
+| ST3.K4 | Conditional: k=4 warm-start arm (EXPLORATORY) | Trigger = k=2 beats standard at 100 steps. |
+| INS.7B | Re-gate confirmatory instrument at 7B | 7B-base informativeness bands; coord n20 anchor; run n20 caption-stress cell if unmeasured. Chart: out of confirmatory + out of IGPO groups; v4 = render-twice only, and only if needed by a claim. |
+| MV3.P | Matcher-v3 propagation checklist | Every Paper-1 table touching FlipTrack member accuracy re-derived from v3 artifacts; single global caveat (exposure <=0.031); ledger row per table. |
+| P1.D1 | D1-sweep robustness paragraph -> PAPER1 F8b | In doc; verify numbers against reports at HEAD. |
+| LOCK | Language lock: "test-time gray control" | The trained model evaluated on gray inputs — never described as a gray-trained arm. |
+| INF.1 | plumbing-val member-name fix BEFORE any corpus rebuild | Ships adversarial fixture (I10). |
+| INF.2 | jq-PATH repair across 144 launchers; push-retry until the 7 commits land | Reproduction backbone requires pushed refs before doc-published interpretation. |
